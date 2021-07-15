@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "jsx": "react",
+        "baseUrl": "./packages",
+        "paths": {
+            "@trrf/form-components/*": [
+                "form-components/src/*"
+            ],
+            "@trrf/form-configuration/*": [
+                "form-configuration/src/*"
+            ]
+        }
+    },
+    "files": [],
+    "references": [
+        {
+            "path": "packages/form-components"
+        },
+        {
+            "path": "packages/form-configuration"
+        }
+    ]
+}

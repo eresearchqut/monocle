@@ -6,8 +6,8 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "directory": "packages/core",
-        "url": "https://github.com/ahoopen/typescript-mono-repo.git"
+        "directory": "packages/form-components",
+        "url": "https://github.com/eresearchqut/future-state-mono-repo.git"
     },
     "scripts": {
         "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",

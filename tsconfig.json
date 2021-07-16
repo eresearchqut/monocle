@@ -8,11 +8,17 @@
             ],
             "@trrf/form-definition/*": [
                 "form-definition/src/*"
+            ],
+            "@trrf/form-builder/*": [
+                "form-builder/src/*"
             ]
         }
     },
     "files": [],
     "references": [
+        {
+            "path": "packages/form-builder"
+        },
         {
             "path": "packages/form-components"
         },

@@ -6,4 +6,8 @@ A proof of concept for future state projects. Based on https://github.com/ahoope
 
 ## Build instructions
 
+```
+yarn install
+yarn build
+```
 

@@ -1,5 +1,5 @@
 {
-    "name": "@trrf/form-configuration",
+    "name": "@trrf/form-definition",
     "version": "1.0.0",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -12,13 +12,13 @@
     "scripts": {
         "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
         "prepack": "yarn build",
+        "schemas": "ts-json-schema-generator --path 'src/**/forms.ts'",
         "build": "yarn clean && tsc --build && cp \"./package.json\" ./dist/",
-        "test": "jest --no-cache",
-        "test-cov": "jest --no-cache --coverage",
+        "test": "echo 'notest'",
         "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0"
     },
-    "dependencies": {
-        "@trrf/form-components": "1.0.0"
+    "devDependencies": {
+        "ts-json-schema-generator": "^0.94.1"
     },
     "jest": {
         "testEnvironment": "jsdom",

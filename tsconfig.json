@@ -6,8 +6,8 @@
             "@trrf/form-components/*": [
                 "form-components/src/*"
             ],
-            "@trrf/form-configuration/*": [
-                "form-configuration/src/*"
+            "@trrf/form-definition/*": [
+                "form-definition/src/*"
             ]
         }
     },
@@ -17,7 +17,7 @@
             "path": "packages/form-components"
         },
         {
-            "path": "packages/form-configuration"
+            "path": "packages/form-definition"
         }
     ]
 }

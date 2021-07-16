@@ -1,0 +1,19 @@
+{
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "composite": true
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "references": [
+        {
+            "path": "../form-components"
+        },
+        {
+            "path": "../form-definition"
+        }
+    ]
+}

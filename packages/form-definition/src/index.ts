@@ -1,6 +1,8 @@
 import * as v1 from './v1';
 import {V1Form} from './v1';
 
+export type Form = V1Form;
+
 export {
     v1,
     V1Form

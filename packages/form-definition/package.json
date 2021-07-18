@@ -12,13 +12,13 @@
     "scripts": {
         "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
         "prepack": "yarn build",
-        "schemas": "ts-json-schema-generator --path 'src/**/forms.ts'",
-        "build": "yarn clean && tsc --build && cp \"./package.json\" ./dist/",
+        "schema": "quicktype --src src/v1/types.ts --lang json-schema --out src/v1/schema.json",
+        "build": "yarn clean && yarn schema && tsc --build && cp \"./package.json\" ./dist/",
         "test": "echo 'notest'",
         "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0"
     },
     "devDependencies": {
-        "ts-json-schema-generator": "^0.94.1"
+        "quicktype": "^15.0.260"
     },
     "jest": {
         "testEnvironment": "jsdom",

@@ -12,8 +12,8 @@
     "scripts": {
         "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
         "prepack": "yarn build",
-        "schema": "quicktype --src src/v1/types.ts --lang json-schema --out src/v1/schema.json",
-        "build": "yarn clean && yarn schema && tsc --build && cp \"./package.json\" ./dist/",
+        "schema": "quicktype --src src/interfaces/form.ts --lang json-schema --out src/interfaces/form.json",
+        "build": "yarn clean && tsc --build && cp \"./package.json\" ./dist/",
         "test": "echo 'notest'",
         "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0"
     },

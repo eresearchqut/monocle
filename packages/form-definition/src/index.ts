@@ -1,11 +1,9 @@
-import * as v1 from './v1';
-import {V1Form} from './v1';
-
-export type Form = V1Form;
+import {Form, Section, Input} from './interfaces';
 
 export {
-    v1,
-    V1Form
+   Form,
+   Section,
+   Input
 }
 
 

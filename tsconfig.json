@@ -19,7 +19,8 @@
             "dom"
         ],
         "types": [
-            "reflect-metadata"
+            "reflect-metadata",
+            "jest"
         ],
         "module": "commonjs",
         "moduleResolution": "node",

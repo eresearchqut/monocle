@@ -1,10 +1,10 @@
-import {SectionBuilder} from "./textInputBuilder";
-import InputBuilder from "../interfaces/inputBuilder";
+import {DefaultSectionBuilder} from "./defaultSectionBuilder";
+import SectionBuilder from "../interfaces/sectionBuilder";
 
 export {
     SectionBuilder
 };
 
-export const inputBuilders: InputBuilder[] = [new SectionBuilder()]
+export const sectionBuilders: SectionBuilder[] = [new DefaultSectionBuilder()]
 
 

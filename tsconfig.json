@@ -9,8 +9,8 @@
             "@trrf/form-definition/*": [
                 "form-definition/src/*"
             ],
-            "@trrf/form-builder/*": [
-                "form-builder/src/*"
+            "@trrf/form-compiler/*": [
+                "form-compiler/src/*"
             ]
         },
         "target": "es5",
@@ -39,7 +39,7 @@
     "files": [],
     "references": [
         {
-            "path": "packages/form-builder"
+            "path": "packages/form-compiler"
         },
         {
             "path": "packages/form-components"

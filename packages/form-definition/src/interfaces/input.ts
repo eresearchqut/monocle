@@ -4,6 +4,9 @@ export interface InputType extends Named {
     inputType: 'text' | 'numeric'
 }
 
+/**
+ * @title Text
+ */
 export interface TextInput extends InputType {
     inputType: 'text',
     required?: boolean,
@@ -11,6 +14,9 @@ export interface TextInput extends InputType {
     maxLength?: number
 }
 
+/**
+ * @title Numeric
+ */
 export interface NumericInput extends InputType {
     inputType: 'numeric',
     required?: boolean | false,
@@ -21,6 +27,9 @@ export interface NumericInput extends InputType {
 }
 
 
+/**
+ * @title Input
+ */
 export type Input = TextInput | NumericInput;
 
 

@@ -1,4 +1,4 @@
-import {JsonSchema} from "@jsonforms/core";
+import {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {Form, Input, Section} from "@trrf/form-definition";
 import {findInputBuilder} from "../inputBuilder";
 import {generatePropertyFromName} from "../utils";
@@ -13,6 +13,11 @@ export abstract class AbstractSectionBuilder {
             return properties;
         }, {} as { [property: string]: JsonSchema | undefined });
 
+
+    uiElements = (form: Form, section: Section): UISchemaElement[] =>
+        section.inputs
+            .map(input => findInputBuilder(form, section, input)?.ui(form, section, input))
+            .filter((uiSchemaElement): uiSchemaElement is UISchemaElement => !!uiSchemaElement);
 
 }
 

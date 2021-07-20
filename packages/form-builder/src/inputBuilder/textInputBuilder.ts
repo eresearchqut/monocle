@@ -1,6 +1,7 @@
 import {InputBuilder} from "../interfaces";
 import {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {Form, Input, Section} from "@trrf/form-definition";
+import {generatePropertyFromName} from "../utils";
 
 export class TextInputBuilder implements InputBuilder {
 
@@ -13,7 +14,12 @@ export class TextInputBuilder implements InputBuilder {
     }
 
     ui(form: Form, section: Section, input: Input): UISchemaElement {
-        return {} as UISchemaElement;
+        const sectionProperty = generatePropertyFromName(section.name);
+        const inputProperty = generatePropertyFromName(input.name);
+        return {
+            "type": "Control",
+            "scope": `#/properties/${sectionProperty}/properties/${inputProperty}`
+        } as UISchemaElement;
     }
 
 }

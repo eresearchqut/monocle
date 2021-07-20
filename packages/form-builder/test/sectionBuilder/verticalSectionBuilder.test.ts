@@ -1,13 +1,32 @@
 import {Form} from "@trrf/form-definition";
 import {VerticalSectionBuilder} from "../../src/sectionBuilder/verticalSectionBuilder";
 
-test('VerticalSectionBuilder build schema', () => {
+describe('VerticalSectionBuilder', () => {
 
-    const defaultSectionBuilder = new VerticalSectionBuilder();
+    const sectionBuilder = new VerticalSectionBuilder();
 
-    expect(defaultSectionBuilder.schema({} as Form, {
-        name: 'test',
-        inputs: [{inputType: 'text', name: 'Family Name'}]
-    }))
-        .toEqual({type: "object", properties: {familyName: {type: "string"}}});
+    test('build schema', () => {
+        expect(sectionBuilder.schema({} as Form, {
+            name: 'test',
+            inputs: [{inputType: 'text', name: 'Family Name'}]
+        }))
+            .toEqual({type: "object", properties: {familyName: {type: "string"}}});
+    });
+
+    test('build ui', () => {
+        expect(sectionBuilder.ui({} as Form, {
+            name: 'test',
+            inputs: [{inputType: 'text', name: 'Family Name'}]
+        }))
+            .toEqual({
+                "type": "VerticalLayout",
+                "elements": [
+                    {
+                        "scope": "#/properties/test/properties/familyName",
+                        "type": "Control"
+                    }
+                ]
+            });
+    });
+
 });

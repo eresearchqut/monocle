@@ -1,12 +1,13 @@
 import {InputBuilder} from "../interfaces";
 import {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {Form, Input, Section} from "@trrf/form-definition";
+import {InputType} from "../../../form-definition/dist/interfaces/input";
 
 
 export class TextInputBuilder implements InputBuilder {
 
     supports(form: Form, section: Section, input: Input): boolean {
-        return input.inputType === 'TEXT';
+        return input.inputType === InputType.TEXT;
     }
 
     schema(form: Form, section: Section, input: Input): JsonSchema {

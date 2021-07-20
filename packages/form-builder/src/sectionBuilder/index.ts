@@ -1,10 +1,10 @@
-import {DefaultSectionBuilder} from "./defaultSectionBuilder";
+import {VerticalSectionBuilder} from "./verticalSectionBuilder";
 import SectionBuilder from "../interfaces/sectionBuilder";
 
 export {
     SectionBuilder
 };
 
-export const sectionBuilders: SectionBuilder[] = [new DefaultSectionBuilder()]
+export const sectionBuilders: SectionBuilder[] = [new VerticalSectionBuilder()]
 
 

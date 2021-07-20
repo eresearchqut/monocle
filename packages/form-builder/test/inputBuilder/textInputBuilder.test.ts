@@ -2,16 +2,28 @@ import {TextInputBuilder} from "../../src/inputBuilder/textInputBuilder";
 import {Form, Section, TextInput} from "@trrf/form-definition";
 
 
-test('TextInputBuilder supports', () => {
-    const textInputBuild = new TextInputBuilder();
-    expect(textInputBuild.supports({} as Form, {} as Section,
-        {inputType: 'text'} as TextInput))
-        .toBe(true);
-});
+describe('TextInputBuilder', () => {
 
-test('TextInputBuilder build schema', () => {
-    const textInputBuild = new TextInputBuilder();
-    expect(textInputBuild.schema({} as Form, {} as Section,
-        {name: 'test'} as TextInput))
-        .toEqual({type: "string"});
+    const inputBuilder = new TextInputBuilder();
+    test('supports', () => {
+        expect(inputBuilder.supports({} as Form, {} as Section,
+            {inputType: 'text'} as TextInput))
+            .toBe(true);
+    });
+
+    test('schema', () => {
+        expect(inputBuilder.schema({} as Form, {name: 'Personal Details'} as Section,
+            {name: 'Family Name'} as TextInput))
+            .toEqual({type: "string"});
+    });
+
+    test('ui', () => {
+        expect(inputBuilder.ui({} as Form, {name: 'Personal Details'} as  Section,
+            {name: 'Family Name'} as TextInput))
+            .toEqual({
+                "scope": "#/properties/personalDetails/properties/familyName",
+                "type": "Control"
+            });
+    });
+
 });

@@ -15,14 +15,14 @@ describe('VerticalSectionBuilder', () => {
 
     test('build ui', () => {
         expect(sectionBuilder.ui({} as Form, {
-            name: 'test',
+            name: 'Personal Details',
             inputs: [{inputType: 'text', name: 'Family Name'}]
         }))
             .toEqual({
                 "type": "VerticalLayout",
                 "elements": [
                     {
-                        "scope": "#/properties/test/properties/familyName",
+                        "scope": "#/properties/personalDetails/properties/familyName",
                         "type": "Control"
                     }
                 ]

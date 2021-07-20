@@ -1,7 +1,5 @@
-import {Form, Section} from "@trrf/form-definition";
+import {Form} from "@trrf/form-definition";
 import {VerticalSectionBuilder} from "../../src/sectionBuilder/verticalSectionBuilder";
-import {InputType} from "../../../form-definition/dist/interfaces/input";
-
 
 test('VerticalSectionBuilder build schema', () => {
 
@@ -9,7 +7,7 @@ test('VerticalSectionBuilder build schema', () => {
 
     expect(defaultSectionBuilder.schema({} as Form, {
         name: 'test',
-        inputs: [{inputType: InputType.TEXT, name: 'Family Name'}]
-    } as Section))
+        inputs: [{inputType: 'text', name: 'Family Name'}]
+    }))
         .toEqual({type: "object", properties: {familyName: {type: "string"}}});
 });

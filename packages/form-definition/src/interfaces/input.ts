@@ -1,14 +1,27 @@
-import {UniquelyIdentifiable} from "./uniquelyIdentifiable";
 import {Named} from "./named";
 
-export enum InputType {
-    TEXT = 'Text',
-    NUMERIC = 'Numeric'
+export interface InputType extends Named {
+    inputType: 'text' | 'numeric'
 }
 
-export interface Input extends UniquelyIdentifiable, Named {
-    inputType: InputType
+export interface TextInput extends InputType {
+    inputType: 'text',
+    required?: boolean,
+    minLength?: number,
+    maxLength?: number
 }
+
+export interface NumericInput extends InputType {
+    inputType: 'numeric',
+    required?: boolean | false,
+    minimum?: number,
+    maximum?: number,
+    multipleOf?: number
+    increment?: number
+}
+
+
+export type Input = TextInput | NumericInput;
 
 
 

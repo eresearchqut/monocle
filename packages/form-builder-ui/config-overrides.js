@@ -1,9 +1,8 @@
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const ForkTSCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const { override, addLessLoader } = require('customize-cra');
 
-module.exports = (config) => {
-    // Remove the ModuleScopePlugin which throws when we try to import something
-    // outside of src/.
+function configOverrides(config) {
     config.resolve.plugins.pop();
 
     // Resolve the path aliases.
@@ -49,4 +48,16 @@ module.exports = (config) => {
     }
 
     return config;
-};
+}
+
+module.exports = override(
+    configOverrides,
+    addLessLoader({
+        // If you are using less-loader@5 or older version, please spread the lessOptions to options directly.
+        lessOptions: {
+            javascriptEnabled: true,
+            modifyVars: { '@base-color': '#f44336' }
+        }
+    })
+);
+

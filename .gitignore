@@ -106,3 +106,5 @@ dist
 # Idea files
 .idea
 
+# React app build
+build

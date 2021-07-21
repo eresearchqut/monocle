@@ -1,0 +1,84 @@
+{
+  "name": "@trrf/form-builder-ui",
+  "version": "1.0.0",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "directory": "packages/form-builder-ui",
+    "url": "https://github.com/eresearchqut/future-state-mono-repo.git"
+  },
+  "scripts": {
+    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "prepack": "yarn build",
+    "build": "yarn clean && yarn react-app-rewired:build",
+    "start": "yarn react-app-rewired:start",
+    "react-app-rewired:start": "cross-env SKIP_PREFLIGHT_CHECK=true DISABLE_ESLINT_PLUGIN=true react-app-rewired start",
+    "react-app-rewired:build": "cross-env SKIP_PREFLIGHT_CHECK=true DISABLE_ESLINT_PLUGIN=true react-app-rewired build",
+    "test": "yarn jest",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0"
+  },
+  "dependencies": {
+    "@trrf/form-definition": "1.0.0",
+    "@trrf/form-compiler": "1.0.0",
+    "@trrf/form-components": "1.0.0",
+    "react": "16.13.1",
+    "rsuite": "^4.10.2",
+    "less": "",
+    "@jsonforms/core": "^3.0.0-alpha.0",
+    "@jsonforms/react": "^3.0.0-alpha.0",
+    "lodash": "^4.14.171"
+  },
+  "devDependencies": {
+    "@types/react": "16.9.48",
+    "@types/react-dom": "16.9.9",
+    "@types/lodash": "^4.14.171",
+    "@types/enzyme": "^3.10.3",
+    "@types/enzyme-adapter-react-16": "^1.0.5",
+    "@types/jest": "^26.0.24",
+    "cross-env": "7.0.3",
+    "customize-cra": "1.0.0",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.1",
+    "jsdom": "^16.6.0",
+    "jsdom-global": "^3.0.2",
+    "less-loader": "6.2.0",
+    "react-redux": "^7.1.3",
+    "react-app-rewired": "2.1.8",
+    "react-scripts": "4.0.0",
+    "react-dom": "^16.12.0",
+    "tsconfig-paths-webpack-plugin": "3.5.1",
+    "fork-ts-checker-webpack-plugin": "6.2.12"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/test/**/*.test.tsx"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

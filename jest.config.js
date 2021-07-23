@@ -18,7 +18,7 @@ module.exports = {
     ...packages.reduce(
       (acc, name) => ({
         ...acc,
-        [`@ahoopen/${name}(.*)$`]: `<rootDir>/packages/./${name}/src/$1`,
+        [`@trrf/${name}(.*)$`]: `<rootDir>/packages/./${name}/src/$1`,
       }),
       {}
     ),

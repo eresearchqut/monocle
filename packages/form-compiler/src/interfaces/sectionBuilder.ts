@@ -4,8 +4,8 @@ import {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 
 export default interface SectionBuilder {
 
-    schema(form: Form, section: Section): JsonSchema;
+    schema(form: Form, section: Section): JsonSchema | undefined;
 
-    ui(form: Form, section: Section): UISchemaElement;
+    ui(form: Form, section: Section): UISchemaElement | undefined;
 
 }

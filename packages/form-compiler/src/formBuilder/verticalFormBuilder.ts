@@ -1,0 +1,23 @@
+import {FormBuilder} from "../interfaces";
+
+import {JsonSchema, UISchemaElement, VerticalLayout} from "@jsonforms/core";
+import {Form} from "@trrf/form-definition";
+
+import {AbstractFormBuilder} from "./abstractFormBuilder";
+
+export class VerticalFormBuilder extends AbstractFormBuilder implements FormBuilder {
+
+    schema(form: Form): JsonSchema | undefined {
+        const properties = this.formProperties(form);
+        return {type: "object", properties} as JsonSchema;
+    }
+
+    ui(form: Form): UISchemaElement | undefined {
+        const elements = this.uiElements(form);
+        return {
+            "type": "VerticalLayout",
+            elements
+        } as VerticalLayout;
+    }
+
+}

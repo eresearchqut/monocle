@@ -9,14 +9,23 @@ export class VerticalFormBuilder extends AbstractFormBuilder implements FormBuil
 
     schema(form: Form): JsonSchema | undefined {
         const properties = this.formProperties(form);
-        return {type: "object", properties} as JsonSchema;
+        if (properties) {
+            return {type: "object", properties} as JsonSchema;
+        }
+        return {type: "object"}
     }
 
     ui(form: Form): UISchemaElement | undefined {
         const elements = this.uiElements(form);
+        if (elements) {
+            return {
+                "type": "VerticalLayout",
+                elements
+            } as VerticalLayout;
+
+        }
         return {
             "type": "VerticalLayout",
-            elements
         } as VerticalLayout;
     }
 

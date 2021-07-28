@@ -5,8 +5,8 @@ export default interface InputBuilder {
 
     supports(form: Form, section: Section, input: Input): boolean;
 
-    schema(form: Form, section: Section, input: Input): JsonSchema;
+    schema(form: Form, section: Section, input: Input): JsonSchema | undefined;
 
-    ui(form: Form, section: Section, input: Input): UISchemaElement;
+    ui(form: Form, section: Section, input: Input): UISchemaElement | undefined;
 
 }

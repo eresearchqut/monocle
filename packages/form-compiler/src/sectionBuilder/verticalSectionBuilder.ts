@@ -9,15 +9,21 @@ export class VerticalSectionBuilder extends AbstractSectionBuilder implements Se
 
     schema(form: Form, section: Section): JsonSchema {
         const properties = this.schemaProperties(form, section);
-        return {type: "object", properties} as JsonSchema;
+        if (properties) {
+            return {type: "object", properties} as JsonSchema;
+        }
+        return {type: "object"} as JsonSchema;
     }
 
-    ui(form: Form, section: Section): UISchemaElement {
+    ui(form: Form, section: Section): UISchemaElement | undefined {
         const elements = this.uiElements(form, section);
-        return {
-            "type": "VerticalLayout",
-            elements
-        } as VerticalLayout;
+        if (elements) {
+            return {
+                "type": "VerticalLayout",
+                elements
+            } as VerticalLayout;
+        }
+        return undefined;
     }
 
 }

@@ -1,5 +1,4 @@
-import {inputBuilders} from "./inputBuilder";
-
+export * from './formBuilder';
 
 
 

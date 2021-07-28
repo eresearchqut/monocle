@@ -1,9 +1,6 @@
 import {VerticalFormBuilder} from "./verticalFormBuilder";
-import FormBuilder from "../interfaces/sectionBuilder";
-import {Form, Section,} from "../../../form-definition";
-import SectionBuilder from "../interfaces/sectionBuilder";
-
-
+import FormBuilder from "../interfaces/formBuilder";
+import {Form} from "../../../form-definition";
 
 export {
     FormBuilder
@@ -12,4 +9,4 @@ export {
 
 export const formBuilders: FormBuilder[] = [new VerticalFormBuilder()];
 
-export const findFormBuilder = (form: Form): SectionBuilder | undefined => formBuilders[0];
+export const findFormBuilder = (form: Form): FormBuilder | undefined => formBuilders[0];

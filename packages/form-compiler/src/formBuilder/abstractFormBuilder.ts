@@ -2,7 +2,6 @@ import {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {Form, Section} from "@trrf/form-definition";
 import {findSectionBuilder} from "../sectionBuilder";
 import {generatePropertyFromName} from "../utils";
-import {findInputBuilder} from "../inputBuilder";
 
 
 export abstract class AbstractFormBuilder {

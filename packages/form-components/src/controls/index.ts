@@ -1,16 +1,3 @@
-import InputControl, {
-    inputControlTester,
-    InputControl as InputControlUnwrapped
-} from './InputControl';
+import InputControl, {inputControlTester} from './InputControl';
 
-
-
-export const Unwrapped = {
-    InputControl: InputControlUnwrapped,
-};
-
-export {
-    InputControl
-};
-
-export * from './FormInput';
+export {InputControl, inputControlTester};

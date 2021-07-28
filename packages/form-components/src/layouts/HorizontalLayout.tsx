@@ -9,7 +9,7 @@ import {
 import {JsonFormsDispatch, useJsonForms, withJsonFormsLayoutProps} from '@jsonforms/react';
 
 import isEmpty from "lodash/isEmpty";
-import {Grid, Row, Col} from 'rsuite';
+
 
 const renderChildren = (layout: Layout, schema: JsonSchema, path: string) => {
     if (isEmpty(layout.elements)) {
@@ -18,7 +18,7 @@ const renderChildren = (layout: Layout, schema: JsonSchema, path: string) => {
     const {renderers, cells} = useJsonForms();
     return layout.elements.map((child, index) => {
         return (
-            <Col key={`${path}-${index}`}>
+            <div key={`${path}-${index}`} className="p-col">
                 <JsonFormsDispatch
                     renderers={renderers}
                     cells={cells}
@@ -26,7 +26,7 @@ const renderChildren = (layout: Layout, schema: JsonSchema, path: string) => {
                     schema={schema}
                     path={path}
                 />
-            </Col>
+            </div>
         );
     });
 };
@@ -44,11 +44,9 @@ const HorizontalLayoutRenderer: FunctionComponent<RendererProps> = (
         return null;
     }
     return (
-        <Grid>
-            <Row>
-                {renderChildren(horizontalLayout, schema, path)}
-            </Row>
-        </Grid>
+        <div className="p-grid">
+            {renderChildren(horizontalLayout, schema, path)}
+        </div>
     );
 };
 

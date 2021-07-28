@@ -7,8 +7,6 @@ import {
     uiTypeIs
 } from '@jsonforms/core';
 import {JsonFormsDispatch, useJsonForms, withJsonFormsLayoutProps} from '@jsonforms/react';
-
-import {Grid, Row} from 'rsuite';
 import isEmpty from "lodash/isEmpty";
 
 const renderChildren = (layout: Layout, schema: JsonSchema, path: string) => {
@@ -18,7 +16,7 @@ const renderChildren = (layout: Layout, schema: JsonSchema, path: string) => {
     const {renderers, cells} = useJsonForms();
     return layout.elements.map((child, index) => {
         return (
-            <Row key={`${path}-${index}`}>
+            <div key={`${path}-${index}`} className="p-col">
                 <JsonFormsDispatch
                     renderers={renderers}
                     cells={cells}
@@ -26,7 +24,7 @@ const renderChildren = (layout: Layout, schema: JsonSchema, path: string) => {
                     schema={schema}
                     path={path}
                 />
-            </Row>
+            </div>
         );
     });
 };
@@ -44,9 +42,9 @@ const VerticalLayoutRenderer: FunctionComponent<RendererProps> = (
         return null;
     }
     return (
-        <Grid>
+        <div className="p-grid p-dir-col">
             {renderChildren(horizontalLayout, schema, path)}
-        </Grid>
+        </div>
     );
 };
 

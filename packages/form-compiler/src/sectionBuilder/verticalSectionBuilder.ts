@@ -9,8 +9,9 @@ export class VerticalSectionBuilder extends AbstractSectionBuilder implements Se
 
     schema(form: Form, section: Section): JsonSchema {
         const properties = this.schemaProperties(form, section);
+        const required = this.requiredProperties(form, section);
         if (properties) {
-            return {type: "object", properties} as JsonSchema;
+            return {type: "object", properties, required} as JsonSchema;
         }
         return {type: "object"} as JsonSchema;
     }

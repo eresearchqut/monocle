@@ -1,6 +1,6 @@
-import InputCell, {inputCellTester} from './InputCell';
+import InputTextCell, {inputTextCellTester} from './InputTextCell';
 
 export {
-    InputCell,
-    inputCellTester
+    InputTextCell,
+    inputTextCellTester
 };

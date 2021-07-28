@@ -2,6 +2,7 @@ import {InputBuilder} from "../interfaces";
 import {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {Form, Input, Section} from "@trrf/form-definition";
 import {AbstractInputBuilder} from "./abstractInputBuilder";
+import {TextInput} from "@trrf/form-definition/dist/interfaces";
 
 export class TextInputBuilder extends AbstractInputBuilder implements InputBuilder {
 
@@ -10,7 +11,8 @@ export class TextInputBuilder extends AbstractInputBuilder implements InputBuild
     }
 
     schema(form: Form, section: Section, input: Input): JsonSchema {
-        return {type: "string"} as JsonSchema;
+        const {maxLength, minLength} = input as TextInput;
+        return {type: "string", maxLength, minLength} as JsonSchema;
     }
 
     ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {

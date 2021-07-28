@@ -5,12 +5,14 @@ import {
     RankedTester,
     rankWith
 } from '@jsonforms/core';
-import { withJsonFormsCellProps } from '@jsonforms/react';
+import {withJsonFormsCellProps} from '@jsonforms/react';
 
 import merge from 'lodash/merge';
-import { Input } from 'rsuite';
 
-export const InputCell = (props: CellProps ) => {
+
+import {InputText} from 'primereact/inputtext';
+
+export const InputTextCell = (props: CellProps) => {
     const {
         config,
         data,
@@ -24,11 +26,11 @@ export const InputCell = (props: CellProps ) => {
     const maxLength = schema.maxLength;
     const appliedUiSchemaOptions = merge({}, config, uischema.options);
     return (
-        <Input
+        <InputText
             value={data || ''}
             id={id}
             disabled={!enabled}
-            onChange={value => handleChange(path, value)}
+            onChange={(e) => handleChange(path, e.target.value)}
             autoFocus={uischema.options && uischema.options.focus}
             maxLength={appliedUiSchemaOptions.restrict ? maxLength : undefined}
         />
@@ -39,6 +41,6 @@ export const InputCell = (props: CellProps ) => {
  * Default tester for text-based/string controls.
  * @type {RankedTester}
  */
-export const inputCellTester: RankedTester = rankWith(1, isStringControl);
+export const inputTextCellTester: RankedTester = rankWith(1, isStringControl);
 
-export default withJsonFormsCellProps(InputCell);
+export default withJsonFormsCellProps(InputTextCell);

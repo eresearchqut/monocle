@@ -37,7 +37,8 @@
         "noUnusedLocals": true,
         "strictNullChecks": true,
         "resolveJsonModule": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true
     },
     "files": [],
     "references": [

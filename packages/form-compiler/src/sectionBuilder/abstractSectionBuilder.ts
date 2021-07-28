@@ -19,6 +19,16 @@ export abstract class AbstractSectionBuilder {
         }, {} as { [property: string]: JsonSchema }) : undefined;
 
 
+    requiredProperties = (form: Form, section: Section): string[] => section.inputs ?
+        section.inputs.map((input: Input) => {
+            const propertyName = generatePropertyFromName(input.name);
+            if (propertyName && input['required']) {
+                return propertyName;
+            }
+            return undefined;
+        }).filter((propertyName): propertyName is string => !!propertyName) : [];
+
+
     uiElements = (form: Form, section: Section): UISchemaElement[] | undefined => section.inputs ?
         section.inputs
             .map(input => findInputBuilder(form, section, input)?.ui(form, section, input))

@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     CellProps,
-    isStringControl,
+    isMultiLineControl,
     RankedTester,
     rankWith
 } from '@jsonforms/core';
@@ -9,25 +9,25 @@ import {withJsonFormsCellProps} from '@jsonforms/react';
 
 import merge from 'lodash/merge';
 
-import {InputText} from 'primereact/inputtext';
+import {InputTextarea} from 'primereact/inputtextarea';
 
-export const InputTextCell = (props: CellProps) => {
+export const InputTextareaCell = (props: CellProps) => {
     const {
         config,
         data,
         id,
+        errors,
         enabled,
         uischema,
         schema,
         path,
-        handleChange,
-        errors
+        handleChange
     } = props;
     const maxLength = schema.maxLength;
     const appliedUiSchemaOptions = merge({}, config, uischema.options);
     const className = errors.length === 0 ? undefined : 'p-invalid';
     return (
-        <InputText
+        <InputTextarea
             value={data || ''}
             id={id}
             className={className}
@@ -40,9 +40,9 @@ export const InputTextCell = (props: CellProps) => {
 };
 
 /**
- * Default tester for text-based/string controls.
+ * Default tester for multiline text-based/string controls.
  * @type {RankedTester}
  */
-export const inputTextCellTester: RankedTester = rankWith(1, isStringControl);
+export const inputTextareaCellTester: RankedTester = rankWith(2, isMultiLineControl);
 
-export default withJsonFormsCellProps(InputTextCell);
+export default withJsonFormsCellProps(InputTextareaCell);

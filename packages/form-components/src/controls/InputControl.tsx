@@ -39,11 +39,15 @@ export class InputControl extends Control<ControlProps, ControlState> {
             this.state.isFocused,
             appliedUiSchemaOptions.showUnfocusedDescription
         );
+        const displayInfo = required;
+        const info = required ? 'This is a required field' : undefined;
         const help = showDescription
             ? description
             : !isValid
                 ? errors
                 : null;
+
+        const className = isValid ? undefined : 'p-invalid';
 
         const labelText = isPlainLabel(label) ? label : label.default;
         const cell = maxBy(cells, r => r.tester(uischema, schema));
@@ -51,18 +55,21 @@ export class InputControl extends Control<ControlProps, ControlState> {
             console.warn('No applicable cell found.', uischema, schema);
             return null;
         }
+
         return (
-            <div className="p-inputgroup" id={id}>
-                <span className="p-float-label">
-                    <DispatchCell
-                        uischema={uischema}
-                        schema={schema}
-                        path={path}
-                        id={id + '-input'}
-                    />
-                    <label htmlFor={id + '-input'} id={id + '-label'}>{labelText}</label>
-                </span>
-                { required && <span className="p-inputgroup-addon"><i className="pi pi-star"></i></span> }
+            <div className="p-field ">
+                <div className="p-inputgroup">
+                    <span className="p-float-label">
+                        <DispatchCell
+                            uischema={uischema}
+                            schema={schema}
+                            path={path}
+                            id={id}
+                        />
+                        <label htmlFor={id} id={id + '-label'}>{labelText}</label>
+                    </span>
+                    {displayInfo && <span className="p-inputgroup-addon" style={{borderLeft: 0}} title={info} p-aria-label={info}><i className="pi pi-info-circle"></i></span>}
+                </div>
             </div>
         );
     }

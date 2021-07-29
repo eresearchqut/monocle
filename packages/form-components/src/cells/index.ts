@@ -1,6 +1,10 @@
 import InputTextCell, {inputTextCellTester} from './InputTextCell';
+import InputTextareaCell, {inputTextareaCellTester} from './InputTextareaCell';
 
 export {
     InputTextCell,
-    inputTextCellTester
+    inputTextCellTester,
+    InputTextareaCell,
+    inputTextareaCellTester
 };
+

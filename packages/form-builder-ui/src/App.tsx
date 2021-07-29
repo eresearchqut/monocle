@@ -45,7 +45,8 @@ const App: React.FC = () => {
                     },
                     {
                         inputType: 'text',
-                        name: 'Bee-bop'
+                        name: 'Bee-bop',
+                        multiline: true
                     }
                 ]
             }
@@ -105,6 +106,12 @@ const App: React.FC = () => {
                 <JSONInput
                     id='toBeBuilt'
                     placeholder={formUi}
+                    height='30vh'
+                    locale={locale}
+                />
+                <JSONInput
+                    id='toBeBuilt'
+                    placeholder={formData}
                     height='30vh'
                     locale={locale}
                 />

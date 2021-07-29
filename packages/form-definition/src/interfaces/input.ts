@@ -11,7 +11,8 @@ export interface TextInput extends InputType {
     inputType: 'text',
     required?: boolean,
     minLength?: number,
-    maxLength?: number
+    maxLength?: number,
+    multiline?: boolean
 }
 
 /**

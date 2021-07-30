@@ -11,3 +11,8 @@ yarn install
 yarn build
 ```
 
+## One liner to install packages and start form builder ui
+
+```
+(yarn install && yarn build && cd packages/form-builder-ui && yarn start)
+```

@@ -52,8 +52,7 @@ const App: React.FC = () => {
                         inputType: 'currency',
                         name: 'Owes',
                         currencyCode: 'AUD',
-                        currencyDisplay: 'symbol',
-                        locale: 'en-AU'
+                        currencyDisplay: 'symbol'
                     },
                     {
                         inputType: 'boolean',
@@ -63,6 +62,11 @@ const App: React.FC = () => {
                         inputType: 'boolean',
                         required: true,
                         name: 'Required Truthy',
+                    },
+                    {
+                        inputType: 'date',
+                        required: true,
+                        name: 'Datum',
                     }
                 ]
             }

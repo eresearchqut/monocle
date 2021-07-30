@@ -2,7 +2,7 @@ import {Named} from "./named";
 import {Requireable} from "./requireable";
 
 export interface InputType extends Named, Requireable {
-    inputType: 'text' | 'numeric' | 'currency' | 'boolean'
+    inputType: 'text' | 'numeric' | 'currency' | 'boolean' | 'date' | 'time' | 'date-time' | 'email'
 }
 
 /**
@@ -25,6 +25,20 @@ export interface TextInput extends InputType {
 }
 
 
+/**
+ * @title Date
+ */
+export interface DateInput extends InputType {
+    inputType: 'date',
+    /**
+     * @TJS-format date
+     */
+    minimum?: string,
+    /**
+     * @TJS-format date
+     */
+    maximum?: string
+}
 
 /**
  * @title Numeric
@@ -48,7 +62,6 @@ export interface CurrencyInput extends InputType {
     inputType: 'currency',
     currencyCode: string,
     currencyDisplay?: 'symbol' | 'name',
-    locale: string
     minimum?: number,
     maximum?: number
 }
@@ -56,6 +69,6 @@ export interface CurrencyInput extends InputType {
 /**
  * @title Input
  */
-export type Input = TextInput | NumericInput | CurrencyInput | BooleanInput;
+export type Input = TextInput | NumericInput | CurrencyInput | BooleanInput | DateInput;
 
 

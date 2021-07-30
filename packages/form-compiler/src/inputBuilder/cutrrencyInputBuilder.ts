@@ -16,13 +16,7 @@ export class CurrencyInputBuilder extends AbstractInputBuilder implements InputB
     }
 
     ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {
-        const {currencyCode, currencyDisplay, locale} = input as CurrencyInput;
-        return this.uiControl(form, section, input,  {
-            currencyCode,
-            currencyDisplay,
-            locale
-        });
-
+        return this.uiControl(form, section, input);
     }
 }
 

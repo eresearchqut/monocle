@@ -25,8 +25,9 @@ export const InputNumberCell = (props: CellProps) => {
     const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
     const {minimum, maximum} = schema;
-    const {step, decimalPlaces, locale, currencyCode, currencyDisplay} = appliedUiSchemaOptions;
-    const mode = currencyCode && locale ? 'currency' : undefined;
+    const {step, decimalPlaces, currencyCode, currencyDisplay} = appliedUiSchemaOptions.input;
+    const {locale} = appliedUiSchemaOptions || 'en-AU';
+    const mode = currencyCode ? 'currency' : undefined;
 
     const className = [
         mode === 'currency' ? 'p-inputwrapper-filled' : undefined,

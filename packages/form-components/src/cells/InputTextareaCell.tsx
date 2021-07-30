@@ -8,7 +8,6 @@ import {
 import {withJsonFormsCellProps} from '@jsonforms/react';
 
 import merge from 'lodash/merge';
-
 import {InputTextarea} from 'primereact/inputtextarea';
 
 export const InputTextareaCell = (props: CellProps) => {
@@ -23,7 +22,7 @@ export const InputTextareaCell = (props: CellProps) => {
         path,
         handleChange
     } = props;
-    const maxLength = schema.maxLength;
+    const {maxLength} = schema;
     const appliedUiSchemaOptions = merge({}, config, uischema.options);
     const className = errors.length === 0 ? undefined : 'p-invalid';
     return (

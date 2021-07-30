@@ -10,6 +10,7 @@ import {Control, DispatchCell, withJsonFormsControlProps} from '@jsonforms/react
 
 import merge from 'lodash/merge';
 import maxBy from 'lodash/maxBy';
+import {Input} from "@trrf/form-definition";
 
 export class InputControl extends Control<ControlProps, ControlState> {
     render() {
@@ -39,15 +40,14 @@ export class InputControl extends Control<ControlProps, ControlState> {
             this.state.isFocused,
             appliedUiSchemaOptions.showUnfocusedDescription
         );
-        const displayInfo = required;
-        const info = required ? 'This is a required field' : undefined;
+
+        const requiredMessage = required ? 'This is a required field' : undefined;
         const help = showDescription
             ? description
             : !isValid
                 ? errors
                 : null;
 
-        const className = isValid ? undefined : 'p-invalid';
 
         const labelText = isPlainLabel(label) ? label : label.default;
         const cell = maxBy(cells, r => r.tester(uischema, schema));
@@ -56,19 +56,34 @@ export class InputControl extends Control<ControlProps, ControlState> {
             return null;
         }
 
+        const dispatchCell = (<DispatchCell
+            uischema={uischema}
+            schema={schema}
+            path={path}
+            id={id}
+        />)
+
+        const input = appliedUiSchemaOptions.input as Input;
+
+        if (input.inputType === 'boolean') {
+            return (
+                <div className="p-field-checkbox">
+                    {dispatchCell}
+                    <label htmlFor={id} id={id + '-label'} className="p-checkbox-label">{labelText}</label>
+                </div>
+            )
+        }
+
         return (
             <div className="p-field ">
                 <div className="p-inputgroup">
                     <span className="p-float-label">
-                        <DispatchCell
-                            uischema={uischema}
-                            schema={schema}
-                            path={path}
-                            id={id}
-                        />
+                        {dispatchCell}
                         <label htmlFor={id} id={id + '-label'}>{labelText}</label>
                     </span>
-                    {displayInfo && <span className="p-inputgroup-addon" style={{borderLeft: 0}} title={info} p-aria-label={info}><i className="pi pi-info-circle"></i></span>}
+                    {required &&
+                    <span className="p-inputgroup-addon" style={{borderLeft: 0}} title={requiredMessage} p-aria-label={requiredMessage}><i
+                        className="pi pi-info-circle"></i></span>}
                 </div>
             </div>
         );

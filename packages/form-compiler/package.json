@@ -21,6 +21,7 @@
         "@jsonforms/core": "^3.0.0-alpha.0",
         "@trrf/form-components": "1.0.0",
         "@trrf/form-definition": "1.0.0",
+        "cldr-core": "^39.0.0",
         "typescript-json-schema": "0.50.1",
         "inversify": "5.0.1",
         "lodash": "^4.14.171",

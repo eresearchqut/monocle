@@ -17,16 +17,9 @@ export class TextInputBuilder extends AbstractInputBuilder implements InputBuild
 
     ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {
         const {multiline} = input as TextInput;
-        const uiControl = this.uiControl(form, section, input);
-        if (uiControl  && multiline) {
-            return {
-                ...uiControl,
-                options: {
-                    multi: true
-                }
-            }
-        }
-        return uiControl;
+        return this.uiControl(form, section, input,  {
+            multi: multiline
+        });
     }
 }
 

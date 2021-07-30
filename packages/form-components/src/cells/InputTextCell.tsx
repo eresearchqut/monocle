@@ -23,7 +23,7 @@ export const InputTextCell = (props: CellProps) => {
         handleChange,
         errors
     } = props;
-    const maxLength = schema.maxLength;
+    const {maxLength} = schema;
     const appliedUiSchemaOptions = merge({}, config, uischema.options);
     const className = errors.length === 0 ? undefined : 'p-invalid';
     return (

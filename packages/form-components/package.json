@@ -18,15 +18,17 @@
         "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0"
     },
     "dependencies": {
+        "@trrf/form-definition": "1.0.0",
+        "@jsonforms/core": "^3.0.0-alpha.0",
+        "@jsonforms/react": "^3.0.0-alpha.0",
         "react": "16.13.1",
         "primereact": "^6.5.0",
         "primeicons": "^4.1.0",
         "primeflex": "^3.0.0",
-        "@jsonforms/core": "^3.0.0-alpha.0",
-        "@jsonforms/react": "^3.0.0-alpha.0",
         "lodash": "^4.14.171"
     },
     "devDependencies": {
+
         "@types/react": "16.9.48",
         "@types/lodash": "^4.14.171",
         "@types/enzyme": "^3.10.3",

@@ -16,7 +16,7 @@ const renderChildren = (layout: Layout, schema: JsonSchema, path: string) => {
     const {renderers, cells} = useJsonForms();
     return layout.elements.map((child, index) => {
         return (
-            <div key={`${path}-${index}`} className="p-col">
+            <div key={`${path}-${index}`} className="p-col p-fluid">
                 <JsonFormsDispatch
                     renderers={renderers}
                     cells={cells}

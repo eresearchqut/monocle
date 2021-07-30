@@ -47,6 +47,22 @@ const App: React.FC = () => {
                         inputType: 'text',
                         name: 'Bee-bop',
                         multiline: true
+                    },
+                    {
+                        inputType: 'currency',
+                        name: 'Owes',
+                        currencyCode: 'AUD',
+                        currencyDisplay: 'symbol',
+                        locale: 'en-AU'
+                    },
+                    {
+                        inputType: 'boolean',
+                        name: 'Unrequired Truthy',
+                    },
+                    {
+                        inputType: 'boolean',
+                        required: true,
+                        name: 'Required Truthy',
                     }
                 ]
             }

@@ -1,32 +1,31 @@
 import {InputBuilder} from "../interfaces";
 import {JsonSchema, UISchemaElement} from "@jsonforms/core";
-import {Form, Input, Section} from "@trrf/form-definition";
+import {Form, Input, NumericInput, Section} from "@trrf/form-definition";
 import {AbstractInputBuilder} from "./abstractInputBuilder";
 import {TextInput} from "@trrf/form-definition/dist/interfaces";
+import {isInteger} from "lodash";
 
-export class TextInputBuilder extends AbstractInputBuilder implements InputBuilder {
+export class NumericInputBuilder extends AbstractInputBuilder implements InputBuilder {
 
     supports(form: Form, section: Section, input: Input): boolean {
         return input.inputType === 'numeric';
     }
 
     schema(form: Form, section: Section, input: Input): JsonSchema {
-        const {maxLength, minLength} = input as TextInput;
-        return {type: "string", maxLength, minLength} as JsonSchema;
+        const {decimalPlaces, maximum, minimum, increment} = input as NumericInput;
+        const type = decimalPlaces && decimalPlaces > 0 ? "number" : "integer";
+        return {type, maximum, minimum, multipleOf: increment} as JsonSchema;
     }
 
     ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {
-        const {multiline} = input as TextInput;
-        const uiControl = this.uiControl(form, section, input);
-        if (uiControl  && multiline) {
-            return {
-                ...uiControl,
-                options: {
-                    multi: true
-                }
-            }
+        const {decimalPlaces, increment} = input as NumericInput;
+        const fractional = decimalPlaces && decimalPlaces > 0;
+        if (fractional) {
+            return this.uiControl(form, section, input,  {
+                decimalPlaces, increment
+            });
         }
-        return uiControl;
+        return this.uiControl(form, section, input);
     }
 }
 

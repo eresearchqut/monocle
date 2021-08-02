@@ -65,7 +65,7 @@ export class InputControl extends Control<ControlProps, ControlState> {
 
         const input = appliedUiSchemaOptions.input as Input;
 
-        if (input.inputType === 'boolean') {
+        if (input?.inputType === 'boolean') {
             return (
                 <div className="p-field-checkbox">
                     {dispatchCell}

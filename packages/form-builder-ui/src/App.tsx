@@ -113,26 +113,8 @@ const App: React.FC = () => {
             <div className="p-col">
                 <JSONInput
                     id='toBeBuilt'
-                    placeholder={data}
-                    height='30vh'
-                    locale={locale}
-                />
-                <JSONInput
-                    id='toBeBuilt'
-                    placeholder={formSchema}
-                    height='30vh'
-                    locale={locale}
-                />
-                <JSONInput
-                    id='toBeBuilt'
-                    placeholder={formUi}
-                    height='30vh'
-                    locale={locale}
-                />
-                <JSONInput
-                    id='toBeBuilt'
-                    placeholder={formData}
-                    height='30vh'
+                    placeholder={{formData, formSchema, formUi, data}}
+                    height='100vh'
                     locale={locale}
                 />
             </div>

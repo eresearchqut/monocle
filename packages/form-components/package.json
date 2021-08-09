@@ -1,63 +1,71 @@
 {
-    "name": "@trrf/form-components",
-    "version": "1.0.0",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "license": "MIT",
-    "repository": {
-        "type": "git",
-        "directory": "packages/form-components",
-        "url": "https://github.com/eresearchqut/future-state-mono-repo.git"
+  "name": "@trrf/form-components",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "directory": "packages/form-components",
+    "url": "https://github.com/eresearchqut/future-state-mono-repo.git"
+  },
+  "scripts": {
+    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "prepack": "yarn build",
+    "build": "yarn clean && tsc --build && cp \"./package.json\" ./dist/",
+    "test": "jest --no-cache",
+    "test-cov": "jest --no-cache --coverage",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
+  "dependencies": {
+    "@jsonforms/core": "^3.0.0-alpha.0",
+    "@jsonforms/react": "^3.0.0-alpha.0",
+    "@trrf/form-definition": "1.0.0",
+    "lodash": "4.17.21",
+    "primeflex": "3.0.0",
+    "primeicons": "4.1.0",
+    "primereact": "6.5.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.0",
+    "@storybook/addon-actions": "^6.3.6",
+    "@storybook/addon-essentials": "^6.3.6",
+    "@storybook/addon-links": "^6.3.6",
+    "@storybook/react": "^6.3.6",
+    "@types/enzyme": "^3.10.3",
+    "@types/lodash": "4.14.171",
+    "@types/react": "17.0.16",
+    "@types/react-dom": "17.0.9",
+    "@types/uuid": "^8.3.1",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
+    "babel-loader": "^8.2.2",
+    "enzyme": "^3.10.0",
+    "jsdom": "^16.6.0",
+    "jsdom-global": "^3.0.2",
+    "prettier": "^2.3.2",
+    "react-redux": "^7.2.4"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
     },
-    "scripts": {
-        "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
-        "prepack": "yarn build",
-        "build": "yarn clean && tsc --build && cp \"./package.json\" ./dist/",
-        "test": "jest --no-cache",
-        "test-cov": "jest --no-cache --coverage",
-        "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0"
-    },
-    "dependencies": {
-        "@jsonforms/core": "^3.0.0-alpha.0",
-        "@jsonforms/react": "^3.0.0-alpha.0",
-        "@trrf/form-definition": "1.0.0",
-        "lodash": "4.17.21",
-        "primeflex": "3.0.0",
-        "primeicons": "4.1.0",
-        "primereact": "6.5.0",
-        "react": "17.0.2",
-        "react-dom": "17.0.2",
-        "uuid": "^8.3.2"
-    },
-    "devDependencies": {
-        "@types/enzyme": "^3.10.3",
-        "@types/lodash": "4.14.171",
-        "@types/react": "17.0.16",
-        "@types/react-dom": "17.0.9",
-        "@types/uuid": "^8.3.1",
-        "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
-        "enzyme": "^3.10.0",
-        "jsdom": "^16.6.0",
-        "jsdom-global": "^3.0.2",
-        "prettier": "^2.3.2",
-        "react-redux": "^7.2.4"
-    },
-    "jest": {
-        "testEnvironment": "jsdom",
-        "moduleFileExtensions": [
-            "ts",
-            "tsx",
-            "js"
-        ],
-        "transform": {
-            "^.+\\.(ts|tsx)$": "ts-jest"
-        },
-        "testMatch": [
-            "**/test/**/*.test.tsx"
-        ],
-        "testPathIgnorePatterns": [
-            "/node_modules/",
-            "/dist/"
-        ]
-    }
+    "testMatch": [
+      "**/test/**/*.test.tsx"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ]
+  }
 }

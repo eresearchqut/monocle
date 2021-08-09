@@ -12,7 +12,7 @@ import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
 import {Provider} from 'react-redux';
 import InputTextCell, {inputTextCellTester} from '../../src/cells/InputTextCell';
 import HorizontalLayoutRenderer from '../../src/layouts/HorizontalLayout';
-import {initTestStore} from './testStore';
+import {initTestStore} from '../testStore';
 
 import * as Enzyme from 'enzyme';
 import {ReactWrapper, mount} from 'enzyme';

@@ -21,11 +21,13 @@ export const InputBooleanCell = (props: CellProps) => {
     } = props;
     const appliedUiSchemaOptions = merge({}, config, uischema.options);
     if (appliedUiSchemaOptions.input?.required) {
+        console.log('Required')
         return (
             <Checkbox id={id}
                 onChange={(e) => handleChange(path, e.checked)} checked={data}></Checkbox>
         )
     }
+    console.log('Optional')
     return (
         <TriStateCheckbox
             value={data}

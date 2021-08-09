@@ -16,8 +16,6 @@ import {
 import {InputControl, inputControlTester} from './controls';
 
 import {
-    ArrayLayout,
-    arrayLayoutTester,
     HorizontalLayout,
     horizontalLayoutTester,
     VerticalLayout,
@@ -30,7 +28,6 @@ export * from './layouts';
 
 
 export const renderers: { tester: RankedTester; renderer: any }[] = [
-    {tester: arrayLayoutTester, renderer: ArrayLayout},
     {tester: horizontalLayoutTester, renderer: HorizontalLayout},
     {tester: inputControlTester, renderer: InputControl},
     {tester: verticalLayoutTester, renderer: VerticalLayout}

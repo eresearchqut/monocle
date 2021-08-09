@@ -1,5 +1,5 @@
 {
-  "name": "root",
+  "name": "@trrf/root",
   "private": true,
   "workspaces": {
     "packages": [
@@ -8,6 +8,7 @@
   },
   "scripts": {
     "prepare": "node ./configure-references.js",
+    "clean": "lerna run clean --stream",
     "build": "lerna run build --stream",
     "lint": "lerna run lint --stream --parallel",
     "test": "lerna run test --stream"

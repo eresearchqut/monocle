@@ -24,7 +24,12 @@ describe('TextInputBuilder', () => {
             {name: 'Family Name'} as TextInput))
             .toEqual({
                 "scope": "#/properties/personalDetails/properties/familyName",
-                "type": "Control"
+                "type": "Control",
+                "options": {
+                    "input": {
+                        "name": "Family Name"
+                    }
+                }
             });
     });
 

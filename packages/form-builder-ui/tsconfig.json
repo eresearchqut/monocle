@@ -19,7 +19,7 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
-        "jsx": "react",
+        "jsx": "react-jsx",
         "composite": true
     },
     "include": [
@@ -27,13 +27,13 @@
     ],
     "references": [
         {
-            "path": "../form-definition"
-        },
-        {
             "path": "../form-compiler"
         },
         {
             "path": "../form-components"
+        },
+        {
+            "path": "../form-definition"
         }
     ]
 }

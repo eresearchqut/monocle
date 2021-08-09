@@ -3,7 +3,18 @@
     "compilerOptions": {
         "outDir": "./dist",
         "rootDir": "./src",
-        "composite": true
+        "composite": true,
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+        "allowJs": true,
+        "noFallthroughCasesInSwitch": true,
+        "module": "esnext",
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "react-jsx"
     },
     "include": [
         "src/**/*"

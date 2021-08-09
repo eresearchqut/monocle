@@ -10,13 +10,13 @@ import {
 
 import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
 import {Provider} from 'react-redux';
-import InputCell, {inputCellTester} from '../../src/cells/InputCell';
+import InputTextCell, {inputTextCellTester} from '../../src/cells/InputTextCell';
 import HorizontalLayoutRenderer from '../../src/layouts/HorizontalLayout';
 import {initTestStore} from './testStore';
 
 import * as Enzyme from 'enzyme';
 import {ReactWrapper, mount} from 'enzyme';
-const Adapter = require('enzyme-adapter-react-16');
+const Adapter = require('@wojtekmaj/enzyme-adapter-react-17');
 
 Enzyme.configure({adapter: new Adapter()});
 
@@ -52,8 +52,8 @@ const fixture = {
 };
 
 test('Text cell tester', () => {
-    expect(inputCellTester({type: 'Foo'}, {type: 'string'})).toEqual(-1);
-    expect(inputCellTester(controlElement, {type: 'string'})).toEqual(1);
+    expect(inputTextCellTester({type: 'Foo'}, {type: 'string'})).toEqual(-1);
+    expect(inputTextCellTester(controlElement, {type: 'string'})).toEqual(1);
 })
 
 describe('Text cell', () => {
@@ -111,7 +111,7 @@ describe('Text cell', () => {
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>
-                    <InputCell
+                    <InputTextCell
                         schema={fixture.minLengthSchema}
                         uischema={uischema}
                         path='name'
@@ -137,7 +137,7 @@ describe('Text cell', () => {
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>
-                    <InputCell schema={fixture.minLengthSchema} uischema={uischema} path='name'/>
+                    <InputTextCell schema={fixture.minLengthSchema} uischema={uischema} path='name'/>
                 </JsonFormsReduxContext>
             </Provider>
         );
@@ -154,7 +154,7 @@ describe('Text cell', () => {
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>
-                    <InputCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'/>
+                    <InputTextCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'/>
                 </JsonFormsReduxContext>
             </Provider>
         );
@@ -177,7 +177,7 @@ describe('Text cell', () => {
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>
-                    <InputCell schema={schema} uischema={fixture.uischema} path='name'/>
+                    <InputTextCell schema={schema} uischema={fixture.uischema} path='name'/>
                 </JsonFormsReduxContext>
             </Provider>
         );
@@ -194,7 +194,7 @@ describe('Text cell', () => {
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>
-                    <InputCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'/>
+                    <InputTextCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'/>
                 </JsonFormsReduxContext>
             </Provider>
         );
@@ -212,7 +212,7 @@ describe('Text cell', () => {
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>
-                    <InputCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'/>
+                    <InputTextCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'/>
                 </JsonFormsReduxContext>
             </Provider>
         );
@@ -230,7 +230,7 @@ describe('Text cell', () => {
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>
-                    <InputCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'/>
+                    <InputTextCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'/>
                 </JsonFormsReduxContext>
             </Provider>
         );
@@ -248,7 +248,7 @@ describe('Text cell', () => {
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>
-                    <InputCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'/>
+                    <InputTextCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'/>
                 </JsonFormsReduxContext>
             </Provider>
         );
@@ -266,7 +266,7 @@ describe('Text cell', () => {
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>
-                    <InputCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'/>
+                    <InputTextCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'/>
                 </JsonFormsReduxContext>
             </Provider>
         );
@@ -284,7 +284,7 @@ describe('Text cell', () => {
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>
-                    <InputCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'
+                    <InputTextCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'
                                enabled={false}/>
                 </JsonFormsReduxContext>
             </Provider>
@@ -302,7 +302,7 @@ describe('Text cell', () => {
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>
-                    <InputCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'/>
+                    <InputTextCell schema={fixture.minLengthSchema} uischema={fixture.uischema} path='name'/>
                 </JsonFormsReduxContext>
             </Provider>
         );
@@ -328,7 +328,7 @@ describe('Text cell', () => {
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>
-                    <InputCell schema={fixture.maxLengthSchema} uischema={uischema} path='name'/>
+                    <InputTextCell schema={fixture.maxLengthSchema} uischema={uischema} path='name'/>
                 </JsonFormsReduxContext>
             </Provider>
         );
@@ -346,7 +346,7 @@ describe('Text cell', () => {
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>
-                    <InputCell schema={fixture.maxLengthSchema} uischema={fixture.uischema} path='name'/>
+                    <InputTextCell schema={fixture.maxLengthSchema} uischema={fixture.uischema} path='name'/>
                 </JsonFormsReduxContext>
             </Provider>
         );

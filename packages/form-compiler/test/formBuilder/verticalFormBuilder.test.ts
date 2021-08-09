@@ -16,36 +16,52 @@ describe('VerticalFormBuilder', () => {
                 ]
             })
         ).toEqual({
-            type: "object",
-            properties:
-                {
-                    personalDetails:
-                        {
-                            type: "object",
-                            properties:
-                                {
-                                    familyName: {type: "string"}
-                                }
+            "properties": {
+                "personalDetails": {
+                    "properties": {
+                        "familyName": {
+                            "type": "string"
                         }
+                    },
+                    "required": [],
+                    "type": "object"
                 }
+            },
+            "type": "object"
         });
     });
 
-// test('build ui', () => {
-//     expect(sectionBuilder.ui({} as Form, {
-//         name: 'Personal Details',
-//         inputs: [{inputType: 'text', name: 'Family Name'}]
-//     }))
-//         .toEqual({
-//             "type": "VerticalLayout",
-//             "elements": [
-//                 {
-//                     "scope": "#/properties/personalDetails/properties/familyName",
-//                     "type": "Control"
-//                 }
-//             ]
-//         });
-// });
+    test('build ui', () => {
+        expect(formBuilder.ui({
+            name: "All The Details",
+            sections: [
+                {
+                    name: 'Personal Details',
+                    inputs: [{inputType: 'text', name: 'Family Name'}]
+                }
+            ]
+        }))
+            .toEqual({
+                "elements": [
+                    {
+                        "elements": [
+                            {
+                                "options": {
+                                    "input": {
+                                        "inputType": "text",
+                                        "name": "Family Name"
+                                    }
+                                },
+                                "scope": "#/properties/personalDetails/properties/familyName",
+                                "type": "Control"
+                            }
+                        ],
+                        "type": "VerticalLayout"
+                    }
+                ],
+                "type": "VerticalLayout"
+            });
+    });
 
 })
 ;

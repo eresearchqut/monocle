@@ -10,7 +10,15 @@ describe('VerticalSectionBuilder', () => {
             name: 'test',
             inputs: [{inputType: 'text', name: 'Family Name'}]
         }))
-            .toEqual({type: "object", properties: {familyName: {type: "string"}}});
+            .toEqual({
+                "properties": {
+                    "familyName": {
+                        "type": "string"
+                    }
+                },
+                "required": [],
+                "type": "object"
+            });
     });
 
     test('build ui', () => {
@@ -19,13 +27,19 @@ describe('VerticalSectionBuilder', () => {
             inputs: [{inputType: 'text', name: 'Family Name'}]
         }))
             .toEqual({
-                "type": "VerticalLayout",
                 "elements": [
                     {
+                        "options": {
+                            "input": {
+                                "inputType": "text",
+                                "name": "Family Name"
+                            }
+                        },
                         "scope": "#/properties/personalDetails/properties/familyName",
                         "type": "Control"
                     }
-                ]
+                ],
+                "type": "VerticalLayout"
             });
     });
 

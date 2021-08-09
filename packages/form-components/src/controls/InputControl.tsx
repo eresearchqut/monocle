@@ -1,10 +1,12 @@
 import React from 'react';
 import {
     ControlProps,
-    ControlState, isControl,
+    ControlState,
+    isControl,
     isDescriptionHidden,
-    isPlainLabel,
-    NOT_APPLICABLE, RankedTester, rankWith
+    NOT_APPLICABLE,
+    RankedTester,
+    rankWith
 } from '@jsonforms/core';
 import {Control, DispatchCell, withJsonFormsControlProps} from '@jsonforms/react';
 
@@ -49,7 +51,6 @@ export class InputControl extends Control<ControlProps, ControlState> {
                 : null;
 
 
-        const labelText = isPlainLabel(label) ? label : label.default;
         const cell = maxBy(cells, r => r.tester(uischema, schema));
         if (cell === undefined || cell.tester(uischema, schema) === NOT_APPLICABLE) {
             console.warn('No applicable cell found.', uischema, schema);
@@ -69,7 +70,7 @@ export class InputControl extends Control<ControlProps, ControlState> {
             return (
                 <div className="p-field-checkbox">
                     {dispatchCell}
-                    <label htmlFor={id} id={id + '-label'} className="p-checkbox-label">{labelText}</label>
+                    <label htmlFor={id} id={id + '-label'} className="p-checkbox-label">{label}</label>
                 </div>
             )
         }
@@ -79,7 +80,7 @@ export class InputControl extends Control<ControlProps, ControlState> {
                 <div className="p-inputgroup">
                     <span className="p-float-label">
                         {dispatchCell}
-                        <label htmlFor={id} id={id + '-label'}>{labelText}</label>
+                        <label htmlFor={id} id={id + '-label'}>{label}</label>
                     </span>
                     {required &&
                     <span className="p-inputgroup-addon" style={{borderLeft: 0}} title={requiredMessage} p-aria-label={requiredMessage}><i

@@ -16,6 +16,9 @@ import {Input} from "@trrf/form-definition";
 
 export class InputControl extends Control<ControlProps, ControlState> {
     render() {
+
+        console.log(this.props);
+
         const {
             schema,
             description,
@@ -46,6 +49,7 @@ export class InputControl extends Control<ControlProps, ControlState> {
         const requiredMessage = required ? 'This is a required field' : undefined;
 
         const cell = maxBy(cells, r => r.tester(uischema, schema));
+
         if (cell === undefined || cell.tester(uischema, schema) === NOT_APPLICABLE) {
             console.warn('No applicable cell found.', uischema, schema);
             return null;
@@ -55,6 +59,7 @@ export class InputControl extends Control<ControlProps, ControlState> {
             uischema={uischema}
             schema={schema}
             path={path}
+            cells={cells}
             id={id}
         />)
 

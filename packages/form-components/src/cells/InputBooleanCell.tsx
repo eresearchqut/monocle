@@ -11,6 +11,9 @@ import {TriStateCheckbox} from 'primereact/tristatecheckbox';
 import merge from "lodash/merge";
 
 export const InputBooleanCell = (props: CellProps) => {
+
+    console.log(props);
+
     const {
         path,
         data,
@@ -21,13 +24,12 @@ export const InputBooleanCell = (props: CellProps) => {
     } = props;
     const appliedUiSchemaOptions = merge({}, config, uischema.options);
     if (appliedUiSchemaOptions.input?.required) {
-        console.log('Required')
         return (
             <Checkbox id={id}
-                onChange={(e) => handleChange(path, e.checked)} checked={data}></Checkbox>
+                onChange={(e) => handleChange(path, e.checked)}></Checkbox>
         )
     }
-    console.log('Optional')
+
     return (
         <TriStateCheckbox
             value={data}

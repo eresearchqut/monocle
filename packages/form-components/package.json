@@ -4,7 +4,6 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "license": "MIT",
-    "private": true,
     "repository": {
         "type": "git",
         "directory": "packages/form-components",

@@ -93,8 +93,8 @@ const App: React.FC = () => {
                 <JsonForms
                     schema={schema}
                     data={data}
-                    renderers={renderers}
-                    cells={cells}
+                    renderers={materialRenderers}
+                    cells={materialCells}
                     onChange={({errors, data}) => setData(data)}
                 />
             </div>

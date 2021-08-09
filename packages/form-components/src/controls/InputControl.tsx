@@ -40,16 +40,10 @@ export class InputControl extends Control<ControlProps, ControlState> {
             visible,
             description as string,
             this.state.isFocused,
-            appliedUiSchemaOptions.showUnfocusedDescription
+            appliedUiSchemaOptions?.showUnfocusedDescription
         );
 
         const requiredMessage = required ? 'This is a required field' : undefined;
-        const help = showDescription
-            ? description
-            : !isValid
-                ? errors
-                : null;
-
 
         const cell = maxBy(cells, r => r.tester(uischema, schema));
         if (cell === undefined || cell.tester(uischema, schema) === NOT_APPLICABLE) {

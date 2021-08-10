@@ -1,33 +1,32 @@
 import * as React from "react";
-import {InputBooleanCell} from "../../src";
+import {InputControl, cells, renderers} from "@trrf/form-components";
 import {Story, Meta} from '@storybook/react';
 import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
 import {Provider} from 'react-redux';
-import {initTestStore} from '../../test/testStore';
+import {initStore} from '../jsonFormsStore';
 import {JsonSchema, ControlElement, CellProps} from "@jsonforms/core";
 
-
-const path = "booleanCell"
-const schema: JsonSchema = {type: "boolean"}
+const path = "textCell"
+const schema: JsonSchema = {type: "string"}
 const uischema: ControlElement = {
     type: "Control",
-    scope: "#/properties/booleanCell",
+    scope: "#/properties/textCell",
     options: {
         input: {
-            required: false
+            inputType: "text",
+            required: true
         }
     }
 };
 
 export default {
-    title: 'Cell/Boolean',
-    component: InputBooleanCell,
-    argTypes: { onClick: { action: 'handleChange' } },
+    title: 'Input/Control',
+    component: InputControl,
     decorators: [
         (Story, context) => {
             const {schema, uischema} = context.args;
-            const data =  {booleanCell: undefined}
-            const store = initTestStore({
+            const data =  {textCell: undefined};
+            const store = initStore({
                     data,
                     schema,
                     uischema
@@ -45,10 +44,9 @@ export default {
 } as Meta;
 
 
-// export const Required: React.VFC<{}> = () => <InputBooleanCell path={path} schema={schema} uischema={uischema}/>;
+const Template: Story<CellProps> = (props) => <InputControl {...props} />;
 
-const Template: Story<CellProps> = (props) => <InputBooleanCell {...props} />;
+export const TextControl = Template.bind({});
+TextControl.args = {path, schema, uischema, cells, renderers};
 
-//👇 Each story then reuses that template
-export const BooleanCell = Template.bind({});
-BooleanCell.args = {path, schema, uischema};
+

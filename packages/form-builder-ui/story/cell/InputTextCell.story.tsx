@@ -1,9 +1,9 @@
 import * as React from "react";
-import {InputTextCell} from "../../src";
+import {InputTextCell} from  "@trrf/form-components";
 import {Story, Meta} from '@storybook/react';
 import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
 import {Provider} from 'react-redux';
-import {initTestStore} from '../../test/testStore';
+import {initStore} from '../jsonFormsStore';
 import {JsonSchema, ControlElement, CellProps} from "@jsonforms/core";
 
 
@@ -26,7 +26,7 @@ export default {
         (Story, context) => {
             const {schema, uischema} = context.args;
             const data =  {textCell: undefined};
-            const store = initTestStore({
+            const store = initStore({
                     data,
                     schema,
                     uischema

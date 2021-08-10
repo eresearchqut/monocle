@@ -25,7 +25,7 @@ export const InputBooleanCell = (props: CellProps) => {
     const appliedUiSchemaOptions = merge({}, config, uischema.options);
     if (appliedUiSchemaOptions.input?.required) {
         return (
-            <Checkbox id={id}
+            <Checkbox id={id} checked={!!data}
                 onChange={(e) => handleChange(path, e.checked)}></Checkbox>
         )
     }

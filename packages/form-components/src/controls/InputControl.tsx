@@ -12,7 +12,6 @@ import {Control, DispatchCell, withJsonFormsControlProps} from '@jsonforms/react
 
 import merge from 'lodash/merge';
 import maxBy from 'lodash/maxBy';
-import {Input} from "@trrf/form-definition";
 
 export class InputControl extends Control<ControlProps, ControlState> {
     render() {
@@ -63,7 +62,7 @@ export class InputControl extends Control<ControlProps, ControlState> {
             id={id}
         />)
 
-        const input = appliedUiSchemaOptions.input as Input;
+        const input = appliedUiSchemaOptions.input;
 
         if (input?.inputType === 'boolean') {
             return (

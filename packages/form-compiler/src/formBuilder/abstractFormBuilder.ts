@@ -1,7 +1,7 @@
 import {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {Form, Section} from "@trrf/form-definition";
 import {findSectionBuilder} from "../sectionBuilder";
-import {generatePropertyFromName} from "../utils";
+import {generatePathFromName} from "../utils";
 
 
 export abstract class AbstractFormBuilder {
@@ -9,7 +9,7 @@ export abstract class AbstractFormBuilder {
 
     formProperties = (form: Form): { [property: string]: JsonSchema | undefined } | undefined => form.sections ?
         form.sections.reduce((properties, section: Section) => {
-            const propertyName = generatePropertyFromName(section.name);
+            const propertyName = generatePathFromName(section.name);
             if (propertyName) {
                 const sectionSchema = findSectionBuilder(form, section)?.schema(form, section);
                 if (sectionSchema) {

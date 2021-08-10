@@ -1,14 +1,14 @@
 import {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {Form, Input, Section} from "@trrf/form-definition";
 import {findInputBuilder} from "../inputBuilder";
-import {generatePropertyFromName} from "../utils";
+import {generatePathFromName} from "../utils";
 
 
 export abstract class AbstractSectionBuilder {
 
     schemaProperties = (form: Form, section: Section): { [property: string]: JsonSchema | undefined } | undefined => section.inputs ?
         section.inputs.reduce((properties, input: Input) => {
-            const propertyName = generatePropertyFromName(input.name);
+            const propertyName = generatePathFromName(input.name);
             if (propertyName) {
                 const inputSchema = findInputBuilder(form, section, input)?.schema(form, section, input);
                 if (inputSchema) {
@@ -21,7 +21,7 @@ export abstract class AbstractSectionBuilder {
 
     requiredProperties = (form: Form, section: Section): string[] => section.inputs ?
         section.inputs.map((input: Input) => {
-            const propertyName = generatePropertyFromName(input.name);
+            const propertyName = generatePathFromName(input.name);
             if (propertyName && input['required']) {
                 return propertyName;
             }

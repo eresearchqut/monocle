@@ -15,14 +15,11 @@
     "build": "yarn clean && tsc --build && cp \"./package.json\" ./dist/",
     "test": "jest --no-cache",
     "test-cov": "jest --no-cache --coverage",
-    "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0"
   },
   "dependencies": {
     "@jsonforms/core": "^3.0.0-alpha.0",
     "@jsonforms/react": "^3.0.0-alpha.0",
-    "@trrf/form-definition": "1.0.0",
     "lodash": "4.17.21",
     "primeflex": "3.0.0",
     "primeicons": "4.1.0",
@@ -33,10 +30,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
-    "@storybook/addon-actions": "^6.3.6",
-    "@storybook/addon-essentials": "^6.3.6",
-    "@storybook/addon-links": "^6.3.6",
-    "@storybook/react": "^6.3.6",
     "@types/enzyme": "^3.10.3",
     "@types/lodash": "4.14.171",
     "@types/react": "17.0.16",

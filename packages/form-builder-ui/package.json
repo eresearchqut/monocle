@@ -29,8 +29,8 @@
     "@trrf/form-compiler": "1.0.0",
     "@trrf/form-components": "1.0.0",
     "@trrf/form-definition": "1.0.0",
-    "less": "4.1.1",
-    "react-json-editor-ajrm": "2.5.13"
+    "react-json-editor-ajrm": "2.5.13",
+    "sass": "^1.37.5"
   },
   "devDependencies": {
     "@types/react-json-editor-ajrm": "2.5.2",
@@ -48,6 +48,7 @@
     "@storybook/addon-actions": "^6.3.6",
     "@storybook/addon-essentials": "^6.3.6",
     "@storybook/addon-links": "^6.3.6",
+    "@storybook/preset-scss": "^1.0.3",
     "@storybook/react": "^6.3.6",
     "tsconfig-paths-webpack-plugin": "3.5.1"
   },

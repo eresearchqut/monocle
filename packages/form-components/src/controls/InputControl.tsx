@@ -16,12 +16,8 @@ import maxBy from 'lodash/maxBy';
 export class InputControl extends Control<ControlProps, ControlState> {
     render() {
 
-        console.log(this.props);
-
         const {
             schema,
-            description,
-            errors,
             id,
             label,
             uischema,
@@ -36,17 +32,8 @@ export class InputControl extends Control<ControlProps, ControlState> {
             return null;
         }
 
-        const isValid = errors.length === 0;
         const appliedUiSchemaOptions = merge({}, config, uischema.options);
-        const showDescription = !isDescriptionHidden(
-            visible,
-            description as string,
-            this.state.isFocused,
-            appliedUiSchemaOptions?.showUnfocusedDescription
-        );
-
         const requiredMessage = required ? 'This is a required field' : undefined;
-
         const cell = maxBy(cells, r => r.tester(uischema, schema));
 
         if (cell === undefined || cell.tester(uischema, schema) === NOT_APPLICABLE) {

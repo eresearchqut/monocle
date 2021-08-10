@@ -1,3 +1,13 @@
+import React from 'react';
+import {Card} from 'primereact/card';
+
+
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
+import 'primeflex/primeflex.css';
+import 'primereact/resources/themes/fluent-light/theme.css'
+import '../src/layout/layout.scss';
+
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
   controls: {
@@ -7,14 +17,6 @@ export const parameters = {
     },
   },
 }
-
-import 'primereact/resources/themes/fluent-light/theme.css'
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
-import 'primeflex/primeflex.css';
-import {Card} from 'primereact/card';
-
-import React from 'react';
 
 export const decorators = [
   (Story) => (

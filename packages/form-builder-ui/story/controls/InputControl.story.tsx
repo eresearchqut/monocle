@@ -25,7 +25,6 @@ export default {
     },
     decorators: [
         (Story, context) => {
-            console.log(context);
             const input = context.args as Input;
             const data = {};
             data [inputPath(input)] = undefined;

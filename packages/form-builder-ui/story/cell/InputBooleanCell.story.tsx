@@ -5,20 +5,28 @@ import {Story, Meta} from '@storybook/react';
 import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
 import {Provider} from 'react-redux';
 import {initStore} from '../jsonFormsStore';
-import {Form, Section, Input} from "@trrf/form-definition";
-import {findInputBuilder, generatePathFromName} from "@trrf/form-compiler";
+import {Input} from "@trrf/form-definition";
 import {inputPath, inputSchema, inputUi} from "../utils";
-
-
-const form: Form = {} as Form;
-const section: Section = {} as Section;
 
 
 export default {
     title: 'Cell/Boolean',
     component: InputBooleanCell,
+    argTypes: {
+        name: {
+            control: {
+                type: null
+            }
+        },
+        inputType: {
+            control: {
+                type: null
+            }
+        }
+    },
     decorators: [
         (Story, context) => {
+        console.log(context);
             const input = context.args as Input;
             const data = {};
             data [inputPath(input)] = undefined;
@@ -38,7 +46,6 @@ export default {
         }
     ],
 } as Meta;
-
 
 const Template: Story<Input> = (input) =>
     <InputBooleanCell

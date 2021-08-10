@@ -64,3 +64,6 @@ BooleanCell.args = {name: 'Yes or No', inputType: 'boolean', required: false};
 
 export const TextCell = Template.bind({});
 TextCell.args = {name: 'Show me the text', inputType: 'text', required: false, multiline: false};
+
+export const NumericCell = Template.bind({});
+NumericCell.args = {name: 'Show me the numbers', inputType: 'numeric', required: false};

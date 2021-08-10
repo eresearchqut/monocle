@@ -1,5 +1,5 @@
 import * as React from "react";
-import {InputBooleanCell} from "@trrf/form-components";
+import {cells} from "@trrf/form-components";
 
 import {Story, Meta} from '@storybook/react';
 import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
@@ -7,11 +7,11 @@ import {Provider} from 'react-redux';
 import {initStore} from '../jsonFormsStore';
 import {Input} from "@trrf/form-definition";
 import {inputPath, inputSchema, inputUi} from "../utils";
-
+import {DispatchCell} from "@jsonforms/react";
 
 export default {
-    title: 'Cell/Boolean',
-    component: InputBooleanCell,
+    title: 'Cells',
+    component: DispatchCell,
     argTypes: {
         name: {
             control: {
@@ -26,7 +26,7 @@ export default {
     },
     decorators: [
         (Story, context) => {
-        console.log(context);
+            console.log(context);
             const input = context.args as Input;
             const data = {};
             data [inputPath(input)] = undefined;
@@ -47,13 +47,20 @@ export default {
     ],
 } as Meta;
 
+
 const Template: Story<Input> = (input) =>
-    <InputBooleanCell
+    <DispatchCell
         schema={inputSchema(input)}
         uischema={inputUi(input)}
         id={inputPath(input)}
-        path={inputPath(input)}/>;
+        path={inputPath(input)}
+        cells={cells}
+    />
+
 Template.bind({});
 
 export const BooleanCell = Template.bind({});
 BooleanCell.args = {name: 'Yes or No', inputType: 'boolean', required: false};
+
+export const TextCell = Template.bind({});
+TextCell.args = {name: 'Show me the text', inputType: 'text', required: false, multiline: false};

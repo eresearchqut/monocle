@@ -1,13 +1,9 @@
 import * as React from "react";
-import {cells} from "@trrf/form-components";
-
+import {cells, renderers} from "@trrf/form-components";
 import {Story, Meta} from '@storybook/react';
-import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
-import {Provider} from 'react-redux';
-import {initStore} from '../jsonFormsStore';
-import {Input} from "@trrf/form-definition";
-import {inputPath, inputSchema, inputUi} from "../utils";
-import {DispatchCell} from "@jsonforms/react";
+import {BooleanInput, Input, NumericInput, TextInput} from "@trrf/form-definition";
+import {cellSchema, path, ui, initStore} from "../utils";
+import {DispatchCell, JsonFormsStateProvider} from "@jsonforms/react";
 
 export default {
     title: 'Cells',
@@ -26,22 +22,13 @@ export default {
     },
     decorators: [
         (Story, context) => {
-            console.log(context);
             const input = context.args as Input;
             const data = {};
-            data [inputPath(input)] = undefined;
-            const store = initStore({
-                    data,
-                    schema: inputSchema(input),
-                    uischema: inputUi(input)
-                }
-            );
+            const core = initStore(cellSchema(input), ui(input), data);
             return (
-                <Provider store={store}>
-                    <JsonFormsReduxContext>
-                        <Story/>
-                    </JsonFormsReduxContext>
-                </Provider>
+                <JsonFormsStateProvider initState={{ renderers: renderers, cells: cells, core }}>
+                    <Story/>
+                </JsonFormsStateProvider>
             )
         }
     ],
@@ -50,20 +37,19 @@ export default {
 
 const Template: Story<Input> = (input) =>
     <DispatchCell
-        schema={inputSchema(input)}
-        uischema={inputUi(input)}
-        id={inputPath(input)}
-        path={inputPath(input)}
+        schema={cellSchema(input)}
+        uischema={ui(input)}
+        path={path(input)}
         cells={cells}
     />
 
 Template.bind({});
 
 export const BooleanCell = Template.bind({});
-BooleanCell.args = {name: 'Yes or No', inputType: 'boolean', required: false};
+BooleanCell.args = {name: 'Yes or No', inputType: 'boolean', required: false} as BooleanInput;
 
 export const TextCell = Template.bind({});
-TextCell.args = {name: 'Show me the text', inputType: 'text', required: false, multiline: false};
+TextCell.args = {name: 'Show me the text', inputType: 'text', required: false, multiline: false} as TextInput;
 
 export const NumericCell = Template.bind({});
-NumericCell.args = {name: 'Show me the numbers', inputType: 'numeric', required: false};
+NumericCell.args = {name: 'Show me the numbers', inputType: 'numeric', required: false, decimalPlaces: 4, minimum: 0, maximum: 10000, groupNumbers: false} as NumericInput;

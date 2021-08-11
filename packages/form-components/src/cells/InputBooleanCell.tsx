@@ -11,9 +11,6 @@ import {TriStateCheckbox} from 'primereact/tristatecheckbox';
 import merge from "lodash/merge";
 
 export const InputBooleanCell = (props: CellProps) => {
-
-    console.log(props);
-
     const {
         path,
         data,

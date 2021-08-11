@@ -1,6 +1,5 @@
 import {Form, Section} from "@trrf/form-definition";
-import {JsonSchema, Layout} from "@jsonforms/core";
-import {UISchemaElement} from "@jsonforms/core/src/models/uischema";
+import {JsonSchema, UISchemaElement} from "@jsonforms/core";
 
 export default interface SectionBuilder {
 

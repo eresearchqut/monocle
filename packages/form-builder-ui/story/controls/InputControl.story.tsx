@@ -1,22 +1,17 @@
 import * as React from "react";
-import {cells, InputControl} from "@trrf/form-components";
+import {cells, InputControl, renderers, VerticalLayout} from "@trrf/form-components";
 
 import {Story, Meta} from '@storybook/react';
-import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
-import {Provider} from 'react-redux';
-import {initStore} from '../jsonFormsStore';
-import {Input} from "@trrf/form-definition";
-import {inputPath, inputSchema, inputUi} from "../utils";
+import {BooleanInput, Input, NumericInput, TextInput} from "@trrf/form-definition";
+import {controlSchema, initStore, ui} from "../utils";
+import { JsonFormsStateProvider } from '@jsonforms/react';
+
+
 
 export default {
     title: 'Controls',
     component: InputControl,
     argTypes: {
-        name: {
-            control: {
-                type: null
-            }
-        },
         inputType: {
             control: {
                 type: null
@@ -27,41 +22,25 @@ export default {
         (Story, context) => {
             const input = context.args as Input;
             const data = {};
-            data [inputPath(input)] = undefined;
-            const store = initStore({
-                    data,
-                    schema: inputSchema(input),
-                    uischema: inputUi(input)
-                }
-            );
+            const core = initStore(controlSchema(input), ui(input), data);
             return (
-                <Provider store={store}>
-                    <JsonFormsReduxContext>
-                        <Story/>
-                    </JsonFormsReduxContext>
-                </Provider>
+                <JsonFormsStateProvider initState={{ renderers: renderers, cells: cells, core }}>
+                    <Story/>
+                </JsonFormsStateProvider>
             )
         }
     ],
 } as Meta;
 
 
-const Template: Story<Input> = (input) =>
-    <InputControl
-        schema={inputSchema(input)}
-        uischema={inputUi(input)}
-        id={inputPath(input)}
-        path={inputPath(input)}
-        cells={cells}
-    />
-
+const Template: Story<Input> = (input) => <InputControl schema={controlSchema(input)} uischema={ui(input)}/>
 Template.bind({});
 
 export const BooleanControl = Template.bind({});
-BooleanControl.args = {name: 'Yes or No', inputType: 'boolean', required: false};
+BooleanControl.args = {name: 'Yes or No', inputType: 'boolean', required: false} as BooleanInput;
 
 export const TextControl = Template.bind({});
-TextControl.args = {name: 'Show me the text', inputType: 'text', required: false, multiline: false};
+TextControl.args = {name: 'Show me the text', inputType: 'text', required: false, multiline: false} as TextInput;
 
 export const NumericControl = Template.bind({});
-NumericControl.args = {name: 'Show me the numbers', inputType: 'numeric', required: false};
+NumericControl.args = {name: 'Show me the numbers', inputType: 'numeric', required: false, decimalPlaces: 4, minimum: 0, maximum: 10000, groupNumbers: false} as NumericInput;

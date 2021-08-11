@@ -25,9 +25,11 @@ export const InputNumberCell = (props: CellProps) => {
     const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
     const {minimum, maximum} = schema;
-    const {step, decimalPlaces, currencyCode, currencyDisplay} = appliedUiSchemaOptions.input;
+    const {step, decimalPlaces, currencyCode, currencyDisplay, groupNumbers} = appliedUiSchemaOptions.input;
     const {locale} = appliedUiSchemaOptions || 'en-AU';
-    const mode = currencyCode ? 'currency' : undefined;
+    const mode = currencyCode ? 'currency' : 'decimal';
+    const minFractionDigits = decimalPlaces ? 1 : undefined;
+    const maxFractionDigits = decimalPlaces ? decimalPlaces : undefined;
 
     const className = [
         mode === 'currency' ? 'p-inputwrapper-filled' : undefined,
@@ -36,16 +38,17 @@ export const InputNumberCell = (props: CellProps) => {
 
     return (
         <InputNumber
-            value={data || ''}
+            value={data}
             id={id}
             min={minimum}
             max={maximum}
             step={step}
             mode={mode}
-            locale={locale}
+            useGrouping={!!groupNumbers}
             currency={currencyCode}
             currencyDisplay={currencyDisplay}
-            maxFractionDigits={decimalPlaces}
+            minFractionDigits={minFractionDigits}
+            maxFractionDigits={maxFractionDigits}
             disabled={!enabled}
             className={className}
             onChange={(e) => handleChange(path, e.value)}

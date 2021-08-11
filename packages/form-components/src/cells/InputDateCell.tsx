@@ -12,6 +12,7 @@ import {Calendar} from "primereact/calendar";
 import merge from "lodash/merge";
 
 export const InputDateCell = (props: CellProps) => {
+
     const {
         config,
         data,
@@ -40,7 +41,6 @@ export const InputDateCell = (props: CellProps) => {
             }
         }
     }
-
 
 
     const localDateFormat = () => {

@@ -28,6 +28,8 @@ export class InputControl extends Control<ControlProps, ControlState> {
             cells
         } = this.props;
 
+        console.log(this.props);
+
         if (!visible) {
             return null;
         }
@@ -37,7 +39,6 @@ export class InputControl extends Control<ControlProps, ControlState> {
         const cell = maxBy(cells, r => r.tester(uischema, schema));
 
         if (cell === undefined || cell.tester(uischema, schema) === NOT_APPLICABLE) {
-            console.warn('No applicable cell found.', uischema, schema);
             return null;
         }
 

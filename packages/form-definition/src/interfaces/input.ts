@@ -52,7 +52,11 @@ export interface NumericInput extends InputType {
      * @TJS-type integer
      */
     decimalPlaces?: number,
-    increment?: number
+    increment?: number,
+    /**
+     * @description Whether to use grouping separators, such as thousands separators
+     */
+    groupNumbers?: boolean
 }
 
 /**

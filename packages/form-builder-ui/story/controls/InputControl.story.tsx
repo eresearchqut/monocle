@@ -2,7 +2,7 @@ import * as React from "react";
 import {cells, InputControl, renderers, VerticalLayout} from "@trrf/form-components";
 
 import {Story, Meta} from '@storybook/react';
-import {BooleanInput, Input, NumericInput, TextInput} from "@trrf/form-definition";
+import {BooleanInput, DateInput, Input, NumericInput, TextInput} from "@trrf/form-definition";
 import {controlSchema, initStore, ui} from "../utils";
 import { JsonFormsStateProvider } from '@jsonforms/react';
 
@@ -38,6 +38,9 @@ Template.bind({});
 
 export const BooleanControl = Template.bind({});
 BooleanControl.args = {name: 'Yes or No', inputType: 'boolean', required: false} as BooleanInput;
+
+export const DateControl = Template.bind({});
+DateControl.args = {name: 'When', inputType: 'date', required: false} as DateInput;
 
 export const TextControl = Template.bind({});
 TextControl.args = {name: 'Show me the text', inputType: 'text', required: false, multiline: false} as TextInput;

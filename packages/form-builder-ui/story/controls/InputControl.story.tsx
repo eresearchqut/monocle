@@ -46,4 +46,4 @@ export const TextControl = Template.bind({});
 TextControl.args = {name: 'Show me the text', inputType: 'text', required: false, multiline: false} as TextInput;
 
 export const NumericControl = Template.bind({});
-NumericControl.args = {name: 'Show me the numbers', inputType: 'numeric', required: false, decimalPlaces: 4, minimum: 0, maximum: 10000, groupNumbers: false} as NumericInput;
+NumericControl.args = {name: 'Show me the numbers', inputType: 'numeric', required: false, decimalPlaces: 4, minimum: 0, maximum: 1000000000, groupNumbers: false} as NumericInput;

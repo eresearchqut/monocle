@@ -62,8 +62,8 @@ export class InputControl extends Control<ControlProps, ControlState> {
         }
 
         return (
-            <div className="p-field ">
-                <div className="p-inputgroup">
+            <div className="p-field">
+                <div className="p-inputgroup p-fluid">
                     <span className="p-float-label">
                         {dispatchCell}
                         <label htmlFor={id} id={id + '-label'}>{label}</label>

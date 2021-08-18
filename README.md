@@ -16,3 +16,7 @@ yarn build
 ```
 (yarn install && yarn build && cd packages/form-builder-ui && yarn start)
 ```
+
+## One liner to view the form builder story book
+
+(yarn install && yarn build && cd packages/form-builder-ui && yarn storybook)

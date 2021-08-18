@@ -26,7 +26,6 @@ export * from './controls';
 export * from './cells';
 export * from './layouts';
 
-
 export const renderers: { tester: RankedTester; renderer: any }[] = [
     {tester: horizontalLayoutTester, renderer: HorizontalLayout},
     {tester: inputControlTester, renderer: InputControl},

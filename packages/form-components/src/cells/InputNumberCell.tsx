@@ -25,7 +25,7 @@ export const InputNumberCell = (props: CellProps) => {
     const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
     const {minimum, maximum} = schema;
-    const {step, decimalPlaces, currencyCode, currencyDisplay, groupNumbers} = appliedUiSchemaOptions.input;
+    const {step, decimalPlaces, currencyCode, currencyDisplay, groupNumbers} = appliedUiSchemaOptions.input || {};
     const {locale} = appliedUiSchemaOptions || 'en-AU';
     const mode = currencyCode ? 'currency' : 'decimal';
     const minFractionDigits = decimalPlaces ? 1 : undefined;

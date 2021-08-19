@@ -2,18 +2,16 @@ import React from 'react';
 import {
     ControlProps,
     ControlState,
-    isControl,
-    isDescriptionHidden,
+    isBooleanControl,
     NOT_APPLICABLE,
     RankedTester,
     rankWith
 } from '@jsonforms/core';
 import {Control, DispatchCell, withJsonFormsControlProps} from '@jsonforms/react';
 
-import merge from 'lodash/merge';
 import maxBy from 'lodash/maxBy';
 
-export class InputControl extends Control<ControlProps, ControlState> {
+export class InputBooleanControl extends Control<ControlProps, ControlState> {
     render() {
 
         const {
@@ -23,16 +21,13 @@ export class InputControl extends Control<ControlProps, ControlState> {
             uischema,
             visible,
             path,
-            required,
             cells
         } = this.props;
-
 
         if (!visible) {
             return null;
         }
 
-        const requiredMessage = required ? 'This is a required field' : undefined;
         const cell = maxBy(cells, r => r.tester(uischema, schema));
 
         if (cell === undefined || cell.tester(uischema, schema) === NOT_APPLICABLE) {
@@ -47,20 +42,16 @@ export class InputControl extends Control<ControlProps, ControlState> {
             id={id}
         />)
 
+
         return (
-            <div className="p-inputgroup p-field">
-                <span className="p-float-label">
-                    {dispatchCell}
-                    <label htmlFor={id} id={id + '-label'}>{label}</label>
-                </span>
-                {required &&
-                <span className="p-inputgroup-addon" style={{borderLeft: 0}} title={requiredMessage}
-                      p-aria-label={requiredMessage}><i
-                    className="pi pi-info-circle"></i></span>}
+            <div className="p-field-checkbox">
+                {dispatchCell}
+                <label htmlFor={id} id={id + '-label'} className="p-checkbox-label">{label}</label>
             </div>
-        );
+        )
+
     }
 }
 
-export const inputControlTester: RankedTester = rankWith(1, isControl);
-export default withJsonFormsControlProps(InputControl);
+export const inputBooleanControlTester: RankedTester = rankWith(2, isBooleanControl);
+export default withJsonFormsControlProps(InputBooleanControl);

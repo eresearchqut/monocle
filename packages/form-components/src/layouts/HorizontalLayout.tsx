@@ -44,7 +44,7 @@ const HorizontalLayoutRenderer: FunctionComponent<RendererProps> = (
         return null;
     }
     return (
-        <div className="p-grid">
+        <div className="p-grid p-fluid">
             {renderChildren(horizontalLayout, schema, path)}
         </div>
     );

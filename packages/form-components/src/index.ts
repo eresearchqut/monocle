@@ -13,7 +13,7 @@ import {
     inputTextareaCellTester
 } from './cells';
 
-import {InputControl, inputControlTester} from './controls';
+import {InputControl, inputControlTester, InputBooleanControl, inputBooleanControlTester} from './controls';
 
 import {
     HorizontalLayout,
@@ -29,6 +29,7 @@ export * from './layouts';
 export const renderers: { tester: RankedTester; renderer: any }[] = [
     {tester: horizontalLayoutTester, renderer: HorizontalLayout},
     {tester: inputControlTester, renderer: InputControl},
+    {tester: inputBooleanControlTester, renderer: InputBooleanControl},
     {tester: verticalLayoutTester, renderer: VerticalLayout}
 ];
 

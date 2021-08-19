@@ -1,6 +1,7 @@
 import React from 'react';
 import {
-    CellProps, isBooleanControl,
+    CellProps,
+    isBooleanControl,
     RankedTester,
     rankWith
 } from '@jsonforms/core';
@@ -19,11 +20,12 @@ export const InputBooleanCell = (props: CellProps) => {
         config,
         uischema
     } = props;
-    const appliedUiSchemaOptions = merge({}, config, uischema.options);
-    if (appliedUiSchemaOptions.input?.required) {
+
+    const appliedUiSchemaOptions = merge({}, config, uischema?.options);
+    if (appliedUiSchemaOptions.required) {
         return (
             <Checkbox id={id} checked={!!data}
-                onChange={(e) => handleChange(path, e.checked)}></Checkbox>
+                      onChange={(e) => handleChange(path, e.checked)}></Checkbox>
         )
     }
 

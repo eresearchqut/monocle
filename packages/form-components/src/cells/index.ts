@@ -4,6 +4,10 @@ import InputNumberCell, {inputNumberCellTester} from './InputNumberCell';
 import InputTextCell, {inputTextCellTester} from './InputTextCell';
 import InputTextareaCell, {inputTextareaCellTester} from './InputTextareaCell';
 
+export interface WithRequired {
+    required?: boolean;
+}
+
 export {
     InputBooleanCell,
     inputBooleanCellTester,

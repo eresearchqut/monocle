@@ -16,7 +16,7 @@ const renderChildren = (layout: Layout, schema: JsonSchema, path: string) => {
     const {renderers, cells} = useJsonForms();
     return layout.elements.map((child, index) => {
         return (
-            <div key={`${path}-${index}`} className="p-col p-fluid">
+            <div key={`${path}-${index}`} className="p-col">
                 <JsonFormsDispatch
                     renderers={renderers}
                     cells={cells}
@@ -42,7 +42,7 @@ const VerticalLayoutRenderer: FunctionComponent<RendererProps> = (
         return null;
     }
     return (
-        <div className="p-grid p-dir-col">
+        <div className="p-grid p-dir-col p-fluid">
             {renderChildren(horizontalLayout, schema, path)}
         </div>
     );

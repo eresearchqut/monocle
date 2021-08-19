@@ -1,9 +1,11 @@
 import React from 'react';
 
 import 'primereact/resources/primereact.min.css';
+import 'primereact/resources/themes/fluent-light/theme.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
-import 'primereact/resources/themes/fluent-light/theme.css';
+import {Card} from "primereact/card";
+
 
 export const parameters = {
     actions: {argTypesRegex: "^on[A-Z].*"},
@@ -17,6 +19,8 @@ export const parameters = {
 
 export const decorators = [
     (Story) => (
-        <Story/>
+        <Card>
+            <Story/>
+        </Card>
     ),
 ];

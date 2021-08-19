@@ -1,5 +1,5 @@
 import * as React from "react";
-import {cells, InputControl, renderers, VerticalLayout} from "@trrf/form-components";
+import {cells, InputControl, renderers} from "@trrf/form-components";
 
 import {Story, Meta} from '@storybook/react';
 import {BooleanInput, DateInput, Input, NumericInput, TextInput} from "@trrf/form-definition";

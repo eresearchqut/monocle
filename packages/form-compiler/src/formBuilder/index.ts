@@ -1,9 +1,10 @@
 import {VerticalFormBuilder} from "./verticalFormBuilder";
+import {AbstractFormBuilder} from "./abstractFormBuilder";
 import FormBuilder from "../interfaces/formBuilder";
 import {Form} from "../../../form-definition";
 
 export {
-    FormBuilder
+    FormBuilder, AbstractFormBuilder, VerticalFormBuilder
 };
 
 

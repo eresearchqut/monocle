@@ -26,7 +26,7 @@ export const InputDateCell = (props: CellProps) => {
 
     const appliedUiSchemaOptions = merge({}, config, uischema.options);
     const className = errors.length === 0 ? undefined : 'p-invalid';
-    const {locale} = appliedUiSchemaOptions || 'en-AU';
+    const {locale = 'en-AU'} = appliedUiSchemaOptions;
 
     const parseDate = (dateValue: Date | Date[] | undefined) => {
         if (dateValue instanceof Date) {

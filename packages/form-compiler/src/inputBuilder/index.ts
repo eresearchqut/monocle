@@ -5,8 +5,10 @@ import InputBuilder from "../interfaces/inputBuilder";
 import {Form, Input, Section} from "@trrf/form-definition";
 import {BooleanInputBuilder} from "./booleanInputBuilder";
 import {DateInputBuilder} from "./dateInputBuilder";
+import {AbstractInputBuilder} from "./abstractInputBuilder";
 
 export {
+    AbstractInputBuilder,
     TextInputBuilder,
     NumericInputBuilder,
     CurrencyInputBuilder,

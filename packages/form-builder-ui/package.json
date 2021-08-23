@@ -22,10 +22,6 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "@jsonforms/material-renderers": "^3.0.0-alpha.0",
-    "@material-ui/core": "^4.7.0",
-    "@material-ui/icons": "^4.5.1",
-    "@material-ui/pickers": "^3.3.10",
     "@trrf/form-compiler": "1.0.0",
     "@trrf/form-components": "1.0.0",
     "@trrf/form-definition": "1.0.0",

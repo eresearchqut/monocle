@@ -13,7 +13,7 @@ export abstract class AbstractInputBuilder  {
             return {
                 type: "Control",
                 scope: buildPropertyPath([sectionProperty, inputProperty]),
-                options: merge({}, {input}, options)
+                options: merge({}, input, options)
             } as UISchemaElement;
         }
         return undefined;

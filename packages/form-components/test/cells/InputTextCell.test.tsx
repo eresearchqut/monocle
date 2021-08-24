@@ -1,12 +1,6 @@
 import * as React from 'react';
 
-import {
-    ControlElement,
-    getData,
-    HorizontalLayout,
-    JsonSchema,
-    update
-} from '@jsonforms/core';
+import {ControlElement, getData, HorizontalLayout, JsonSchema, update} from '@jsonforms/core';
 
 import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
 import {Provider} from 'react-redux';
@@ -15,7 +9,8 @@ import HorizontalLayoutRenderer from '../../src/layouts/HorizontalLayout';
 import {initTestStore} from '../testStore';
 
 import * as Enzyme from 'enzyme';
-import {ReactWrapper, mount} from 'enzyme';
+import {mount, ReactWrapper} from 'enzyme';
+
 const Adapter = require('@wojtekmaj/enzyme-adapter-react-17');
 
 Enzyme.configure({adapter: new Adapter()});

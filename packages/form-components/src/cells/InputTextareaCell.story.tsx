@@ -1,13 +1,13 @@
 import * as React from "react";
 
-import {Story, Meta} from '@storybook/react';
+import {Meta, Story} from '@storybook/react';
 import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
 import {Provider} from 'react-redux';
-import {CellProps, update} from "@jsonforms/core";
+import {CellProps} from "@jsonforms/core";
 import InputTextareaCell from "./InputTextareaCell";
 
 import {withReactContext} from 'storybook-react-context';
-import {initTestStore} from "../../test/testStore";
+import {initStoryStore} from "../storyStore";
 
 export default {
     title: 'Cells/InputTextareaCell',
@@ -15,7 +15,7 @@ export default {
     decorators: [ withReactContext,
         (Story, context) => {
             const {schema, uischema, data, path} = context.args as CellProps;
-            const store = initTestStore({data: {[path]: data}, schema, uischema});
+            const store = initStoryStore({data: {[path]: data}, schema, uischema});
             return (
                 <Provider store={store}>
                     <JsonFormsReduxContext>

@@ -1,6 +1,6 @@
 import {InputBuilder} from "../interfaces";
 import {JsonSchema, UISchemaElement} from "@jsonforms/core";
-import {BooleanInput, Form, Input, Section} from "@trrf/form-definition";
+import {Form, Input, Section} from "@trrf/form-definition";
 import {AbstractInputBuilder} from "./abstractInputBuilder";
 
 

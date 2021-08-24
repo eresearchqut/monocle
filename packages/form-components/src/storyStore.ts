@@ -1,7 +1,7 @@
 import {combineReducers, createStore, Store} from 'redux';
 import {Actions, jsonFormsReducerConfig, JsonFormsState, JsonSchema, UISchemaElement} from '@jsonforms/core';
 
-export const initTestStore = ({
+export const initStoryStore = ({
                                   data,
                                   schema,
                                   uischema,

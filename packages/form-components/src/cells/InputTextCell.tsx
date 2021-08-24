@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-    CellProps,
-    isStringControl,
-    RankedTester,
-    rankWith
-} from '@jsonforms/core';
+import {CellProps, isStringControl, RankedTester, rankWith} from '@jsonforms/core';
 import {withJsonFormsCellProps} from '@jsonforms/react';
 
 import merge from 'lodash/merge';

@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-    ControlProps,
-    ControlState,
-    isBooleanControl,
-    NOT_APPLICABLE,
-    RankedTester,
-    rankWith
-} from '@jsonforms/core';
+import {ControlProps, ControlState, isBooleanControl, NOT_APPLICABLE, RankedTester, rankWith} from '@jsonforms/core';
 import {Control, DispatchCell, withJsonFormsControlProps} from '@jsonforms/react';
 
 import maxBy from 'lodash/maxBy';

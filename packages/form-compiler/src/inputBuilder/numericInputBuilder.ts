@@ -2,8 +2,6 @@ import {InputBuilder} from "../interfaces";
 import {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {Form, Input, NumericInput, Section} from "@trrf/form-definition";
 import {AbstractInputBuilder} from "./abstractInputBuilder";
-import {TextInput} from "@trrf/form-definition/dist/interfaces";
-import {isInteger} from "lodash";
 
 export class NumericInputBuilder extends AbstractInputBuilder implements InputBuilder {
 

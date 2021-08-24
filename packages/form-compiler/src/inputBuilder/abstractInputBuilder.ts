@@ -1,6 +1,6 @@
 import {UISchemaElement} from "@jsonforms/core";
 import {Form, Input, Section} from "@trrf/form-definition";
-import {generatePathFromName, buildPropertyPath} from "../utils";
+import {buildPropertyPath, generatePathFromName} from "../utils";
 
 import merge from "lodash/merge";
 

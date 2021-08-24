@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-    CellProps, isBooleanControl, isDateControl,
-    RankedTester,
-    rankWith
-} from '@jsonforms/core';
+import {CellProps, isDateControl, RankedTester, rankWith} from '@jsonforms/core';
 import {withJsonFormsCellProps} from '@jsonforms/react';
 
 

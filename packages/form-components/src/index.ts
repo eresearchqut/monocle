@@ -7,26 +7,22 @@ import {
     inputDateCellTester,
     InputNumberCell,
     inputNumberCellTester,
-    InputTextCell,
-    inputTextCellTester,
     InputTextareaCell,
-    inputTextareaCellTester
+    inputTextareaCellTester,
+    InputTextCell,
+    inputTextCellTester
 } from './cells';
 
-import {InputControl, inputControlTester, InputBooleanControl, inputBooleanControlTester} from './controls';
+import {InputBooleanControl, inputBooleanControlTester, InputControl, inputControlTester} from './controls';
 
-import {
-    HorizontalLayout,
-    horizontalLayoutTester,
-    VerticalLayout,
-    verticalLayoutTester
-} from './layouts';
+import {ArrayLayout, arrayLayoutTester, HorizontalLayout, horizontalLayoutTester, VerticalLayout, verticalLayoutTester} from './layouts';
 
 export * from './controls';
 export * from './cells';
 export * from './layouts';
 
 export const renderers: { tester: RankedTester; renderer: any }[] = [
+    {tester: arrayLayoutTester, renderer: ArrayLayout},
     {tester: horizontalLayoutTester, renderer: HorizontalLayout},
     {tester: inputControlTester, renderer: InputControl},
     {tester: inputBooleanControlTester, renderer: InputBooleanControl},

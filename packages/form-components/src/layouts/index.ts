@@ -1,5 +1,6 @@
 import HorizontalLayout, {horizontalLayoutTester} from './HorizontalLayout';
 import VerticalLayout, {verticalLayoutTester} from './VerticalLayout';
+import ArrayLayout, {arrayLayoutTester} from './ArrayLayout';
 import ObjectLayout, {objectLayoutTester} from './ObjectLayout';
 
 export {
@@ -7,6 +8,6 @@ export {
     horizontalLayoutTester,
     VerticalLayout,
     verticalLayoutTester,
-    ObjectLayout,
-    objectLayoutTester
+    ArrayLayout,
+    arrayLayoutTester
 };

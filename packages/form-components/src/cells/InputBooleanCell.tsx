@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-    CellProps,
-    isBooleanControl,
-    RankedTester,
-    rankWith
-} from '@jsonforms/core';
+import {CellProps, isBooleanControl, RankedTester, rankWith} from '@jsonforms/core';
 import {withJsonFormsCellProps} from '@jsonforms/react';
 
 import {Checkbox} from 'primereact/checkbox';

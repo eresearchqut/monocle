@@ -1,16 +1,6 @@
 import React from 'react';
-import {
-    ControlProps,
-    ControlState,
-    isControl,
-    isDescriptionHidden,
-    NOT_APPLICABLE,
-    RankedTester,
-    rankWith
-} from '@jsonforms/core';
+import {ControlProps, ControlState, isControl, NOT_APPLICABLE, RankedTester, rankWith} from '@jsonforms/core';
 import {Control, DispatchCell, withJsonFormsControlProps} from '@jsonforms/react';
-
-import merge from 'lodash/merge';
 import maxBy from 'lodash/maxBy';
 
 export class InputControl extends Control<ControlProps, ControlState> {

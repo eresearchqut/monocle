@@ -2,8 +2,6 @@ import {TextInputBuilder} from "../../src/inputBuilder/textInputBuilder";
 import {Form, Section, TextInput} from "@trrf/form-definition";
 
 
-
-
 describe('TextInputBuilder', () => {
 
     const inputBuilder = new TextInputBuilder();

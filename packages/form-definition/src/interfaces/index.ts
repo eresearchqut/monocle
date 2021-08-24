@@ -1,6 +1,6 @@
 import {Form} from './form';
 import {Section} from "./section";
-import {Input, InputType, TextInput, NumericInput, CurrencyInput, BooleanInput, DateInput} from "./input";
+import {BooleanInput, CurrencyInput, DateInput, Input, InputType, NumericInput, TextInput} from "./input";
 
 export {
     Form,

@@ -1,15 +1,19 @@
 import React, {FunctionComponent} from 'react';
 import {
-    HorizontalLayout, JsonSchema, Layout,
+    HorizontalLayout,
+    JsonSchema,
+    Layout,
+    LayoutProps,
     RankedTester,
     rankWith,
     RendererProps,
-    uiTypeIs
+    uiTypeIs, VerticalLayout
 } from '@jsonforms/core';
 import {JsonFormsDispatch, useJsonForms, withJsonFormsLayoutProps} from '@jsonforms/react';
 import isEmpty from "lodash/isEmpty";
 
-const renderChildren = (layout: Layout, schema: JsonSchema, path: string) => {
+const renderChildren = (layout: VerticalLayout, schema: JsonSchema, path: string) => {
+
     if (isEmpty(layout.elements)) {
         return [];
     }
@@ -29,21 +33,21 @@ const renderChildren = (layout: Layout, schema: JsonSchema, path: string) => {
     });
 };
 
-const VerticalLayoutRenderer: FunctionComponent<RendererProps> = (
+const VerticalLayoutRenderer: FunctionComponent<LayoutProps> = (
     {
         schema,
         uischema,
         visible,
         path
-    }: RendererProps
+    }: LayoutProps
 ) => {
-    const horizontalLayout = uischema as HorizontalLayout;
+    const verticalLayout = uischema as VerticalLayout;
     if (!visible) {
         return null;
     }
     return (
         <div className="p-grid p-dir-col p-fluid">
-            {renderChildren(horizontalLayout, schema, path)}
+            {renderChildren(verticalLayout, schema, path)}
         </div>
     );
 };

@@ -1,12 +1,12 @@
 import * as React from "react";
 
-import {Story, Meta} from '@storybook/react';
+import {Meta, Story} from '@storybook/react';
 import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
 import {Provider} from 'react-redux';
 import {ControlProps} from "@jsonforms/core";
 import InputControl from "./InputControl";
 
-import {initTestStore} from "../../test/testStore";
+import {initStoryStore} from "../storyStore";
 import {cells, renderers} from "../index";
 
 export default {
@@ -15,7 +15,7 @@ export default {
     decorators: [
         (Story, context) => {
             const {schema, uischema, data, path} = context.args as ControlProps;
-            const store = initTestStore({
+            const store = initStoryStore({
                     data: {[path]: data}, schema, uischema,
                     renderers, cells
                 },

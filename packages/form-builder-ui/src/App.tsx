@@ -1,36 +1,19 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import "./App.css";
 
-
-import {JsonForms} from '@jsonforms/react';
-import {
-    materialCells,
-    materialRenderers,
-} from '@jsonforms/material-renderers';
-
-
-import {findFormBuilder} from "@trrf/form-compiler";
-
-import JSONInput from 'react-json-editor-ajrm';
-// @ts-ignore
-import locale from 'react-json-editor-ajrm/locale/en';
-
-
 import {Form} from "@trrf/form-definition";
-import {cells, renderers} from "@trrf/form-components";
-import {JsonSchema, UISchemaElement} from "@jsonforms/core";
-import {Card} from 'primereact/card';
+import {FormBuilder} from './component/FormBuilder'
 
-import 'primereact/resources/themes/fluent-light/theme.css'
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
+import 'primereact/resources/themes/fluent-light/theme.css'
+
+import {Card} from 'primereact/card';
+
 
 const App: React.FC = () => {
-
-    const schema = require('./schema/form.json');
-
-    const [data, setData] = useState<Form>({
+    const [definition, setDefinition] = useState<Form>({
         name: 'Django Unchanged',
         sections: [
             {
@@ -73,52 +56,11 @@ const App: React.FC = () => {
         ]
     });
 
-    const [formSchema, setFormSchema] = useState<JsonSchema | undefined>(undefined);
-    const [formUi, setFormUi] = useState<UISchemaElement | undefined>(undefined);
-    const [formData, setFormData] = useState<any>({});
-
-
-    useEffect(() => {
-        const formBuilder = findFormBuilder(data);
-        const generatedSchema = formBuilder?.schema(data);
-        setFormSchema(() => generatedSchema);
-        const generatedUi = formBuilder?.ui(data);
-        setFormUi(() => generatedUi);
-    }, [data]);
-
 
     return (
-        <div className="p-grid">
-            <div className="p-col">
-                <JsonForms
-                    schema={schema}
-                    data={data}
-                    renderers={materialRenderers}
-                    cells={materialCells}
-                    onChange={({errors, data}) => setData(data)}
-                />
-            </div>
-            <div className="p-col">
-                <Card>
-                    <JsonForms
-                        schema={formSchema}
-                        uischema={formUi}
-                        data={formData}
-                        renderers={renderers}
-                        cells={cells}
-                        onChange={({errors, data}) => setFormData(data)}
-                    />
-                </Card>
-            </div>
-            <div className="p-col">
-                <JSONInput
-                    id='toBeBuilt'
-                    placeholder={{formData, formSchema, formUi, data}}
-                    height='100vh'
-                    locale={locale}
-                />
-            </div>
-        </div>
+        <Card>
+             <FormBuilder definition={definition} onChange={({errors, data}) => setDefinition(data)} />
+        </Card>
     );
 };
 

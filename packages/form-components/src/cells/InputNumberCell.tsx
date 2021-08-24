@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-    CellProps, isIntegerControl, isNumberControl, or,
-    RankedTester,
-    rankWith, UISchemaElement
-} from '@jsonforms/core';
+import {CellProps, isIntegerControl, isNumberControl, or, RankedTester, rankWith} from '@jsonforms/core';
 import {withJsonFormsCellProps} from '@jsonforms/react';
 
 import {InputNumber} from 'primereact/inputnumber';

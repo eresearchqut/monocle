@@ -1,9 +1,11 @@
 import React, {FunctionComponent} from 'react';
 import {
-    HorizontalLayout, JsonSchema, Layout,
+    HorizontalLayout,
+    JsonSchema,
+    Layout,
+    LayoutProps,
     RankedTester,
     rankWith,
-    RendererProps,
     uiTypeIs
 } from '@jsonforms/core';
 import {JsonFormsDispatch, useJsonForms, withJsonFormsLayoutProps} from '@jsonforms/react';
@@ -11,7 +13,7 @@ import {JsonFormsDispatch, useJsonForms, withJsonFormsLayoutProps} from '@jsonfo
 import isEmpty from "lodash/isEmpty";
 
 
-const renderChildren = (layout: Layout, schema: JsonSchema, path: string) => {
+const renderChildren = (layout: HorizontalLayout, schema: JsonSchema, path: string) => {
     if (isEmpty(layout.elements)) {
         return [];
     }
@@ -31,13 +33,13 @@ const renderChildren = (layout: Layout, schema: JsonSchema, path: string) => {
     });
 };
 
-const HorizontalLayoutRenderer: FunctionComponent<RendererProps> = (
+const HorizontalLayoutRenderer: FunctionComponent<LayoutProps> = (
     {
         schema,
         uischema,
         visible,
         path
-    }: RendererProps
+    }: LayoutProps
 ) => {
     const horizontalLayout = uischema as HorizontalLayout;
     if (!visible) {

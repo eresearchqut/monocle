@@ -12,8 +12,6 @@ import {
 import {JsonFormsDispatch, withJsonFormsAnyOfProps} from '@jsonforms/react';
 import {TabView, TabPanel, TabViewTabChangeParams} from 'primereact/tabview';
 
-import CombinatorProperties from './CombinatorProperties';
-
 const AnyOfLayout = ({
                          schema,
                          rootSchema,
@@ -47,29 +45,17 @@ const AnyOfLayout = ({
     );
 
     return (
-        <React.Fragment>
-            <CombinatorProperties
-                schema={_schema}
-                combinatorKeyword={'anyOf'}
-                path={path}
-            />
-            <TabView activeIndex={selectedAnyOf} onTabChange={handleChange}>
-                {anyOfRenderInfos.map((anyOfRenderInfo, anyOfIndex) =>
 
-                    <TabPanel key={anyOfRenderInfo.label} header={anyOfRenderInfo.label}>
-                        <JsonFormsDispatch
-                            key={anyOfIndex}
-                            schema={anyOfRenderInfo.schema}
-                            uischema={anyOfRenderInfo.uischema}
-                            path={path}
-                            renderers={renderers}
-                            cells={cells}
-                        />
-                    </TabPanel>
 
-                )}
-            </TabView>
-        </React.Fragment>
+        <JsonFormsDispatch
+            key={selectedAnyOf}
+            schema={anyOfRenderInfos[selectedAnyOf].schema}
+            uischema={anyOfRenderInfos[selectedAnyOf].uischema}
+            path={path}
+            renderers={renderers}
+            cells={cells}
+        />
+
     );
 };
 

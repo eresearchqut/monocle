@@ -11,6 +11,7 @@ import ExpandPanelRenderer from "./ExpandPanelRenderer";
 import merge from 'lodash/merge';
 import map from 'lodash/map';
 import range from 'lodash/range';
+import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 
 export class ArrayLayout extends React.PureComponent<ArrayLayoutProps> {
 
@@ -22,6 +23,7 @@ export class ArrayLayout extends React.PureComponent<ArrayLayoutProps> {
     };
     render() {
         const {
+            id,
             data,
             path,
             schema,
@@ -38,38 +40,58 @@ export class ArrayLayout extends React.PureComponent<ArrayLayoutProps> {
             this.props.uischema.options
         );
 
-        console.log('ArrayLayout', appliedUiSchemaOptions);
+        const onBeforeCapture = () => {
+
+        };
+
+        const  onBeforeDragStart = () => {
+
+        };
+
+        const  onDragStart = () => {
+
+        };
+        const onDragUpdate = () => {
+
+        };
+        const onDragEnd = () => {
+
+        };
+
+
 
         return (
-            <div>
-                <div>
+            <DragDropContext onDragEnd={onDragEnd}>
+
                     {data > 0 ? (
                         map(range(data), index => {
                             return (
-                                <ExpandPanelRenderer
-                                    index={index}
-                                    expanded={true}
-                                    schema={schema}
-                                    path={path}
-                                    handleExpansion={this.handleChange}
-                                    uischema={uischema}
-                                    renderers={renderers}
-                                    cells={cells}
-                                    key={index}
-                                    rootSchema={rootSchema}
-                                    enableMoveUp={index != 0}
-                                    enableMoveDown={index < data - 1}
-                                    config={config}
-                                    childLabelProp={appliedUiSchemaOptions.elementLabelProp}
-                                    uischemas={uischemas}
-                                />
+
+                                    <ExpandPanelRenderer
+                                        index={index}
+                                        expanded={true}
+                                        schema={schema}
+                                        path={path}
+                                        handleExpansion={this.handleChange}
+                                        uischema={uischema}
+                                        renderers={renderers}
+                                        cells={cells}
+                                        key={index}
+                                        rootSchema={rootSchema}
+                                        enableMoveUp={index != 0}
+                                        enableMoveDown={index < data - 1}
+                                        config={config}
+                                        childLabelProp={appliedUiSchemaOptions.elementLabelProp}
+                                        uischemas={uischemas}
+                                    />
+
                             );
                         })
                     ) : (
                         <p>No data</p>
                     )}
-                </div>
-            </div>
+
+            </DragDropContext>
         );
     }
 }

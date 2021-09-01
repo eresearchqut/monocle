@@ -1,7 +1,8 @@
 import HorizontalLayout, {horizontalLayoutTester} from './HorizontalLayout';
 import VerticalLayout, {verticalLayoutTester} from './VerticalLayout';
 import ArrayLayout, {arrayLayoutTester} from './ArrayLayout';
-import ObjectLayout, {objectLayoutTester} from './ObjectLayout';
+import OneOfLayout, {oneOfLayoutTester} from './OneOfLayout';
+import AnyOfLayout, {anyOfLayoutTester} from './AnyOfLayout';
 
 export {
     HorizontalLayout,
@@ -9,5 +10,9 @@ export {
     VerticalLayout,
     verticalLayoutTester,
     ArrayLayout,
-    arrayLayoutTester
+    arrayLayoutTester,
+    OneOfLayout,
+    oneOfLayoutTester,
+    AnyOfLayout,
+    anyOfLayoutTester
 };

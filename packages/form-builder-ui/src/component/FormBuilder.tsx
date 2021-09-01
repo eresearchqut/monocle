@@ -1,8 +1,28 @@
 import React, {FunctionComponent} from 'react';
 import {Form} from "@trrf/form-definition";
 import {JsonForms} from "@jsonforms/react";
-import {cells, renderers} from "@trrf/form-components";
-import {JsonFormsCore, Generate} from '@jsonforms/core';
+import {
+
+    cells,
+
+    InputBooleanControl,
+    inputBooleanControlTester,
+    InputControl,
+    inputControlTester
+} from "@trrf/form-components";
+
+import {JsonFormsCore, RankedTester} from '@jsonforms/core';
+import ArrayLayout, {arrayLayoutTester} from "./ArrayLayout";
+import VerticalLayout, {verticalLayoutTester} from "./VerticalLayout";
+import AnyOfLayout, {anyOfLayoutTester} from "./AnyOfLayout";
+
+export const renderers: { tester: RankedTester; renderer: any }[] = [
+    {tester: anyOfLayoutTester, renderer: AnyOfLayout},
+    {tester: arrayLayoutTester, renderer: ArrayLayout},
+    {tester: inputControlTester, renderer: InputControl},
+    {tester: inputBooleanControlTester, renderer: InputBooleanControl},
+    {tester: verticalLayoutTester, renderer: VerticalLayout}
+];
 
 export interface FormBuilderProps {
     definition: Form
@@ -10,22 +30,6 @@ export interface FormBuilderProps {
 }
 
 const schema = require('../schema/form.json');
-const uischema =
-    {
-        type: "VerticalLayout",
-        elements: [
-            {
-                type: "Control",
-                scope: "#/properties/name"
-            },
-            {
-                type: "Control",
-                scope: "#/properties/sections"
-            }
-        ]
-    }
-
-     console.log(JSON.stringify(renderers));
 
 export const FormBuilder: FunctionComponent<FormBuilderProps> = ({definition, onChange}) => {
     return (

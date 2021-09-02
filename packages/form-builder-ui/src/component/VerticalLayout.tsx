@@ -11,7 +11,7 @@ import {
 } from '@jsonforms/core';
 import {JsonFormsDispatch, useJsonForms, withJsonFormsLayoutProps} from '@jsonforms/react';
 import isEmpty from "lodash/isEmpty";
-import {DragDropContext} from "react-beautiful-dnd";
+
 
 const renderChildren = (layout: VerticalLayout, schema: JsonSchema, path: string) => {
 

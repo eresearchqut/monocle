@@ -156,7 +156,6 @@ const ExpandPanelRenderer = (props: ExpandPanelProps) => {
                         renderers={renderers}
                         cells={cells}
                     />
-
             </div>
         </div>
     );

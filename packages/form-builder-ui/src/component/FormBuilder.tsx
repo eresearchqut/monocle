@@ -2,9 +2,7 @@ import React, {FunctionComponent} from 'react';
 import {Form} from "@trrf/form-definition";
 import {JsonForms} from "@jsonforms/react";
 import {
-
     cells,
-
     InputBooleanControl,
     inputBooleanControlTester,
     InputControl,
@@ -16,7 +14,7 @@ import ArrayLayout, {arrayLayoutTester} from "./ArrayLayout";
 import VerticalLayout, {verticalLayoutTester} from "./VerticalLayout";
 import InputLayout, {inputLayoutTester} from "./InputLayout";
 
-export const renderers: { tester: RankedTester; renderer: any }[] = [
+const renderers: { tester: RankedTester; renderer: any }[] = [
     {tester: inputLayoutTester, renderer: InputLayout},
     {tester: arrayLayoutTester, renderer: ArrayLayout},
     {tester: inputControlTester, renderer: InputControl},
@@ -30,15 +28,25 @@ export interface FormBuilderProps {
 }
 
 const schema = require('../schema/form.json');
+import {DragDropContext} from "react-beautiful-dnd";
+
 
 export const FormBuilder: FunctionComponent<FormBuilderProps> = ({definition, onChange}) => {
+
+
+    const onDragEnd = () => {
+
+    };
+
     return (
-        <JsonForms
-            data={definition}
-            schema={schema}
-            renderers={renderers}
-            cells={cells}
-            onChange={onChange}
-        />
+        <DragDropContext onDragEnd={onDragEnd}>
+            <JsonForms
+                data={definition}
+                schema={schema}
+                renderers={renderers}
+                cells={cells}
+                onChange={onChange}
+            />
+        </DragDropContext>
     );
 };

@@ -1,30 +1,40 @@
-import React, {FunctionComponent, useCallback} from 'react';
+import React, { FunctionComponent, useCallback} from 'react';
 import {
     ArrayLayoutProps,
     composePaths,
-    createDefaultValue,
-    isObjectArrayWithNesting,
+    createDefaultValue, getFirstPrimitiveProp,
+    isObjectArrayWithNesting, moveDown, moveUp,
     RankedTester,
-    rankWith
+    rankWith, Resolve, update
 } from '@jsonforms/core';
-import {withJsonFormsArrayLayoutProps} from '@jsonforms/react';
+import {
+    JsonFormsStateContext,
+    useJsonForms,
+    withJsonFormsArrayLayoutProps
+} from '@jsonforms/react';
 import ExpandPanelRenderer from "./ExpandPanelRenderer";
 import merge from 'lodash/merge';
 import map from 'lodash/map';
 import range from 'lodash/range';
-import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
-import {Card} from "primereact/card";
+import {DragDropContext, Draggable, Droppable, DropResult, ResponderProvided} from "react-beautiful-dnd";
 
-export class ArrayLayout extends React.PureComponent<ArrayLayoutProps> {
+const arrayMove = (arr: [], fromIndex: number, toIndex: number) => {
+    const element = arr[fromIndex];
+    arr.splice(fromIndex, 1);
+    arr.splice(toIndex, 0, element);
+}
+
+interface ArrayLayoutContext extends ArrayLayoutProps {
+    context: JsonFormsStateContext;
+}
+
+export class ArrayLayout extends React.PureComponent<ArrayLayoutContext> {
 
     innerCreateDefaultValue = () => createDefaultValue(this.props.schema);
-    handleChange = (panel: string) => (_event: any, expanded: boolean) => {
-        this.setState({
-            expanded: expanded ? panel : false
-        });
-    };
+
 
     render() {
+
         const {
             id,
             data,
@@ -35,57 +45,71 @@ export class ArrayLayout extends React.PureComponent<ArrayLayoutProps> {
             cells,
             rootSchema,
             config,
-            uischemas
+            uischemas,
+            context
         } = this.props;
+
         const appliedUiSchemaOptions = merge(
             {},
             config,
             this.props.uischema.options
         );
 
+        const onDragEnd = (result: DropResult) => {
+            if (context.dispatch) {
+                context.dispatch(
+                    update(path, array => {
+                        arrayMove(array, result.source.index, result.destination?.index || 0);
+                        return array;
+                    })
+                );
+            }
+        }
 
         return (
 
-            <Droppable droppableId={id}>
-                {(droppableProvided, snapshot) => (
-                    <div ref={droppableProvided.innerRef}
-                         {...droppableProvided.droppableProps}>
-                        {map(range(data), index => (
-                            <Draggable
-                                key={composePaths(path, `${index}`)}
-                                draggableId={composePaths(path, `${index}`)}
-                                index={index}
-                            >
-                                {(draggableProvided, snapshot) => (
-                                    <div ref={draggableProvided.innerRef}
-                                         {...draggableProvided.draggableProps}
-                                         {...draggableProvided.dragHandleProps}
-                                    >
-                                        <ExpandPanelRenderer
-                                            index={index}
-                                            expanded={true}
-                                            schema={schema}
-                                            path={path}
-                                            handleExpansion={this.handleChange}
-                                            uischema={uischema}
-                                            renderers={renderers}
-                                            cells={cells}
-                                            key={index}
-                                            rootSchema={rootSchema}
-                                            enableMoveUp={index != 0}
-                                            enableMoveDown={index < data - 1}
-                                            config={config}
-                                            childLabelProp={appliedUiSchemaOptions.elementLabelProp}
-                                            uischemas={uischemas}
-                                        />
-                                    </div>
-                                )}
-                            </Draggable>
-                        ))}
-                    </div>
-                )}
-            </Droppable>
 
+            <DragDropContext onDragEnd={(result: DropResult, provided: ResponderProvided) => onDragEnd(result)}>
+                <Droppable droppableId={id}>
+                    {(droppableProvided, snapshot) => (
+                        <div ref={droppableProvided.innerRef}
+                             {...droppableProvided.droppableProps}>
+                            {map(range(data), index => (
+                                <Draggable
+                                    key={composePaths(path, `${index}`)}
+                                    draggableId={composePaths(path, `${index}`)}
+                                    index={index}
+                                >
+                                    {(draggableProvided, snapshot) => (
+                                        <div ref={draggableProvided.innerRef}
+                                             {...draggableProvided.draggableProps}
+                                             {...draggableProvided.dragHandleProps}
+                                        >
+                                            <ExpandPanelRenderer
+                                                index={index}
+                                                expanded={true}
+                                                schema={schema}
+                                                path={path}
+
+                                                uischema={uischema}
+                                                renderers={renderers}
+                                                cells={cells}
+                                                key={index}
+                                                rootSchema={rootSchema}
+                                                enableMoveUp={index != 0}
+                                                enableMoveDown={index < data - 1}
+                                                config={config}
+                                                childLabelProp={appliedUiSchemaOptions.elementLabelProp}
+                                                uischemas={uischemas}
+                                            />
+                                        </div>
+                                    )}
+                                </Draggable>
+                            ))}
+                        </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
         );
     }
 }
@@ -111,6 +135,9 @@ export const ArrayLayoutRenderer: FunctionComponent<ArrayLayoutProps> = ({
     const addItemCb = useCallback((p: string, value: any) => addItem(p, value), [
         addItem
     ]);
+
+    const context = useJsonForms();
+
     return (
         <ArrayLayout
             label={label}
@@ -127,9 +154,12 @@ export const ArrayLayoutRenderer: FunctionComponent<ArrayLayoutProps> = ({
             renderers={renderers}
             cells={cells}
             uischemas={uischemas}
+            context={context}
         />
     );
 };
+
+
 
 
 export const arrayLayoutTester: RankedTester = rankWith(

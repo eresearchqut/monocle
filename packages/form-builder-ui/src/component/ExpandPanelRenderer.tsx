@@ -26,7 +26,7 @@ import merge from 'lodash/merge';
 import get from 'lodash/get';
 import {Badge} from 'primereact/badge';
 import {Button} from 'primereact/button';
-import { Fieldset } from 'primereact/fieldset';
+
 
 interface OwnPropsOfExpandPanel {
     index: number;
@@ -42,8 +42,6 @@ interface OwnPropsOfExpandPanel {
     enableMoveDown: boolean;
     config: any;
     childLabelProp?: string;
-
-    handleExpansion(panel: string): (event: any, expanded: boolean) => void;
 }
 
 interface StatePropsOfExpandPanel extends OwnPropsOfExpandPanel {

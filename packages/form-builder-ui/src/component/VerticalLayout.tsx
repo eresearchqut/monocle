@@ -1,8 +1,6 @@
 import React, {FunctionComponent} from 'react';
 import {
-
     JsonSchema,
-
     LayoutProps,
     RankedTester,
     rankWith,
@@ -48,9 +46,7 @@ const VerticalLayoutRenderer: FunctionComponent<LayoutProps> = (
     }
     return (
         <div className="p-grid p-dir-col p-fluid">
-
             {renderChildren(verticalLayout, schema, path)}
-
         </div>
     );
 };

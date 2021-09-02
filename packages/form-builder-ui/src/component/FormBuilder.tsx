@@ -24,29 +24,25 @@ const renderers: { tester: RankedTester; renderer: any }[] = [
 
 export interface FormBuilderProps {
     definition: Form
+
     onChange?(state: Pick<JsonFormsCore, 'data' | 'errors'>): void;
 }
 
 const schema = require('../schema/form.json');
-import {DragDropContext} from "react-beautiful-dnd";
 
 
 export const FormBuilder: FunctionComponent<FormBuilderProps> = ({definition, onChange}) => {
 
 
-    const onDragEnd = () => {
-
-    };
-
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <JsonForms
-                data={definition}
-                schema={schema}
-                renderers={renderers}
-                cells={cells}
-                onChange={onChange}
-            />
-        </DragDropContext>
+
+        <JsonForms
+            data={definition}
+            schema={schema}
+            renderers={renderers}
+            cells={cells}
+            onChange={onChange}
+        />
+
     );
 };

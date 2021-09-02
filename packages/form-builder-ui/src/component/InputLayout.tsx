@@ -11,10 +11,9 @@ import {
 } from '@jsonforms/core';
 import {JsonFormsDispatch, withJsonFormsAnyOfProps} from '@jsonforms/react';
 import {Fieldset} from 'primereact/fieldset';
-import _ from 'lodash';
-import {Scopable} from "@jsonforms/core/src/models/uischema";
+
 import {Input} from "@trrf/form-definition";
-import {Draggable} from "react-beautiful-dnd";
+
 
 
 const InputLayoutRenderer = ({

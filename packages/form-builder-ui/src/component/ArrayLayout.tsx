@@ -12,6 +12,7 @@ import merge from 'lodash/merge';
 import map from 'lodash/map';
 import range from 'lodash/range';
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
+import { Fieldset } from 'primereact/fieldset';
 
 export class ArrayLayout extends React.PureComponent<ArrayLayoutProps> {
 
@@ -136,6 +137,7 @@ export const ArrayLayoutRenderer: FunctionComponent<ArrayLayoutProps> = ({
                 cells={cells}
                 uischemas={uischemas}
             />
+
     );
 };
 

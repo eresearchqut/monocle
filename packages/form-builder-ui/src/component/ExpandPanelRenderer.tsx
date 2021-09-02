@@ -112,24 +112,13 @@ const ExpandPanelRenderer = (props: ExpandPanelProps) => {
     const appliedUiSchemaOptions = merge({}, config, uischema.options);
     const {showSortButtons} = appliedUiSchemaOptions;
 
-    console.log(schema, foundUISchema, childPath, childPath, renderers, cells)
+
 
 
     return (
         <div className="p-grid p-align-center">
-            <div className="p-col-9 p-col-sm-7">
-                <div className="p-grid p-align-center">
-                    <div className="p-col-1 p-col-sm-2">
-                        <Badge value={index + 1} aria-label='Index'/>
-                    </div>
-                    <div className="p-col-11 p-col-sm-10">
-                        <span id={labelHtmlId}>{childLabel}</span>
-                    </div>
-                </div>
-            </div>
-            <div className="p-col-3 p-col-sm-5">
-                <div className="p-d-flex p-jc-center">
 
+                <div className="p-d-flex ">
                     <Button icon="pi pi-chevron-circle-up"
                             className="p-button-rounded p-button-secondary"
                             disabled={!enableMoveUp}
@@ -146,17 +135,19 @@ const ExpandPanelRenderer = (props: ExpandPanelProps) => {
                             aria-label={`Delete`}
                             onClick={removeItems(path, [index])}/>
                 </div>
-            </div>
-            <div className="p-col-12">
-                <JsonFormsDispatch
-                    schema={schema}
-                    uischema={foundUISchema}
-                    path={childPath}
-                    key={childPath}
-                    renderers={renderers}
-                    cells={cells}
-                />
-            </div>
+
+
+
+                    <JsonFormsDispatch
+                        schema={schema}
+                        uischema={foundUISchema}
+                        path={childPath}
+                        key={childPath}
+                        renderers={renderers}
+                        cells={cells}
+                    />
+
+
         </div>
     );
 };

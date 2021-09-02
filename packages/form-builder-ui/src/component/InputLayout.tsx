@@ -10,9 +10,10 @@ import {
     StatePropsOfCombinator, VerticalLayout
 } from '@jsonforms/core';
 import {JsonFormsDispatch, withJsonFormsAnyOfProps} from '@jsonforms/react';
-import { Fieldset } from 'primereact/fieldset';
+import {Fieldset} from 'primereact/fieldset';
 import _ from 'lodash';
 import {Scopable} from "@jsonforms/core/src/models/uischema";
+import {Input} from "@trrf/form-definition";
 
 
 const InputLayoutRenderer = ({
@@ -24,7 +25,8 @@ const InputLayoutRenderer = ({
                                  renderers,
                                  cells,
                                  uischema,
-                                 uischemas
+                                 uischemas,
+                                 data
                              }: StatePropsOfCombinator) => {
 
 
@@ -46,6 +48,7 @@ const InputLayoutRenderer = ({
 
     const inputSchema = anyOfRenderInfos[indexOfFittingSchema].schema;
     const inputUischema = anyOfRenderInfos[indexOfFittingSchema].uischema as VerticalLayout;
+    const input = data as Input;
 
     // filter out the input type from the ui and move the name to the first element
     inputUischema.elements = inputUischema.elements
@@ -55,8 +58,9 @@ const InputLayoutRenderer = ({
             a.scope.localeCompare(b.scope));
     ;
 
+
     return (
-        <Fieldset>
+        <Fieldset legend={`${input.name} (${input.inputType})`}>
             <JsonFormsDispatch
                 key={indexOfFittingSchema}
                 schema={inputSchema}

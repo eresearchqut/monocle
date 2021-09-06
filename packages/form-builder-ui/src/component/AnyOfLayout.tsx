@@ -10,25 +10,18 @@ import {
     StatePropsOfCombinator, VerticalLayout
 } from '@jsonforms/core';
 import {JsonFormsDispatch, withJsonFormsAnyOfProps} from '@jsonforms/react';
-import {Fieldset} from 'primereact/fieldset';
 
-import {Input} from "@trrf/form-definition";
-
-
-
-const InputLayoutRenderer = ({
-                                 schema,
-                                 rootSchema,
-                                 indexOfFittingSchema,
-                                 visible,
-                                 path,
-                                 renderers,
-                                 cells,
-                                 uischema,
-                                 uischemas,
-                                 data
-                             }: StatePropsOfCombinator) => {
-
+const AnyOfRenderer = ({
+                           schema,
+                           rootSchema,
+                           indexOfFittingSchema,
+                           visible,
+                           path,
+                           renderers,
+                           cells,
+                           uischema,
+                           uischemas
+                       }: StatePropsOfCombinator) => {
 
     const anyOf = 'anyOf';
 
@@ -48,7 +41,6 @@ const InputLayoutRenderer = ({
 
     const inputSchema = anyOfRenderInfos[indexOfFittingSchema].schema;
     const inputUischema = anyOfRenderInfos[indexOfFittingSchema].uischema as VerticalLayout;
-    const input = data as Input;
 
     // filter out the input type from the ui and move the name to the first element
     inputUischema.elements = inputUischema.elements
@@ -60,25 +52,22 @@ const InputLayoutRenderer = ({
 
 
     return (
-
-        <Fieldset legend={`${input.name} (${input.inputType})`}>
-            <JsonFormsDispatch
-                key={indexOfFittingSchema}
-                schema={inputSchema}
-                uischema={inputUischema}
-                path={path}
-                renderers={renderers}
-                cells={cells}
-            />
-        </Fieldset>
+        <JsonFormsDispatch
+            key={indexOfFittingSchema}
+            schema={inputSchema}
+            uischema={inputUischema}
+            path={path}
+            renderers={renderers}
+            cells={cells}
+        />
     );
 };
 
-export const inputLayoutTester: RankedTester = rankWith(
+export const anyOfLayoutTester: RankedTester = rankWith(
     3,
     isAnyOfControl
 );
 // @ts-ignore
-export default withJsonFormsAnyOfProps(InputLayoutRenderer);
+export default withJsonFormsAnyOfProps(AnyOfRenderer);
 
 

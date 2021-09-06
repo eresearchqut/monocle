@@ -1,22 +1,22 @@
-import React, { FunctionComponent, useCallback} from 'react';
+import React, {FunctionComponent, useCallback} from 'react';
 import {
     ArrayLayoutProps,
-    composePaths,
-    createDefaultValue, getFirstPrimitiveProp,
-    isObjectArrayWithNesting, moveDown, moveUp,
+    createDefaultValue,
+    isObjectArrayWithNesting,
     RankedTester,
-    rankWith, Resolve, update
+    rankWith,
+    update
 } from '@jsonforms/core';
 import {
     JsonFormsStateContext,
     useJsonForms,
     withJsonFormsArrayLayoutProps
 } from '@jsonforms/react';
-import ExpandPanelRenderer from "./ExpandPanelRenderer";
+import ArrayItemRenderer from "./ArrayItemRenderer";
 import merge from 'lodash/merge';
 import map from 'lodash/map';
 import range from 'lodash/range';
-import {DragDropContext, Draggable, Droppable, DropResult, ResponderProvided} from "react-beautiful-dnd";
+import {DragDropContext, Droppable, DropResult, ResponderProvided} from "react-beautiful-dnd";
 
 const arrayMove = (arr: [], fromIndex: number, toIndex: number) => {
     const element = arr[fromIndex];
@@ -35,6 +35,7 @@ export class ArrayLayout extends React.PureComponent<ArrayLayoutContext> {
 
     render() {
 
+
         const {
             id,
             data,
@@ -48,6 +49,8 @@ export class ArrayLayout extends React.PureComponent<ArrayLayoutContext> {
             uischemas,
             context
         } = this.props;
+
+
 
         const appliedUiSchemaOptions = merge(
             {},
@@ -75,36 +78,22 @@ export class ArrayLayout extends React.PureComponent<ArrayLayoutContext> {
                         <div ref={droppableProvided.innerRef}
                              {...droppableProvided.droppableProps}>
                             {map(range(data), index => (
-                                <Draggable
-                                    key={composePaths(path, `${index}`)}
-                                    draggableId={composePaths(path, `${index}`)}
-                                    index={index}
-                                >
-                                    {(draggableProvided, snapshot) => (
-                                        <div ref={draggableProvided.innerRef}
-                                             {...draggableProvided.draggableProps}
-                                             {...draggableProvided.dragHandleProps}
-                                        >
-                                            <ExpandPanelRenderer
-                                                index={index}
-                                                expanded={true}
-                                                schema={schema}
-                                                path={path}
 
-                                                uischema={uischema}
-                                                renderers={renderers}
-                                                cells={cells}
-                                                key={index}
-                                                rootSchema={rootSchema}
-                                                enableMoveUp={index != 0}
-                                                enableMoveDown={index < data - 1}
-                                                config={config}
-                                                childLabelProp={appliedUiSchemaOptions.elementLabelProp}
-                                                uischemas={uischemas}
-                                            />
-                                        </div>
-                                    )}
-                                </Draggable>
+                                <ArrayItemRenderer
+                                    index={index}
+                                    schema={schema}
+                                    path={path}
+                                    uischema={uischema}
+                                    renderers={renderers}
+                                    cells={cells}
+                                    key={index}
+                                    rootSchema={rootSchema}
+                                    enableMoveUp={index != 0}
+                                    enableMoveDown={index < data - 1}
+                                    config={config}
+                                    uischemas={uischemas}
+                                />
+
                             ))}
                         </div>
                     )}
@@ -158,8 +147,6 @@ export const ArrayLayoutRenderer: FunctionComponent<ArrayLayoutProps> = ({
         />
     );
 };
-
-
 
 
 export const arrayLayoutTester: RankedTester = rankWith(

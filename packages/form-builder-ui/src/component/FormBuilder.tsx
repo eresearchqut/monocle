@@ -12,10 +12,10 @@ import {
 import {JsonFormsCore, RankedTester} from '@jsonforms/core';
 import ArrayLayout, {arrayLayoutTester} from "./ArrayLayout";
 import VerticalLayout, {verticalLayoutTester} from "./VerticalLayout";
-import InputLayout, {inputLayoutTester} from "./InputLayout";
+import AnyOfLayout, {anyOfLayoutTester} from "./AnyOfLayout";
 
 const renderers: { tester: RankedTester; renderer: any }[] = [
-    {tester: inputLayoutTester, renderer: InputLayout},
+    {tester: anyOfLayoutTester, renderer: AnyOfLayout},
     {tester: arrayLayoutTester, renderer: ArrayLayout},
     {tester: inputControlTester, renderer: InputControl},
     {tester: inputBooleanControlTester, renderer: InputBooleanControl},
@@ -24,12 +24,10 @@ const renderers: { tester: RankedTester; renderer: any }[] = [
 
 export interface FormBuilderProps {
     definition: Form
-
     onChange?(state: Pick<JsonFormsCore, 'data' | 'errors'>): void;
 }
 
 const schema = require('../schema/form.json');
-
 
 export const FormBuilder: FunctionComponent<FormBuilderProps> = ({definition, onChange}) => {
 

@@ -22,18 +22,16 @@ import {
     removeId
 } from '@jsonforms/core';
 
-import merge from 'lodash/merge';
 import get from 'lodash/get';
-import {Badge} from 'primereact/badge';
 import {Button} from 'primereact/button';
+import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType} from 'primereact/panel';
+import {Draggable, DraggableProvided} from "react-beautiful-dnd";
 
-
-interface OwnPropsOfExpandPanel {
+interface OwnPropsOfArrayItem {
     index: number;
     path: string;
     uischema: ControlElement;
     schema: JsonSchema;
-    expanded: boolean;
     renderers?: JsonFormsRendererRegistryEntry[];
     cells?: JsonFormsCellRendererRegistryEntry[];
     uischemas?: JsonFormsUISchemaRegistryEntry[];
@@ -41,18 +39,18 @@ interface OwnPropsOfExpandPanel {
     enableMoveUp: boolean;
     enableMoveDown: boolean;
     config: any;
-    childLabelProp?: string;
 }
 
-interface StatePropsOfExpandPanel extends OwnPropsOfExpandPanel {
+interface StatePropsOfArrayItem extends OwnPropsOfArrayItem {
     childLabel: string;
     childPath: string;
+    childType: string;
     enableMoveUp: boolean;
     enableMoveDown: boolean;
 }
 
 
-export interface DispatchPropsOfExpandPanel {
+export interface DispatchPropsOfArrayItem {
     removeItems(path: string, toDelete: number[]): (event: any) => void;
 
     moveUp(path: string, toMove: number): (event: any) => void;
@@ -60,13 +58,13 @@ export interface DispatchPropsOfExpandPanel {
     moveDown(path: string, toMove: number): (event: any) => void;
 }
 
-export interface ExpandPanelProps
-    extends StatePropsOfExpandPanel,
-        DispatchPropsOfExpandPanel {
+export interface ArrayItemProps
+    extends StatePropsOfArrayItem,
+        DispatchPropsOfArrayItem {
 }
 
-const ExpandPanelRenderer = (props: ExpandPanelProps) => {
-    const [labelHtmlId] = useState<string>(createId('expand-panel'));
+const ArrayItemRenderer = (props: ArrayItemProps) => {
+    const [labelHtmlId] = useState<string>(createId('array-item'));
 
     useEffect(() => {
         return () => {
@@ -76,6 +74,7 @@ const ExpandPanelRenderer = (props: ExpandPanelProps) => {
 
     const {
         childLabel,
+        childType,
         childPath,
         index,
         moveDown,
@@ -89,8 +88,7 @@ const ExpandPanelRenderer = (props: ExpandPanelProps) => {
         uischema,
         uischemas,
         renderers,
-        cells,
-        config
+        cells
     } = props;
 
     const foundUISchema = useMemo(
@@ -107,62 +105,72 @@ const ExpandPanelRenderer = (props: ExpandPanelProps) => {
         [uischemas, schema, uischema.scope, path, uischema, rootSchema]
     );
 
-    const appliedUiSchemaOptions = merge({}, config, uischema.options);
-    const {showSortButtons} = appliedUiSchemaOptions;
+    const template = (options: PanelHeaderTemplateOptions, draggableProvided: DraggableProvided): PanelHeaderTemplateType => {
+
+        const className = `${options.className} p-jc-start`;
+        const titleClassName = `${options.titleClassName} p-pl-1`;
+
+        return (
+            <div className={className}
+                 {...draggableProvided.dragHandleProps}>
+
+                <Button icon="pi pi-chevron-circle-up"
+                        className="p-button-rounded p-button-secondary"
+                        disabled={!enableMoveUp}
+                        onClick={moveUp(path, index)}
+                        aria-label={`Move up`}/>
+                <Button icon="pi pi-chevron-circle-down"
+                        className="p-button-rounded p-button-secondary"
+                        disabled={!enableMoveDown}
+                        aria-label={`Move down`}
+                        onClick={moveDown(path, index)}/>
+
+                <Button icon="pi pi-times-circle"
+                        className="p-button-rounded p-button-secondary"
+                        aria-label={`Delete`}
+                        onClick={removeItems(path, [index])}/>
 
 
+                <span className={titleClassName} id={labelHtmlId}>
+                    {childLabel}{childType ? ` - (${childType})` : ''}
+                </span>
+            </div>
+        )
+    }
 
+    console.log(childLabel, childPath)
 
     return (
-        <div className="p-grid p-align-center">
-            <div className="p-col-9 p-col-sm-7">
-                <div className="p-grid p-align-center">
-                    <div className="p-col-1 p-col-sm-2">
-                        <Badge value={index + 1} aria-label='Index'/>
-                    </div>
-                    <div className="p-col-11 p-col-sm-10">
-                        <span id={labelHtmlId}>{childLabel}</span>
-                    </div>
-                </div>
-            </div>
-            <div className="p-col-3 p-col-sm-5">
-                <div className="p-d-flex p-jc-center">
-                    <Button icon="pi pi-chevron-circle-up"
-                            className="p-button-rounded p-button-secondary"
-                            disabled={!enableMoveUp}
-                            onClick={moveUp(path, index)}
-                            aria-label={`Move up`}/>
-                    <Button icon="pi pi-chevron-circle-down"
-                            className="p-button-rounded p-button-secondary"
-                            disabled={!enableMoveDown}
-                            aria-label={`Move down`}
-                            onClick={moveDown(path, index)}/>
 
-                    <Button icon="pi pi-times-circle"
-                            className="p-button-rounded p-button-secondary"
-                            aria-label={`Delete`}
-                            onClick={removeItems(path, [index])}/>
-                </div>
-            </div>
-            <div className="p-col-12">
+        <Draggable
+            key={composePaths(path, `${index}`)}
+            draggableId={composePaths(path, `${index}`)}
+            index={index}>
+            {(draggableProvided, snapshot) => (
 
-                    <JsonFormsDispatch
-                        schema={schema}
-                        uischema={foundUISchema}
-                        path={childPath}
-                        key={childPath}
-                        renderers={renderers}
-                        cells={cells}
-                    />
-            </div>
-        </div>
+                <div ref={draggableProvided.innerRef}
+                     {...draggableProvided.draggableProps}>
+                    <Panel headerTemplate={(options) => template(options, draggableProvided)}>
+                        <JsonFormsDispatch
+                            schema={schema}
+                            uischema={foundUISchema}
+                            path={childPath}
+                            key={childPath}
+                            renderers={renderers}
+                            cells={cells}
+                        />
+                    </Panel>
+                </div>
+            )}
+
+        </Draggable>
     );
 };
 
 
-export const ctxDispatchToExpandPanelProps: (
+export const ctxDispatchToArrayItemProps: (
     dispatch: Dispatch<ReducerAction<any>>
-) => DispatchPropsOfExpandPanel = dispatch => ({
+) => DispatchPropsOfArrayItem = dispatch => ({
     removeItems: (path: string, toDelete: number[]) => (event: any): void => {
         event.stopPropagation();
         dispatch(
@@ -196,15 +204,14 @@ export const ctxDispatchToExpandPanelProps: (
 });
 
 
-export const withContextToExpandPanelProps = (Component: ComponentType<ExpandPanelProps>): ComponentType<OwnPropsOfExpandPanel> =>
+export const withContextToArrayItemProps = (Component: ComponentType<ArrayItemProps>): ComponentType<OwnPropsOfArrayItem> =>
     ({ctx, props}: JsonFormsStateContext) => {
-        const dispatchProps = ctxDispatchToExpandPanelProps(ctx.dispatch);
-        const {childLabelProp, schema, path, index, uischemas} = props;
+        const dispatchProps = ctxDispatchToArrayItemProps(ctx.dispatch);
+        const {schema, path, index, uischemas} = props;
         const childPath = composePaths(path, `${index}`);
         const childData = Resolve.data(ctx.core.data, childPath);
-        const childLabel = childLabelProp
-            ? get(childData, childLabelProp, '')
-            : get(childData, getFirstPrimitiveProp(schema), '');
+        const childLabel = get(childData, 'name', '') || get(childData, getFirstPrimitiveProp(schema), '');
+        const childType = get(childData, 'sectionType', '') || get(childData, 'inputType', '');
 
         return (
             <Component
@@ -212,23 +219,24 @@ export const withContextToExpandPanelProps = (Component: ComponentType<ExpandPan
                 {...dispatchProps}
                 childLabel={childLabel}
                 childPath={childPath}
+                childType={childType}
                 uischemas={uischemas}
             />
         );
     };
 
-export const withJsonFormsExpandPanelProps = (
-    Component: ComponentType<ExpandPanelProps>
-): ComponentType<OwnPropsOfExpandPanel> =>
+export const withJsonFormsArrayItemProps = (
+    Component: ComponentType<ArrayItemProps>
+): ComponentType<OwnPropsOfArrayItem> =>
     withJsonFormsContext(
         // @ts-ignore
-        withContextToExpandPanelProps(
+        withContextToArrayItemProps(
             React.memo(
                 Component,
-                (prevProps: ExpandPanelProps, nextProps: ExpandPanelProps) =>
+                (prevProps: ArrayItemProps, nextProps: ArrayItemProps) =>
                     areEqual(prevProps, nextProps)
             )
         )
     );
 
-export default withJsonFormsExpandPanelProps(ExpandPanelRenderer);
+export default withJsonFormsArrayItemProps(ArrayItemRenderer);

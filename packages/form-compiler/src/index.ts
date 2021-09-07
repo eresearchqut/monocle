@@ -1,6 +1,6 @@
-export * from './formBuilder';
-export * from './sectionBuilder';
-export * from './inputBuilder';
+export * from './formCompiler';
+export * from './sectionCompiler';
+export * from './inputCompiler';
 export * from './interfaces';
 export * from './utils';
 

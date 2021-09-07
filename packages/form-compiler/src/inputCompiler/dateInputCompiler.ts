@@ -1,10 +1,10 @@
-import {InputBuilder} from "../interfaces";
+import {InputCompiler} from "../interfaces";
 import {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {Form, Input, Section} from "@trrf/form-definition";
-import {AbstractInputBuilder} from "./abstractInputBuilder";
+import {AbstractInputCompiler} from "./abstractInputCompiler";
 
 
-export class DateInputBuilder extends AbstractInputBuilder implements InputBuilder {
+export class DateInputCompiler extends AbstractInputCompiler implements InputCompiler {
 
     supports(form: Form, section: Section, input: Input): boolean {
         return input.inputType === 'date';

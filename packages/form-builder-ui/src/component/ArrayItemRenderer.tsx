@@ -24,7 +24,7 @@ import {
 
 import get from 'lodash/get';
 import {Button} from 'primereact/button';
-import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType} from 'primereact/panel';
+import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType, PanelIconsTemplateType} from 'primereact/panel';
 import {Draggable, DraggableProvided} from "react-beautiful-dnd";
 
 interface OwnPropsOfArrayItem {
@@ -105,41 +105,42 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
         [uischemas, schema, uischema.scope, path, uischema, rootSchema]
     );
 
+
+
+
     const template = (options: PanelHeaderTemplateOptions, draggableProvided: DraggableProvided): PanelHeaderTemplateType => {
 
-        const className = `${options.className} p-jc-start`;
         const titleClassName = `${options.titleClassName} p-pl-1`;
+        const className = `${options.className} p-d-flex`;
 
         return (
             <div className={className}
                  {...draggableProvided.dragHandleProps}>
-
-                <Button icon="pi pi-chevron-circle-up"
-                        className="p-button-rounded p-button-secondary"
-                        disabled={!enableMoveUp}
-                        onClick={moveUp(path, index)}
-                        aria-label={`Move up`}/>
-                <Button icon="pi pi-chevron-circle-down"
-                        className="p-button-rounded p-button-secondary"
-                        disabled={!enableMoveDown}
-                        aria-label={`Move down`}
-                        onClick={moveDown(path, index)}/>
-
-                <Button icon="pi pi-times-circle"
-                        className="p-button-rounded p-button-secondary"
-                        aria-label={`Delete`}
-                        onClick={removeItems(path, [index])}/>
-
-
-                <span className={titleClassName} id={labelHtmlId}>
+                <div className={titleClassName} id={labelHtmlId}>
                     {childLabel}{childType ? ` - (${childType})` : ''}
-                </span>
+                </div>
+                <div className="p-ml-auto">
+                    <Button icon="pi pi-chevron-circle-up "
+                            className="p-button-rounded p-button-secondary p-mr-1"
+                            disabled={!enableMoveUp}
+                            onClick={moveUp(path, index)}
+                            aria-label={`Move up`}
+                    />
+                    <Button icon="pi pi-chevron-circle-down "
+                            className="p-button-rounded p-button-secondary p-mr-1"
+                            disabled={!enableMoveDown}
+                            aria-label={`Move down`}
+                            onClick={moveDown(path, index)}
+                    />
+                    <Button icon="pi pi-times-circle"
+                            className="p-button-rounded p-button-warning"
+                            aria-label={`Delete`}
+                            onClick={removeItems(path, [index])}
+                    />
+                </div>
             </div>
         )
     }
-
-    console.log(childLabel, childPath)
-
     return (
 
         <Draggable
@@ -147,18 +148,19 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
             draggableId={composePaths(path, `${index}`)}
             index={index}>
             {(draggableProvided, snapshot) => (
-
                 <div ref={draggableProvided.innerRef}
-                     {...draggableProvided.draggableProps}>
-                    <Panel headerTemplate={(options) => template(options, draggableProvided)}>
-                        <JsonFormsDispatch
-                            schema={schema}
-                            uischema={foundUISchema}
-                            path={childPath}
-                            key={childPath}
-                            renderers={renderers}
-                            cells={cells}
-                        />
+                     {...draggableProvided.draggableProps} className='p-mb-3'>
+                    <Panel headerTemplate={(options) => template(options, draggableProvided)} >
+                        <div className='p-mt-3'>
+                            <JsonFormsDispatch
+                                schema={schema}
+                                uischema={foundUISchema}
+                                path={childPath}
+                                key={childPath}
+                                renderers={renderers}
+                                cells={cells}
+                            />
+                        </div>
                     </Panel>
                 </div>
             )}

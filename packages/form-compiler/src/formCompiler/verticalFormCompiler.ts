@@ -1,11 +1,11 @@
-import {FormBuilder} from "../interfaces";
+import {FormCompiler} from "../interfaces";
 
 import {JsonSchema, UISchemaElement, VerticalLayout} from "@jsonforms/core";
 import {Form} from "@trrf/form-definition";
 
-import {AbstractFormBuilder} from "./abstractFormBuilder";
+import {AbstractFormCompiler} from "./abstractFormCompiler";
 
-export class VerticalFormBuilder extends AbstractFormBuilder implements FormBuilder {
+export class VerticalFormCompiler extends AbstractFormCompiler implements FormCompiler {
 
     schema(form: Form): JsonSchema | undefined {
         const properties = this.formProperties(form);

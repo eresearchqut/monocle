@@ -1,7 +1,7 @@
 import {Form, Input, Section} from "@trrf/form-definition";
 import {JsonSchema, UISchemaElement} from "@jsonforms/core";
 
-export default interface InputBuilder {
+export default interface InputCompiler {
 
     supports(form: Form, section: Section, input: Input): boolean;
 

@@ -1,11 +1,11 @@
-import {SectionBuilder} from "../interfaces";
+import {SectionCompiler} from "../interfaces";
 
 import {JsonSchema, UISchemaElement, VerticalLayout} from "@jsonforms/core";
 import {Form, Section} from "@trrf/form-definition";
-import {AbstractSectionBuilder} from "./abstractSectionBuilder";
+import {AbstractSectionCompiler} from "./abstractSectionCompiler";
 
 
-export class VerticalSectionBuilder extends AbstractSectionBuilder implements SectionBuilder {
+export class VerticalSectionCompiler extends AbstractSectionCompiler implements SectionCompiler {
 
     schema(form: Form, section: Section): JsonSchema {
         const properties = this.schemaProperties(form, section);

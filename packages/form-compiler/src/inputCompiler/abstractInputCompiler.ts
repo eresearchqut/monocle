@@ -4,7 +4,7 @@ import {buildPropertyPath, generatePathFromName} from "../utils";
 
 import merge from "lodash/merge";
 
-export abstract class AbstractInputBuilder  {
+export abstract class AbstractInputCompiler {
 
     uiControl(form: Form, section: Section, input: Input, options?: any): UISchemaElement | undefined {
         const inputProperty = generatePathFromName(input.name);

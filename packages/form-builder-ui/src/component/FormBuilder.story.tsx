@@ -4,7 +4,7 @@ import {Meta, Story} from '@storybook/react';
 import {FormBuilder, FormBuilderProps} from "./FormBuilder";
 
 export default {
-    title: 'Component/FormBuilder',
+    title: 'Component/FormCompiler',
     component: FormBuilder
 } as Meta;
 

@@ -1,7 +1,7 @@
 import {Form, Section} from "@trrf/form-definition";
 import {JsonSchema, UISchemaElement} from "@jsonforms/core";
 
-export default interface SectionBuilder {
+export default interface SectionCompiler {
 
     schema(form: Form, section: Section): JsonSchema | undefined;
 

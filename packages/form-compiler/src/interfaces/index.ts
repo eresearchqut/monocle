@@ -1,11 +1,11 @@
-import FormBuilder from "./formBuilder";
-import SectionBuilder from "./sectionBuilder";
-import InputBuilder from "./inputBuilder";
+import FormCompiler from "./formCompiler";
+import SectionCompiler from "./sectionCompiler";
+import InputCompiler from "./inputCompiler";
 
 export {
-    FormBuilder,
-    SectionBuilder,
-    InputBuilder
+    FormCompiler,
+    SectionCompiler,
+    InputCompiler
 };
 
 

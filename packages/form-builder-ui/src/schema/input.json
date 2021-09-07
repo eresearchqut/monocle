@@ -1,0 +1,174 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "anyOf": [
+        {
+            "$ref": "#/definitions/BooleanInput"
+        },
+        {
+            "$ref": "#/definitions/TextInput"
+        },
+        {
+            "$ref": "#/definitions/DateInput"
+        },
+        {
+            "$ref": "#/definitions/NumericInput"
+        },
+        {
+            "$ref": "#/definitions/CurrencyInput"
+        }
+    ],
+    "definitions": {
+        "BooleanInput": {
+            "properties": {
+                "inputType": {
+                    "enum": [
+                        "boolean"
+                    ],
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                }
+            },
+            "title": "Boolean",
+            "type": "object"
+        },
+        "CurrencyInput": {
+            "properties": {
+                "currencyCode": {
+                    "type": "string"
+                },
+                "currencyDisplay": {
+                    "enum": [
+                        "name",
+                        "symbol"
+                    ],
+                    "type": "string"
+                },
+                "inputType": {
+                    "enum": [
+                        "currency"
+                    ],
+                    "type": "string"
+                },
+                "maximum": {
+                    "type": "number"
+                },
+                "minimum": {
+                    "type": "number"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                }
+            },
+            "title": "Currency",
+            "type": "object"
+        },
+        "DateInput": {
+            "properties": {
+                "inputType": {
+                    "enum": [
+                        "date"
+                    ],
+                    "type": "string"
+                },
+                "maximum": {
+                    "format": "date",
+                    "type": "string"
+                },
+                "minimum": {
+                    "format": "date",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                }
+            },
+            "title": "Date",
+            "type": "object"
+        },
+        "NumericInput": {
+            "properties": {
+                "decimalPlaces": {
+                    "minimum": 0,
+                    "type": "integer"
+                },
+                "groupNumbers": {
+                    "description": "Whether to use grouping separators, such as thousands separators",
+                    "type": "boolean"
+                },
+                "increment": {
+                    "type": "number"
+                },
+                "inputType": {
+                    "enum": [
+                        "numeric"
+                    ],
+                    "type": "string"
+                },
+                "maximum": {
+                    "type": "number"
+                },
+                "minimum": {
+                    "type": "number"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                }
+            },
+            "title": "Numeric",
+            "type": "object"
+        },
+        "TextInput": {
+            "properties": {
+                "inputType": {
+                    "enum": [
+                        "text"
+                    ],
+                    "type": "string"
+                },
+                "maxLength": {
+                    "type": "number"
+                },
+                "minLength": {
+                    "type": "number"
+                },
+                "multiline": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                }
+            },
+            "title": "Text",
+            "type": "object"
+        }
+    },
+    "title": "Input"
+}
+

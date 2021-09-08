@@ -20,34 +20,34 @@ const App: React.FC = () => {
                 name: 'Act One',
                 inputs: [
                     {
-                        inputType: 'text',
+                        type: 'text',
                         maxLength: 100,
                         minLength: 200,
                         name: 'Cowboy',
                         required: true
                     },
                     {
-                        inputType: 'text',
+                        type: 'text',
                         name: 'Bee-bop',
                         multiline: true
                     },
                     {
-                        inputType: 'currency',
+                        type: 'currency',
                         name: 'Owes',
                         currencyCode: 'AUD',
                         currencyDisplay: 'symbol'
                     },
                     {
-                        inputType: 'boolean',
+                        type: 'boolean',
                         name: 'Unrequired Truthy',
                     },
                     {
-                        inputType: 'boolean',
+                        type: 'boolean',
                         required: true,
                         name: 'Required Truthy',
                     },
                     {
-                        inputType: 'date',
+                        type: 'date',
                         required: true,
                         name: 'Datum',
                     }

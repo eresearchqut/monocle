@@ -7,7 +7,7 @@ describe('TextInputCompiler', () => {
     const inputCompiler = new TextInputCompiler();
     test('supports', () => {
         expect(inputCompiler.supports({} as Form, {} as Section,
-            {inputType: 'text'} as TextInput))
+            {type: 'text'} as TextInput))
             .toBe(true);
     });
 

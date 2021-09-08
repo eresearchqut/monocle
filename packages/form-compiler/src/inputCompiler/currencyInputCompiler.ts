@@ -7,7 +7,7 @@ import {AbstractInputCompiler} from "./abstractInputCompiler";
 export class CurrencyInputCompiler extends AbstractInputCompiler implements InputCompiler {
 
     supports(form: Form, section: Section, input: Input): boolean {
-        return input.inputType === 'currency';
+        return input.type === 'currency';
     }
 
     schema(form: Form, section: Section, input: Input): JsonSchema {

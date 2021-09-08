@@ -6,7 +6,7 @@ import {AbstractInputCompiler} from "./abstractInputCompiler";
 export class NumericInputCompiler extends AbstractInputCompiler implements InputCompiler {
 
     supports(form: Form, section: Section, input: Input): boolean {
-        return input.inputType === 'numeric';
+        return input.type === 'numeric';
     }
 
     schema(form: Form, section: Section, input: Input): JsonSchema {

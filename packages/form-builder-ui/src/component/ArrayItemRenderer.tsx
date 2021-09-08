@@ -216,7 +216,7 @@ export const withContextToArrayItemProps = (Component: ComponentType<ArrayItemPr
         const childPath = composePaths(path, `${index}`);
         const childData = Resolve.data(ctx.core.data, childPath);
         const childLabel = get(childData, 'name', '') || get(childData, getFirstPrimitiveProp(schema), '');
-        const childType = get(childData, 'sectionType', '') || get(childData, 'inputType', '');
+        const childType = get(childData, 'sectionType', '') || get(childData, 'type', '');
 
         return (
             <Component

@@ -45,7 +45,7 @@ const AnyOfRenderer = ({
     // filter out the input type from the ui and move the name to the first element
     inputUischema.elements = inputUischema.elements
         .map((uiSchemaElement) => uiSchemaElement as ControlElement)
-        .filter((element) => element['scope'] !== '#/properties/inputType')
+        .filter((element) => element['scope'] !== '#/properties/type')
         .sort((a, b) => a.scope === '#/properties/name' ? -1 :
             a.scope.localeCompare(b.scope));
     ;

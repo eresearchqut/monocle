@@ -7,7 +7,7 @@ import {AbstractInputCompiler} from "./abstractInputCompiler";
 export class DateInputCompiler extends AbstractInputCompiler implements InputCompiler {
 
     supports(form: Form, section: Section, input: Input): boolean {
-        return input.inputType === 'date';
+        return input.type === 'date';
     }
 
     schema(form: Form, section: Section, input: Input): JsonSchema {

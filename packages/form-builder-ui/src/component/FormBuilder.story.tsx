@@ -22,34 +22,34 @@ Example.args = {
                 name: 'First Section',
                 inputs: [
                     {
-                        inputType: 'text',
+                        type: 'text',
                         maxLength: 100,
                         minLength: 200,
                         name: 'Text Value',
                         required: true
                     },
                     {
-                        inputType: 'text',
+                        type: 'text',
                         name: 'Multiline Text Value',
                         multiline: true
                     },
                     {
-                        inputType: 'currency',
+                        type: 'currency',
                         name: 'Currency',
                         currencyCode: 'AUD',
                         currencyDisplay: 'symbol'
                     },
                     {
-                        inputType: 'boolean',
+                        type: 'boolean',
                         name: 'Unrequired Truthy',
                     },
                     {
-                        inputType: 'boolean',
+                        type: 'boolean',
                         required: true,
                         name: 'Required Truthy',
                     },
                     {
-                        inputType: 'date',
+                        type: 'date',
                         required: true,
                         name: 'Datum',
                     }

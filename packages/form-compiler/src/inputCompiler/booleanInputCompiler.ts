@@ -7,7 +7,7 @@ import {AbstractInputCompiler} from "./abstractInputCompiler";
 export class BooleanInputCompiler extends AbstractInputCompiler implements InputCompiler {
 
     supports(form: Form, section: Section, input: Input): boolean {
-        return input.inputType === 'boolean';
+        return input.type === 'boolean';
     }
 
     schema(form: Form, section: Section, input: Input): JsonSchema {

@@ -7,7 +7,7 @@ import {TextInput} from "@trrf/form-definition/dist/interfaces";
 export class TextInputCompiler extends AbstractInputCompiler implements InputCompiler {
 
     supports(form: Form, section: Section, input: Input): boolean {
-        return input.inputType === 'text';
+        return input.type === 'text';
     }
 
     schema(form: Form, section: Section, input: Input): JsonSchema {

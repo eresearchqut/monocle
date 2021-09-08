@@ -78,7 +78,6 @@ export class ArrayLayout extends React.PureComponent<ArrayLayoutContext> {
                         <div ref={droppableProvided.innerRef}
                              {...droppableProvided.droppableProps}>
                             {map(range(data), index => (
-
                                 <ArrayItemRenderer
                                     index={index}
                                     schema={schema}
@@ -93,9 +92,7 @@ export class ArrayLayout extends React.PureComponent<ArrayLayoutContext> {
                                     config={config}
                                     uischemas={uischemas}
                                 />
-
                             ))}
-
                             {droppableProvided.placeholder}
                         </div>
                     )}

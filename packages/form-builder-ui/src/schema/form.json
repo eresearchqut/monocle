@@ -3,12 +3,6 @@
     "definitions": {
         "BooleanInput": {
             "properties": {
-                "inputType": {
-                    "enum": [
-                        "boolean"
-                    ],
-                    "type": "string"
-                },
                 "name": {
                     "description": "The name of the element",
                     "type": "string"
@@ -16,6 +10,12 @@
                 "required": {
                     "description": "Can the element be flagged as required",
                     "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "boolean"
+                    ],
+                    "type": "string"
                 }
             },
             "title": "Boolean",
@@ -33,12 +33,6 @@
                     ],
                     "type": "string"
                 },
-                "inputType": {
-                    "enum": [
-                        "currency"
-                    ],
-                    "type": "string"
-                },
                 "maximum": {
                     "type": "number"
                 },
@@ -52,6 +46,12 @@
                 "required": {
                     "description": "Can the element be flagged as required",
                     "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "currency"
+                    ],
+                    "type": "string"
                 }
             },
             "title": "Currency",
@@ -59,12 +59,6 @@
         },
         "DateInput": {
             "properties": {
-                "inputType": {
-                    "enum": [
-                        "date"
-                    ],
-                    "type": "string"
-                },
                 "maximum": {
                     "format": "date",
                     "type": "string"
@@ -80,6 +74,12 @@
                 "required": {
                     "description": "Can the element be flagged as required",
                     "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "date"
+                    ],
+                    "type": "string"
                 }
             },
             "title": "Date",
@@ -98,12 +98,6 @@
                 "increment": {
                     "type": "number"
                 },
-                "inputType": {
-                    "enum": [
-                        "numeric"
-                    ],
-                    "type": "string"
-                },
                 "maximum": {
                     "type": "number"
                 },
@@ -117,6 +111,12 @@
                 "required": {
                     "description": "Can the element be flagged as required",
                     "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "numeric"
+                    ],
+                    "type": "string"
                 }
             },
             "title": "Numeric",
@@ -157,12 +157,6 @@
         },
         "TextInput": {
             "properties": {
-                "inputType": {
-                    "enum": [
-                        "text"
-                    ],
-                    "type": "string"
-                },
                 "maxLength": {
                     "type": "number"
                 },
@@ -179,6 +173,12 @@
                 "required": {
                     "description": "Can the element be flagged as required",
                     "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "text"
+                    ],
+                    "type": "string"
                 }
             },
             "title": "Text",

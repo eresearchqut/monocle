@@ -95,6 +95,8 @@ export class ArrayLayout extends React.PureComponent<ArrayLayoutContext> {
                                 />
 
                             ))}
+
+                            {droppableProvided.placeholder}
                         </div>
                     )}
                 </Droppable>

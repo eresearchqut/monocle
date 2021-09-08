@@ -25,6 +25,8 @@ import {
 import get from 'lodash/get';
 import {Button} from 'primereact/button';
 import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType, PanelIconsTemplateType} from 'primereact/panel';
+import {Menubar} from 'primereact/menubar';
+import {MenuItem, MenuItemCommandParams} from 'primereact/menuitem';
 import {Draggable, DraggableProvided} from "react-beautiful-dnd";
 
 interface OwnPropsOfArrayItem {
@@ -106,12 +108,29 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
     );
 
 
-
-
     const template = (options: PanelHeaderTemplateOptions, draggableProvided: DraggableProvided): PanelHeaderTemplateType => {
 
         const titleClassName = `${options.titleClassName} p-pl-1`;
         const className = `${options.className} p-d-flex`;
+
+        const menuOptions: MenuItem[] = [
+            {
+                label: 'Remove Item',
+                icon: 'pi pi-times-circle',
+                command: removeItems(path, [index])
+            },
+            ... enableMoveUp ? [{
+                label: 'Move Up',
+                icon: 'pi pi-chevron-circle-up',
+                command: moveUp(path, index)
+            }] : [],
+            ... enableMoveDown ? [{
+                label: 'Move Down',
+                icon: 'pi pi-chevron-circle-down',
+                command: moveDown(path, index)
+            }] : []
+        ];
+
 
         return (
             <div className={className}
@@ -120,23 +139,7 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
                     {childLabel}{childType ? ` - (${childType})` : ''}
                 </div>
                 <div className="p-ml-auto">
-                    <Button icon="pi pi-chevron-circle-up "
-                            className="p-button-rounded p-button-secondary p-mr-1"
-                            disabled={!enableMoveUp}
-                            onClick={moveUp(path, index)}
-                            aria-label={`Move up`}
-                    />
-                    <Button icon="pi pi-chevron-circle-down "
-                            className="p-button-rounded p-button-secondary p-mr-1"
-                            disabled={!enableMoveDown}
-                            aria-label={`Move down`}
-                            onClick={moveDown(path, index)}
-                    />
-                    <Button icon="pi pi-times-circle"
-                            className="p-button-rounded p-button-warning"
-                            aria-label={`Delete`}
-                            onClick={removeItems(path, [index])}
-                    />
+                    <Menubar model={menuOptions}/>
                 </div>
             </div>
         )
@@ -150,7 +153,7 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
             {(draggableProvided, snapshot) => (
                 <div ref={draggableProvided.innerRef}
                      {...draggableProvided.draggableProps} className='p-mb-3'>
-                    <Panel headerTemplate={(options) => template(options, draggableProvided)} >
+                    <Panel headerTemplate={(options) => template(options, draggableProvided)}>
                         <div className='p-mt-3'>
                             <JsonFormsDispatch
                                 schema={schema}
@@ -173,8 +176,8 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
 export const ctxDispatchToArrayItemProps: (
     dispatch: Dispatch<ReducerAction<any>>
 ) => DispatchPropsOfArrayItem = dispatch => ({
-    removeItems: (path: string, toDelete: number[]) => (event: any): void => {
-        event.stopPropagation();
+    removeItems: (path: string, toDelete: number[]) => (event: MenuItemCommandParams): void => {
+        event.originalEvent.stopPropagation();
         dispatch(
             update(path, array => {
                 toDelete
@@ -185,8 +188,8 @@ export const ctxDispatchToArrayItemProps: (
             })
         );
     },
-    moveUp: (path: string, toMove: number) => (event: any): void => {
-        event.stopPropagation();
+    moveUp: (path: string, toMove: number) => (event: MenuItemCommandParams): void => {
+        event.originalEvent.stopPropagation();
         dispatch(
             update(path, array => {
                 moveUp(array, toMove);
@@ -194,8 +197,8 @@ export const ctxDispatchToArrayItemProps: (
             })
         );
     },
-    moveDown: (path: string, toMove: number) => (event: any): void => {
-        event.stopPropagation();
+    moveDown: (path: string, toMove: number) => (event: MenuItemCommandParams): void => {
+        event.originalEvent.stopPropagation();
         dispatch(
             update(path, array => {
                 moveDown(array, toMove);

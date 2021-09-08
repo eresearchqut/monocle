@@ -15,7 +15,7 @@ import {JsonFormsCore} from '@jsonforms/core';
 
 export interface FormPreviewProps {
     definition: Form;
-    data: any;
+    data?: any;
     onChange?(state: Pick<JsonFormsCore, 'data' | 'errors'>): void;
 }
 
@@ -28,9 +28,7 @@ export const FormPreview: FunctionComponent<FormPreviewProps> = ({definition, da
     const ui = formCompiler?.ui(definition);
 
 
-
     return (
-
         <JsonForms
             data={data}
             uischema={ui}
@@ -39,6 +37,5 @@ export const FormPreview: FunctionComponent<FormPreviewProps> = ({definition, da
             cells={cells}
             onChange={onChange}
         />
-
     );
 };

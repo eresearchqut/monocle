@@ -22,14 +22,14 @@ const renderers: { tester: RankedTester; renderer: any }[] = [
     {tester: verticalLayoutTester, renderer: VerticalLayout}
 ];
 
-export interface FormBuilderProps {
+export interface FormCanvasProps {
     definition: Form
     onChange?(state: Pick<JsonFormsCore, 'data' | 'errors'>): void;
 }
 
 const schema = require('../schema/form.json');
 
-export const FormBuilder: FunctionComponent<FormBuilderProps> = ({definition, onChange}) => {
+export const FormCanvas: FunctionComponent<FormCanvasProps> = ({definition, onChange}) => {
 
 
     return (

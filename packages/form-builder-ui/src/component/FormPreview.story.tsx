@@ -18,7 +18,9 @@ Example.args = {
     data: {
 
             firstSection: {
-                textValue: "I am some text"
+                textValue: "I am some text",
+                currency: 99.99,
+                requiredTruthy: true
             }
 
     },

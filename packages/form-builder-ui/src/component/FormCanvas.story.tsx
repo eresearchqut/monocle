@@ -1,16 +1,16 @@
 import * as React from "react";
 
 import {Meta, Story} from '@storybook/react';
-import {FormBuilder, FormBuilderProps} from "./FormBuilder";
+import {FormCanvas, FormCanvasProps} from "./FormCanvas";
 
 export default {
-    title: 'Component/FormBuilder',
-    component: FormBuilder
+    title: 'Component/FormCanvas',
+    component: FormCanvas
 } as Meta;
 
-const Template: Story<FormBuilderProps> =
+const Template: Story<FormCanvasProps> =
     ({definition}) =>
-        <FormBuilder definition={definition}/>
+        <FormCanvas definition={definition}/>
 Template.bind({});
 
 export const Example = Template.bind({});

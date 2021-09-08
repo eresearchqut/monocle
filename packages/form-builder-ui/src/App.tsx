@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import "./App.css";
 
 import {Form} from "@trrf/form-definition";
-import {FormBuilder} from './component/FormBuilder'
+import {FormCanvas} from './component/FormCanvas'
 
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
@@ -10,9 +10,16 @@ import 'primeflex/primeflex.css';
 import 'primereact/resources/themes/fluent-light/theme.css'
 
 import {Card} from 'primereact/card';
+import {FormPreview} from "./component/FormPreview";
 
 
 const App: React.FC = () => {
+
+    const [data, setData] = useState<any>({
+
+    });
+
+
     const [definition, setDefinition] = useState<Form>({
         name: 'Django Unchanged',
         sections: [
@@ -58,9 +65,24 @@ const App: React.FC = () => {
 
 
     return (
-        <Card>
-             <FormBuilder definition={definition} onChange={({errors, data}) => setDefinition(data)} />
-        </Card>
+
+        <div className="card">
+            <div className="p-grid">
+                <div className="p-col-12 p-md-6">
+                    <Card>
+                        <FormCanvas definition={definition} onChange={({errors, data}) => setDefinition(data)} />
+                    </Card>
+                </div>
+                <div className="p-col-12 p-md-6">
+                    <Card>
+                        <FormPreview definition={definition} data={data} onChange={({errors, data}) => setData(data)}   />
+                    </Card>
+                </div>
+
+            </div>
+        </div>
+
+
     );
 };
 

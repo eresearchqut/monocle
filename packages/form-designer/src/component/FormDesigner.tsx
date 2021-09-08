@@ -4,7 +4,8 @@ import {FormPreview} from "./FormPreview";
 
 import {Form} from "../../../form-definition";
 import {Card} from 'primereact/card';
-import {ErrorObject} from 'ajv';
+import Ajv from 'ajv';
+import {JsonFormsCore} from "@jsonforms/core";
 
 
 
@@ -12,8 +13,9 @@ import {ErrorObject} from 'ajv';
 export interface FormDesignerProps {
     definition: Form;
     data?: any;
-    onDefinitionChange?(definition: Form | undefined): void;
-    onDataChange?(data: any): void;
+    ajv? : Ajv
+    onDefinitionChange?(state: Pick<JsonFormsCore, 'data' | 'errors'>): void;
+    onDataChange?(state: Pick<JsonFormsCore, 'data' | 'errors'>): void;
 }
 
 

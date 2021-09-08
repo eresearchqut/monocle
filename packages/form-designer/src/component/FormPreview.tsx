@@ -14,7 +14,7 @@ import {JsonFormsCore} from '@jsonforms/core';
 
 
 export interface FormPreviewProps {
-    definition?: Form;
+    definition: Form;
     data?: any;
     onChange?(state: Pick<JsonFormsCore, 'data' | 'errors'>): void;
 }
@@ -23,9 +23,6 @@ export interface FormPreviewProps {
 
 export const FormPreview: FunctionComponent<FormPreviewProps> = ({definition, data, onChange}) => {
 
-    if (!definition) {
-        return (<React.Fragment></React.Fragment>);
-    }
 
     const formCompiler = findFormCompiler(definition);
     const schema = formCompiler?.schema(definition);

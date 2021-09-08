@@ -12,8 +12,8 @@
             "@trrf/form-compiler/*": [
                 "form-compiler/src/*"
             ],
-            "@trrf/form-builder-ui/*": [
-                "form-builder-ui/src/*"
+            "@trrf/form-designer/*": [
+                "form-designer/src/*"
             ]
         },
         "target": "es5",
@@ -43,9 +43,6 @@
     "files": [],
     "references": [
         {
-            "path": "packages/form-builder-ui"
-        },
-        {
             "path": "packages/form-compiler"
         },
         {
@@ -53,6 +50,9 @@
         },
         {
             "path": "packages/form-definition"
+        },
+        {
+            "path": "packages/form-designer"
         }
     ]
 }

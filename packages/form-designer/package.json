@@ -1,12 +1,12 @@
 {
-  "name": "@trrf/form-builder-ui",
+  "name": "@trrf/form-designer",
   "version": "1.0.0",
   "main": "index.js",
   "types": "index.d.ts",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "directory": "packages/form-builder-ui",
+    "directory": "packages/form-designer",
     "url": "https://github.com/eresearchqut/future-state-mono-repo.git"
   },
   "scripts": {

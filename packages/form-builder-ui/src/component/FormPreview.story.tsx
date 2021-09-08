@@ -1,20 +1,27 @@
 import * as React from "react";
 
 import {Meta, Story} from '@storybook/react';
-import {FormBuilder, FormBuilderProps} from "./FormBuilder";
+import {FormPreview, FormPreviewProps} from "./FormPreview";
 
 export default {
-    title: 'Component/FormBuilder',
-    component: FormBuilder
+    title: 'Component/FormPreview',
+    component: FormPreview
 } as Meta;
 
-const Template: Story<FormBuilderProps> =
-    ({definition}) =>
-        <FormBuilder definition={definition}/>
+const Template: Story<FormPreviewProps> =
+    (props) =>
+        <FormPreview {...props} />
 Template.bind({});
 
 export const Example = Template.bind({});
 Example.args = {
+    data: {
+
+            firstSection: {
+                textValue: "I am some text"
+            }
+
+    },
     definition: {
         name: 'Example Form',
         sections: [

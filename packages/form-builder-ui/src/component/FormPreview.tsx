@@ -19,13 +19,15 @@ export interface FormPreviewProps {
     onChange?(state: Pick<JsonFormsCore, 'data' | 'errors'>): void;
 }
 
-const schema = require('../schema/form.json');
+
 
 export const FormPreview: FunctionComponent<FormPreviewProps> = ({definition, data, onChange}) => {
 
     const formCompiler = findFormCompiler(definition);
     const schema = formCompiler?.schema(definition);
     const ui = formCompiler?.ui(definition);
+
+
 
     return (
 

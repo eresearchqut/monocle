@@ -68,6 +68,9 @@ export interface ArrayItemProps
 const ArrayItemRenderer = (props: ArrayItemProps) => {
     const [labelHtmlId] = useState<string>(createId('array-item'));
 
+
+    const [collapsed, setCollapsed] = useState<boolean>(true);
+
     useEffect(() => {
         return () => {
             removeId(labelHtmlId);
@@ -114,6 +117,15 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
         const className = `${options.className} p-d-flex`;
 
         const menuOptions: MenuItem[] = [
+                ... collapsed ? [{
+                label: 'Edit',
+                icon: 'pi pi-pencil',
+                command: () => setCollapsed(false)
+            }] : [{
+                    label: 'Collapse',
+                    icon: 'pi pi-chevron-up',
+                    command: () => setCollapsed(true)
+                }],
             {
                 label: 'Remove Item',
                 icon: 'pi pi-times-circle',
@@ -153,7 +165,10 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
             {(draggableProvided, snapshot) => (
                 <div ref={draggableProvided.innerRef}
                      {...draggableProvided.draggableProps} className='p-mb-3'>
-                    <Panel headerTemplate={(options) => template(options, draggableProvided)}>
+                    <Panel headerTemplate={(options) => template(options, draggableProvided)}
+                           toggleable collapsed={collapsed} onToggle={(e) => setCollapsed(e.value)}
+
+                    >
                         <div className='p-mt-3'>
                             <JsonFormsDispatch
                                 schema={schema}
@@ -216,7 +231,7 @@ export const withContextToArrayItemProps = (Component: ComponentType<ArrayItemPr
         const childPath = composePaths(path, `${index}`);
         const childData = Resolve.data(ctx.core.data, childPath);
         const childLabel = get(childData, 'name', '') || get(childData, getFirstPrimitiveProp(schema), '');
-        const childType = get(childData, 'sectionType', '') || get(childData, 'type', '');
+        const childType = get(childData, 'type', '');
 
         return (
             <Component

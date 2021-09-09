@@ -41,9 +41,6 @@ export class ArrayLayout extends React.PureComponent<ArrayLayoutProps> {
             config,
             this.props.uischema.options
         );
-
-        console.log('ArrayLayout', appliedUiSchemaOptions);
-
         return (
             <div>
                 <div>

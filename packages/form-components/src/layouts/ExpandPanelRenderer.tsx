@@ -22,11 +22,9 @@ import {
     removeId
 } from '@jsonforms/core';
 
-import merge from 'lodash/merge';
 import get from 'lodash/get';
 import {Badge} from 'primereact/badge';
 import {Button} from 'primereact/button';
-
 
 interface OwnPropsOfExpandPanel {
     index: number;
@@ -108,11 +106,6 @@ const ExpandPanelRenderer = (props: ExpandPanelProps) => {
             ),
         [uischemas, schema, uischema.scope, path, uischema, rootSchema]
     );
-
-    const appliedUiSchemaOptions = merge({}, config, uischema.options);
-    const {showSortButtons} = appliedUiSchemaOptions;
-
-    console.log(schema, foundUISchema, childPath, childPath, renderers, cells)
 
 
     return (

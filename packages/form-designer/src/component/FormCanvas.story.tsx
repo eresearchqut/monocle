@@ -31,17 +31,20 @@ Example.args = {
                     {
                         type: 'text',
                         name: 'Multiline Text Value',
-                        multiline: true
+                        multiline: true,
+                        required: false
                     },
                     {
                         type: 'currency',
                         name: 'Currency',
                         currencyCode: 'AUD',
-                        currencyDisplay: 'symbol'
+                        currencyDisplay: 'symbol',
+                        required: false
                     },
                     {
                         type: 'boolean',
                         name: 'Unrequired Truthy',
+                        required: false
                     },
                     {
                         type: 'boolean',

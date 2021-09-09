@@ -11,13 +11,12 @@ import 'primereact/resources/themes/fluent-light/theme.css'
 
 import {Card} from 'primereact/card';
 import {FormPreview} from "./component/FormPreview";
+import {FormDesigner} from "./component/FormDesigner";
 
 
 const App: React.FC = () => {
 
-    const [data, setData] = useState<any>({
-
-    });
+    const [data, setData] = useState<any>({});
 
 
     const [definition, setDefinition] = useState<Form>({
@@ -36,17 +35,20 @@ const App: React.FC = () => {
                     {
                         type: 'text',
                         name: 'Bee-bop',
-                        multiline: true
+                        multiline: true,
+                        required: false
                     },
                     {
                         type: 'currency',
                         name: 'Owes',
                         currencyCode: 'AUD',
-                        currencyDisplay: 'symbol'
+                        currencyDisplay: 'symbol',
+                        required: false
                     },
                     {
                         type: 'boolean',
                         name: 'Unrequired Truthy',
+                        required: false
                     },
                     {
                         type: 'boolean',
@@ -63,26 +65,11 @@ const App: React.FC = () => {
         ]
     });
 
-
     return (
-
-        <div className="card">
-            <div className="p-grid">
-                <div className="p-col-12 p-md-6">
-                    <Card>
-                        <FormCanvas definition={definition} onChange={({errors, data}) => setDefinition(data)} />
-                    </Card>
-                </div>
-                <div className="p-col-12 p-md-6">
-                    <Card>
-                        <FormPreview definition={definition} data={data} onChange={({errors, data}) => setData(data)}   />
-                    </Card>
-                </div>
-
-            </div>
-        </div>
-
-
+        <FormDesigner definition={definition}
+                      onDefinitionChange={({errors, data}) => setDefinition(() => data)}
+                      onDataChange={({errors, data}) => setData(() => data)}
+        />
     );
 };
 

@@ -5,7 +5,8 @@ import {
     isObjectArrayWithNesting,
     RankedTester,
     rankWith,
-    update
+    update,
+    composePaths
 } from '@jsonforms/core';
 import {
     JsonFormsStateContext,
@@ -18,24 +19,40 @@ import map from 'lodash/map';
 import range from 'lodash/range';
 import {DragDropContext, Droppable, DropResult, ResponderProvided} from "react-beautiful-dnd";
 
+
 const arrayMove = (arr: [], fromIndex: number, toIndex: number) => {
     const element = arr[fromIndex];
     arr.splice(fromIndex, 1);
     arr.splice(toIndex, 0, element);
 }
 
+interface ArrayLayoutState {
+    collapsed: object;
+}
+
 interface ArrayLayoutContext extends ArrayLayoutProps {
     context: JsonFormsStateContext;
 }
 
-export class ArrayLayout extends React.PureComponent<ArrayLayoutContext> {
+export class ArrayLayout extends React.PureComponent<ArrayLayoutContext, ArrayLayoutState> {
 
+    state: ArrayLayoutState = {
+        collapsed: {}
+    };
     innerCreateDefaultValue = () => createDefaultValue(this.props.schema);
+    handleToggle = (panel: string) => (event: any) => {
+        this.setState((currentState) => {
+            const currentCollapse = currentState.collapsed[panel] || false;
+            currentState.collapsed[panel] = !currentCollapse
+            console.log(panel,  currentState.collapsed[panel]);
+            return currentState;
+        });
+    };
+    isCollapsed = (index: number) =>
+        this.state.collapsed[composePaths(this.props.path, `${index}`)] || false;
 
 
     render() {
-
-
         const {
             id,
             data,
@@ -50,14 +67,6 @@ export class ArrayLayout extends React.PureComponent<ArrayLayoutContext> {
             context
         } = this.props;
 
-
-
-        const appliedUiSchemaOptions = merge(
-            {},
-            config,
-            this.props.uischema.options
-        );
-
         const onDragEnd = (result: DropResult) => {
             if (context.dispatch) {
                 context.dispatch(
@@ -70,8 +79,6 @@ export class ArrayLayout extends React.PureComponent<ArrayLayoutContext> {
         }
 
         return (
-
-
             <DragDropContext onDragEnd={(result: DropResult, provided: ResponderProvided) => onDragEnd(result)}>
                 <Droppable droppableId={id}>
                     {(droppableProvided, snapshot) => (
@@ -91,6 +98,8 @@ export class ArrayLayout extends React.PureComponent<ArrayLayoutContext> {
                                     enableMoveDown={index < data - 1}
                                     config={config}
                                     uischemas={uischemas}
+                                    collapsed={this.isCollapsed(index)}
+                                    handleToggle={this.handleToggle}
                                 />
                             ))}
                             {droppableProvided.placeholder}

@@ -1,10 +1,12 @@
-import React, {ComponentType, Dispatch, ReducerAction, useMemo, useState, useEffect, Fragment} from 'react';
+import React, {ComponentType, Dispatch, ReducerAction, useMemo, useState, useEffect} from 'react';
+
 import {
     areEqual,
     JsonFormsDispatch,
     JsonFormsStateContext,
     withJsonFormsContext
 } from '@jsonforms/react';
+
 import {
     composePaths,
     ControlElement,
@@ -17,15 +19,13 @@ import {
     update,
     JsonFormsCellRendererRegistryEntry,
     JsonFormsUISchemaRegistryEntry,
-    getFirstPrimitiveProp,
     createId,
     removeId
 } from '@jsonforms/core';
 
 import get from 'lodash/get';
 import {SplitButton} from 'primereact/splitbutton';
-import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType, PanelIconsTemplateType} from 'primereact/panel';
-import {Menubar} from 'primereact/menubar';
+import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType} from 'primereact/panel';
 import {MenuItem, MenuItemCommandParams} from 'primereact/menuitem';
 import {Draggable, DraggableProvided} from "react-beautiful-dnd";
 
@@ -34,6 +34,7 @@ interface OwnPropsOfArrayItem {
     path: string;
     uischema: ControlElement;
     schema: JsonSchema;
+    collapsed: boolean;
     renderers?: JsonFormsRendererRegistryEntry[];
     cells?: JsonFormsCellRendererRegistryEntry[];
     uischemas?: JsonFormsUISchemaRegistryEntry[];
@@ -41,6 +42,7 @@ interface OwnPropsOfArrayItem {
     enableMoveUp: boolean;
     enableMoveDown: boolean;
     config: any;
+    handleToggle(panel: string): (event: any) => void;
 }
 
 interface StatePropsOfArrayItem extends OwnPropsOfArrayItem {
@@ -67,20 +69,14 @@ export interface ArrayItemProps
 
 const ArrayItemRenderer = (props: ArrayItemProps) => {
     const [labelHtmlId] = useState<string>(createId('array-item'));
-
-
-    const [collapsed, setCollapsed] = useState<boolean>(true);
-
-    useEffect(() => {
-        return () => {
-            removeId(labelHtmlId);
-        };
-    }, [labelHtmlId]);
+    const [panelCollapsed, setPanelCollapsed] = useState<boolean>(true);
 
     const {
         childLabel,
         childType,
         childPath,
+        collapsed,
+        handleToggle,
         index,
         moveDown,
         moveUp,
@@ -95,6 +91,23 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
         renderers,
         cells
     } = props;
+
+    useEffect(() => {
+        return () => {
+            removeId(labelHtmlId);
+        };
+    }, [labelHtmlId]);
+
+    useEffect(() => {
+        return () => {
+            setPanelCollapsed(collapsed);
+        };
+    }, [collapsed]);
+
+
+
+
+
 
     const foundUISchema = useMemo(
         () =>
@@ -143,7 +156,7 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
                 </div>
                 <div className="p-ml-auto">
                     <SplitButton  icon="pi pi-cog"
-                                 onClick={() => setCollapsed((isCollapsed) => !isCollapsed)}
+                                 onClick={() => setPanelCollapsed((current) => !current)}
                                  model={menuOptions}/>
                 </div>
             </div>
@@ -159,9 +172,7 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
                 <div ref={draggableProvided.innerRef}
                      {...draggableProvided.draggableProps} className='p-mb-3'>
                     <Panel headerTemplate={(options) => template(options, draggableProvided)}
-                           toggleable collapsed={collapsed} onToggle={(e) => setCollapsed(e.value)}
-
-                    >
+                           toggleable onToggle={handleToggle(childPath)} collapsed={panelCollapsed}>
                         <div className='p-mt-3'>
                             <JsonFormsDispatch
                                 schema={schema}

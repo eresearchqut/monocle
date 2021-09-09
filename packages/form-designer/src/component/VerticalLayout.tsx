@@ -1,5 +1,6 @@
 import React, {FunctionComponent} from 'react';
 import {
+    ControlElement,
     JsonSchema,
     LayoutProps,
     RankedTester,
@@ -17,7 +18,13 @@ const renderChildren = (layout: VerticalLayout, schema: JsonSchema, path: string
         return [];
     }
     const {renderers, cells} = useJsonForms();
-    return layout.elements.map((child, index) => {
+
+    return layout.elements
+        .map((uiSchemaElement) => uiSchemaElement as ControlElement)
+        .filter((element) => element['scope'] !== '#/properties/type')
+        .sort((a, b) => a.scope === '#/properties/name' ? -1 :
+            a.scope.localeCompare(b.scope))
+        .map((child, index) => {
         return (
             <div key={`${path}-${index}`} className="p-col">
                 <JsonFormsDispatch

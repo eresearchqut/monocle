@@ -23,7 +23,7 @@ import {
 } from '@jsonforms/core';
 
 import get from 'lodash/get';
-import {Button} from 'primereact/button';
+import {SplitButton} from 'primereact/splitbutton';
 import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType, PanelIconsTemplateType} from 'primereact/panel';
 import {Menubar} from 'primereact/menubar';
 import {MenuItem, MenuItemCommandParams} from 'primereact/menuitem';
@@ -44,9 +44,9 @@ interface OwnPropsOfArrayItem {
 }
 
 interface StatePropsOfArrayItem extends OwnPropsOfArrayItem {
-    childLabel: string;
+    childLabel?: string;
+    childType?: string;
     childPath: string;
-    childType: string;
     enableMoveUp: boolean;
     enableMoveDown: boolean;
 }
@@ -117,26 +117,17 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
         const className = `${options.className} p-d-flex`;
 
         const menuOptions: MenuItem[] = [
-                ... collapsed ? [{
-                label: 'Edit',
-                icon: 'pi pi-pencil',
-                command: () => setCollapsed(false)
-            }] : [{
-                    label: 'Collapse',
-                    icon: 'pi pi-chevron-up',
-                    command: () => setCollapsed(true)
-                }],
             {
                 label: 'Remove Item',
                 icon: 'pi pi-times-circle',
                 command: removeItems(path, [index])
             },
-            ... enableMoveUp ? [{
+            ...enableMoveUp ? [{
                 label: 'Move Up',
                 icon: 'pi pi-chevron-circle-up',
                 command: moveUp(path, index)
             }] : [],
-            ... enableMoveDown ? [{
+            ...enableMoveDown ? [{
                 label: 'Move Down',
                 icon: 'pi pi-chevron-circle-down',
                 command: moveDown(path, index)
@@ -151,7 +142,9 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
                     {childLabel}{childType ? ` - (${childType})` : ''}
                 </div>
                 <div className="p-ml-auto">
-                    <Menubar model={menuOptions}/>
+                    <SplitButton  icon="pi pi-cog"
+                                 onClick={() => setCollapsed((isCollapsed) => !isCollapsed)}
+                                 model={menuOptions}/>
                 </div>
             </div>
         )
@@ -230,8 +223,8 @@ export const withContextToArrayItemProps = (Component: ComponentType<ArrayItemPr
         const {schema, path, index, uischemas} = props;
         const childPath = composePaths(path, `${index}`);
         const childData = Resolve.data(ctx.core.data, childPath);
-        const childLabel = get(childData, 'name', '') || get(childData, getFirstPrimitiveProp(schema), '');
-        const childType = get(childData, 'type', '');
+        const childLabel = get(childData, 'name');
+        const childType = get(childData, 'type');
 
         return (
             <Component

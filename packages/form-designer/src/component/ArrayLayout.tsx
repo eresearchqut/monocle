@@ -1,12 +1,10 @@
-import React, {FunctionComponent, useCallback} from 'react';
+import React, {FunctionComponent, useCallback, useState, useEffect} from 'react';
 import {
     ArrayLayoutProps,
-    createDefaultValue,
     isObjectArrayWithNesting,
     RankedTester,
     rankWith,
-    update,
-    composePaths
+    update
 } from '@jsonforms/core';
 import {
     JsonFormsStateContext,
@@ -14,101 +12,127 @@ import {
     withJsonFormsArrayLayoutProps
 } from '@jsonforms/react';
 import ArrayItemRenderer from "./ArrayItemRenderer";
-import merge from 'lodash/merge';
-import map from 'lodash/map';
-import range from 'lodash/range';
+
+
 import {DragDropContext, Droppable, DropResult, ResponderProvided} from "react-beautiful-dnd";
 
+export const ArrayLayout: FunctionComponent<ArrayLayoutProps> = ({
+    id,
+    data,
+    path,
+    schema,
+    uischema,
+    renderers,
+    cells,
+    rootSchema,
+    config,
+    uischemas
+}) => {
 
-const arrayMove = (arr: [], fromIndex: number, toIndex: number) => {
-    const element = arr[fromIndex];
-    arr.splice(fromIndex, 1);
-    arr.splice(toIndex, 0, element);
-}
+    const context: JsonFormsStateContext = useJsonForms();
+    const {dispatch} = context;
+    const [collapsed, setCollapsed] = useState<boolean[]>(new Array(data).fill(false));
 
-interface ArrayLayoutState {
-    collapsed: object;
-}
+    useEffect(() => {
+       console.log(JSON.stringify(collapsed))
+    }, [collapsed]);
 
-interface ArrayLayoutContext extends ArrayLayoutProps {
-    context: JsonFormsStateContext;
-}
+    const arrayMove = (arr: any[], fromIndex: number, toIndex: number) => {
+        const element = arr[fromIndex];
+        arr.splice(fromIndex, 1);
+        arr.splice(toIndex, 0, element);
+    }
 
-export class ArrayLayout extends React.PureComponent<ArrayLayoutContext, ArrayLayoutState> {
-
-    state: ArrayLayoutState = {
-        collapsed: {}
-    };
-    innerCreateDefaultValue = () => createDefaultValue(this.props.schema);
-    handleToggle = (panel: string) => (event: any) => {
-        this.setState((currentState) => {
-            const currentCollapse = currentState.collapsed[panel] || false;
-            currentState.collapsed[panel] = !currentCollapse
-            console.log(panel,  currentState.collapsed[panel]);
+    const handleToggle = (index: number) => (event: any): void => {
+        setCollapsed((currentState) => {
+            const currentCollapse = currentState[index];
+            currentState[index] = !currentCollapse;
             return currentState;
         });
-    };
-    isCollapsed = (index: number) =>
-        this.state.collapsed[composePaths(this.props.path, `${index}`)] || false;
-
-
-    render() {
-        const {
-            id,
-            data,
-            path,
-            schema,
-            uischema,
-            renderers,
-            cells,
-            rootSchema,
-            config,
-            uischemas,
-            context
-        } = this.props;
-
-        const onDragEnd = (result: DropResult) => {
-            if (context.dispatch) {
-                context.dispatch(
-                    update(path, array => {
-                        arrayMove(array, result.source.index, result.destination?.index || 0);
-                        return array;
-                    })
-                );
-            }
+        if (dispatch) {
+            dispatch(
+                update(path, array => array)
+            );
         }
+    };
 
-        return (
-            <DragDropContext onDragEnd={(result: DropResult, provided: ResponderProvided) => onDragEnd(result)}>
-                <Droppable droppableId={id}>
-                    {(droppableProvided, snapshot) => (
-                        <div ref={droppableProvided.innerRef}
-                             {...droppableProvided.droppableProps}>
-                            {map(range(data), index => (
-                                <ArrayItemRenderer
-                                    index={index}
-                                    schema={schema}
-                                    path={path}
-                                    uischema={uischema}
-                                    renderers={renderers}
-                                    cells={cells}
-                                    key={index}
-                                    rootSchema={rootSchema}
-                                    enableMoveUp={index != 0}
-                                    enableMoveDown={index < data - 1}
-                                    config={config}
-                                    uischemas={uischemas}
-                                    collapsed={this.isCollapsed(index)}
-                                    handleToggle={this.handleToggle}
-                                />
-                            ))}
-                            {droppableProvided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
-            </DragDropContext>
-        );
+    const remove = (index: number) => (event: any): void => {
+        setCollapsed((currentState) => {
+            currentState.splice(index, 1);
+            return currentState;
+        });
+        if (dispatch) {
+            dispatch(
+                update(path, array => {
+                    array.splice(index, 1);
+                    return array;
+                })
+            );
+        }
     }
+
+    const move = (from: number, to: number) => {
+        if (context.dispatch) {
+            // Move the collapsed state of the item
+            setCollapsed((currentState) => {
+                arrayMove(currentState, from, to)
+                return currentState;
+            });
+            // Then move the value in the array
+            context.dispatch(
+                update(path, array => {
+                    arrayMove(array, from, to);
+                    return array;
+                })
+            );
+        }
+    }
+
+    const moveUp =  (index: number) => (event: any): void => {
+        move(index, index - 1);
+    };
+
+    const moveDown =  (index: number) => (event: any): void => {
+        move(index, index + 1);
+    };
+
+    const onDragEnd = (result: DropResult) => {
+        move(result.source.index, result.destination?.index || 0);
+    }
+
+    return (
+        <DragDropContext onDragEnd={(result: DropResult, provided: ResponderProvided) => onDragEnd(result)}>
+            <Droppable droppableId={id}>
+                {(droppableProvided, snapshot) => (
+                    <div ref={droppableProvided.innerRef}
+                         {...droppableProvided.droppableProps}>
+                        {collapsed.map((isCollapsed, index) => (
+                            <ArrayItemRenderer
+                                index={index}
+                                schema={schema}
+                                path={path}
+                                uischema={uischema}
+                                renderers={renderers}
+                                cells={cells}
+                                key={index}
+                                rootSchema={rootSchema}
+                                enableMoveUp={index != 0}
+                                enableMoveDown={index < data - 1}
+                                config={config}
+                                uischemas={uischemas}
+                                collapsed={isCollapsed}
+                                handleToggle={handleToggle}
+                                moveUp={moveUp}
+                                moveDown={moveDown}
+                                remove={remove}
+                            />
+                        ))}
+                        {droppableProvided.placeholder}
+                    </div>
+                )}
+            </Droppable>
+        </DragDropContext>
+    );
 }
 
 
@@ -133,7 +157,7 @@ export const ArrayLayoutRenderer: FunctionComponent<ArrayLayoutProps> = ({
         addItem
     ]);
 
-    const context = useJsonForms();
+
 
     return (
         <ArrayLayout
@@ -151,7 +175,6 @@ export const ArrayLayoutRenderer: FunctionComponent<ArrayLayoutProps> = ({
             renderers={renderers}
             cells={cells}
             uischemas={uischemas}
-            context={context}
         />
     );
 };

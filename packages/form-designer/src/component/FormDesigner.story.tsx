@@ -10,7 +10,7 @@ export default {
 
 const Template: Story<FormDesignerProps> =
     (props) =>
-        <FormDesigner {...props} />
+        <FormDesigner {...props} onDefinitionChange={({errors, data}) => console.log(errors, JSON.stringify(data))} />
 Template.bind({});
 
 export const Example = Template.bind({});

@@ -13,10 +13,7 @@ import {
     findUISchema,
     JsonFormsRendererRegistryEntry,
     JsonSchema,
-    moveDown,
-    moveUp,
     Resolve,
-    update,
     JsonFormsCellRendererRegistryEntry,
     JsonFormsUISchemaRegistryEntry,
     createId,
@@ -26,7 +23,7 @@ import {
 import get from 'lodash/get';
 import {SplitButton} from 'primereact/splitbutton';
 import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType} from 'primereact/panel';
-import {MenuItem, MenuItemCommandParams} from 'primereact/menuitem';
+import {MenuItem} from 'primereact/menuitem';
 import {Draggable, DraggableProvided} from "react-beautiful-dnd";
 
 interface OwnPropsOfArrayItem {
@@ -45,7 +42,7 @@ interface OwnPropsOfArrayItem {
     handleToggle(index: number): (event: any) => void;
     moveUp(index: number): (event: any) => void;
     moveDown(index: number): (event: any) => void;
-    remove(index): (event: any) => void;
+    remove(index: number): (event: any) => void;
 }
 
 interface StatePropsOfArrayItem extends OwnPropsOfArrayItem {
@@ -55,8 +52,6 @@ interface StatePropsOfArrayItem extends OwnPropsOfArrayItem {
     enableMoveUp: boolean;
     enableMoveDown: boolean;
 }
-
-
 
 export interface ArrayItemProps
     extends StatePropsOfArrayItem {
@@ -86,14 +81,11 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
         handleToggle
     } = props;
 
-
     useEffect(() => {
         return () => {
             removeId(labelHtmlId);
         };
     }, [labelHtmlId]);
-
-
 
     const foundUISchema = useMemo(
         () =>
@@ -132,7 +124,6 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
             }] : []
         ];
 
-
         return (
             <div className={className}
                  {...draggableProvided.dragHandleProps}>
@@ -140,7 +131,7 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
                     {childLabel}{childType ? ` - (${childType})` : ''}
                 </div>
                 <div className="p-ml-auto">
-                    <SplitButton  icon="pi pi-cog"
+                    <SplitButton  icon={collapsed ? "pi pi-plus" : "pi pi-minus"} dropdownIcon="pi pi-cog"
                                  onClick={options.onTogglerClick}
                                  model={menuOptions} />
                 </div>

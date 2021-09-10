@@ -38,6 +38,7 @@ export const FormCanvas: FunctionComponent<FormCanvasProps> = ({definition, onCh
             renderers={renderers}
             cells={cells}
             onChange={onChange}
+            config={{booleansAreTrueOrFalse: true}}
         />
     );
 };

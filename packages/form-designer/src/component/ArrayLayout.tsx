@@ -13,7 +13,6 @@ import {
 } from '@jsonforms/react';
 import ArrayItemRenderer from "./ArrayItemRenderer";
 
-
 import {DragDropContext, Droppable, DropResult, ResponderProvided} from "react-beautiful-dnd";
 
 export const ArrayLayout: FunctionComponent<ArrayLayoutProps> = ({
@@ -31,11 +30,10 @@ export const ArrayLayout: FunctionComponent<ArrayLayoutProps> = ({
 
     const context: JsonFormsStateContext = useJsonForms();
     const {dispatch} = context;
-    const [collapsed, setCollapsed] = useState<boolean[]>(new Array(data).fill(false));
 
-    useEffect(() => {
-       console.log(JSON.stringify(collapsed))
-    }, [collapsed]);
+    const startCollapsed = uischema.scope === "#/properties/inputs";
+
+    const [collapsed, setCollapsed] = useState<boolean[]>(new Array(data).fill(startCollapsed));
 
     const arrayMove = (arr: any[], fromIndex: number, toIndex: number) => {
         const element = arr[fromIndex];
@@ -156,8 +154,6 @@ export const ArrayLayoutRenderer: FunctionComponent<ArrayLayoutProps> = ({
     const addItemCb = useCallback((p: string, value: any) => addItem(p, value), [
         addItem
     ]);
-
-
 
     return (
         <ArrayLayout

@@ -4,10 +4,7 @@ import {FormPreview} from "./FormPreview";
 
 import {Form} from "../../../form-definition";
 import {Card} from 'primereact/card';
-import Ajv, {ErrorObject} from 'ajv';
-import {JsonFormsCore} from "@jsonforms/core";
-
-
+import {ErrorObject} from 'ajv';
 
 
 export interface FormDesignerProps {
@@ -16,8 +13,6 @@ export interface FormDesignerProps {
     onDefinitionChange?(state: { errors?: ErrorObject[], data: any }): void;
     onDataChange?(state: { errors?: ErrorObject[], data: any }): void;
 }
-
-
 
 export const FormDesigner: FunctionComponent<FormDesignerProps> = props => {
 

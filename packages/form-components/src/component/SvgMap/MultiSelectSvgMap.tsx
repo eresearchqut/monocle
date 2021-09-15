@@ -20,19 +20,18 @@ export const MultiSelectSvgMap: FunctionComponent<MultiSelectSvgMapProps> = ({ma
     const [selected, setSelected] = useState<string[]>(value);
 
     useEffect(() => {
-        console.log('internal', selected)
-     handleChange(selected);
+        handleChange(selected);
     }, [selected]);
 
     useEffect(() => {
-        console.log('external', value)
         setSelected(() => value);
     }, [value]);
 
     const isSelected = (location: Location) => selected && selected.some((id) => location.id === id);
 
-    const toggleLocation = (event: SyntheticEvent<SVGPathElement>)=> {
-        const {id} = event.target;
+    const handleLocationClick = (event: MouseEvent<SVGPathElement>) => {
+        event.preventDefault();
+        const {id} = event.target as SVGPathElement;
         setSelected((current) => {
             const updated = current ? [...current] : [];
             if (updated.indexOf(id) >=  0) {
@@ -42,11 +41,6 @@ export const MultiSelectSvgMap: FunctionComponent<MultiSelectSvgMapProps> = ({ma
             }
             return updated;
         })
-    }
-
-    const handleLocationClick = (event: MouseEvent<SVGPathElement>) => {
-        event.preventDefault();
-        toggleLocation(event);
     }
 
     return (

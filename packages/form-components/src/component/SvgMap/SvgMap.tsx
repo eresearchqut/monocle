@@ -29,7 +29,7 @@ export interface StatePropsOfSvgMapProps {
     locationRole?: string,
     isSelected?: (location: Location) => boolean,
     locationClassName?: (location: Location, index: number) => string | string,
-    locationTabIndex?: (location: Location, index: number) => string | string,
+    locationTabIndex?: (location: Location, index: number) => number | number,
     locationAriaLabel?: (location: Location, index: number) => string | string,
 }
 
@@ -54,7 +54,7 @@ export const SvgMap: FunctionComponent<SvgMapProps> = (props) => {
                         name={location.name}
                         d={location.path}
                         className={typeof props.locationClassName === 'function' ? props.locationClassName(location, index) : props.locationClassName || 'svg-map__location'}
-                        tabIndex={typeof props.locationTabIndex === 'function' ? props.locationTabIndex(location, index) : props.locationTabIndex || '0'}
+                        tabIndex={typeof props.locationTabIndex === 'function' ? props.locationTabIndex(location, index) : props.locationTabIndex || 0}
                         role={props.locationRole || 'none'}
                         aria-label={typeof props.locationAriaLabel === 'function' ? props.locationAriaLabel(location, index) : location.name}
                         aria-checked={props.isSelected && props.isSelected(location)}

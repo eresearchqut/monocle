@@ -46,7 +46,6 @@
     "@types/lodash": "4.14.171",
     "@types/react": "17.0.16",
     "@types/react-dom": "17.0.9",
-    "@types/react-svg-map": "^2.1.1",
     "@types/uuid": "^8.3.1",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
     "babel-loader": "^8.2.2",

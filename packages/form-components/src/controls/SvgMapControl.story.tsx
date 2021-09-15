@@ -8,7 +8,6 @@ import SvgMapControl from "./SvgMapControl";
 
 import {initStoryStore} from "../storyStore";
 import {cells, renderers} from "../index";
-import {Card} from "primereact/card";
 
 export default {
     title: 'Control/SvgMapControl',
@@ -42,11 +41,10 @@ Template.bind({});
 
 export const Body = Template.bind({});
 Body.args = {
-    data: true,
-    path: 'control',
+    path: 'whereDoesItHurt',
     schema: {
         properties: {
-            body: {
+            whereDoesItHurt: {
                 type: 'array',
                 items: {
                     type: 'string'
@@ -56,11 +54,17 @@ Body.args = {
     },
     uischema: {
         type: 'Control',
-        scope: '#/properties/control',
+        scope: '#/properties/whereDoesItHurt',
         options: {
             map: 'body',
             multiselect: true
         }
     }
+};
+
+export const BodySelected = Template.bind({});
+BodySelected.args = {
+    ...Body.args,
+    data: ['Abs']
 };
 

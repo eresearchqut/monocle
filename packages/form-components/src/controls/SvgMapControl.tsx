@@ -11,7 +11,6 @@ import merge from "lodash/merge";
 import {AutoComplete} from 'primereact/autocomplete';
 import {startCase} from "lodash";
 
-import SvgMap from "../component/SvgMap/SvgMap";
 import {MultiSelectSvgMap} from "../component/SvgMap/MultiSelectSvgMap";
 
 

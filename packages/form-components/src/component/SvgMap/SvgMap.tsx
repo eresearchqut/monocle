@@ -1,4 +1,5 @@
 import React, {FocusEvent, FunctionComponent, MouseEvent} from 'react';
+import './svg-map.scss'
 
 export interface Location {
     id: string

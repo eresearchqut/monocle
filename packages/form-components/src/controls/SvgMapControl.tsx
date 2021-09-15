@@ -2,17 +2,12 @@ import React from 'react';
 import {ControlProps, ControlState, isBooleanControl, RankedTester, rankWith} from '@jsonforms/core';
 import {Control, withJsonFormsControlProps} from '@jsonforms/react';
 
-// @ts-ignore
-import {CheckboxSVGMap} from "react-svg-map";
 import Maps from '../maps'
-import "react-svg-map/lib/index.css";
-
 import merge from "lodash/merge";
 import {AutoComplete} from 'primereact/autocomplete';
 import {startCase} from "lodash";
 
-import {MultiSelectSvgMap} from "../component/SvgMap/MultiSelectSvgMap";
-
+import {MultiSelectSvgMap} from "../component/SvgMap";
 
 export class SvgMapControl extends Control<ControlProps, ControlState> {
     render() {
@@ -41,7 +36,7 @@ export class SvgMapControl extends Control<ControlProps, ControlState> {
         return (
             <div className="p-grid">
                 <div className="p-col-sm-6 p-md-8">
-                    <MultiSelectSvgMap map={svgMap} value={data} handleChange={(locationIds) => handleChange(path, locationIds)}   />
+                    <MultiSelectSvgMap map={svgMap} value={data} handleChange={(locationIds: string[]) => handleChange(path, locationIds)}   />
                 </div>
                 <div className="p-col-sm-6 p-md-4">
                     <div className="p-inputgroup p-field">

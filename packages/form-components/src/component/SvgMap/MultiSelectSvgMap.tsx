@@ -48,4 +48,4 @@ export const MultiSelectSvgMap: FunctionComponent<MultiSelectSvgMapProps> = ({ma
     );
 }
 
-export default SvgMap;
+export default MultiSelectSvgMap;

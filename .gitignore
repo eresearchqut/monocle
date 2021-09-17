@@ -108,3 +108,6 @@ dist
 
 # React app build
 build
+
+# Story Book Static Site
+storybook-static

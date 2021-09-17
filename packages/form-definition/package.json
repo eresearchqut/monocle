@@ -16,6 +16,7 @@
         "build": "yarn clean && tsc --build && yarn schema && cp \"./package.json\" ./dist/",
         "test": "echo 'notest'",
         "build-storybook": "echo 'build-storybook'",
+        "deploy-storybook": "echo 'deploy-storybook'",
         "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0"
     },
     "devDependencies": {

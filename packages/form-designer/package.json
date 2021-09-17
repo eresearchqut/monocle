@@ -19,7 +19,8 @@
     "test": "echo 'notests'",
     "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "rimraf storybook-static && build-storybook"
+    "build-storybook": "rimraf storybook-static && build-storybook",
+    "deploy-storybook": "storybook-to-ghpages"
   },
   "dependencies": {
     "@trrf/form-compiler": "1.0.0",
@@ -35,6 +36,7 @@
     "@storybook/addon-links": "^6.3.6",
     "@storybook/preset-scss": "^1.0.3",
     "@storybook/react": "^6.3.6",
+    "@storybook/storybook-deployer": "^2.8.10",
     "storybook-react-context": "^0.4.0",
     "@types/react-json-editor-ajrm": "2.5.2",
     "@types/react-beautiful-dnd": "^13.1.0",

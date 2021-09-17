@@ -19,6 +19,8 @@
     "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "rimraf storybook-static && build-storybook",
+    "deploy-storybook": "storybook-to-ghpages",
+
     "svg-map": "svg-maps generate"
   },
   "dependencies": {
@@ -41,6 +43,7 @@
     "@storybook/addon-links": "^6.3.6",
     "@storybook/preset-scss": "^1.0.3",
     "@storybook/react": "^6.3.6",
+    "@storybook/storybook-deployer": "^2.8.10",
     "@svg-maps/cli": "^1.0.0-beta.5",
     "@types/enzyme": "^3.10.3",
     "@types/lodash": "4.14.171",

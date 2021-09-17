@@ -10,15 +10,15 @@
     "url": "https://github.com/eresearchqut/future-state-mono-repo/tree/main/packages/form-components"
   },
   "scripts": {
-    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo && rimraf storybook-static",
+    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
     "copy-files": "copyfiles -u 1 src/**/*.scss dist/ && copyfiles package.json dist/",
     "prepack": "yarn build",
-    "build": "yarn clean && tsc --build && yarn copy-files && build-storybook",
+    "build": "yarn clean && tsc --build && yarn copy-files",
     "test": "jest --no-cache",
     "test-cov": "jest --no-cache --coverage",
     "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
+    "build-storybook": "rimraf storybook-static && build-storybook",
     "svg-map": "svg-maps generate"
   },
   "dependencies": {

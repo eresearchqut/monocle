@@ -10,6 +10,7 @@
     "prepare": "node ./configure-references.js",
     "clean": "lerna run clean --stream",
     "build": "lerna run build --stream",
+    "build-storybook": "lerna run build-storybook --stream",
     "lint": "lerna run lint --stream --parallel",
     "test": "lerna run test --stream"
   },

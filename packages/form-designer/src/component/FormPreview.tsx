@@ -11,8 +11,6 @@ import {findFormCompiler} from "@trrf/form-compiler";
 import {JsonFormsCore} from '@jsonforms/core';
 
 
-
-
 export interface FormPreviewProps {
     definition: Form;
     data?: any;
@@ -27,9 +25,6 @@ export const FormPreview: FunctionComponent<FormPreviewProps> = ({definition, da
     const formCompiler = findFormCompiler(definition);
     const schema = formCompiler?.schema(definition);
     const ui = formCompiler?.ui(definition);
-
-    console.log(ui)
-
 
     return (
         <JsonForms

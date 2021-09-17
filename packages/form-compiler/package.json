@@ -15,6 +15,7 @@
         "build": "yarn clean && tsc --build && cp \"./package.json\" ./dist/",
         "test": "jest --no-cache",
         "test-cov": "jest --no-cache --coverage",
+        "build-storybook": "echo 'build-storybook'",
         "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0"
     },
     "dependencies": {

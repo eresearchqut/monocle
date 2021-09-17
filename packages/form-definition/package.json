@@ -15,6 +15,7 @@
         "schema": "typescript-json-schema tsconfig.json Form --out ../form-designer/src/schema/form.json && typescript-json-schema tsconfig.json Section --out ../form-designer/src/schema/section.json && typescript-json-schema tsconfig.json Input --out ../form-designer/src/schema/input.json",
         "build": "yarn clean && tsc --build && yarn schema && cp \"./package.json\" ./dist/",
         "test": "echo 'notest'",
+        "build-storybook": "echo 'build-storybook'",
         "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0"
     },
     "devDependencies": {

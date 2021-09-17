@@ -1,12 +1,9 @@
 import React, {FunctionComponent} from 'react';
 import {
-    HorizontalLayout,
     JsonSchema,
-    Layout,
     LayoutProps,
     RankedTester,
     rankWith,
-    RendererProps,
     uiTypeIs, VerticalLayout
 } from '@jsonforms/core';
 import {JsonFormsDispatch, useJsonForms, withJsonFormsLayoutProps} from '@jsonforms/react';

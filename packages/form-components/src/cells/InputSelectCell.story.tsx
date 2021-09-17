@@ -6,13 +6,12 @@ import {Provider} from 'react-redux';
 import {CellProps} from "@jsonforms/core";
 import InputSelectCell from "./InputSelectCell";
 
-import {withReactContext} from 'storybook-react-context';
 import {initStoryStore} from "../storyStore";
 
 export default {
     title: 'Cells/InputSelectCell',
     component: InputSelectCell,
-    decorators: [ withReactContext,
+    decorators: [
         (Story, context) => {
             const {schema, uischema, data, path} = context.args as CellProps;
             const store = initStoryStore({data: {[path]: data}, schema, uischema});
@@ -24,7 +23,6 @@ export default {
                 </Provider>
             )
         },
-
     ]
 } as Meta;
 

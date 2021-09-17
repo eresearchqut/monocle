@@ -15,9 +15,10 @@
         "build": "yarn clean && tsc --build && cp \"./package.json\" ./dist/",
         "test": "jest --no-cache",
         "test-cov": "jest --no-cache --coverage",
+        "storybook": "echo 'no storybook'",
         "build-storybook": "echo 'build-storybook'",
         "deploy-storybook": "echo 'deploy-storybook'",
-        "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0"
+        "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0 --fix"
     },
     "dependencies": {
         "@jsonforms/core": "^3.0.0-alpha.0",

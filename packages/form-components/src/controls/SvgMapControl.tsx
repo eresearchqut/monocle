@@ -31,7 +31,7 @@ export class SvgMapControl extends Control<ControlProps, ControlState> {
         } = this.props;
 
         const appliedUiSchemaOptions = merge({}, config, uischema.options);
-        const {map} = appliedUiSchemaOptions;
+        const {map, hint} = appliedUiSchemaOptions;
         const itemTemplate = (item: string) => startCase(item);
 
         const selectedItemTemplate = (item: string) => startCase(item);
@@ -40,19 +40,23 @@ export class SvgMapControl extends Control<ControlProps, ControlState> {
 
         return (
             <div className="p-grid">
+
+                <div className="p-col-sm-6 p-md-4">
+                    <div className="p-field">
+                        <label htmlFor={id} id={id + '-label'}>{label}</label>
+                        { hint &&
+                        <div className="p-text-light p-mb-2">{hint}</div>
+                        }
+                      <AutoComplete inputId={id} id={id + '-selected'} value={data || []} multiple
+                                    itemTemplate={itemTemplate}
+                                    selectedItemTemplate={selectedItemTemplate}
+                                    onChange={(e) => handleChange(path, e.value)}/>
+
+
+                    </div>
+                </div>
                 <div className="p-col-sm-6 p-md-8">
                     <MultiSelectSvgMap map={svgMap} value={data} handleChange={(locationIds: string[]) => handleChange(path, locationIds)}   />
-                </div>
-                <div className="p-col-sm-6 p-md-4">
-                    <div className="p-inputgroup p-field">
-                        <span className="p-float-label">
-                              <AutoComplete inputId={id} id={id + '-selected'} value={data || []} multiple
-                                            itemTemplate={itemTemplate}
-                                            selectedItemTemplate={selectedItemTemplate}
-                                            onChange={(e) => handleChange(path, e.value)}/>
-                            <label htmlFor={id} id={id + '-label'}>{label}</label>
-                        </span>
-                    </div>
                 </div>
             </div>
 

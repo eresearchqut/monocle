@@ -1,10 +1,10 @@
-import {VerticalFormCompiler} from "./verticalFormCompiler";
-import {AbstractFormCompiler} from "./abstractFormCompiler";
-import FormCompiler from "../interfaces/formCompiler";
-import {Form} from "../../../form-definition";
+import {VerticalFormCompiler} from './verticalFormCompiler';
+import {AbstractFormCompiler} from './abstractFormCompiler';
+import FormCompiler from '../interfaces/formCompiler';
+import {Form} from '../../../form-definition';
 
 export {
-    FormCompiler, AbstractFormCompiler, VerticalFormCompiler
+  FormCompiler, AbstractFormCompiler, VerticalFormCompiler,
 };
 
 

@@ -1,5 +1,5 @@
-import {Named} from "./named";
-import {Input} from "./input";
+import {Named} from './named';
+import {Input} from './input';
 
 /**
  * @title Section
@@ -7,8 +7,5 @@ import {Input} from "./input";
 export interface Section extends Named {
     inputs: Input[];
 };
-
-
-
 
 

@@ -6,13 +6,13 @@ import {Provider} from 'react-redux';
 import {CellProps} from "@jsonforms/core";
 import InputBooleanCell from "./InputBooleanCell";
 
-import {withReactContext} from 'storybook-react-context';
+
 import {initStoryStore} from "../storyStore";
 
 export default {
     title: 'Cells/InputBooleanCell',
     component: InputBooleanCell,
-    decorators: [ withReactContext,
+    decorators: [
         (Story, context) => {
             const {schema, uischema, data, path} = context.args as CellProps;
             const store = initStoryStore({data: {[path]: data}, schema, uischema});

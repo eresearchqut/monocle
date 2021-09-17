@@ -1,5 +1,5 @@
-import {Form, Section} from "@trrf/form-definition";
-import {JsonSchema, UISchemaElement} from "@jsonforms/core";
+import {Form, Section} from '@trrf/form-definition';
+import {JsonSchema, UISchemaElement} from '@jsonforms/core';
 
 export default interface SectionCompiler {
 
@@ -7,4 +7,4 @@ export default interface SectionCompiler {
 
     ui(form: Form, section: Section): UISchemaElement | undefined;
 
-}
+};;;;;;;;;;

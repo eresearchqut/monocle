@@ -6,13 +6,13 @@ import {Provider} from 'react-redux';
 import {CellProps} from "@jsonforms/core";
 import InputTextCell from "./InputTextCell";
 
-import {withReactContext} from 'storybook-react-context';
+
 import {initStoryStore} from "../storyStore";
 
 export default {
     title: 'Cells/InputTextCell',
     component: InputTextCell,
-    decorators: [ withReactContext,
+    decorators: [
         (Story, context) => {
             const {schema, uischema, data, path} = context.args as CellProps;
             const store = initStoryStore({data: {[path]: data}, schema, uischema});

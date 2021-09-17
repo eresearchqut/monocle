@@ -1,9 +1,10 @@
-import {Named} from "./named";
-import {Requireable} from "./requireable";
-import {Typed} from "./typed";
+import {Named} from './named';
+import {Requireable} from './requireable';
+import {Typed} from './typed';
+import {Hintable} from './hintable';
 
 
-export interface InputType extends Named, Requireable, Typed {
+export interface InputType extends Named, Requireable, Typed, Hintable {
     type: 'text' | 'numeric' | 'currency' | 'boolean' | 'date' | 'time' | 'date-time' | 'email' | 'svg-map'
 }
 
@@ -13,7 +14,6 @@ export interface InputType extends Named, Requireable, Typed {
 export interface BooleanInput extends InputType {
     type: 'boolean'
 }
-
 
 
 /**

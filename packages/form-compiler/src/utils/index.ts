@@ -1,8 +1,8 @@
-import {buildPropertyPath, generatePathFromName} from "./pathUtils";
+import {buildPropertyPath, generatePathFromName} from './pathUtils';
 
 export {
-    generatePathFromName,
-    buildPropertyPath
-}
+  generatePathFromName,
+  buildPropertyPath,
+};
 
 

@@ -3,6 +3,10 @@
     "definitions": {
         "BooleanInput": {
             "properties": {
+                "hint": {
+                    "description": "Hint text can be used to provide more context that will help the user successfully complete the form field.",
+                    "type": "string"
+                },
                 "name": {
                     "description": "The name of the element",
                     "type": "string"
@@ -33,6 +37,10 @@
                     ],
                     "type": "string"
                 },
+                "hint": {
+                    "description": "Hint text can be used to provide more context that will help the user successfully complete the form field.",
+                    "type": "string"
+                },
                 "maximum": {
                     "type": "number"
                 },
@@ -59,6 +67,10 @@
         },
         "DateInput": {
             "properties": {
+                "hint": {
+                    "description": "Hint text can be used to provide more context that will help the user successfully complete the form field.",
+                    "type": "string"
+                },
                 "maximum": {
                     "format": "date",
                     "type": "string"
@@ -94,6 +106,10 @@
                 "groupNumbers": {
                     "description": "Whether to use grouping separators, such as thousands separators",
                     "type": "boolean"
+                },
+                "hint": {
+                    "description": "Hint text can be used to provide more context that will help the user successfully complete the form field.",
+                    "type": "string"
                 },
                 "increment": {
                     "type": "number"
@@ -160,6 +176,10 @@
         },
         "SvgMapInput": {
             "properties": {
+                "hint": {
+                    "description": "Hint text can be used to provide more context that will help the user successfully complete the form field.",
+                    "type": "string"
+                },
                 "map": {
                     "enum": [
                         "body",
@@ -191,6 +211,10 @@
         },
         "TextInput": {
             "properties": {
+                "hint": {
+                    "description": "Hint text can be used to provide more context that will help the user successfully complete the form field.",
+                    "type": "string"
+                },
                 "maxLength": {
                     "type": "number"
                 },

@@ -2,6 +2,7 @@ import React from 'react';
 import {ControlProps, ControlState, isControl, NOT_APPLICABLE, RankedTester, rankWith} from '@jsonforms/core';
 import {Control, DispatchCell, withJsonFormsControlProps} from '@jsonforms/react';
 import maxBy from 'lodash/maxBy';
+import merge from 'lodash/merge';
 
 export class InputControl extends Control<ControlProps, ControlState> {
     render() {
@@ -11,6 +12,7 @@ export class InputControl extends Control<ControlProps, ControlState> {
             id,
             label,
             uischema,
+            config,
             visible,
             path,
             required,
@@ -22,6 +24,9 @@ export class InputControl extends Control<ControlProps, ControlState> {
             return null;
         }
 
+
+        const appliedUiSchemaOptions = merge({}, config, uischema.options);
+        const {hint} = appliedUiSchemaOptions;
         const requiredMessage = required ? 'This is a required field' : undefined;
         const cell = maxBy(cells, r => r.tester(uischema, schema));
 
@@ -38,15 +43,18 @@ export class InputControl extends Control<ControlProps, ControlState> {
         />)
 
         return (
-            <div className="p-inputgroup p-field">
-                <span className="p-float-label">
+            <div className="p-field">
+                <label htmlFor={id} id={id + '-label'}>{label}</label>
+                { hint &&
+                <div className="p-text-light p-mb-2">{hint}</div>
+                }
+                <div className="p-inputgroup" >
                     {dispatchCell}
-                    <label htmlFor={id} id={id + '-label'}>{label}</label>
-                </span>
-                {required &&
-                <span className="p-inputgroup-addon" style={{borderLeft: 0}} title={requiredMessage}
-                      p-aria-label={requiredMessage}><i
-                    className="pi pi-info-circle"></i></span>}
+                    {required &&
+                    <span className="p-inputgroup-addon" style={{borderLeft: 0}} title={requiredMessage}
+                          p-aria-label={requiredMessage}><i
+                        className="pi pi-info-circle"></i></span>}
+                </div>
             </div>
         );
     }

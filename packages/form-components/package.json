@@ -16,12 +16,10 @@
     "build": "yarn clean && tsc --build && yarn copy-files",
     "test": "jest --no-cache",
     "test-cov": "jest --no-cache --coverage",
-    "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0",
-    "storybook": "start-storybook -p 6006",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\" --fix --max-warnings=0",
+    "storybook": "(start-storybook -p 6006)",
     "build-storybook": "rimraf storybook-static && build-storybook",
-    "deploy-storybook": "storybook-to-ghpages",
-
-    "svg-map": "svg-maps generate"
+    "deploy-storybook": "storybook-to-ghpages"
   },
   "dependencies": {
     "@jsonforms/core": "^3.0.0-alpha.0",
@@ -56,6 +54,7 @@
     "enzyme": "^3.10.0",
     "jsdom": "^16.6.0",
     "jsdom-global": "^3.0.2",
+    "sass-loader": "^10.2.0",
     "prettier": "^2.3.2",
     "react-redux": "^7.2.4",
     "typescript-plugin-css-modules": "3.4.0"

@@ -3,11 +3,11 @@ import * as React from "react";
 import {Meta, Story} from '@storybook/react';
 import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
 import {Provider} from 'react-redux';
-import {ControlProps} from "@jsonforms/core";
-import InputBooleanControl from "./InputBooleanControl";
+import {ControlProps} from '@jsonforms/core';
+import InputBooleanControl from './InputBooleanControl';
 
-import {initStoryStore} from "../storyStore";
-import {cells, renderers} from "../index";
+import {initStoryStore} from '../storyStore';
+import {cells, renderers} from '../index';
 
 export default {
     title: 'Control/InputBooleanControl',

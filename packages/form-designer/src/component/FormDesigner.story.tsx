@@ -62,6 +62,13 @@ Example.args = {
                         type: 'date',
                         required: true,
                         name: 'Datum',
+                    },
+                    {
+                        type: 'svg-map',
+                        multiselect: true,
+                        map: 'body',
+                        name: 'Body Map',
+                        required: false
                     }
                 ]
             }

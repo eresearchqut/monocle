@@ -28,6 +28,8 @@ export const FormPreview: FunctionComponent<FormPreviewProps> = ({definition, da
     const schema = formCompiler?.schema(definition);
     const ui = formCompiler?.ui(definition);
 
+    console.log(ui)
+
 
     return (
         <JsonForms

@@ -19,6 +19,7 @@ const renderChildren = (layout: VerticalLayout, schema: JsonSchema, path: string
     }
     const {renderers, cells} = useJsonForms();
     return layout.elements.map((child, index) => {
+        console.log(child);
         return (
             <div key={`${path}-${index}`} className="p-col">
                 <JsonFormsDispatch

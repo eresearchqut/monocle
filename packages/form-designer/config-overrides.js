@@ -1,5 +1,6 @@
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const ForkTSCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+// const rewireSass = require('react-app-rewire-sass-modules');
 const { override, addLessLoader } = require('customize-cra');
 
 function configOverrides(config) {
@@ -46,7 +47,7 @@ function configOverrides(config) {
             })
         );
     }
-
+    //config = rewireSass(config, env);
     return config;
 }
 

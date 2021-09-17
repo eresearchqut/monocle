@@ -17,7 +17,7 @@
             "$ref": "#/definitions/CurrencyInput"
         },
         {
-            "$ref": "#/definitions/ImageMapInput"
+            "$ref": "#/definitions/SvgMapInput"
         }
     ],
     "definitions": {
@@ -105,82 +105,6 @@
             "title": "Date",
             "type": "object"
         },
-        "ImageArea": {
-            "properties": {
-                "coords": {
-                    "description": "Coordinates delimiting the zone according to the specified shape:\nrect: top-left-X,top-left-Y,bottom-right-X,bottom-right-Y\ncircle: center-X,center-Y,radius\npoly: Every point in the polygon path as point-X,point-Y,...",
-                    "items": {
-                        "type": "number"
-                    },
-                    "type": "array"
-                },
-                "disabled": {
-                    "description": "Enable/Disable area listeners and highlighting",
-                    "type": "boolean"
-                },
-                "fillColor": {
-                    "$ref": "#/definitions/Rgba",
-                    "description": "Fill color of the highlighted zone"
-                },
-                "href": {
-                    "description": "Target link for a click in the zone (note that if you provide an onClick prop, href will be prevented)",
-                    "type": "string"
-                },
-                "id": {
-                    "description": "Uniquely identify an area.",
-                    "type": "string"
-                },
-                "preFillColor": {
-                    "$ref": "#/definitions/Rgba",
-                    "description": "Pre filled color of the highlighted zone"
-                },
-                "shape": {
-                    "description": "Either rect, circle or poly",
-                    "enum": [
-                        "circle",
-                        "poly",
-                        "rect"
-                    ],
-                    "type": "string"
-                },
-                "strokeColor": {
-                    "description": "Border color of the highlighted zone",
-                    "type": "number"
-                }
-            },
-            "title": "Image Area",
-            "type": "object"
-        },
-        "ImageMapInput": {
-            "properties": {
-                "areas": {
-                    "items": {
-                        "$ref": "#/definitions/ImageArea"
-                    },
-                    "type": "array"
-                },
-                "image": {
-                    "format": "uri",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "The name of the element",
-                    "type": "string"
-                },
-                "required": {
-                    "description": "Can the element be flagged as required",
-                    "type": "boolean"
-                },
-                "type": {
-                    "enum": [
-                        "image-map"
-                    ],
-                    "type": "string"
-                }
-            },
-            "title": "Image Map",
-            "type": "object"
-        },
         "NumericInput": {
             "properties": {
                 "decimalPlaces": {
@@ -218,33 +142,31 @@
             "title": "Numeric",
             "type": "object"
         },
-        "Rgba": {
+        "SvgMapInput": {
             "properties": {
-                "blue": {
-                    "default": 0,
-                    "maximum": 255,
-                    "minimum": 0,
-                    "type": "integer"
+                "map": {
+                    "format": "uri",
+                    "type": "string"
                 },
-                "green": {
-                    "default": 0,
-                    "maximum": 255,
-                    "minimum": 0,
-                    "type": "integer"
+                "multiselect": {
+                    "type": "boolean"
                 },
-                "opacity": {
-                    "default": 1,
-                    "maximum": 1,
-                    "minimum": 0,
-                    "type": "number"
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
                 },
-                "red": {
-                    "default": 0,
-                    "maximum": 255,
-                    "minimum": 0,
-                    "type": "integer"
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "svg-map"
+                    ],
+                    "type": "string"
                 }
             },
+            "title": "Image Map",
             "type": "object"
         },
         "TextInput": {

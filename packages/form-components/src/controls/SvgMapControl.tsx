@@ -1,5 +1,11 @@
 import React from 'react';
-import {ControlProps, ControlState, isBooleanControl, RankedTester, rankWith} from '@jsonforms/core';
+import {
+    and,
+    ControlProps,
+    ControlState, optionIs,
+    RankedTester,
+    rankWith, uiTypeIs
+} from '@jsonforms/core';
 import {Control, withJsonFormsControlProps} from '@jsonforms/react';
 
 import Maps from '../maps'
@@ -8,6 +14,8 @@ import {AutoComplete} from 'primereact/autocomplete';
 import {startCase} from "lodash";
 
 import {MultiSelectSvgMap} from "../component/SvgMap";
+
+
 
 export class SvgMapControl extends Control<ControlProps, ControlState> {
     render() {
@@ -21,9 +29,6 @@ export class SvgMapControl extends Control<ControlProps, ControlState> {
             handleChange,
             config
         } = this.props;
-
-
-
 
         const appliedUiSchemaOptions = merge({}, config, uischema.options);
         const {map} = appliedUiSchemaOptions;
@@ -55,5 +60,20 @@ export class SvgMapControl extends Control<ControlProps, ControlState> {
     }
 }
 
-export const svgMapControlTester: RankedTester = rankWith(2, isBooleanControl);
+// export interface SvgMapControlElement extends UISchemaElement, Scopable {
+//     type: 'SvgMapControl';
+//     label?: string | boolean | LabelDescription;
+// }
+//
+// export const isSvgMapControl = (uischema: any): uischema is SvgMapControlElement =>
+//     !isEmpty(uischema) && uischema.scope !== undefined;
+
+export const isSvgMapControl = and(
+    uiTypeIs('Control'),
+    optionIs('type', 'svg-map')
+);
+
+
+
+export const svgMapControlTester: RankedTester = rankWith(2,isSvgMapControl);
 export default withJsonFormsControlProps(SvgMapControl);

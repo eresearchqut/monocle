@@ -12,5 +12,5 @@ jobs:
           cache: 'yarn'
       - run: yarn install
       - run: yarn build
-      - run: yarn storybook
+      - run: yarn build-storybook
       - run: yarn deploy-storybook

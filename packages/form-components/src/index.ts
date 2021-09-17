@@ -7,11 +7,15 @@ import {
     inputDateCellTester,
     InputNumberCell,
     inputNumberCellTester,
+    InputSelectCell,
+    inputSelectCellTester,
     InputTextareaCell,
     inputTextareaCellTester,
     InputTextCell,
-    inputTextCellTester
-} from './cells';
+    inputTextCellTester,
+
+} from './cells';;
+
 
 import {InputBooleanControl, inputBooleanControlTester, InputControl, inputControlTester, SvgMapControl, svgMapControlTester} from './controls';
 
@@ -35,6 +39,7 @@ export const cells: { tester: RankedTester; cell: any }[] = [
     {tester: inputBooleanCellTester, cell: InputBooleanCell},
     {tester: inputDateCellTester, cell: InputDateCell},
     {tester: inputNumberCellTester, cell: InputNumberCell},
+    {tester: inputSelectCellTester, cell: InputSelectCell},
     {tester: inputTextCellTester, cell: InputTextCell},
     {tester: inputTextareaCellTester, cell: InputTextareaCell}
 ];

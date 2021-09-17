@@ -145,6 +145,10 @@
         "SvgMapInput": {
             "properties": {
                 "map": {
+                    "enum": [
+                        "body",
+                        "emotion"
+                    ],
                     "format": "uri",
                     "type": "string"
                 },

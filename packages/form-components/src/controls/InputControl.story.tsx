@@ -67,6 +67,23 @@ MultilineText.args = {
     }
 };
 
+export const Select = Template.bind({});
+Select.args = {
+    data: 'Option 2',
+    path: 'control',
+    schema: {
+        properties: {
+            control: {
+                type: 'string',
+                enum: ['Option 1', 'Option 2']
+            }
+        }
+    },
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/control'
+    }
+};
 
 
 

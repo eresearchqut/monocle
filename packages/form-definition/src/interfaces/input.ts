@@ -82,7 +82,7 @@ export interface SvgMapInput extends InputType {
     /**
      * @format uri
      */
-    map: string,
+    map: 'body' | 'emotion',
     multiselect?: boolean
 }
 

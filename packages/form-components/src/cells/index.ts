@@ -3,10 +3,8 @@ import InputDateCell, {inputDateCellTester} from './InputDateCell';
 import InputNumberCell, {inputNumberCellTester} from './InputNumberCell';
 import InputTextCell, {inputTextCellTester} from './InputTextCell';
 import InputTextareaCell, {inputTextareaCellTester} from './InputTextareaCell';
+import InputSelectCell, {inputSelectCellTester} from './InputSelectCell';
 
-export interface WithRequired {
-    required?: boolean;
-}
 
 export {
     InputBooleanCell,
@@ -18,6 +16,8 @@ export {
     InputTextCell,
     inputTextCellTester,
     InputTextareaCell,
-    inputTextareaCellTester
+    inputTextareaCellTester,
+    InputSelectCell,
+    inputSelectCellTester
 };
 

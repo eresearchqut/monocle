@@ -32,10 +32,12 @@ export interface TextInput extends InputType {
  */
 export interface DateInput extends InputType {
     type: 'date',
+
     /**
      * @TJS-format date
      */
     minimum?: string,
+
     /**
      * @TJS-format date
      */
@@ -49,12 +51,14 @@ export interface NumericInput extends InputType {
     type: 'numeric',
     minimum?: number,
     maximum?: number,
+
     /**
      * @minimum 0
      * @TJS-type integer
      */
     decimalPlaces?: number,
     increment?: number,
+
     /**
      * @description Whether to use grouping separators, such as thousands separators
      */
@@ -79,6 +83,7 @@ export interface CurrencyInput extends InputType {
  */
 export interface SvgMapInput extends InputType {
     type: 'svg-map'
+
     /**
      * @format uri
      */
@@ -90,5 +95,3 @@ export interface SvgMapInput extends InputType {
  * @title Input
  */
 export type Input = TextInput | NumericInput | CurrencyInput | BooleanInput | DateInput | SvgMapInput;
-
-

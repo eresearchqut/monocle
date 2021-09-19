@@ -7,4 +7,4 @@ export default interface FormCompiler {
 
     ui(form?: Form): UISchemaElement | undefined;
 
-};;;;;;;;;;
+}

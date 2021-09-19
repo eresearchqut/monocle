@@ -7,7 +7,7 @@ import {
   RankedTester,
   rankWith,
   resolveSubSchemas,
-  StatePropsOfCombinator, VerticalLayout,
+  StatePropsOfCombinator,
 } from '@jsonforms/core';
 import {JsonFormsDispatch, withJsonFormsAnyOfProps} from '@jsonforms/react';
 

@@ -1,7 +1,7 @@
 import {VerticalFormCompiler} from './verticalFormCompiler';
 import {AbstractFormCompiler} from './abstractFormCompiler';
 import FormCompiler from '../interfaces/formCompiler';
-import {Form} from '../../../form-definition';
+import {Form} from '@trrf/form-definition';
 
 export {
   FormCompiler, AbstractFormCompiler, VerticalFormCompiler,
@@ -10,4 +10,4 @@ export {
 
 export const formCompilers: FormCompiler[] = [new VerticalFormCompiler()];
 
-export const findFormCompiler = (form: Form): FormCompiler | undefined => formCompilers[0];
+export const findFormCompiler = (form: Form): FormCompiler | undefined => form ? formCompilers[0] : undefined;

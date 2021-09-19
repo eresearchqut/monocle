@@ -9,4 +9,4 @@ export default interface InputCompiler {
 
     ui(form: Form, section: Section, input: Input): UISchemaElement | undefined;
 
-};;;;;;;;;;
+}

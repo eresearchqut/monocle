@@ -7,4 +7,4 @@ export default interface SectionCompiler {
 
     ui(form: Form, section: Section): UISchemaElement | undefined;
 
-};;;;;;;;;;
+}

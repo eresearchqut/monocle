@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useCallback, useState, useEffect} from 'react';
+import React, {FunctionComponent, useCallback, useState} from 'react';
 import {
   ArrayLayoutProps,
   isObjectArrayWithNesting,

@@ -19,20 +19,18 @@ import {
 
 import {InputBooleanControl, inputBooleanControlTester, InputControl, inputControlTester, SvgMapControl, svgMapControlTester} from './controls';
 
-import {ArrayLayout, arrayLayoutTester, HorizontalLayout, horizontalLayoutTester, VerticalLayout, verticalLayoutTester, AnyOfLayout, anyOfLayoutTester} from './layouts';
+import {HorizontalLayout, horizontalLayoutTester, VerticalLayout, verticalLayoutTester} from './layouts';
 
 export * from './controls';
 export * from './cells';
 export * from './layouts';
 
 export const renderers: { tester: RankedTester; renderer: any }[] = [
-    {tester: arrayLayoutTester, renderer: ArrayLayout},
     {tester: horizontalLayoutTester, renderer: HorizontalLayout},
     {tester: inputControlTester, renderer: InputControl},
     {tester: inputBooleanControlTester, renderer: InputBooleanControl},
     {tester: svgMapControlTester, renderer: SvgMapControl},
     {tester: verticalLayoutTester, renderer: VerticalLayout},
-    {tester: anyOfLayoutTester, renderer: AnyOfLayout}
 ];
 
 export const cells: { tester: RankedTester; cell: any }[] = [

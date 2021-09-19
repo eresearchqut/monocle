@@ -35,7 +35,7 @@ const ObjectLayout: FunctionComponent<StatePropsOfControlWithDetail> = ({
                 uischema,
                 rootSchema
             ),
-        [uischemas, schema, uischema.scope, path, uischema, rootSchema]
+        [uischemas, schema, path, uischema, rootSchema]
     );
     if (isEmpty(path)) {
         detailUiSchema.type = 'VerticalLayout';

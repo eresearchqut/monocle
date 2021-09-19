@@ -1,4 +1,4 @@
-import React, {ComponentType, Dispatch, ReducerAction, useMemo, useState, useEffect} from 'react';
+import React, {ComponentType, useMemo, useState, useEffect} from 'react';
 
 import {
   areEqual,
@@ -39,9 +39,13 @@ interface OwnPropsOfArrayItem {
     enableMoveUp: boolean;
     enableMoveDown: boolean;
     config: any;
+
     handleToggle(index: number): (event: any) => void;
+
     moveUp(index: number): (event: any) => void;
+
     moveDown(index: number): (event: any) => void;
+
     remove(index: number): (event: any) => void;
 }
 
@@ -98,7 +102,7 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
                 uischema,
                 rootSchema,
         ),
-      [uischemas, schema, uischema.scope, path, uischema, rootSchema],
+      [uischemas, schema, path, uischema, rootSchema],
   );
 
   const template = (options: PanelHeaderTemplateOptions, draggableProvided: DraggableProvided): PanelHeaderTemplateType => {
@@ -132,7 +136,7 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
         <div className="p-ml-auto">
           <SplitButton icon={collapsed ? 'pi pi-plus' : 'pi pi-minus'} dropdownIcon="pi pi-cog"
             onClick={options.onTogglerClick}
-            model={menuOptions} />
+            model={menuOptions}/>
         </div>
       </div>
     );
@@ -147,7 +151,7 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
           {...draggableProvided.draggableProps} className='p-mb-3'>
           <Panel
             headerTemplate={(options) => template(options, draggableProvided)}
-            toggleable collapsed={collapsed} onToggle={handleToggle(index)} >
+            toggleable collapsed={collapsed} onToggle={handleToggle(index)}>
             <div className='p-mt-3'>
               <JsonFormsDispatch
                 schema={schema}
@@ -164,7 +168,6 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
     </Draggable>
   );
 };
-
 
 export const withContextToArrayItemProps = (Component: ComponentType<ArrayItemProps>): ComponentType<OwnPropsOfArrayItem> =>
   ({ctx, props}: JsonFormsStateContext) => {

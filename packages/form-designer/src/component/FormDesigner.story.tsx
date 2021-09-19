@@ -57,7 +57,7 @@ Example.args = {
           },
           {
             type: 'boolean',
-            name: 'Where you hurt?',
+            name: 'Were you hurt?',
             required: false,
           },
           {

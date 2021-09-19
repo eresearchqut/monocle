@@ -1,7 +1,6 @@
 import React, {
     FunctionComponent,
     MouseEvent,
-    SyntheticEvent,
     useEffect,
     useState
 } from 'react';
@@ -21,6 +20,7 @@ export const MultiSelectSvgMap: FunctionComponent<MultiSelectSvgMapProps> = ({ma
 
     useEffect(() => {
         handleChange(selected);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selected]);
 
     useEffect(() => {
@@ -34,7 +34,7 @@ export const MultiSelectSvgMap: FunctionComponent<MultiSelectSvgMapProps> = ({ma
         const {id} = event.target as SVGPathElement;
         setSelected((current) => {
             const updated = current ? [...current] : [];
-            if (updated.indexOf(id) >=  0) {
+            if (updated.indexOf(id) >= 0) {
                 updated.splice(updated.indexOf(id), 1);
             } else {
                 updated.push(id);
@@ -44,7 +44,7 @@ export const MultiSelectSvgMap: FunctionComponent<MultiSelectSvgMapProps> = ({ma
     }
 
     return (
-        <SvgMap map={map} isSelected={isSelected} onLocationClick={handleLocationClick} />
+        <SvgMap map={map} isSelected={isSelected} onLocationClick={handleLocationClick}/>
     );
 }
 

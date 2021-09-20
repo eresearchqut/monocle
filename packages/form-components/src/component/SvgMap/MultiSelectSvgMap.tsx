@@ -43,6 +43,7 @@ export const MultiSelectSvgMap: FunctionComponent<MultiSelectSvgMapProps> = ({ma
         })
     }
 
+
     return (
         <SvgMap map={map} isSelected={isSelected} onLocationClick={handleLocationClick}/>
     );

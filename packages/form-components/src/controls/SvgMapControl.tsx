@@ -8,13 +8,12 @@ import {
 } from '@jsonforms/core';
 import {Control, withJsonFormsControlProps} from '@jsonforms/react';
 
-import Maps from '../maps'
+import Maps from '../component/SvgMap/maps'
 import merge from "lodash/merge";
 import {AutoComplete} from 'primereact/autocomplete';
 import {startCase} from "lodash";
 
-import {MultiSelectSvgMap} from "../component/SvgMap";
-
+import {MultiSelectSvgMap, SingleSelectSvgMap} from "../component/SvgMap";
 
 
 export class SvgMapControl extends Control<ControlProps, ControlState> {
@@ -31,7 +30,7 @@ export class SvgMapControl extends Control<ControlProps, ControlState> {
         } = this.props;
 
         const appliedUiSchemaOptions = merge({}, config, uischema.options);
-        const {map, hint} = appliedUiSchemaOptions;
+        const {map, hint, multiselect} = appliedUiSchemaOptions;
         const itemTemplate = (item: string) => startCase(item);
 
         const selectedItemTemplate = (item: string) => startCase(item);
@@ -40,23 +39,29 @@ export class SvgMapControl extends Control<ControlProps, ControlState> {
 
         return (
             <div className="p-grid">
-
                 <div className="p-col-sm-6 p-md-4">
                     <div className="p-field">
                         <label htmlFor={id} id={id + '-label'}>{label}</label>
-                        { hint &&
+                        {hint &&
                         <div className="p-text-light p-mb-2">{hint}</div>
                         }
-                      <AutoComplete inputId={id} id={id + '-selected'} value={data || []} multiple
-                                    itemTemplate={itemTemplate}
-                                    selectedItemTemplate={selectedItemTemplate}
-                                    onChange={(e) => handleChange(path, e.value)}/>
-
-
+                        {multiselect &&
+                        <AutoComplete inputId={id} id={id + '-selected'} value={data || []} multiple
+                                      itemTemplate={itemTemplate}
+                                      selectedItemTemplate={selectedItemTemplate}
+                                      onChange={(e) => handleChange(path, e.value)}/>
+                        }
                     </div>
                 </div>
                 <div className="p-col-sm-6 p-md-8">
-                    <MultiSelectSvgMap map={svgMap} value={data} handleChange={(locationIds: string[]) => handleChange(path, locationIds)}   />
+                    {multiselect &&
+                    <MultiSelectSvgMap map={svgMap} value={data}
+                                       handleChange={(locationIds: string[]) => handleChange(path, locationIds)} />
+                    }
+                    {!multiselect &&
+                    <SingleSelectSvgMap map={svgMap} value={data}
+                                       handleChange={(locationId: string | boolean | undefined) => handleChange(path, locationId  )} />
+                    }
                 </div>
             </div>
 
@@ -78,6 +83,5 @@ export const isSvgMapControl = and(
 );
 
 
-
-export const svgMapControlTester: RankedTester = rankWith(2,isSvgMapControl);
+export const svgMapControlTester: RankedTester = rankWith(2, isSvgMapControl);
 export default withJsonFormsControlProps(SvgMapControl);

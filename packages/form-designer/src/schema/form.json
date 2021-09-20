@@ -183,9 +183,8 @@
                 "map": {
                     "enum": [
                         "body",
-                        "emotion"
+                        "painScale"
                     ],
-                    "format": "uri",
                     "type": "string"
                 },
                 "multiselect": {

@@ -3163,9 +3163,9 @@
     resolve-from "^5.0.0"
     store2 "^2.12.0"
 
-"@svg-maps/cli@^1.0.0-beta.5":
+"@svg-maps/cli@1.0.0-beta.5", "@svg-maps/cli@^1.0.0-beta.5":
   version "1.0.0-beta.5"
-  resolved "https://registry.npmjs.org/@svg-maps/cli/-/cli-1.0.0-beta.5.tgz"
+  resolved "https://registry.yarnpkg.com/@svg-maps/cli/-/cli-1.0.0-beta.5.tgz#918e15537418fc152e04b29639892e8517feaf1b"
   integrity sha512-kFwJiV62l3Xsy2CPWw0qQQu9+Uea/g6b6zT1h94HHUorsf5psZsrI9iFWX1smrslRFCUqrG1/vQVTHG4goDoYA==
   dependencies:
     commander "^6.2.0"

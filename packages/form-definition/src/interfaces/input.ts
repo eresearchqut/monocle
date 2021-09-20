@@ -82,12 +82,8 @@ export interface CurrencyInput extends InputType {
  *
  */
 export interface SvgMapInput extends InputType {
-    type: 'svg-map'
-
-    /**
-     * @format uri
-     */
-    map: 'body' | 'emotion',
+    type: 'svg-map',
+    map: 'body' | 'painScale',
     multiselect?: boolean
 }
 

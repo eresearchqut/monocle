@@ -24,6 +24,7 @@
   "dependencies": {
     "@jsonforms/core": "^3.0.0-alpha.0",
     "@jsonforms/react": "^3.0.0-alpha.0",
+    "@svg-maps/cli": "1.0.0-beta.5",
     "lodash": "4.17.21",
     "primeflex": "^2.0.0",
     "primeicons": "4.1.0",
@@ -54,9 +55,9 @@
     "enzyme": "^3.10.0",
     "jsdom": "^16.6.0",
     "jsdom-global": "^3.0.2",
-    "sass-loader": "^10.2.0",
     "prettier": "^2.3.2",
     "react-redux": "^7.2.4",
+    "sass-loader": "^10.2.0",
     "typescript-plugin-css-modules": "3.4.0"
   },
   "jest": {

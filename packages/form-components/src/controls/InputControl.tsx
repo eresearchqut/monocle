@@ -26,7 +26,7 @@ export class InputControl extends Control<ControlProps, ControlState> {
 
 
         const appliedUiSchemaOptions = merge({}, config, uischema.options);
-        const {hint} = appliedUiSchemaOptions;
+        const {description} = appliedUiSchemaOptions;
         const requiredMessage = required ? 'This is a required field' : undefined;
         const cell = maxBy(cells, r => r.tester(uischema, schema));
 
@@ -45,8 +45,8 @@ export class InputControl extends Control<ControlProps, ControlState> {
         return (
             <div className="p-field">
                 <label htmlFor={id} id={id + '-label'}>{label}</label>
-                { hint &&
-                <div className="p-text-light p-mb-2">{hint}</div>
+                { description &&
+                <div className="p-text-light p-mb-2">{description}</div>
                 }
                 <div className="p-inputgroup" >
                     {dispatchCell}

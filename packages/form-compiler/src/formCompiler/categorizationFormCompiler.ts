@@ -1,11 +1,11 @@
 import {FormCompiler} from '../interfaces';
 
-import {JsonSchema, UISchemaElement, VerticalLayout} from '@jsonforms/core';
+import {JsonSchema, UISchemaElement, Categorization} from '@jsonforms/core';
 import {Form} from '@trrf/form-definition';
 
 import {AbstractFormCompiler} from './abstractFormCompiler';
 
-export class VerticalFormCompiler extends AbstractFormCompiler implements FormCompiler {
+export class CategorizationFormCompiler extends AbstractFormCompiler implements FormCompiler {
   schema(form: Form): JsonSchema | undefined {
     const properties = this.formProperties(form);
     if (properties) {
@@ -18,12 +18,13 @@ export class VerticalFormCompiler extends AbstractFormCompiler implements FormCo
     const elements = this.uiElements(form);
     if (elements) {
       return {
-        'type': 'VerticalLayout',
+        type: 'Categorization',
+        label: form.label || form.name,
         elements,
-      } as VerticalLayout;
+      } as Categorization;
     }
     return {
-      'type': 'VerticalLayout',
-    } as VerticalLayout;
+      'type': 'Categorization',
+    } as Categorization;
   }
 }

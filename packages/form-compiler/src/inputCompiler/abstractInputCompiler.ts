@@ -12,6 +12,7 @@ export abstract class AbstractInputCompiler {
       return {
         type: 'Control',
         scope: buildPropertyPath([sectionProperty, inputProperty]),
+        label: input.label || input.name,
         options: merge({}, input, options),
       } as UISchemaElement;
     }

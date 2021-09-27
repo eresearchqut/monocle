@@ -3,8 +3,12 @@
     "definitions": {
         "BooleanInput": {
             "properties": {
-                "hint": {
-                    "description": "Hint text can be used to provide more context that will help the user successfully complete the form field.",
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
                     "type": "string"
                 },
                 "name": {
@@ -37,8 +41,12 @@
                     ],
                     "type": "string"
                 },
-                "hint": {
-                    "description": "Hint text can be used to provide more context that will help the user successfully complete the form field.",
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
                     "type": "string"
                 },
                 "maximum": {
@@ -67,8 +75,12 @@
         },
         "DateInput": {
             "properties": {
-                "hint": {
-                    "description": "Hint text can be used to provide more context that will help the user successfully complete the form field.",
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
                     "type": "string"
                 },
                 "maximum": {
@@ -103,16 +115,20 @@
                     "minimum": 0,
                     "type": "integer"
                 },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
                 "groupNumbers": {
                     "description": "Whether to use grouping separators, such as thousands separators",
                     "type": "boolean"
                 },
-                "hint": {
-                    "description": "Hint text can be used to provide more context that will help the user successfully complete the form field.",
-                    "type": "string"
-                },
                 "increment": {
                     "type": "number"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
                 },
                 "maximum": {
                     "type": "number"
@@ -140,8 +156,12 @@
         },
         "SvgMapInput": {
             "properties": {
-                "hint": {
-                    "description": "Hint text can be used to provide more context that will help the user successfully complete the form field.",
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
                     "type": "string"
                 },
                 "map": {
@@ -174,8 +194,12 @@
         },
         "TextInput": {
             "properties": {
-                "hint": {
-                    "description": "Hint text can be used to provide more context that will help the user successfully complete the form field.",
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
                     "type": "string"
                 },
                 "maxLength": {
@@ -207,6 +231,10 @@
         }
     },
     "properties": {
+        "description": {
+            "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+            "type": "string"
+        },
         "inputs": {
             "items": {
                 "anyOf": [
@@ -232,6 +260,10 @@
                 "title": "Input"
             },
             "type": "array"
+        },
+        "label": {
+            "description": "Label can be provided to override the name",
+            "type": "string"
         },
         "name": {
             "description": "The name of the element",

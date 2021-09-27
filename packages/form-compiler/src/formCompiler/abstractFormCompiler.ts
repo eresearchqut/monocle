@@ -5,6 +5,7 @@ import {generatePathFromName} from '../utils';
 
 
 export abstract class AbstractFormCompiler {
+
     formProperties = (form?: Form): { [property: string]: JsonSchema | undefined } | undefined => form && form.sections ?
         form.sections.reduce((properties, section: Section) => {
           const propertyName = generatePathFromName(section.name);
@@ -22,5 +23,6 @@ export abstract class AbstractFormCompiler {
         form.sections
             .map((section) => findSectionCompiler(form, section)?.ui(form, section))
             .filter((uiSchemaElement): uiSchemaElement is UISchemaElement => !!uiSchemaElement) : undefined;
+
 }
 

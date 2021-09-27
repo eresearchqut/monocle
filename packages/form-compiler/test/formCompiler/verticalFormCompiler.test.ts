@@ -1,8 +1,8 @@
-import {VerticalFormCompiler} from "../../src/formCompiler/verticalFormCompiler";
+import {CategorizationFormCompiler} from "../../src/formCompiler/categorizationFormCompiler";
 
 describe('VerticalFormBuilder', () => {
 
-    const formBuilder = new VerticalFormCompiler();
+    const formBuilder = new CategorizationFormCompiler();
 
     test('build schema', () => {
         expect(

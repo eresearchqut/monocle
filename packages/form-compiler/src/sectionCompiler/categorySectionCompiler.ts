@@ -1,11 +1,11 @@
 import {SectionCompiler} from '../interfaces';
 
-import {JsonSchema, UISchemaElement, VerticalLayout} from '@jsonforms/core';
+import {JsonSchema, UISchemaElement, Category} from '@jsonforms/core';
 import {Form, Section} from '@trrf/form-definition';
 import {AbstractSectionCompiler} from './abstractSectionCompiler';
 
 
-export class VerticalSectionCompiler extends AbstractSectionCompiler implements SectionCompiler {
+export class CategorySectionCompiler extends AbstractSectionCompiler implements SectionCompiler {
   schema(form: Form, section: Section): JsonSchema {
     const properties = this.schemaProperties(form, section);
     const required = this.requiredProperties(form, section);
@@ -19,9 +19,10 @@ export class VerticalSectionCompiler extends AbstractSectionCompiler implements 
     const elements = this.uiElements(form, section);
     if (elements) {
       return {
-        'type': 'VerticalLayout',
+        'type': 'Category',
+        label: section.label || section.name,
         elements,
-      } as VerticalLayout;
+      } as Category;
     }
     return undefined;
   }

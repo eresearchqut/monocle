@@ -1,10 +1,11 @@
 import {Named} from './named';
 import {Requireable} from './requireable';
 import {Typed} from './typed';
-import {Hintable} from './hintable';
+import {Described} from './described';
+import {Labelled} from "./labeled";
 
 
-export interface InputType extends Named, Requireable, Typed, Hintable {
+export interface InputType extends Named, Requireable, Typed, Described, Labelled {
     type: 'text' | 'numeric' | 'currency' | 'boolean' | 'date' | 'time' | 'date-time' | 'email' | 'svg-map'
 }
 
@@ -25,7 +26,6 @@ export interface TextInput extends InputType {
     maxLength?: number,
     multiline?: boolean
 }
-
 
 /**
  * @title Date

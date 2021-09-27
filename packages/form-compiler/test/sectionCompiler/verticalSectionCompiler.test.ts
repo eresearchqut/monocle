@@ -1,9 +1,9 @@
 import {Form} from "@trrf/form-definition";
-import {VerticalSectionCompiler} from "../../src/sectionCompiler/verticalSectionCompiler";
+import {CategorySectionCompiler} from "../../src/sectionCompiler/categorySectionCompiler";
 
 describe('VerticalSectionBuilder', () => {
 
-    const sectionBuilder = new VerticalSectionCompiler();
+    const sectionBuilder = new CategorySectionCompiler();
 
     test('build schema', () => {
         expect(sectionBuilder.schema({} as Form, {

@@ -38,33 +38,31 @@ export class SvgMapControl extends Control<ControlProps, ControlState> {
         const svgMap = Maps[map];
 
         return (
-            <div className="p-grid">
-                <div className="p-col-sm-6 p-md-4">
-                    <div className="p-field">
-                        <label htmlFor={id} id={id + '-label'}>{label}</label>
-                        {hint &&
-                        <div className="p-text-light p-mb-2">{hint}</div>
-                        }
-                        {multiselect &&
-                        <AutoComplete inputId={id} id={id + '-selected'} value={data || []} multiple
-                                      itemTemplate={itemTemplate}
-                                      selectedItemTemplate={selectedItemTemplate}
-                                      onChange={(e) => handleChange(path, e.value)}/>
-                        }
-                    </div>
-                </div>
-                <div className="p-col-sm-6 p-md-8">
-                    {multiselect &&
-                    <MultiSelectSvgMap map={svgMap} value={data}
-                                       handleChange={(locationIds: string[]) => handleChange(path, locationIds)} />
-                    }
-                    {!multiselect &&
-                    <SingleSelectSvgMap map={svgMap} value={data}
-                                       handleChange={(locationId: string | boolean | undefined) => handleChange(path, locationId  )} />
-                    }
-                </div>
+
+            <React.Fragment>
+            <div className="p-field">
+                <label htmlFor={id} id={id + '-label'}>{label}</label>
+                {hint &&
+                <div className="p-text-light p-mb-2">{hint}</div>
+                }
+                {multiselect &&
+                    <AutoComplete inputId={id} id={id + '-selected'} value={data || []} multiple
+                                  itemTemplate={itemTemplate}
+                                  selectedItemTemplate={selectedItemTemplate}
+                                  onChange={(e) => handleChange(path, e.value)}/>
+                }
             </div>
 
+                {multiselect &&
+                    <MultiSelectSvgMap map={svgMap} value={data}
+                                       handleChange={(locationIds: string[]) => handleChange(path, locationIds)} />
+                }
+                {!multiselect &&
+                    <SingleSelectSvgMap map={svgMap} value={data}
+                                        handleChange={(locationId: string | boolean | undefined) => handleChange(path, locationId  )} />
+                }
+
+            </React.Fragment>
         )
     }
 }

@@ -22,12 +22,6 @@
 }
 
 .svg-map-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  flex: 1 1 auto;
 }
 
-.svg-map-container > div {
-  flex-grow: 1;
-
-}

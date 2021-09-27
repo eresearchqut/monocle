@@ -10,6 +10,7 @@ export interface Location {
 export interface Map {
     viewBox: string
     label?: string
+    height?: string // This is a workaround for scaling issues in chrome and safari
     locations: Location[]
 }
 
@@ -41,41 +42,38 @@ export interface SvgMapProps extends HandlerPropsOfSvgMap, StatePropsOfSvgMapPro
 export const SvgMap: FunctionComponent<SvgMapProps> = (props) => {
     return (
         <div className={'svg-map-container'}>
-            <div>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox={props.map.viewBox}
-                    className={props.className || 'svg-map'}
-                    role={props.role || 'none'}
-                    aria-label={props.map.label}
-                >
-                <g>
-                    {props.map.locations.map((location, index) => {
-                        return (
-                            <path
-                                id={location.id}
-                                key={location.id}
-                                name={location.name}
-                                d={location.path}
-                                className={typeof props.locationClassName === 'function' ? props.locationClassName(location, index) : props.locationClassName || 'svg-map__location'}
-                                tabIndex={typeof props.locationTabIndex === 'function' ? props.locationTabIndex(location, index) : props.locationTabIndex || 0}
-                                role={props.locationRole || 'none'}
-                                aria-label={typeof props.locationAriaLabel === 'function' ? props.locationAriaLabel(location, index) : location.name}
-                                aria-checked={props.isSelected && props.isSelected(location)}
-                                onMouseOver={props.onLocationMouseOver}
-                                onMouseOut={props.onLocationMouseOut}
-                                onMouseMove={props.onLocationMouseMove}
-                                onClick={props.onLocationClick}
-                                onFocus={props.onLocationFocus}
-                                onBlur={props.onLocationBlur}
-                            />
-                        );
-                    })}
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox={props.map.viewBox}
+                height={props.map.height}
+                className={props.className || 'svg-map'}
+                role={props.role || 'none'}
+                aria-label={props.map.label}
+            >
+                {props.map.locations.map((location, index) => {
+                    return (
+                        <path
+                            id={location.id}
+                            key={location.id}
+                            name={location.name}
+                            d={location.path}
+                            className={typeof props.locationClassName === 'function' ? props.locationClassName(location, index) : props.locationClassName || 'svg-map__location'}
+                            tabIndex={typeof props.locationTabIndex === 'function' ? props.locationTabIndex(location, index) : props.locationTabIndex || 0}
+                            role={props.locationRole || 'none'}
+                            aria-label={typeof props.locationAriaLabel === 'function' ? props.locationAriaLabel(location, index) : location.name}
+                            aria-checked={props.isSelected && props.isSelected(location)}
+                            onMouseOver={props.onLocationMouseOver}
+                            onMouseOut={props.onLocationMouseOut}
+                            onMouseMove={props.onLocationMouseMove}
+                            onClick={props.onLocationClick}
+                            onFocus={props.onLocationFocus}
+                            onBlur={props.onLocationBlur}
+                        />
+                    );
+                })}
 
-                </g>
-                </svg>
-            </div>
 
+            </svg>
         </div>
     );
 }

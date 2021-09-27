@@ -10,6 +10,8 @@ import {
 } from '@jsonforms/core';
 import {JsonFormsDispatch, withJsonFormsLayoutProps} from '@jsonforms/react';
 import isEmpty from "lodash/isEmpty";
+import merge from "lodash/merge";
+import { Fieldset } from 'primereact/fieldset';
 
 const renderChildren = (category: Category,
                         schema: JsonSchema,
@@ -43,17 +45,28 @@ const CategoryLayoutRenderer: FunctionComponent<LayoutProps> = (
         visible,
         path,
         renderers,
-        cells
+        cells,
+        config
     }: LayoutProps
 ) => {
-    const category = uischema as Category;
+
     if (!visible) {
         return null;
     }
+
+    const category = uischema as Category;
+    const appliedUiSchemaOptions = merge({}, config, uischema.options);
+    const {description} = appliedUiSchemaOptions;
+
     return (
-        <div className="p-grid p-dir-col p-fluid">
-            {renderChildren(category, schema, path, renderers, cells)}
-        </div>
+        <Fieldset legend={category.label}>
+            {description &&
+                <p>{description}</p>
+            }
+            <div className="p-grid p-dir-col p-fluid">
+                {renderChildren(category, schema, path, renderers, cells)}
+            </div>
+        </Fieldset>
     );
 };
 

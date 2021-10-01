@@ -10,7 +10,6 @@ export interface Location {
 export interface Map {
     viewBox: string
     label?: string
-    height?: string // This is a workaround for scaling issues in chrome and safari
     locations: Location[]
 }
 
@@ -40,12 +39,17 @@ export interface SvgMapProps extends HandlerPropsOfSvgMap, StatePropsOfSvgMapPro
 }
 
 export const SvgMap: FunctionComponent<SvgMapProps> = (props) => {
+
+    const viewPort = (index: number): string => props.map.viewBox.split( ' ')[index];
+
     return (
         <div className={'svg-map-container'}>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox={props.map.viewBox}
-                height={props.map.height}
+                width={viewPort(2)}
+                height={viewPort(3)}
+                preserveAspectRatio="xMidYMid"
                 className={props.className || 'svg-map'}
                 role={props.role || 'none'}
                 aria-label={props.map.label}
@@ -71,8 +75,6 @@ export const SvgMap: FunctionComponent<SvgMapProps> = (props) => {
                         />
                     );
                 })}
-
-
             </svg>
         </div>
     );

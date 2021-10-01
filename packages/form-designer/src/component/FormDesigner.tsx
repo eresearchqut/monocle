@@ -1,6 +1,7 @@
 import React, {FunctionComponent, useState, useEffect} from 'react';
 import {FormCanvas} from './FormCanvas';
 import {FormPreview} from './FormPreview';
+import {InputSelector} from './InputSelector';
 
 import {Form} from '../../../form-definition';
 import {Card} from 'primereact/card';
@@ -35,12 +36,17 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = (props) => {
   return (
     <div className="card">
       <div className="p-grid">
+        <div className="p-col-12 p-md-2">
+          <Card>
+            <InputSelector />
+          </Card>
+        </div>
         <div className="p-col-12 p-md-6">
           <Card>
             <FormCanvas definition={formDesignerState.definition} onChange={handleDefinitionChange} />
           </Card>
         </div>
-        <div className="p-col-12 p-md-6">
+        <div className="p-col-12 p-md-4">
           <Card>
             <FormPreview definition={formDesignerState.definition} data={formDesignerState.data} onChange={handleDataChange} />
           </Card>

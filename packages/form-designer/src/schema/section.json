@@ -7,6 +7,10 @@
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
                 },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
                 "label": {
                     "description": "Label can be provided to override the name",
                     "type": "string"
@@ -45,6 +49,10 @@
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
                 },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
                 "label": {
                     "description": "Label can be provided to override the name",
                     "type": "string"
@@ -77,6 +85,10 @@
             "properties": {
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
                     "type": "string"
                 },
                 "label": {
@@ -123,6 +135,10 @@
                     "description": "Whether to use grouping separators, such as thousands separators",
                     "type": "boolean"
                 },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
                 "increment": {
                     "type": "number"
                 },
@@ -158,6 +174,10 @@
             "properties": {
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
                     "type": "string"
                 },
                 "label": {
@@ -198,6 +218,10 @@
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
                 },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
                 "label": {
                     "description": "Label can be provided to override the name",
                     "type": "string"
@@ -233,6 +257,10 @@
     "properties": {
         "description": {
             "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+            "type": "string"
+        },
+        "id": {
+            "format": "uuid",
             "type": "string"
         },
         "inputs": {

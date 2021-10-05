@@ -3,9 +3,10 @@ import {Requireable} from './requireable';
 import {Typed} from './typed';
 import {Described} from './described';
 import {Labelled} from "./labeled";
+import {UniquelyIdentifiable} from "./uniquelyIdentifiable";
 
 
-export interface InputType extends Named, Requireable, Typed, Described, Labelled {
+export interface InputType extends UniquelyIdentifiable, Named, Requireable, Typed, Described, Labelled {
     type: 'text' | 'numeric' | 'currency' | 'boolean' | 'date' | 'time' | 'date-time' | 'email' | 'svg-map'
 }
 

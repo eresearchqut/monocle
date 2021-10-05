@@ -15,10 +15,6 @@ export interface InputSelectorProps {
 }
 
 export const InputSelector: FunctionComponent<InputSelectorProps> = ({}) => {
-    const onDragEnd = (result: DropResult) => {
-
-    };
-
 
     const iconMap: Map<string, string> = new Map<string, string>([
         ['DateInput', 'pi-calendar'],
@@ -29,43 +25,39 @@ export const InputSelector: FunctionComponent<InputSelectorProps> = ({}) => {
         ['CurrencyInput', 'pi-money-bill']
     ]);
 
+    const title = (definition: any) => startCase(definition?.title || '');
+
     return (
-
         <div className="p-d-flex p-flex-column">
-            <DragDropContext onDragEnd={(result: DropResult, provided: ResponderProvided) => onDragEnd(result)}>
-                <Droppable droppableId="inputSelector">
-                    {(droppableProvided, snapshot) => (
-                        <div ref={droppableProvided.innerRef}
-                             {...droppableProvided.droppableProps}>
-                            {Object.entries(inputSchema.definitions).map(([key, definition], index) =>
-                                (
-                                    <Draggable
-                                        key={key}
-                                        draggableId={key}
-                                        index={index}>
-                                        {(draggableProvided, snapshot) => (
-                                            <div ref={draggableProvided.innerRef}
-                                                 {...draggableProvided.draggableProps}
-                                                 {...draggableProvided.dragHandleProps}
-                                                 key={key}
-                                                 className="p-mb-2 p-p-2 p-shadow-2 ">
-                                                <Avatar icon={`pi ${iconMap.get(key)}`} className="p-mr-2"
-                                                        shape="circle"/>
+            <Droppable droppableId="inputSelector" type="inputs">
+                {(droppableProvided, snapshot) => (
+                    <div ref={droppableProvided.innerRef}{...droppableProvided.droppableProps}>
+                        {Object.entries(inputSchema.definitions as { [s: string]: JsonSchema }).map(([key, definition], index) => // @ts-ignore
+                            (
+                                <Draggable
+                                    key={key}
+                                    draggableId={key}
+                                    index={index}>
+                                    {(draggableProvided, snapshot) => (
+                                        <div ref={draggableProvided.innerRef}
+                                             {...draggableProvided.draggableProps}
+                                             {...draggableProvided.dragHandleProps}
+                                             key={key}
+                                             className="p-mb-2 p-p-2 p-shadow-2 ">
+                                            <Avatar icon={`pi ${iconMap.get(key)}`} className="p-mr-2"
+                                                    shape="circle"/>
+                                            <span className={'p-text-nowrap'}>{title(definition)}</span>
+                                        </div>
+                                    )}
 
-                                                <span className={'p-text-nowrap'}>{startCase(definition.title)}</span>
-                                            </div>
-                                        )}
+                                </Draggable>
+                            )
+                        )}
+                        {droppableProvided.placeholder}
+                    </div>
+                )}
+            </Droppable>
 
-                                    </Draggable>
-                                )
-                            )}
-                            {droppableProvided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
-            </DragDropContext>
         </div>
-
-
     );
 };

@@ -23,9 +23,9 @@ const renderChildren = (layout: VerticalLayout,
 
     return layout.elements
         .map((uiSchemaElement) => uiSchemaElement as ControlElement)
-        .filter((element) => element['scope'] !== '#/properties/type')
-        .sort((a, b) => a.scope === '#/properties/name' ? -1 :
-            a.scope.localeCompare(b.scope))
+        // .filter((element) => element['scope'] !== '#/properties/type')
+        // .sort((a, b) => a.scope === '#/properties/name' ? -1 :
+        //     a.scope.localeCompare(b.scope))
         .map((child, index) => {
             return (
                 <div key={`${path}-${index}`} className="p-col">

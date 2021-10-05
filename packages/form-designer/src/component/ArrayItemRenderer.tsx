@@ -1,7 +1,6 @@
-import React, {ComponentType, useMemo, useState, useEffect} from 'react';
+import React, {ComponentType, useState, useEffect} from 'react';
 
 import {
-    areEqual,
     JsonFormsDispatch,
     JsonFormsStateContext,
     withJsonFormsContext,
@@ -16,15 +15,13 @@ import {
     Resolve,
     JsonFormsCellRendererRegistryEntry,
     JsonFormsUISchemaRegistryEntry,
-    createId,
-    removeId,
+
 } from '@jsonforms/core';
 
 import get from 'lodash/get';
 import {SplitButton} from 'primereact/splitbutton';
 import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType} from 'primereact/panel';
 import {MenuItem} from 'primereact/menuitem';
-import {Draggable, DraggableProvided} from 'react-beautiful-dnd';
 
 interface OwnPropsOfArrayItem {
     index: number;
@@ -53,6 +50,7 @@ interface StatePropsOfArrayItem extends OwnPropsOfArrayItem {
     childLabel?: string;
     childType?: string;
     childPath: string;
+    childId: string;
     enableMoveUp: boolean;
     enableMoveDown: boolean;
 }
@@ -62,7 +60,6 @@ export interface ArrayItemProps
 }
 
 const ArrayItemRenderer = (props: ArrayItemProps) => {
-    const [labelHtmlId] = useState<string>(createId('array-item'));
 
     const {
         childLabel,
@@ -85,14 +82,8 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
         handleToggle,
     } = props;
 
-    useEffect(() => {
-        return () => {
-            removeId(labelHtmlId);
-        };
-    }, [labelHtmlId]);
 
-    const foundUISchema = useMemo(
-        () =>
+    const foundUISchema =
             findUISchema(
                 uischemas as JsonFormsUISchemaRegistryEntry[],
                 schema,
@@ -101,11 +92,9 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
                 undefined,
                 uischema,
                 rootSchema,
-            ),
-        [uischemas, schema, path, uischema, rootSchema],
-    );
+            );
 
-    const template = (options: PanelHeaderTemplateOptions, draggableProvided: DraggableProvided): PanelHeaderTemplateType => {
+    const template = (options: PanelHeaderTemplateOptions): PanelHeaderTemplateType => {
         const titleClassName = `${options.titleClassName} p-pl-1`;
         const className = `${options.className} p-d-flex`;
         const menuOptions: MenuItem[] = [
@@ -127,9 +116,8 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
         ];
 
         return (
-            <div className={className}
-                 {...draggableProvided.dragHandleProps}>
-                <div className={titleClassName} id={labelHtmlId}>
+            <div className={className}>
+                <div className={titleClassName} >
                     {childLabel}{childType ? ` - (${childType})` : ''}
                 </div>
                 <div className="p-ml-auto">
@@ -141,30 +129,22 @@ const ArrayItemRenderer = (props: ArrayItemProps) => {
         );
     };
 
-
     return (
-        <Draggable
-            draggableId={childPath}
-            index={index}>
-            {(draggableProvided, snapshot) => (
-                <div ref={draggableProvided.innerRef}
-                     {...draggableProvided.draggableProps} className='p-mb-3'>
-                    <Panel
-                        headerTemplate={(options) => template(options, draggableProvided)}
-                        toggleable collapsed={collapsed} onToggle={handleToggle(index)}>
-                        <div className='p-mt-3'>
-                            <JsonFormsDispatch
-                                schema={schema}
-                                uischema={foundUISchema}
-                                path={childPath}
-                                renderers={renderers}
-                                cells={cells}
-                            />
-                        </div>
-                    </Panel>
-                </div>
-            )}
-        </Draggable>
+
+        <Panel
+            headerTemplate={(options) => template(options)}
+            toggleable collapsed={collapsed} onToggle={handleToggle(index)}>
+            <div className='p-mt-3'>
+                <JsonFormsDispatch
+                    schema={schema}
+                    uischema={foundUISchema}
+                    path={childPath}
+                    renderers={renderers}
+                    cells={cells}
+                />
+            </div>
+        </Panel>
+
     );
 };
 
@@ -174,12 +154,14 @@ export const withContextToArrayItemProps = (Component: ComponentType<ArrayItemPr
         const childPath = composePaths(path, `${index}`);
         const childData = Resolve.data(ctx.core.data, childPath);
         const childLabel = get(childData, 'name');
+        const childId = get(childData, 'id');
         const childType = get(childData, 'type');
         return (
             <Component
                 {...props}
                 childLabel={childLabel}
                 childPath={childPath}
+                childId={childId}
                 childType={childType}
                 uischemas={uischemas}
             />
@@ -190,14 +172,7 @@ export const withJsonFormsArrayItemProps = (
     Component: ComponentType<ArrayItemProps>,
 ): ComponentType<OwnPropsOfArrayItem> =>
     withJsonFormsContext(
-        // @ts-ignore
-        withContextToArrayItemProps(
-            React.memo(
-                Component,
-                (prevProps: ArrayItemProps, nextProps: ArrayItemProps) =>
-                    areEqual(prevProps, nextProps),
-            ),
-        ),
+        withContextToArrayItemProps(Component),
     );
 
 export default withJsonFormsArrayItemProps(ArrayItemRenderer);

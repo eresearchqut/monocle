@@ -43,7 +43,6 @@ const AnyOfRenderer = ({
 
     return (
         <JsonFormsDispatch
-            key={indexOfFittingSchema}
             schema={inputSchema}
             uischema={inputUischema}
             path={path}

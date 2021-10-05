@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useCallback, useState} from 'react';
+import React, {FunctionComponent, useCallback, useEffect, useState} from 'react';
 import {
     ArrayLayoutProps, composePaths,
     isObjectArrayWithNesting,
@@ -13,9 +13,8 @@ import {
 } from '@jsonforms/react';
 import ArrayItemRenderer from './ArrayItemRenderer';
 
-import {Droppable} from 'react-beautiful-dnd';
+import {Droppable, Draggable} from 'react-beautiful-dnd';
 
-import crypto from 'crypto';
 
 export const ArrayLayout: FunctionComponent<ArrayLayoutProps> = ({
                                                                      id,
@@ -29,12 +28,18 @@ export const ArrayLayout: FunctionComponent<ArrayLayoutProps> = ({
                                                                      config,
                                                                      uischemas,
                                                                  }) => {
+
     const context: JsonFormsStateContext = useJsonForms();
     const {dispatch} = context;
 
     const startCollapsed = uischema.scope === '#/properties/inputs';
 
-    const [collapsed, setCollapsed] = useState<boolean[]>(new Array(data).fill(startCollapsed));
+
+    const [collapsed, setCollapsed] = useState<boolean[]>([]);
+
+    useEffect(() => {
+        setCollapsed(() => new Array(data).fill(startCollapsed));
+    }, [data]);
 
     const arrayMove = (arr: any[], fromIndex: number, toIndex: number) => {
         const element = arr[fromIndex];
@@ -97,9 +102,12 @@ export const ArrayLayout: FunctionComponent<ArrayLayoutProps> = ({
 
     const type = path.split('.').slice(-1).pop();
 
-    const childId = (index: number): string | undefined => {
-        const childIdPath = composePaths(path, `${index}.id`);
-        const childId = Resolve.data(context.core.data, childIdPath);
+
+    const childPath = (index: number): string => composePaths(path, `${index}`);
+
+    const draggableId = (index: number): string => {
+        const childIdPath = composePaths(childPath(index), 'id');
+        const childId = Resolve.data(context.core?.data, childIdPath);
         return childId;
     };
 
@@ -108,27 +116,36 @@ export const ArrayLayout: FunctionComponent<ArrayLayoutProps> = ({
             {(droppableProvided, snapshot) => (
                 <div ref={droppableProvided.innerRef}
                      {...droppableProvided.droppableProps}>
-                    {collapsed.filter((isCollapsed, index) => childId(index)).map((isCollapsed, index) =>
+                    {collapsed.map((isCollapsed, index) =>
                         (
-                            <ArrayItemRenderer
-                                index={index}
-                                schema={schema}
-                                key={childId(index)}
-                                path={path}
-                                uischema={uischema}
-                                renderers={renderers}
-                                cells={cells}
-                                rootSchema={rootSchema}
-                                enableMoveUp={index != 0}
-                                enableMoveDown={index < data - 1}
-                                config={config}
-                                uischemas={uischemas}
-                                collapsed={isCollapsed}
-                                handleToggle={handleToggle}
-                                moveUp={moveUp}
-                                moveDown={moveDown}
-                                remove={remove}
-                            />
+                            <Draggable
+                                key={draggableId(index)}
+                                draggableId={draggableId(index)}
+                                index={index}>
+                                {(draggableProvided, snapshot) => (
+                                    <div ref={draggableProvided.innerRef} {...draggableProvided.dragHandleProps}
+                                         {...draggableProvided.draggableProps} className='p-mb-3'>
+                                        <ArrayItemRenderer
+                                            index={index}
+                                            schema={schema}
+                                            path={path}
+                                            uischema={uischema}
+                                            renderers={renderers}
+                                            cells={cells}
+                                            rootSchema={rootSchema}
+                                            enableMoveUp={index != 0}
+                                            enableMoveDown={index < data - 1}
+                                            config={config}
+                                            uischemas={uischemas}
+                                            collapsed={isCollapsed}
+                                            handleToggle={handleToggle}
+                                            moveUp={moveUp}
+                                            moveDown={moveDown}
+                                            remove={remove}
+                                        />
+                                    </div>
+                                )}
+                            </Draggable>
                         ))}
                     {droppableProvided.placeholder}
                 </div>
@@ -157,6 +174,8 @@ export const ArrayLayoutRenderer: FunctionComponent<ArrayLayoutProps> = ({
     const addItemCb = useCallback((p: string, value: any) => addItem(p, value), [
         addItem,
     ]);
+
+
 
     return (
         <ArrayLayout

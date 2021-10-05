@@ -87,7 +87,7 @@ Example.args = {
                         name: 'Muscles showing marked weakness',
                         description: 'Multiple can be picked',
                         required: false,
-                    },
+                    }
                 ],
             },
         ],

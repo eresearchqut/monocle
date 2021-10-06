@@ -209,7 +209,7 @@
                     "type": "string"
                 }
             },
-            "title": "Image Map",
+            "title": "Svg Map",
             "type": "object"
         },
         "TextInput": {
@@ -296,9 +296,14 @@
         "name": {
             "description": "The name of the element",
             "type": "string"
+        },
+        "type": {
+            "enum": [
+                "default"
+            ],
+            "type": "string"
         }
     },
-    "title": "Section",
     "type": "object"
 }
 

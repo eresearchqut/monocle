@@ -7,13 +7,13 @@ import {
     inputBooleanControlTester,
     InputControl,
     inputControlTester,
-    VerticalLayout,
-    verticalLayoutTester
+
 } from '@trrf/form-components';
 
 import {JsonFormsCore, RankedTester} from '@jsonforms/core';
-import ArrayLayout, {arrayLayoutTester} from './ArrayLayout';
+import ArrayLayout, {arrayLayoutTester} from './InputsLayout';
 import AnyOfLayout, {anyOfLayoutTester} from './AnyOfLayout';
+import VerticalLayout, {verticalLayoutTester} from './VerticalLayout';
 
 const renderers: { tester: RankedTester; renderer: any }[] = [
     {tester: anyOfLayoutTester, renderer: AnyOfLayout},

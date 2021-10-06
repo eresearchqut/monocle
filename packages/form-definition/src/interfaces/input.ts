@@ -79,7 +79,7 @@ export interface CurrencyInput extends InputType {
 
 
 /**
- * @title Image Map
+ * @title Svg Map
  *
  */
 export interface SvgMapInput extends InputType {

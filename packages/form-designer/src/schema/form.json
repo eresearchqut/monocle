@@ -121,6 +121,59 @@
             "title": "Date",
             "type": "object"
         },
+        "DefaultSection": {
+            "properties": {
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "inputs": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/BooleanInput"
+                            },
+                            {
+                                "$ref": "#/definitions/TextInput"
+                            },
+                            {
+                                "$ref": "#/definitions/DateInput"
+                            },
+                            {
+                                "$ref": "#/definitions/NumericInput"
+                            },
+                            {
+                                "$ref": "#/definitions/CurrencyInput"
+                            },
+                            {
+                                "$ref": "#/definitions/SvgMapInput"
+                            }
+                        ],
+                        "title": "Input"
+                    },
+                    "type": "array"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "type": {
+                    "enum": [
+                        "default"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
         "NumericInput": {
             "properties": {
                 "decimalPlaces": {
@@ -170,54 +223,6 @@
             "title": "Numeric",
             "type": "object"
         },
-        "Section": {
-            "properties": {
-                "description": {
-                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-                    "type": "string"
-                },
-                "id": {
-                    "format": "uuid",
-                    "type": "string"
-                },
-                "inputs": {
-                    "items": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/definitions/BooleanInput"
-                            },
-                            {
-                                "$ref": "#/definitions/TextInput"
-                            },
-                            {
-                                "$ref": "#/definitions/DateInput"
-                            },
-                            {
-                                "$ref": "#/definitions/NumericInput"
-                            },
-                            {
-                                "$ref": "#/definitions/CurrencyInput"
-                            },
-                            {
-                                "$ref": "#/definitions/SvgMapInput"
-                            }
-                        ],
-                        "title": "Input"
-                    },
-                    "type": "array"
-                },
-                "label": {
-                    "description": "Label can be provided to override the name",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "The name of the element",
-                    "type": "string"
-                }
-            },
-            "title": "Section",
-            "type": "object"
-        },
         "SvgMapInput": {
             "properties": {
                 "description": {
@@ -257,7 +262,7 @@
                     "type": "string"
                 }
             },
-            "title": "Image Map",
+            "title": "Svg Map",
             "type": "object"
         },
         "TextInput": {
@@ -317,7 +322,7 @@
         },
         "sections": {
             "items": {
-                "$ref": "#/definitions/Section"
+                "$ref": "#/definitions/DefaultSection"
             },
             "type": "array"
         }

@@ -229,7 +229,7 @@
                     "type": "string"
                 }
             },
-            "title": "Image Map",
+            "title": "Svg Map",
             "type": "object"
         },
         "TextInput": {

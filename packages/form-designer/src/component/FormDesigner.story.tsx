@@ -28,6 +28,7 @@ Example.args = {
             {
                 id: 'eefaf721-dacd-407d-8a06-2efc1dcd3ed7',
                 name: 'Patient Details',
+                type: 'default',
                 inputs: [
                     {
                         id: 'fba2b164-1a8d-4fa2-9483-6e062eb71d64',
@@ -49,6 +50,7 @@ Example.args = {
             {
                 id: '29a54c4c-c860-45d8-ab45-039cd27d49a0',
                 name: 'Assessment',
+                type: 'default',
                 inputs: [
                     {
                         id: 'e1a3e824-122c-4e28-9afa-94a9f302db43',

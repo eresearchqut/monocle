@@ -11,6 +11,19 @@ import {
 import {JsonFormsDispatch, withJsonFormsLayoutProps} from '@jsonforms/react';
 import isEmpty from 'lodash/isEmpty';
 
+const omittedScopes = ['#/properties/type', '#/properties/id'];
+const scopeSortOrder: { [key: string]: number } = {
+    '#/properties/name': 1,
+    '#/properties/label': 2,
+    '#/properties/description': 3
+};
+const sortLast = ['#/properties/inputs', '#/properties/sections'];
+
+const sortControl = (controlElementA: ControlElement, controlElementB: ControlElement) =>
+    sortLast.indexOf(controlElementA.scope) > 0 ? 10000
+        : scopeSortOrder[controlElementA.scope] ? 0 - scopeSortOrder[controlElementA.scope]
+            : controlElementA.scope.localeCompare(controlElementB.scope);
+
 
 const renderChildren = (layout: VerticalLayout,
                         schema: JsonSchema,
@@ -23,9 +36,8 @@ const renderChildren = (layout: VerticalLayout,
 
     return layout.elements
         .map((uiSchemaElement) => uiSchemaElement as ControlElement)
-        // .filter((element) => element['scope'] !== '#/properties/type')
-        // .sort((a, b) => a.scope === '#/properties/name' ? -1 :
-        //     a.scope.localeCompare(b.scope))
+        .filter((element) => omittedScopes.indexOf(element['scope']) === -1)
+        .sort(sortControl)
         .map((child, index) => {
             return (
                 <div key={`${path}-${index}`} className="p-col">

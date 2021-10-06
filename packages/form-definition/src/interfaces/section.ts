@@ -1,12 +1,22 @@
 import {Named} from './named';
-import {Input} from './input';
+import {Input, InputType} from './input';
 import {Labelled} from "./labeled";
 import {Described} from "./described";
 import {UniquelyIdentifiable} from "./uniquelyIdentifiable";
+import {Typed} from "./typed";
+
+export interface SectionType extends UniquelyIdentifiable, Named, Typed, Described, Labelled {
+    type: 'default',
+    inputs: Input[];
+}
+
+
+export interface DefaultSection extends SectionType {
+    type: 'default'
+}
+
 
 /**
  * @title Section
  */
-export interface Section extends UniquelyIdentifiable, Named, Labelled, Described {
-    inputs: Input[];
-}
+export type Section = DefaultSection;

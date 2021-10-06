@@ -6,7 +6,7 @@ import startCase from 'lodash/startCase';
 const inputSchema = require('../schema/input.json') as JsonSchema;
 
 
-import {Draggable, DropResult, Droppable, DragDropContext, ResponderProvided} from 'react-beautiful-dnd';
+import {Draggable, Droppable} from 'react-beautiful-dnd';
 import {Avatar} from 'primereact/avatar';
 
 

@@ -37,66 +37,58 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                          removeItems
                                                                      }) => {
 
-    const elements = data as Array<Section | Input>;
-    const startCollapsed = uischema.scope === '#/properties/inputs';
+    const sections = data as Array<Section>;
+
     const [refresh, setRefresh] = useState(false);
 
-    const isCollapsed = (elementData: UniquelyIdentifiable): boolean => window.localStorage.getItem(elementData.id)
-        ? window.localStorage.getItem(elementData.id) === 'true' : startCollapsed;
+    const isCollapsed = (section: UniquelyIdentifiable): boolean => window.localStorage.getItem(section.id)
+        ? window.localStorage.getItem(section.id) === 'true' : false;
 
-    const handleToggle = (elementData: UniquelyIdentifiable) => (event: any): void => {
-        const currentState: boolean = isCollapsed(elementData);
-        console.log(elementData.id, currentState ? 'false' : 'true');
-        window.localStorage.setItem(elementData.id, currentState ? 'false' : 'true');
+    const handleToggle = (section: UniquelyIdentifiable) => (event: any): void => {
+        const currentState: boolean = isCollapsed(section);
+        console.log(section.id, currentState ? 'false' : 'true');
+        window.localStorage.setItem(section.id, currentState ? 'false' : 'true');
         setRefresh((currentState) => !currentState);
     };
 
     const elementType = path.split('.').slice(-1).pop();
 
-    const iconMap: Map<string, string> = new Map<string, string>([
-        ['default', 'pi-align-justify'],
-        ['date', 'pi-calendar'],
-        ['boolean', 'pi-check-square'],
-        ['text', 'pi-align-left'],
-        ['svg', 'pi-image'],
-        ['numeric', 'pi-sort-numeric-up'],
-        ['currency', 'pi-money-bill']
-    ]);
+
 
     const panelHeaderTemplate = (options: PanelHeaderTemplateOptions,
                                  index: number,
-                                 elementData: Section | Input,
+                                 section: Section,
                                  dragHandleProps: DraggableProvidedDragHandleProps | undefined): PanelHeaderTemplateType => {
-        const titleClassName = `${options.titleClassName} p-pl-1`;
+        const titleClassName = `${options.titleClassName} p-pl-1 pi-mr-2`;
         const className = `${options.className} p-d-flex`;
         const enableMoveUp = index != 0;
-        const enableMoveDown = index < elements.length - 1;
-        const {label, name, type} = elementData;
-
-        const collapsed = isCollapsed(elementData);
+        const enableMoveDown = index < sections.length - 1;
+        const {label, name} = section;
+        const collapsed = isCollapsed(section);
         const menuOptions: MenuItem[] = [
             removeItems ? {
-                label: 'Remove Item',
+                label: 'Remove Section',
                 icon: 'pi pi-times-circle',
                 command: removeItems(path, [index]),
             } : [],
             ...enableMoveUp && moveUp ? [{
-                label: 'Move Up',
+                label: 'Move Section Up',
                 icon: 'pi pi-chevron-circle-up',
                 command: moveUp(path, index),
             }] : [],
             ...enableMoveDown && moveDown ? [{
-                label: 'Move Down',
+                label: 'Move Section Down',
                 icon: 'pi pi-chevron-circle-down',
                 command: moveDown(path, index),
             }] : [],
         ];
 
         return (
-            <div className={className} {...dragHandleProps}>
+            <div className={className}>
+                <Avatar icon='pi pi-align-justify' className="p-mr-2"
+                        shape="circle"/>
                 <div className={titleClassName}>
-                    <Avatar icon={`pi ${iconMap.get(type)}`} className="p-mr-2"
-                            shape="circle"/>
+
                     {label || name}
                 </div>
                 <div className="p-ml-auto">
@@ -139,19 +131,19 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
             {(droppableProvided, snapshot) => (
                 <div ref={droppableProvided.innerRef}
                      {...droppableProvided.droppableProps}>
-                    {elements.map((elementData: Section | Input, index) =>
+                    {sections.map((section: Section, index) =>
                         (
                             <Draggable
-                                key={elementData.id}
-                                draggableId={elementData.id}
+                                key={section.id}
+                                draggableId={section.id}
                                 index={index}>
                                 {(draggableProvided, snapshot) => (
                                     <div ref={draggableProvided.innerRef}
                                          {...draggableProvided.draggableProps}>
                                         <Panel
-                                            headerTemplate={(options) => panelHeaderTemplate(options, index, elementData, draggableProvided.dragHandleProps)}
-                                            toggleable onToggle={handleToggle(elementData)}
-                                            collapsed={isCollapsed(elementData)}>
+                                            headerTemplate={(options) => panelHeaderTemplate(options, index, section, draggableProvided.dragHandleProps)}
+                                            toggleable onToggle={handleToggle(section)}
+                                            collapsed={isCollapsed(section)}>
                                             {panelContent(index)}
                                         </Panel>
                                     </div>

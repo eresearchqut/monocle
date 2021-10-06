@@ -17,7 +17,7 @@ import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType} from "primer
 import {MenuItem} from "primereact/menuitem";
 import {SplitButton} from "primereact/splitbutton";
 
-import {Section, Input, UniquelyIdentifiable} from "@trrf/form-definition";
+import {Input, UniquelyIdentifiable} from "@trrf/form-definition";
 import {Avatar} from "primereact/avatar";
 
 
@@ -35,68 +35,67 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                        removeItems
                                                                    }) => {
 
-    const elements = data as Array<Section | Input>;
-    const startCollapsed = uischema.scope === '#/properties/inputs';
+    const inputs = data as Array<Input>;
     const [refresh, setRefresh] = useState(false);
 
-    const isCollapsed = (elementData: UniquelyIdentifiable): boolean => window.localStorage.getItem(elementData.id)
-        ? window.localStorage.getItem(elementData.id) === 'true' : startCollapsed;
+    const isCollapsed = (input: UniquelyIdentifiable): boolean => window.localStorage.getItem(input.id)
+        ? window.localStorage.getItem(input.id) === 'true' : true;
 
-    const handleToggle = (elementData: UniquelyIdentifiable) => (event: any): void => {
-        const currentState: boolean = isCollapsed(elementData);
-        console.log(elementData.id, currentState ? 'false' : 'true');
-        window.localStorage.setItem(elementData.id, currentState ? 'false' : 'true');
+    const handleToggle = (input: UniquelyIdentifiable) => (event: any): void => {
+        const currentState: boolean = isCollapsed(input);
+        console.log(input.id, currentState ? 'false' : 'true');
+        window.localStorage.setItem(input.id, currentState ? 'false' : 'true');
         setRefresh((currentState) => !currentState);
     };
 
     const elementType = path.split('.').slice(-1).pop();
 
     const iconMap: Map<string, string> = new Map<string, string>([
-        ['default', 'pi-align-justify'],
         ['date', 'pi-calendar'],
         ['boolean', 'pi-check-square'],
         ['text', 'pi-align-left'],
-        ['svg', 'pi-image'],
+        ['svg-map', 'pi-image'],
         ['numeric', 'pi-sort-numeric-up'],
         ['currency', 'pi-money-bill']
     ]);
 
     const panelHeaderTemplate = (options: PanelHeaderTemplateOptions,
                                  index: number,
-                                 elementData: Section | Input,
+                                 input: Input,
                                  dragHandleProps: DraggableProvidedDragHandleProps | undefined): PanelHeaderTemplateType => {
-        const titleClassName = `${options.titleClassName} p-pl-1`;
-        const className = `${options.className} p-d-flex`;
-        const enableMoveUp = index != 0;
-        const enableMoveDown = index < elements.length - 1;
-        const {label, name, type} = elementData;
 
-        const collapsed = isCollapsed(elementData);
+        const className = `${options.className} p-d-flex`;
+        const titleClassName = `${options.titleClassName} p-mr-3`;
+        const enableMoveUp = index != 0;
+        const enableMoveDown = index < inputs.length - 1;
+        const {label, name, type} = input;
+
+        const collapsed = isCollapsed(input);
         const menuOptions: MenuItem[] = [
             removeItems ? {
-                label: 'Remove Item',
+                label: 'Remove Input',
                 icon: 'pi pi-times-circle',
                 command: removeItems(path, [index]),
             } : [],
             ...enableMoveUp && moveUp ? [{
-                label: 'Move Up',
+                label: 'Move Input Up',
                 icon: 'pi pi-chevron-circle-up',
                 command: moveUp(path, index),
             }] : [],
             ...enableMoveDown && moveDown ? [{
-                label: 'Move Down',
+                label: 'Move Input Down',
                 icon: 'pi pi-chevron-circle-down',
                 command: moveDown(path, index),
             }] : [],
         ];
 
         return (
-            <div className={className} {...dragHandleProps}>
-                <div className={titleClassName}>
-                    <Avatar icon={`pi ${iconMap.get(type)}`} className="p-mr-2"
+            <div className={className}  {...dragHandleProps}>
+                <div className="p-mr-3">
+                    <Avatar icon={`pi ${iconMap.get(type)}`}
                             shape="circle"/>
-                    {label || name}
                 </div>
+                <div className={titleClassName}>{label || name}</div>
                 <div className="p-ml-auto">
                     <SplitButton icon={collapsed ? 'pi pi-window-minimize' : 'pi pi-window-maximize'}
                                  dropdownIcon="pi pi-bars"
@@ -108,7 +107,6 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
     };
 
     const panelContent = (index: number) => {
-
         const childPath = composePaths(path, `${index}`);
         const foundUISchema =
             findUISchema(
@@ -133,23 +131,23 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
 
 
     return (
-        <Droppable droppableId={path} type={elementType}>
+        <Droppable droppableId={path} type='inputs'>
             {(droppableProvided, snapshot) => (
                 <div ref={droppableProvided.innerRef}
                      {...droppableProvided.droppableProps}>
-                    {elements.map((elementData: Section | Input, index) =>
+                    {inputs.map((input: Input, index) =>
                         (
                             <Draggable
-                                key={elementData.id}
-                                draggableId={elementData.id}
+                                key={input.id}
+                                draggableId={input.id}
                                 index={index}>
                                 {(draggableProvided, snapshot) => (
-                                    <div ref={draggableProvided.innerRef}
+                                    <div ref={draggableProvided.innerRef} className='p-mb-1'
                                          {...draggableProvided.draggableProps}>
                                         <Panel
-                                            headerTemplate={(options) => panelHeaderTemplate(options, index, elementData, draggableProvided.dragHandleProps)}
-                                            toggleable onToggle={handleToggle(elementData)}
-                                            collapsed={isCollapsed(elementData)}>
+                                            headerTemplate={(options) => panelHeaderTemplate(options, index, input, draggableProvided.dragHandleProps)}
+                                            toggleable onToggle={handleToggle(input)}
+                                            collapsed={isCollapsed(input)}>
                                             {panelContent(index)}
                                         </Panel>
                                     </div>

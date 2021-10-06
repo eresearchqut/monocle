@@ -168,7 +168,7 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
 
 
 
-export const inputLayoutTester: RankedTester = rankWith(
+export const arrayLayoutTester: RankedTester = rankWith(
     2,
     isObjectArrayWithNesting,
 );

@@ -11,13 +11,13 @@ import {
 } from '@trrf/form-components';
 
 import {JsonFormsCore, RankedTester} from '@jsonforms/core';
-import ArrayLayout, {arrayLayoutTester} from './InputsLayout';
+import InputsLayout, {inputLayoutTester} from './InputsLayout';
 import AnyOfLayout, {anyOfLayoutTester} from './AnyOfLayout';
 import VerticalLayout, {verticalLayoutTester} from './VerticalLayout';
 
 const renderers: { tester: RankedTester; renderer: any }[] = [
     {tester: anyOfLayoutTester, renderer: AnyOfLayout},
-    {tester: arrayLayoutTester, renderer: ArrayLayout},
+    {tester: inputLayoutTester, renderer: InputsLayout},
     {tester: inputControlTester, renderer: InputControl},
     {tester: inputBooleanControlTester, renderer: InputBooleanControl},
     {tester: verticalLayoutTester, renderer: VerticalLayout},

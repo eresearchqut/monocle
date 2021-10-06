@@ -6,7 +6,7 @@ import {
     RankedTester,
     rankWith,
     findUISchema,
-    JsonFormsUISchemaRegistryEntry,
+    JsonFormsUISchemaRegistryEntry, and, scopeEndsWith,
 } from '@jsonforms/core';
 import {
     withJsonFormsArrayControlProps, JsonFormsDispatch
@@ -22,18 +22,18 @@ import {Avatar} from "primereact/avatar";
 
 
 export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
-                                                                      data,
-                                                                      path,
-                                                                      schema,
-                                                                      uischema,
-                                                                      renderers,
-                                                                      cells,
-                                                                      rootSchema,
-                                                                      uischemas,
-                                                                      moveUp,
-                                                                      moveDown,
-                                                                      removeItems
-                                                                  }) => {
+                                                                       data,
+                                                                       path,
+                                                                       schema,
+                                                                       uischema,
+                                                                       renderers,
+                                                                       cells,
+                                                                       rootSchema,
+                                                                       uischemas,
+                                                                       moveUp,
+                                                                       moveDown,
+                                                                       removeItems
+                                                                   }) => {
 
     const elements = data as Array<Section | Input>;
     const startCollapsed = uischema.scope === '#/properties/inputs';
@@ -165,12 +165,14 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
 };
 
 
-
-
-
-export const inputLayoutTester: RankedTester = rankWith(
-    2,
+export const isInputsLayout = and(
     isObjectArrayWithNesting,
+    scopeEndsWith('inputs')
+);
+
+export const inputsLayoutTester: RankedTester = rankWith(
+    2,
+    isInputsLayout,
 );
 
 export default withJsonFormsArrayControlProps(InputsLayout);

@@ -1,5 +1,5 @@
 import React, {FunctionComponent, useState, useEffect} from 'react';
-import {FormCanvas} from './FormCanvas';
+import {FormDesignerCanvas} from './FormDesignerCanvas';
 import {FormPreview} from './FormPreview';
 import {InputSelector} from './InputSelector';
 
@@ -79,12 +79,12 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = (props) => {
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
-            <div className="p-grid">
+            <div className="p-grid form-designer">
                 <div className="p-col-12 p-md-2">
                     <InputSelector/>
                 </div>
                 <div className="p-col-12 p-md-6">
-                    <FormCanvas definition={state.definition} onChange={handleDefinitionChange}/>
+                    <FormDesignerCanvas definition={state.definition} onChange={handleDefinitionChange}/>
                 </div>
                 <div className="p-col-12 p-md-4">
                     <FormPreview definition={state.definition} data={state.data} onChange={handleDataChange}/>

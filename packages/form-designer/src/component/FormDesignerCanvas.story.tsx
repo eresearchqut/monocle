@@ -1,12 +1,12 @@
 import * as React from 'react';
 
 import {Meta, Story} from '@storybook/react';
-import {FormCanvas, FormCanvasProps} from './FormCanvas';
+import {FormDesignerCanvas, FormCanvasProps} from './FormDesignerCanvas';
 import {DragDropContext, Droppable, DropResult, ResponderProvided} from "react-beautiful-dnd";
 
 export default {
-    title: 'Component/FormCanvas',
-    component: FormCanvas,
+    title: 'Component/FormDesignerCanvas',
+    component: FormDesignerCanvas,
     decorators: [
         (Story, context) => {
             return (
@@ -20,7 +20,7 @@ export default {
 
 const Template: Story<FormCanvasProps> =
     ({definition}) =>
-        <FormCanvas definition={definition}/>;
+        <FormDesignerCanvas definition={definition}/>;
 Template.bind({});
 
 export const Example = Template.bind({});

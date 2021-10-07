@@ -36,19 +36,15 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                    }) => {
 
     const inputs = data as Array<Input>;
-    const [refresh, setRefresh] = useState(false);
-
-    const isCollapsed = (input: UniquelyIdentifiable): boolean => window.localStorage.getItem(input.id)
-        ? window.localStorage.getItem(input.id) === 'true' : true;
-
+    const [collapsed, setCollapsed] = useState<Map<string, boolean>>(new Map<string, boolean>(inputs.map((input => [input.id,true]))));
+    const isCollapsed = (input: UniquelyIdentifiable): boolean | undefined => collapsed.get(input.id);
     const handleToggle = (input: UniquelyIdentifiable) => (event: any): void => {
-        const currentState: boolean = isCollapsed(input);
-        console.log(input.id, currentState ? 'false' : 'true');
-        window.localStorage.setItem(input.id, currentState ? 'false' : 'true');
-        setRefresh((currentState) => !currentState);
+        setCollapsed((currentState) => {
+            const newState = new Map(currentState);
+            newState.set(input.id, !currentState.get(input.id))
+            return newState;
+        })
     };
-
-    const elementType = path.split('.').slice(-1).pop();
 
     const iconMap: Map<string, string> = new Map<string, string>([
         ['date', 'pi-calendar'],

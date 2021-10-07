@@ -6,34 +6,36 @@ import {
     RankedTester,
     VerticalLayout,
     rankWith,
-    uiTypeIs, JsonFormsRendererRegistryEntry, JsonFormsCellRendererRegistryEntry
+    uiTypeIs,
+    JsonFormsRendererRegistryEntry,
+    JsonFormsCellRendererRegistryEntry
 } from '@jsonforms/core';
 import {JsonFormsDispatch, withJsonFormsLayoutProps} from '@jsonforms/react';
 import isEmpty from 'lodash/isEmpty';
 
 const omittedScopes = ['#/properties/type', '#/properties/id'];
-const scopeSortOrder: { [key: string]: number } = {
-    '#/properties/name': 1,
-    '#/properties/label': 2,
-    '#/properties/description': 3
-};
-const sortLast = ['#/properties/inputs', '#/properties/sections'];
+const sortFirst = [
+    '#/properties/name', '#/properties/label', '#/properties/description',
+];
+const sortLast = [
+    '#/properties/inputs', '#/properties/sections'
+];
+
+const scopeOrder = (scope: string): number => sortLast.indexOf(scope) >= 0 ? 10000 :
+    sortFirst.indexOf(scope) >= 0 ? sortFirst.indexOf(scope) : 0;
 
 const sortControl = (controlElementA: ControlElement, controlElementB: ControlElement) =>
-    sortLast.indexOf(controlElementA.scope) > 0 ? 10000
-        : scopeSortOrder[controlElementA.scope] ? 0 - scopeSortOrder[controlElementA.scope]
-            : controlElementA.scope.localeCompare(controlElementB.scope);
-
+    scopeOrder(controlElementA.scope) - scopeOrder(controlElementB.scope);
 
 const renderChildren = (layout: VerticalLayout,
                         schema: JsonSchema,
                         path: string,
                         renderers: JsonFormsRendererRegistryEntry[] | undefined,
                         cells: JsonFormsCellRendererRegistryEntry[] | undefined) => {
+
     if (isEmpty(layout.elements)) {
         return [];
     }
-
     return layout.elements
         .map((uiSchemaElement) => uiSchemaElement as ControlElement)
         .filter((element) => omittedScopes.indexOf(element['scope']) === -1)
@@ -72,7 +74,6 @@ const VerticalLayoutRenderer: FunctionComponent<LayoutProps> = (
         </div>
     );
 };
-
 
 /**
  * Default tester for a vertical layout.

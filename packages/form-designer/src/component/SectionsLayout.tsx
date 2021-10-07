@@ -7,7 +7,6 @@ import {
     rankWith,
     findUISchema,
     scopeEndsWith,
-    Tester,
     JsonFormsUISchemaRegistryEntry, and
 } from '@jsonforms/core';
 import {
@@ -38,21 +37,15 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                      }) => {
 
     const sections = data as Array<Section>;
-
-    const [refresh, setRefresh] = useState(false);
-
-    const isCollapsed = (section: UniquelyIdentifiable): boolean => window.localStorage.getItem(section.id)
-        ? window.localStorage.getItem(section.id) === 'true' : false;
-
+    const [collapsed, setCollapsed] = useState<Map<string, boolean>>(new Map<string, boolean>(sections.map((section => [section.id, false]))));
+    const isCollapsed = (section: UniquelyIdentifiable): boolean | undefined => collapsed.get(section.id);
     const handleToggle = (section: UniquelyIdentifiable) => (event: any): void => {
-        const currentState: boolean = isCollapsed(section);
-        console.log(section.id, currentState ? 'false' : 'true');
-        window.localStorage.setItem(section.id, currentState ? 'false' : 'true');
-        setRefresh((currentState) => !currentState);
+        setCollapsed((currentState) => {
+            const newState = new Map(currentState);
+            newState.set(section.id, !currentState.get(section.id))
+            return newState;
+        })
     };
-
-    const elementType = path.split('.').slice(-1).pop();
-
 
 
     const panelHeaderTemplate = (options: PanelHeaderTemplateOptions,
@@ -84,13 +77,10 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
         ];
 
         return (
-            <div className={className}>
+            <div className={className} {...dragHandleProps}>
                 <Avatar icon='pi pi-align-justify' className="p-mr-2"
                         shape="circle"/>
-                <div className={titleClassName}>
-
-                    {label || name}
-                </div>
+                <div className={titleClassName}>{label || name}</div>
                 <div className="p-ml-auto">
                     <SplitButton icon={collapsed ? 'pi pi-window-minimize' : 'pi pi-window-maximize'}
                                  dropdownIcon="pi pi-bars"
@@ -125,36 +115,38 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
         );
     };
 
-
     return (
-        <Droppable droppableId={path} type={elementType}>
-            {(droppableProvided, snapshot) => (
-                <div ref={droppableProvided.innerRef}
-                     {...droppableProvided.droppableProps}>
-                    {sections.map((section: Section, index) =>
-                        (
-                            <Draggable
-                                key={section.id}
-                                draggableId={section.id}
-                                index={index}>
-                                {(draggableProvided, snapshot) => (
-                                    <div ref={draggableProvided.innerRef}
-                                         {...draggableProvided.draggableProps}>
-                                        <Panel
-                                            headerTemplate={(options) => panelHeaderTemplate(options, index, section, draggableProvided.dragHandleProps)}
-                                            toggleable onToggle={handleToggle(section)}
-                                            collapsed={isCollapsed(section)}>
-                                            {panelContent(index)}
-                                        </Panel>
-                                    </div>
+        <React.Fragment>
+            <Droppable droppableId={path} type='sections'>
+                {(droppableProvided, snapshot) => (
+                    <div ref={droppableProvided.innerRef}
+                         {...droppableProvided.droppableProps}
+                         className='sections'>
+                        {sections.map((section: Section, index) =>
+                            (
+                                <Draggable
+                                    key={section.id}
+                                    draggableId={section.id}
+                                    index={index}>
+                                    {(draggableProvided, snapshot) => (
+                                        <div ref={draggableProvided.innerRef}
+                                             {...draggableProvided.draggableProps} className='section'>
 
-                                )}
-                            </Draggable>
-                        ))}
-                    {droppableProvided.placeholder}
-                </div>
-            )}
-        </Droppable>
+                                            <Panel
+                                                headerTemplate={(options) => panelHeaderTemplate(options, index, section, draggableProvided.dragHandleProps)}
+                                                toggleable onToggle={handleToggle(section)}
+                                                collapsed={isCollapsed(section)}>
+                                                {panelContent(index)}
+                                            </Panel>
+                                        </div>
+                                    )}
+                                </Draggable>
+                            ))}
+                        {droppableProvided.placeholder}
+                    </div>
+                )}
+            </Droppable>
+        </React.Fragment>
     );
 };
 

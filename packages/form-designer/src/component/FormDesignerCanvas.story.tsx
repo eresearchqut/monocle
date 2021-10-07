@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import {Meta, Story} from '@storybook/react';
 import {FormDesignerCanvas, FormCanvasProps} from './FormDesignerCanvas';
-import {DragDropContext, Droppable, DropResult, ResponderProvided} from "react-beautiful-dnd";
+import {DragDropContext, DropResult, ResponderProvided} from "react-beautiful-dnd";
 
 export default {
     title: 'Component/FormDesignerCanvas',

@@ -14,9 +14,9 @@ import {JsonFormsCore} from '@jsonforms/core';
 export interface FormPreviewProps {
     definition: Form;
     data?: any;
-
     onChange?(state: Pick<JsonFormsCore, 'data' | 'errors'>): void;
 }
+
 
 
 export const FormPreview: FunctionComponent<FormPreviewProps> = ({definition, data, onChange}) => {

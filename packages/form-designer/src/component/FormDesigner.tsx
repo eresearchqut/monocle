@@ -7,9 +7,9 @@ import {Form, Input} from '@trrf/form-definition';
 import {ErrorObject} from 'ajv';
 import {DragDropContext, DropResult} from "react-beautiful-dnd";
 import {JsonSchema} from "@jsonforms/core";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import get from "lodash/get";
-
+import Sticky from 'react-stickynode';
 
 const inputSchema = require('../schema/input.json') as JsonSchema;
 
@@ -53,33 +53,35 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
     const onDragEnd = (result: DropResult) => {
 
         const {draggableId, source, destination, type} = result;
-        setFormDefinition((currentState) => {
+        if (destination) {
+            setFormDefinition((currentState) => {
 
-            const definition = JSON.parse(JSON.stringify(currentState));
-            if (type === 'inputs') {
-                const destinationSectionIndex = parseInt(result.destination?.droppableId.split('.')[1] || '0');
-                const destinationSection = definition.sections[destinationSectionIndex];
+                const definition = JSON.parse(JSON.stringify(currentState));
+                if (type === 'inputs') {
+                    const destinationSectionIndex = parseInt(result.destination?.droppableId.split('.')[1] || '0');
+                    const destinationSection = definition.sections[destinationSectionIndex];
 
-                if (result.source.droppableId === 'inputSelector') {
+                    if (result.source.droppableId === 'inputSelector') {
 
 
-                    const type = get(inputSchema.definitions, `${result.draggableId}.properties.type.enum.0`);
-                    const input = {type, id: uuidv4()}
-                    destinationSection.inputs.splice(destination.index || 0, 0, input);
+                        const type = get(inputSchema.definitions, `${result.draggableId}.properties.type.enum.0`);
+                        const input = {type, id: uuidv4()}
+                        destinationSection.inputs.splice(destination.index || 0, 0, input);
 
-                } else if (destination) {
-                    const sourceSectionIndex = parseInt(source?.droppableId.split('.')[1] || '0');
-                    const sourceSection = definition.sections[sourceSectionIndex];
-                    const [moving] = definition
-                        .sections[sourceSectionIndex]
-                        .inputs.filter((input: Input) => input.id === draggableId);
+                    } else if (destination) {
+                        const sourceSectionIndex = parseInt(source?.droppableId.split('.')[1] || '0');
+                        const sourceSection = definition.sections[sourceSectionIndex];
+                        const [moving] = definition
+                            .sections[sourceSectionIndex]
+                            .inputs.filter((input: Input) => input.id === draggableId);
 
-                    sourceSection.inputs.splice(source.index, 1);
-                    destinationSection.inputs.splice(destination.index || 0, 0, moving);
+                        sourceSection.inputs.splice(source.index, 1);
+                        destinationSection.inputs.splice(destination.index || 0, 0, moving);
+                    }
                 }
-            }
-            return definition;
-        })
+                return definition;
+            })
+        }
 
     };
 
@@ -90,7 +92,9 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
             <div className="p-grid form-designer">
 
                 <div className="p-col-12 p-md-2">
-                    <InputSelector/>
+                    <Sticky enabled={true} >
+                        <InputSelector/>
+                    </Sticky>
                 </div>
                 <div className="p-col-12 p-md-6">
                     <FormDesignerCanvas definition={formDefinition} onChange={handleDefinitionChange}/>
@@ -98,7 +102,6 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
                 <div className="p-col-12 p-md-4">
                     <FormPreview definition={formDefinition} data={formData} onChange={handleDataChange}/>
                 </div>
-
             </div>
         </DragDropContext>
 

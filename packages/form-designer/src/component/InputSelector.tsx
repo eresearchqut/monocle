@@ -28,7 +28,7 @@ export const InputSelector: FunctionComponent<InputSelectorProps> = ({}) => {
     const title = (definition: any) => startCase(definition?.title || '');
 
     return (
-        <div className="p-d-flex p-flex-column">
+        <div className="p-d-flex p-flex-column input-selector">
             <Droppable droppableId="inputSelector" type="inputs">
                 {(droppableProvided, snapshot) => (
                     <div ref={droppableProvided.innerRef}{...droppableProvided.droppableProps}>
@@ -49,7 +49,6 @@ export const InputSelector: FunctionComponent<InputSelectorProps> = ({}) => {
                                             <span className={'p-text-nowrap'}>{title(definition)}</span>
                                         </div>
                                     )}
-
                                 </Draggable>
                             )
                         )}

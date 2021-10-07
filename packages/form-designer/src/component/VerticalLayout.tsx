@@ -22,7 +22,7 @@ const sortLast = [
 ];
 
 const scopeOrder = (scope: string): number => sortLast.indexOf(scope) >= 0 ? 10000 :
-    sortFirst.indexOf(scope) >= 0 ? sortFirst.indexOf(scope) : 0;
+    sortFirst.indexOf(scope) >= 0 ? sortFirst.indexOf(scope) : 100;
 
 const sortControl = (controlElementA: ControlElement, controlElementB: ControlElement) =>
     scopeOrder(controlElementA.scope) - scopeOrder(controlElementB.scope);

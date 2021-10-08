@@ -40,6 +40,10 @@ export interface SvgMapProps extends HandlerPropsOfSvgMap, StatePropsOfSvgMapPro
 
 export const SvgMap: FunctionComponent<SvgMapProps> = (props) => {
 
+    if (!props.map) {
+        return null;
+    }
+
     const viewPort = (index: number): string => props.map.viewBox.split( ' ')[index];
 
     return (

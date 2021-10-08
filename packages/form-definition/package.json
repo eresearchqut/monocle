@@ -17,7 +17,6 @@
         "test": "echo 'notest'",
         "storybook": "echo 'no storybook'",
         "build-storybook": "echo 'build-storybook'",
-        "deploy-storybook": "echo 'deploy-storybook'",
         "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0 --fix"
     },
     "devDependencies": {

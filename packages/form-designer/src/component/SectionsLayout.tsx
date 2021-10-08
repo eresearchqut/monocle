@@ -18,8 +18,10 @@ import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType} from "primer
 import {MenuItem} from "primereact/menuitem";
 import {SplitButton} from "primereact/splitbutton";
 
-import {Section, Input, UniquelyIdentifiable} from "@trrf/form-definition";
+import {Section, UniquelyIdentifiable} from "@trrf/form-definition";
 import {Avatar} from "primereact/avatar";
+import { Fieldset } from 'primereact/fieldset';
+
 
 
 export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
@@ -117,35 +119,36 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
 
     return (
         <React.Fragment>
-            <Droppable droppableId={path} type='sections'>
-                {(droppableProvided, snapshot) => (
-                    <div ref={droppableProvided.innerRef}
-                         {...droppableProvided.droppableProps}
-                         className='sections'>
-                        {sections.map((section: Section, index) =>
-                            (
-                                <Draggable
-                                    key={section.id}
-                                    draggableId={section.id}
-                                    index={index}>
-                                    {(draggableProvided, snapshot) => (
-                                        <div ref={draggableProvided.innerRef}
-                                             {...draggableProvided.draggableProps} className='section'>
+                <h2>Sections</h2>
+                <Droppable droppableId={path} type='sections'>
+                    {(droppableProvided, snapshot) => (
+                        <div ref={droppableProvided.innerRef}
+                             {...droppableProvided.droppableProps}
+                             className='sections'>
+                            {sections.map((section: Section, index) =>
+                                (
+                                    <Draggable
+                                        key={section.id}
+                                        draggableId={section.id}
+                                        index={index}>
+                                        {(draggableProvided, snapshot) => (
+                                            <div ref={draggableProvided.innerRef}
+                                                 {...draggableProvided.draggableProps} className='section'>
+                                                <Panel
+                                                    headerTemplate={(options) => panelHeaderTemplate(options, index, section, draggableProvided.dragHandleProps)}
+                                                    toggleable onToggle={handleToggle(section)}
+                                                    collapsed={isCollapsed(section)}>
+                                                    {panelContent(index)}
+                                                </Panel>
+                                            </div>
+                                        )}
+                                    </Draggable>
+                                ))}
+                            {droppableProvided.placeholder}
+                        </div>
+                    )}
+                </Droppable>
 
-                                            <Panel
-                                                headerTemplate={(options) => panelHeaderTemplate(options, index, section, draggableProvided.dragHandleProps)}
-                                                toggleable onToggle={handleToggle(section)}
-                                                collapsed={isCollapsed(section)}>
-                                                {panelContent(index)}
-                                            </Panel>
-                                        </div>
-                                    )}
-                                </Draggable>
-                            ))}
-                        {droppableProvided.placeholder}
-                    </div>
-                )}
-            </Droppable>
         </React.Fragment>
     );
 };

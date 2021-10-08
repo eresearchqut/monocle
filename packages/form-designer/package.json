@@ -18,8 +18,7 @@
     "test-cov": "jest --no-cache --coverage",
     "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0 --fix",
     "storybook": "(start-storybook -p 6007)",
-    "build-storybook": "rimraf storybook-static && build-storybook",
-    "deploy-storybook": "storybook-to-ghpages"
+    "build-storybook": "rimraf storybook-static && build-storybook -o ../../storybooks/form-designer"
   },
   "dependencies": {
     "@trrf/form-compiler": "1.0.0",

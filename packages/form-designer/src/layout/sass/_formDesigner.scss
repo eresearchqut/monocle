@@ -1,4 +1,9 @@
+html {
+	font-size: 80%;
+}
+
 .form-designer {
+
 	.form-designer-canvas {
 		.p-col {
 			padding: 0.25rem;
@@ -9,6 +14,8 @@
 		.section {
 			margin-bottom: 1rem;
 		}
-
+		.p-fieldset-content {
+			padding: 0;
+		}
 	}
 }

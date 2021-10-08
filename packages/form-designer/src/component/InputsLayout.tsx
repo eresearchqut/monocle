@@ -127,34 +127,37 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
 
 
     return (
-        <Droppable droppableId={path} type='inputs'>
-            {(droppableProvided, snapshot) => (
-                <div ref={droppableProvided.innerRef}
-                     {...droppableProvided.droppableProps}>
-                    {inputs.map((input: Input, index) =>
-                        (
-                            <Draggable
-                                key={input.id}
-                                draggableId={input.id}
-                                index={index}>
-                                {(draggableProvided, snapshot) => (
-                                    <div ref={draggableProvided.innerRef} className='p-mb-1'
-                                         {...draggableProvided.draggableProps}>
-                                        <Panel
-                                            headerTemplate={(options) => panelHeaderTemplate(options, index, input, draggableProvided.dragHandleProps)}
-                                            toggleable onToggle={handleToggle(input)}
-                                            collapsed={isCollapsed(input)}>
-                                            {panelContent(index)}
-                                        </Panel>
-                                    </div>
+        <React.Fragment>
+            <h3>Inputs</h3>
+            <Droppable droppableId={path} type='inputs'>
+                {(droppableProvided, snapshot) => (
+                    <div ref={droppableProvided.innerRef}
+                         {...droppableProvided.droppableProps}>
+                        {inputs.map((input: Input, index) =>
+                            (
+                                <Draggable
+                                    key={input.id}
+                                    draggableId={input.id}
+                                    index={index}>
+                                    {(draggableProvided, snapshot) => (
+                                        <div ref={draggableProvided.innerRef} className='p-mb-1'
+                                             {...draggableProvided.draggableProps}>
+                                            <Panel
+                                                headerTemplate={(options) => panelHeaderTemplate(options, index, input, draggableProvided.dragHandleProps)}
+                                                toggleable onToggle={handleToggle(input)}
+                                                collapsed={isCollapsed(input)}>
+                                                {panelContent(index)}
+                                            </Panel>
+                                        </div>
 
-                                )}
-                            </Draggable>
-                        ))}
-                    {droppableProvided.placeholder}
-                </div>
-            )}
+                                    )}
+                                </Draggable>
+                            ))}
+                        {droppableProvided.placeholder}
+                    </div>
+                )}
         </Droppable>
+        </React.Fragment>
     );
 };
 

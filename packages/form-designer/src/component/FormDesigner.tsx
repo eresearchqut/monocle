@@ -92,10 +92,12 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
 
     return (
 
+
         <DragDropContext onDragEnd={onDragEnd}>
-            <div className="p-grid form-designer">
+
+            <div className="p-grid form-designer" id="form-designer">
                 <div className="p-col-12 p-md-2">
-                    <Sticky enabled={true} >
+                    <Sticky enableTransforms={false}>
                         <InputSelector/>
                     </Sticky>
                 </div>
@@ -106,6 +108,7 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
                     <FormPreview definition={formDefinition} data={formData} onChange={handleDataChange}/>
                 </div>
             </div>
+
         </DragDropContext>
 
     );

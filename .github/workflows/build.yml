@@ -6,11 +6,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Build
+      - name: Setup Node 16 With Yarn Cache
         uses: actions/setup-node@v2
         with:
           node-version: '16'
           cache: 'yarn'
+      - name: Build
         run: |
           yarn install
           yarn build

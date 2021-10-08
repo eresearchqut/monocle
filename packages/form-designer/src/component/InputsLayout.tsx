@@ -128,7 +128,6 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
 
     return (
         <React.Fragment>
-            <h3>Inputs</h3>
             <Droppable droppableId={path} type='inputs'>
                 {(droppableProvided, snapshot) => (
                     <div ref={droppableProvided.innerRef}

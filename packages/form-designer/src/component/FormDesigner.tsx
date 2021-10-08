@@ -57,17 +57,22 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
             setFormDefinition((currentState) => {
 
                 const definition = JSON.parse(JSON.stringify(currentState));
+
+                if (type === 'sections') {
+                    const index = definition.sections.findIndex((section) => section.id === result.draggableId);
+                    const moving = definition.sections[index];
+                    definition.sections.splice(index, 1);
+                    definition.sections.splice(destination.index || 0, 0, moving);
+                }
+
+
                 if (type === 'inputs') {
                     const destinationSectionIndex = parseInt(result.destination?.droppableId.split('.')[1] || '0');
                     const destinationSection = definition.sections[destinationSectionIndex];
-
                     if (result.source.droppableId === 'inputSelector') {
-
-
                         const type = get(inputSchema.definitions, `${result.draggableId}.properties.type.enum.0`);
                         const input = {type, id: uuidv4()}
                         destinationSection.inputs.splice(destination.index || 0, 0, input);
-
                     } else if (destination) {
                         const sourceSectionIndex = parseInt(source?.droppableId.split('.')[1] || '0');
                         const sourceSection = definition.sections[sourceSectionIndex];

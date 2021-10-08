@@ -20,9 +20,6 @@ import {SplitButton} from "primereact/splitbutton";
 
 import {Section, UniquelyIdentifiable} from "@trrf/form-definition";
 import {Avatar} from "primereact/avatar";
-import { Fieldset } from 'primereact/fieldset';
-
-
 
 export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                          data,
@@ -119,7 +116,6 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
 
     return (
         <React.Fragment>
-                <h2>Sections</h2>
                 <Droppable droppableId={path} type='sections'>
                     {(droppableProvided, snapshot) => (
                         <div ref={droppableProvided.innerRef}

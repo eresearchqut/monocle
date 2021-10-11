@@ -6,6 +6,12 @@ import {Checkbox} from 'primereact/checkbox';
 import {TriStateCheckbox} from 'primereact/tristatecheckbox';
 import merge from "lodash/merge";
 
+
+export interface InputBooleanCellOptions  {
+    booleansAreTrueOrFalse?: boolean;
+    required?: boolean;
+}
+
 export const InputBooleanCell = (props: CellProps) => {
     const {
         path,
@@ -16,8 +22,8 @@ export const InputBooleanCell = (props: CellProps) => {
         uischema
     } = props;
 
-    const appliedUiSchemaOptions = merge({}, config, uischema?.options);
-    if (appliedUiSchemaOptions.required || appliedUiSchemaOptions['booleansAreTrueOrFalse']) {
+    const appliedUiSchemaOptions = merge({}, config, uischema?.options) as InputBooleanCellOptions;
+    if (appliedUiSchemaOptions.required || appliedUiSchemaOptions.booleansAreTrueOrFalse) {
         return (
             <Checkbox inputId={id} id={id + '-input'} checked={!!data}
                       onChange={(e) => handleChange(path, e.checked)}></Checkbox>

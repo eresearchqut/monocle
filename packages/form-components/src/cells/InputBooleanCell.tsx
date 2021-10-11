@@ -19,13 +19,15 @@ export const InputBooleanCell = (props: CellProps) => {
         id,
         handleChange,
         config,
-        uischema
+        uischema,
+        isValid
     } = props;
 
+    const className = isValid ? undefined : 'p-invalid';
     const appliedUiSchemaOptions = merge({}, config, uischema?.options) as InputBooleanCellOptions;
     if (appliedUiSchemaOptions.required || appliedUiSchemaOptions.booleansAreTrueOrFalse) {
         return (
-            <Checkbox inputId={id} id={id + '-input'} checked={!!data}
+            <Checkbox inputId={id} id={id + '-input'} checked={!!data} className={className}
                       onChange={(e) => handleChange(path, e.checked)}></Checkbox>
         )
     }
@@ -35,6 +37,7 @@ export const InputBooleanCell = (props: CellProps) => {
             value={data}
             id={id + '-input'}
             inputId={id}
+            className={className}
             onChange={(e) => handleChange(path, e.value)}></TriStateCheckbox>
     );
 };

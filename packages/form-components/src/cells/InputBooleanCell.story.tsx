@@ -3,76 +3,89 @@ import * as React from "react";
 import {Meta, Story} from '@storybook/react';
 import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
 import {Provider} from 'react-redux';
-import {ControlElement, JsonSchema} from "@jsonforms/core";
-import InputBooleanCell, {InputBooleanCellOptions} from "./InputBooleanCell";
-
+import {CellProps} from "@jsonforms/core";
+import InputBooleanCell from "./InputBooleanCell";
 
 import {initStoryStore} from "../storyStore";
-
-
-
-
-const path = 'cell';
-const schema: JsonSchema = {
-    type: 'boolean'
-}
-const uischema = (options: { [key: string]: any }): ControlElement => ({
-    type: 'Control',
-    scope: `#/properties/path`,
-    options
-});
-
-export interface InputBooleanCellStoryArgs extends InputBooleanCellOptions {
-    data?: boolean
-}
 
 export default {
     title: 'Cells/InputBooleanCell',
     component: InputBooleanCell,
-    parameters: { actions: { argTypesRegex: '^handle.*' } },
     argTypes: {
         data: {
             options: [true, false, undefined],
-            control: { type: 'radio' }
+            control: {type: 'radio'}
+        },
+        uischema: {
+            table: {
+                disable: true
+            }
+        },
+        schema: {
+            table: {
+                disable: true
+            }
+        },
+        path: {
+            table: {
+                disable: true
+            }
         }
     },
     decorators: [
         (Story, context) => {
-            const args = context.args as InputBooleanCellStoryArgs;
-            const store = initStoryStore({data: {[path]: args.data}, schema, uischema: uischema(args)});
             return (
-                <Provider store={store}>
+                <Provider store={initStoryStore(context.args as CellProps)} >
                     <JsonFormsReduxContext>
-                        <Story />
+                        <Story/>
                     </JsonFormsReduxContext>
                 </Provider>
             )
         },
-
     ]
 } as Meta;
 
-const Template: Story<InputBooleanCellStoryArgs> =
-    (args) =>
-        <InputBooleanCell schema={schema} uischema={uischema(args)} path={path}  />
+const Template: Story<CellProps> =
+    (props) =>
+        <InputBooleanCell {...props}  />
 Template.bind({});
 
-export const Optional = Template.bind({});
-Optional.args = {
+export const Default = Template.bind({});
+Default.args = {
     data: true,
-    required: false
+    path: 'booleanCell',
+    schema: {
+        type: 'boolean'
+    },
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/booleanCell`
+    }
 }
 
 export const Required = Template.bind({});
 Required.args = {
-    data: true,
-    required: true
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/booleanCell`,
+        options: {
+            required: true
+        }
+    }
 }
 
-
-
-
-
+export const Optional = Template.bind({});
+Optional.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/booleanCell`,
+        options: {
+            required: false
+        }
+    }
+}
 
 
 

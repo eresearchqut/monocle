@@ -6,21 +6,33 @@ import merge from 'lodash/merge';
 
 import {InputText} from 'primereact/inputtext';
 
+
+
+
+
+export interface InputTextCellOptions  {
+
+
+}
+
+
 export const InputTextCell = (props: CellProps) => {
     const {
-        config,
         data,
         id,
         enabled,
-        uischema,
         schema,
         path,
         handleChange,
-        errors
+        isValid
     } = props;
-    const {maxLength} = schema;
-    const appliedUiSchemaOptions = merge({}, config, uischema.options);
-    const className = errors.length === 0 ? undefined : 'p-invalid';
+    const {pattern} = schema;
+    const keyFilter = pattern ? new RegExp(pattern) : undefined;
+
+    console.log(props);
+
+    const className = isValid ? undefined : 'p-invalid';
+
     return (
         <InputText
             value={data || ''}
@@ -28,8 +40,7 @@ export const InputTextCell = (props: CellProps) => {
             className={className}
             disabled={!enabled}
             onChange={(e) => handleChange(path, e.target.value)}
-            autoFocus={uischema.options && uischema.options.focus}
-            maxLength={appliedUiSchemaOptions.restrict ? maxLength : undefined}
+            keyfilter={keyFilter}
         />
     );
 };

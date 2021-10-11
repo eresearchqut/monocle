@@ -320,6 +320,9 @@ describe('Text cell', () => {
             uischema,
             config
         });
+
+
+
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>

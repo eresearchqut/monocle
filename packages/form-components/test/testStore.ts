@@ -5,12 +5,13 @@ export const initTestStore = ({
                                   data,
                                   schema,
                                   uischema,
+                                  errors,
                                   ...other
                               }: {
     data: any;
     uischema: UISchemaElement;
     schema: JsonSchema;
-    [other: string]: any;
+    errors?: string;
 }): Store<JsonFormsState> => {
     const store: Store<JsonFormsState> = createStore(
         combineReducers({

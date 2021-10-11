@@ -259,6 +259,9 @@
                     "description": "The name of the element",
                     "type": "string"
                 },
+                "regularExpression": {
+                    "type": "string"
+                },
                 "required": {
                     "description": "Can the element be flagged as required",
                     "type": "boolean"

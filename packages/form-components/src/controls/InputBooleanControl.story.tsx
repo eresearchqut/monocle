@@ -41,7 +41,7 @@ export default {
     decorators: [
         (Story, context) => {
             return (
-                <Provider store={initStoryStore(context.args as ControlProps)} >
+                <Provider store={initStoryStore(context.args as ControlProps)}>
                     <JsonFormsReduxContext>
                         <Story/>
                     </JsonFormsReduxContext>
@@ -94,6 +94,28 @@ Optional.args = {
         scope: `#/properties/booleanControl`,
         options: {
             required: false
+        }
+    }
+}
+
+export const AlternativeLabel = Template.bind({});
+AlternativeLabel.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/booleanControl`,
+        label: 'I control booleans!'
+    }
+}
+
+export const Description = Template.bind({});
+Description.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/booleanControl`,
+        options: {
+            description: 'I am sometime true (for me to be true, please click)'
         }
     }
 }

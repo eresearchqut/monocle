@@ -14,6 +14,7 @@ import merge from "lodash/merge";
 export const InputBooleanControl = (props: ControlProps) => {
 
 
+
     const {
         schema,
         id,

@@ -5,16 +5,13 @@ import {withJsonFormsCellProps} from '@jsonforms/react';
 import merge from 'lodash/merge';
 
 import {InputText} from 'primereact/inputtext';
-
-
-
-
+import {InputBooleanCellOptions} from "./InputBooleanCell";
+import {InputTextarea} from "primereact/inputtextarea";
 
 export interface InputTextCellOptions  {
-
+    multiline?: boolean;
 
 }
-
 
 export const InputTextCell = (props: CellProps) => {
     const {
@@ -24,14 +21,29 @@ export const InputTextCell = (props: CellProps) => {
         schema,
         path,
         handleChange,
-        isValid
+        isValid,
+        config,
+        uischema
     } = props;
     const {pattern} = schema;
     const keyFilter = pattern ? new RegExp(pattern) : undefined;
 
-    console.log(props);
+    const {multiline} = merge({}, config, uischema?.options) as InputBooleanCellOptions;
 
     const className = isValid ? undefined : 'p-invalid';
+
+    if (multiline) {
+        return (
+            <InputTextarea
+                value={data || ''}
+                id={id}
+                className={className}
+                disabled={!enabled}
+                onChange={(e) => handleChange(path, e.target.value)}
+                autoFocus={uischema.options && uischema.options.focus}
+            />
+        );
+    }
 
     return (
         <InputText

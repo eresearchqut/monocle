@@ -11,6 +11,11 @@ export default {
     title: 'Cells/InputTextCell',
     component: InputTextCell,
     argTypes: {
+        schema: {
+            table: {
+                disable: true
+            }
+        },
         uischema: {
             table: {
                 disable: true
@@ -71,7 +76,32 @@ Errors.args = {
     errors: 'Invalid data'
 }
 
+export const Multiline = Template.bind({});
+Multiline.args = {
+    ...Default.args,
+    data: 'I am a \n\n multiline text entry',
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/textCell`,
+        options: {
+            multiline: true
+        }
+    }
+}
 
+export const MultilineErrors = Template.bind({});
+MultilineErrors.args = {
+    ...Default.args,
+    data: 'I am a \n\n multiline text entry\n\nsomething is wrong',
+    errors: 'Invalid data',
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/textCell`,
+        options: {
+            multiline: true
+        }
+    }
+}
 
 
 

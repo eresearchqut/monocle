@@ -3,7 +3,7 @@ import {FormDesignerCanvas} from './FormDesignerCanvas';
 import {FormPreview} from './FormPreview';
 import {InputSelector} from './InputSelector';
 
-import {Form, Input} from '@trrf/form-definition';
+import {Form, Input, Section} from '@trrf/form-definition';
 import {ErrorObject} from 'ajv';
 import {DragDropContext, DropResult} from "react-beautiful-dnd";
 import {JsonSchema} from "@jsonforms/core";
@@ -59,7 +59,7 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
                 const definition = JSON.parse(JSON.stringify(currentState));
 
                 if (type === 'sections') {
-                    const index = definition.sections.findIndex((section) => section.id === result.draggableId);
+                    const index = definition.sections.findIndex((section: Section) => section.id === result.draggableId);
                     const moving = definition.sections[index];
                     definition.sections.splice(index, 1);
                     definition.sections.splice(destination.index || 0, 0, moving);

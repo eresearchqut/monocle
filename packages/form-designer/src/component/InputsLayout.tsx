@@ -20,6 +20,7 @@ import {SplitButton} from "primereact/splitbutton";
 import {Input, UniquelyIdentifiable} from "@trrf/form-definition";
 import {Avatar} from "primereact/avatar";
 
+//https://codesandbox.io/s/40p81qy7v0?file=/index.js:1751-1776
 
 export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                        data,

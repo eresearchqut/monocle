@@ -28,7 +28,6 @@ export const InputSelector: FunctionComponent = () => {
                 {(droppableProvided, snapshot) => (
                     <div
                         className="p-d-flex p-flex-column"
-                        isDraggingOver={snapshot.isDraggingOver}
                         ref={droppableProvided.innerRef}>
                         {Object.entries(inputSchema.definitions as { [s: string]: JsonSchema }).map(([key, definition], index) => // @ts-ignore
                             (
@@ -41,11 +40,7 @@ export const InputSelector: FunctionComponent = () => {
                                             <div ref={draggableProvided.innerRef}
                                                  {...draggableProvided.draggableProps}
                                                  {...draggableProvided.dragHandleProps}
-                                                 isDragging={snapshot.isDragging}
-                                                 className={`p-mb-2 p-p-2 p-shadow-2 ${snapshot.isDragging ? 'input-dragging' : ''}`}
-                                                 style={
-                                                     draggableProvided.draggableProps.style
-                                                 }>
+                                                 className={`p-mb-2 p-p-2 p-shadow-2 ${snapshot.isDragging ? 'input-dragging' : ''}`}>
                                                 <Avatar icon={`pi ${iconMap.get(key)}`} className="p-mr-2"
                                                         shape="circle"/>
                                                 <span className={'p-text-nowrap'}>{title(definition)}</span>

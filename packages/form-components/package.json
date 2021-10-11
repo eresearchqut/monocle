@@ -22,8 +22,8 @@
     "deploy-storybook": "storybook-to-ghpages"
   },
   "dependencies": {
-    "@jsonforms/core": "^3.0.0-alpha.0",
-    "@jsonforms/react": "^3.0.0-alpha.0",
+    "@jsonforms/core": "^3.0.0-alpha.1",
+    "@jsonforms/react": "^3.0.0-alpha.1",
     "@svg-maps/cli": "1.0.0-beta.5",
     "lodash": "4.17.21",
     "primeflex": "2.0.0",

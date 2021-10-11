@@ -1,33 +1,25 @@
 import {combineReducers, createStore, Store} from 'redux';
-import {Actions, jsonFormsReducerConfig, JsonFormsState, JsonSchema, UISchemaElement} from '@jsonforms/core';
+import {
+    Actions, CellProps,
+    ControlProps,
+    jsonFormsReducerConfig,
+    JsonFormsState,
+} from '@jsonforms/core';
 import {ErrorObject} from 'ajv';
 
-export const initStoryStore = ({
-                                  data,
-                                   path,
-                                  schema,
-                                  uischema,
-                                  errors,
-                                  ...other
-                              }: {
-    data: any;
-    path: string,
-    uischema: UISchemaElement;
-    schema: JsonSchema;
-    errors?: string;
-    [other: string]: any;
-}): Store<JsonFormsState> => {
+export const initStoryStore = ({path, data, schema, uischema, errors, cells}: ControlProps | CellProps
+): Store<JsonFormsState> => {
     const store: Store<JsonFormsState> = createStore(
         combineReducers({
             jsonforms: combineReducers(jsonFormsReducerConfig),
         }),
         {
             jsonforms: {
-                ...other
+                cells
             } as any
         }
     );
-    store.dispatch(Actions.init({[path]: data}, schema, uischema));
+    store.dispatch(Actions.init({[path]: cells ? {[path]: data} : data}, schema, uischema));
     if (errors) {
         const error: ErrorObject = {
             keyword: path,

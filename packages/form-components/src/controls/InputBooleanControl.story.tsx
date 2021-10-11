@@ -3,10 +3,11 @@ import * as React from "react";
 import {Meta, Story} from '@storybook/react';
 import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
 import {Provider} from 'react-redux';
-import {CellProps} from "@jsonforms/core";
+import {ControlProps} from "@jsonforms/core";
 import InputBooleanControl from "./InputBooleanControl";
 
 import {initStoryStore} from "../storyStore";
+import {cells} from "../index";
 
 export default {
     title: 'Controls/InputBooleanControl',
@@ -30,12 +31,17 @@ export default {
             table: {
                 disable: true
             }
+        },
+        cells: {
+            table: {
+                disable: true
+            }
         }
     },
     decorators: [
         (Story, context) => {
             return (
-                <Provider store={initStoryStore(context.args as CellProps)} >
+                <Provider store={initStoryStore(context.args as ControlProps)} >
                     <JsonFormsReduxContext>
                         <Story/>
                     </JsonFormsReduxContext>
@@ -45,7 +51,7 @@ export default {
     ]
 } as Meta;
 
-const Template: Story<CellProps> =
+const Template: Story<ControlProps> =
     (props) =>
         <InputBooleanControl {...props}  />
 Template.bind({});
@@ -55,14 +61,17 @@ Default.args = {
     data: true,
     path: 'booleanControl',
     schema: {
-        booleanControl: {
-            type: 'boolean'
+        properties: {
+            booleanControl: {
+                type: 'boolean'
+            }
         }
     },
     uischema: {
         type: 'Control',
         scope: `#/properties/booleanControl`
-    }
+    },
+    cells
 }
 
 export const Required = Template.bind({});

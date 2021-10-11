@@ -6,6 +6,7 @@ module.exports = {
     "addons": [
         "@storybook/addon-links",
         "@storybook/addon-essentials",
-        "storybook-stylesheet-toggle"
+        "storybook-stylesheet-toggle",
+        "@storybook/preset-scss"
     ]
 }

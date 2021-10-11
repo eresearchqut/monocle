@@ -9,8 +9,6 @@ import {
     inputNumberCellTester,
     InputSelectCell,
     inputSelectCellTester,
-    InputTextareaCell,
-    inputTextareaCellTester,
     InputTextCell,
     inputTextCellTester,
 
@@ -40,6 +38,5 @@ export const cells: { tester: RankedTester; cell: any }[] = [
     {tester: inputDateCellTester, cell: InputDateCell},
     {tester: inputNumberCellTester, cell: InputNumberCell},
     {tester: inputSelectCellTester, cell: InputSelectCell},
-    {tester: inputTextCellTester, cell: InputTextCell},
-    {tester: inputTextareaCellTester, cell: InputTextareaCell}
+    {tester: inputTextCellTester, cell: InputTextCell}
 ];

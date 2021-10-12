@@ -1,12 +1,12 @@
 import * as React from 'react';
 
 import {Meta, Story} from '@storybook/react';
-import {InputSelector} from './InputSelector';
+import {ComponentSelector} from './ComponentSelector';
 import {DragDropContext, DropResult, ResponderProvided} from "react-beautiful-dnd";
 
 export default {
-    title: 'Component/InputSelector',
-    component: InputSelector,
+    title: 'Component/ComponentSelector',
+    component: ComponentSelector,
     decorators: [
         (Story, context) => {
             return (
@@ -20,7 +20,7 @@ export default {
 
 const Template: Story =
     (props) =>
-        <InputSelector {...props} />;
+        <ComponentSelector {...props} />;
 Template.bind({});
 
 export const Example = Template.bind({});

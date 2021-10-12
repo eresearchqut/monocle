@@ -1,7 +1,7 @@
 import React, {FunctionComponent, useState, useEffect} from 'react';
 import {FormDesignerCanvas} from './FormDesignerCanvas';
 import {FormPreview} from './FormPreview';
-import {InputSelector} from './InputSelector';
+import {ComponentSelector} from './ComponentSelector';
 
 import {Form, Input, Section} from '@trrf/form-definition';
 import {ErrorObject} from 'ajv';
@@ -33,7 +33,6 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
 
     const [formData, setFormData] = useState<any>(data);
 
-
     const handleDefinitionChange = (state: { errors?: ErrorObject[], data: any, }) => {
         const definition = state.data as Form;
         setFormDefinition(() => (definition));
@@ -55,17 +54,18 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
         const {draggableId, source, destination, type} = result;
         if (destination) {
             setFormDefinition((currentState) => {
-
                 const definition = JSON.parse(JSON.stringify(currentState));
-
                 if (type === 'sections') {
-                    const index = definition.sections.findIndex((section: Section) => section.id === result.draggableId);
-                    const moving = definition.sections[index];
-                    definition.sections.splice(index, 1);
-                    definition.sections.splice(destination.index || 0, 0, moving);
+                    if (result.source.droppableId === 'sectionSelector') {
+                        const section = {id: uuidv4(), inputs: []}
+                        definition.sections.splice(destination.index || 0, 0, section);
+                    } else if (destination) {
+                        const index = definition.sections.findIndex((section: Section) => section.id === result.draggableId);
+                        const moving = definition.sections[index];
+                        definition.sections.splice(index, 1);
+                        definition.sections.splice(destination.index || 0, 0, moving);
+                    }
                 }
-
-
                 if (type === 'inputs') {
                     const destinationSectionIndex = parseInt(result.destination?.droppableId.split('.')[1] || '0');
                     const destinationSection = definition.sections[destinationSectionIndex];
@@ -98,7 +98,7 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
             <div className="p-grid form-designer" id="form-designer">
                 <div className="p-col-12 p-md-2">
                     <Sticky enableTransforms={false}>
-                        <InputSelector/>
+                        <ComponentSelector/>
                     </Sticky>
                 </div>
                 <div className="p-col-12 p-md-6">

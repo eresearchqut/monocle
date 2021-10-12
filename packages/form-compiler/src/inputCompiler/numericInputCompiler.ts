@@ -9,9 +9,9 @@ export class NumericInputCompiler extends AbstractInputCompiler implements Input
   }
 
   schema(form: Form, section: Section, input: Input): JsonSchema {
-    const {decimalPlaces, maximum, minimum, increment} = input as NumericInput;
+    const {decimalPlaces, maximum, minimum, increment, description} = input as NumericInput;
     const type = decimalPlaces && decimalPlaces > 0 ? 'number' : 'integer';
-    return {type, maximum, minimum, multipleOf: increment} as JsonSchema;
+    return {type, maximum, minimum, multipleOf: increment, description} as JsonSchema;
   }
 
   ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {

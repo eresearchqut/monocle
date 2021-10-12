@@ -7,7 +7,7 @@ import {JsonFormsStateProvider} from '@jsonforms/react';
 import InputControl from "./InputControl";
 
 import {renderers, cells} from "../index";
-import {Default} from "../cells/InputTextCell.story";
+import {Tooltip} from 'primereact/tooltip';
 
 export default {
     title: 'Controls/InputControl',
@@ -54,6 +54,7 @@ export default {
             const core = {schema, uischema, data, ajv: createAjv()};
             return (
                 <JsonFormsStateProvider initState={{core, cells, renderers}}>
+                    <Tooltip target=".tooltip" />
                     <Story/>
                 </JsonFormsStateProvider>
             )
@@ -69,13 +70,14 @@ Template.bind({});
 export const Text = Template.bind({});
 Text.args = {
     schema: {
-        required: ['lastName', 'endNotes'],
+        required: ['firstName', 'endNotes'],
         properties: {
             firstName: {
                 type: 'string'
             },
             lastName: {
-                type: 'string'
+                type: 'string',
+                description: 'Family or surname, should come after your first name'
             },
             notes: {
                 type: 'string'
@@ -92,6 +94,7 @@ Text.args = {
     },
     data: {
         firstName: 'Lando',
+        age: 52,
         notes: 'Will betray Han\n(at earliest convenience)',
     },
     uischema: {
@@ -105,10 +108,7 @@ TextRequired.args = {
     ...Text.args,
     uischema: {
         type: 'Control',
-        scope: '#/properties/lastName',
-        options: {
-            required: true
-        }
+        scope: '#/properties/firstName'
     }
 }
 
@@ -117,10 +117,7 @@ TextDescription.args = {
     ...Text.args,
     uischema: {
         type: 'Control',
-        scope: '#/properties/lastName',
-        options: {
-            description: 'Family or surname, should come after your first name'
-        }
+        scope: '#/properties/lastName'
     }
 }
 
@@ -143,8 +140,7 @@ TextMultilineRequired.args = {
         type: 'Control',
         scope: '#/properties/endNotes',
         options: {
-            multiline: true,
-            required: true
+            multiline: true
         }
     }
 }

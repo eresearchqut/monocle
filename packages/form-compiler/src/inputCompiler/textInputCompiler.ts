@@ -10,8 +10,8 @@ export class TextInputCompiler extends AbstractInputCompiler implements InputCom
   }
 
   schema(form: Form, section: Section, input: Input): JsonSchema {
-    const {maxLength, minLength} = input as TextInput;
-    return {type: 'string', maxLength, minLength} as JsonSchema;
+    const {maxLength, minLength, description} = input as TextInput;
+    return {type: 'string', maxLength, minLength, description} as JsonSchema;
   }
 
   ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {

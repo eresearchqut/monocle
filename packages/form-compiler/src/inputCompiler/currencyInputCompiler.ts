@@ -10,8 +10,8 @@ export class CurrencyInputCompiler extends AbstractInputCompiler implements Inpu
   }
 
   schema(form: Form, section: Section, input: Input): JsonSchema {
-    const {maximum, minimum} = input as CurrencyInput;
-    return {type: 'number', maximum, minimum} as JsonSchema;
+    const {maximum, minimum, description} = input as CurrencyInput;
+    return {type: 'number', maximum, minimum, description} as JsonSchema;
   }
 
   ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {

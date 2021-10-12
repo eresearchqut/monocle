@@ -2,20 +2,17 @@ import * as React from "react";
 
 import {Meta, Story} from '@storybook/react';
 import {CellProps, ControlProps, createAjv} from "@jsonforms/core";
-import InputBooleanCell from "./InputBooleanCell";
+import InputNumberCell from "./InputNumberCell";
 
 
 import {JsonFormsStateProvider} from "@jsonforms/react";
 
 
+
 export default {
-    title: 'Cells/InputBooleanCell',
-    component: InputBooleanCell,
+    title: 'Cells/InputNumberCell',
+    component: InputNumberCell,
     argTypes: {
-        data: {
-            options: [true, false, undefined],
-            control: {type: 'radio'}
-        },
         uischema: {
             table: {
                 disable: true
@@ -35,7 +32,7 @@ export default {
     decorators: [
         (Story, context) => {
             const {schema, uischema, data, path} = context.args as ControlProps;
-            const core = { schema, uischema, data: {[path]: data}, ajv: createAjv()};
+            const core = { schema, uischema, data, ajv: createAjv()};
             return (
                 <JsonFormsStateProvider initState={{core}}>
                     <Story/>
@@ -47,45 +44,37 @@ export default {
 
 const Template: Story<CellProps> =
     (props) =>
-        <InputBooleanCell {...props}  />
+        <InputNumberCell {...props}  />
 Template.bind({});
 
 export const Default = Template.bind({});
 Default.args = {
-    data: true,
-    path: 'booleanCell',
     schema: {
-        type: 'boolean'
+        type: 'number'
     },
     uischema: {
         type: 'Control',
-        scope: `#/properties/booleanCell`
+        scope: `#/properties/numeric`
     }
 }
 
-export const Required = Template.bind({});
-Required.args = {
-    ...Default.args,
-    uischema: {
-        type: 'Control',
-        scope: `#/properties/booleanCell`,
-        options: {
-            required: true
-        }
-    }
+export const WholeNumbersOnly = Template.bind({});
+WholeNumbersOnly.args = {
+    ...Default.args
 }
 
-export const Optional = Template.bind({});
-Optional.args = {
+export const MinMax = Template.bind({});
+MinMax.args = {
     ...Default.args,
-    uischema: {
-        type: 'Control',
-        scope: `#/properties/booleanCell`,
-        options: {
-            required: false
-        }
-    }
+    data: 12,
+    schema: {
+        type: 'number',
+        minimum: 10,
+        maximum: 25
+    },
 }
+
+
 
 
 

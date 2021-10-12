@@ -82,7 +82,12 @@ Text.args = {
             },
             endNotes: {
                 type: 'string'
-            }
+            },
+            age: {
+                type: 'number',
+                minimum: 0,
+                maximum: 125
+            },
         }
     },
     data: {
@@ -144,3 +149,11 @@ TextMultilineRequired.args = {
     }
 }
 
+export const NumberWithMinMax = Template.bind({});
+NumberWithMinMax.args = {
+    ...Text.args,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/age',
+    }
+}

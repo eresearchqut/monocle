@@ -3,10 +3,12 @@ import * as React from "react";
 import {Meta, Story} from '@storybook/react';
 import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
 import {Provider} from 'react-redux';
-import {CellProps} from "@jsonforms/core";
+import {CellProps, ControlProps, createAjv} from "@jsonforms/core";
 import InputBooleanCell from "./InputBooleanCell";
 
-import {initStoryStore} from "../storyStore";
+
+import {JsonFormsStateProvider} from "@jsonforms/react";
+
 
 export default {
     title: 'Cells/InputBooleanCell',
@@ -34,12 +36,12 @@ export default {
     },
     decorators: [
         (Story, context) => {
+            const {schema, uischema, data, path} = context.args as ControlProps;
+            const core = { schema, uischema, data: {[path]: data}, ajv: createAjv()};
             return (
-                <Provider store={initStoryStore(context.args as CellProps)} >
-                    <JsonFormsReduxContext>
-                        <Story/>
-                    </JsonFormsReduxContext>
-                </Provider>
+                <JsonFormsStateProvider initState={{core}}>
+                    <Story/>
+                </JsonFormsStateProvider>
             )
         },
     ]

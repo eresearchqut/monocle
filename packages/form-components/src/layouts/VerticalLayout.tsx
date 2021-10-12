@@ -51,7 +51,7 @@ const VerticalLayoutRenderer: FunctionComponent<LayoutProps> = (
         return null;
     }
     return (
-        <div className="p-grid p-dir-col p-fluid">
+        <div className="p-grid p-formgrid p-dir-col">
             {renderChildren(verticalLayout, schema, path, renderers, cells)}
         </div>
     );

@@ -1,12 +1,11 @@
 import * as React from "react";
 
 import {Meta, Story} from '@storybook/react';
-import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
-import {Provider} from 'react-redux';
-import {ControlProps} from "@jsonforms/core";
+
+import {ControlProps, createAjv} from "@jsonforms/core";
+import { JsonFormsStateProvider } from '@jsonforms/react';
 import InputBooleanControl from "./InputBooleanControl";
 
-import {initStoryStore} from "../storyStore";
 import {cells} from "../index";
 
 export default {
@@ -40,12 +39,12 @@ export default {
     },
     decorators: [
         (Story, context) => {
+            const {schema, uischema, data, path} = context.args as ControlProps;
+            const core = { schema, uischema, data: {[path]: data}, ajv: createAjv()};
             return (
-                <Provider store={initStoryStore(context.args as ControlProps)}>
-                    <JsonFormsReduxContext>
-                        <Story/>
-                    </JsonFormsReduxContext>
-                </Provider>
+                <JsonFormsStateProvider initState={{core, cells}}>
+                    <Story/>
+                </JsonFormsStateProvider>
             )
         },
     ]
@@ -53,7 +52,7 @@ export default {
 
 const Template: Story<ControlProps> =
     (props) =>
-        <InputBooleanControl {...props}  />
+        <InputBooleanControl schema={props.schema} uischema={props.uischema}  />
 Template.bind({});
 
 export const Default = Template.bind({});

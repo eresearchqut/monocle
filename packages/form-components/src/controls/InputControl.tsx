@@ -3,13 +3,14 @@ import {ControlProps, ControlState, isControl, NOT_APPLICABLE, RankedTester, ran
 import {Control, DispatchCell, withJsonFormsControlProps} from '@jsonforms/react';
 import maxBy from 'lodash/maxBy';
 import merge from 'lodash/merge';
+import {Avatar} from "primereact/avatar";
 
 export class InputControl extends Control<ControlProps, ControlState> {
     render() {
 
         const {
-            schema,
             id,
+            schema,
             label,
             uischema,
             config,
@@ -19,15 +20,12 @@ export class InputControl extends Control<ControlProps, ControlState> {
             cells
         } = this.props;
 
-
         if (!visible) {
             return null;
         }
 
-
         const appliedUiSchemaOptions = merge({}, config, uischema.options);
         const {description} = appliedUiSchemaOptions;
-        const requiredMessage = required ? 'This is a required field' : undefined;
         const cell = maxBy(cells, r => r.tester(uischema, schema));
 
         if (cell === undefined || cell.tester(uischema, schema) === NOT_APPLICABLE) {
@@ -43,18 +41,12 @@ export class InputControl extends Control<ControlProps, ControlState> {
         />)
 
         return (
-            <div className="p-field">
-                <label htmlFor={id} id={id + '-label'}>{label}</label>
+            <div className="p-field p-fluid">
+                <label htmlFor={id} aria-required={required}>{label}{required && <i className='pi pi-exclamation-circle p-ml-2' title={`${label} is required`}></i>}</label>
                 { description &&
                 <div className="p-text-light p-mb-2">{description}</div>
                 }
-                <div className="p-inputgroup" >
-                    {dispatchCell}
-                    {required &&
-                    <span className="p-inputgroup-addon" style={{borderLeft: 0}} title={requiredMessage}
-                          p-aria-label={requiredMessage}><i
-                        className="pi pi-info-circle"></i></span>}
-                </div>
+                {dispatchCell}
             </div>
         );
     }

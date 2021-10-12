@@ -1,11 +1,8 @@
 import * as React from "react";
 import {Meta, Story} from '@storybook/react';
-import {JsonFormsReduxContext} from '@jsonforms/react/lib/redux';
-import {Provider} from 'react-redux';
-import {CellProps} from "@jsonforms/core";
+import {CellProps, ControlProps, createAjv} from "@jsonforms/core";
 import InputTextCell from "./InputTextCell";
-
-import {initStoryStore} from "../storyStore";
+import {JsonFormsStateProvider} from "@jsonforms/react";
 
 export default {
     title: 'Cells/InputTextCell',
@@ -29,13 +26,12 @@ export default {
     },
     decorators: [
         (Story, context) => {
-            const store = initStoryStore( context.args as CellProps);
+            const {schema, uischema, data, path} = context.args as ControlProps;
+            const core = { schema, uischema, data: {[path]: data}, ajv: createAjv()};
             return (
-                <Provider store={store} >
-                    <JsonFormsReduxContext>
-                        <Story/>
-                    </JsonFormsReduxContext>
-                </Provider>
+                <JsonFormsStateProvider initState={{core}}>
+                    <Story/>
+                </JsonFormsStateProvider>
             )
         },
     ]
@@ -69,31 +65,11 @@ Pattern.args = {
     }
 }
 
-export const Errors = Template.bind({});
-Errors.args = {
-    ...Default.args,
-    data: 'Should be styled with with error intent',
-    errors: 'Invalid data'
-}
 
 export const Multiline = Template.bind({});
 Multiline.args = {
     ...Default.args,
     data: 'I am a \n\n multiline text entry',
-    uischema: {
-        type: 'Control',
-        scope: `#/properties/textCell`,
-        options: {
-            multiline: true
-        }
-    }
-}
-
-export const MultilineErrors = Template.bind({});
-MultilineErrors.args = {
-    ...Default.args,
-    data: 'I am a \n\n multiline text entry\n\nsomething is wrong',
-    errors: 'Invalid data',
     uischema: {
         type: 'Control',
         scope: `#/properties/textCell`,

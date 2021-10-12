@@ -13,8 +13,6 @@ import merge from "lodash/merge";
 
 export const InputBooleanControl = (props: ControlProps) => {
 
-
-
     const {
         schema,
         id,
@@ -25,6 +23,7 @@ export const InputBooleanControl = (props: ControlProps) => {
         cells,
         config
     } = props;
+    
 
     if (!visible) {
         return null;

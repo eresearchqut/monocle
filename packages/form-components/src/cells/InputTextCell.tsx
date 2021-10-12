@@ -9,6 +9,7 @@ import {InputTextarea} from "primereact/inputtextarea";
 
 export interface InputTextCellOptions  {
     multiline?: boolean;
+    required?: boolean;
 }
 
 export const InputTextCell = (props: CellProps) => {
@@ -23,11 +24,10 @@ export const InputTextCell = (props: CellProps) => {
         config,
         uischema
     } = props;
+
     const {pattern} = schema;
     const keyFilter = pattern ? new RegExp(pattern) : undefined;
-
-    const {multiline} = merge({}, config, uischema?.options) as InputTextCellOptions;
-
+    const {multiline, required} = merge({}, config, uischema?.options) as InputTextCellOptions;
     const className = isValid ? undefined : 'p-invalid';
 
     if (multiline) {
@@ -39,6 +39,7 @@ export const InputTextCell = (props: CellProps) => {
                 disabled={!enabled}
                 onChange={(e) => handleChange(path, e.target.value)}
                 autoFocus={uischema.options && uischema.options.focus}
+                aria-required={required}
             />
         );
     }
@@ -51,6 +52,7 @@ export const InputTextCell = (props: CellProps) => {
             disabled={!enabled}
             onChange={(e) => handleChange(path, e.target.value)}
             keyfilter={keyFilter}
+            aria-required={required}
         />
     );
 };

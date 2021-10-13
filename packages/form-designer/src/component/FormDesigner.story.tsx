@@ -54,10 +54,9 @@ Example.args = {
                 inputs: [
                     {
                         id: 'e1a3e824-122c-4e28-9afa-94a9f302db43',
-                        type: 'text',
+                        type: 'multiline-text',
                         name: 'Notes',
                         description: 'Clinician notes',
-                        multiline: true,
                         required: false,
                     },
                     {

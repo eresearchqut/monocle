@@ -4,10 +4,7 @@ import {Meta, Story} from '@storybook/react';
 import {CellProps, ControlProps, createAjv} from "@jsonforms/core";
 import InputNumberCell from "./InputNumberCell";
 
-
 import {JsonFormsStateProvider} from "@jsonforms/react";
-
-
 
 export default {
     title: 'Cells/InputNumberCell',
@@ -31,8 +28,8 @@ export default {
     },
     decorators: [
         (Story, context) => {
-            const {schema, uischema, data, path} = context.args as ControlProps;
-            const core = { schema, uischema, data, ajv: createAjv()};
+            const {schema, uischema, data} = context.args as ControlProps;
+            const core = {schema, uischema, data, ajv: createAjv()};
             return (
                 <JsonFormsStateProvider initState={{core}}>
                     <Story/>

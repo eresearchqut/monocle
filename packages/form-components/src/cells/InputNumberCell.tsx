@@ -21,7 +21,14 @@ export const InputNumberCell = (props: CellProps) => {
     const appliedUiSchemaOptions = merge({}, config, uischema.options);
 
     const {minimum, maximum} = schema;
-    const {step, decimalPlaces, currencyCode, currencyDisplay, groupNumbers, locale = 'en-AU'} = appliedUiSchemaOptions || {};
+    const {
+        step,
+        decimalPlaces,
+        currencyCode,
+        currencyDisplay,
+        groupNumbers,
+        locale = 'en-AU'
+    } = appliedUiSchemaOptions || {};
     const mode = currencyCode ? 'currency' : 'decimal';
     const minFractionDigits = decimalPlaces ? 1 : undefined;
     const maxFractionDigits = decimalPlaces ? decimalPlaces : undefined;
@@ -29,7 +36,7 @@ export const InputNumberCell = (props: CellProps) => {
     const className = [
         mode === 'currency' ? 'p-inputwrapper-filled' : undefined,
         errors.length === 0 ? undefined : 'p-invalid'
-    ].filter((className): className is string => !!className ).join(' ');
+    ].filter((className): className is string => !!className).join(' ');
 
     return (
         <InputNumber
@@ -54,7 +61,7 @@ export const InputNumberCell = (props: CellProps) => {
 };
 
 /**
- * Default tester for text-based/string controls.
+ * Default tester for numeric controls.
  * @type {RankedTester}
  */
 export const inputNumberCellTester: RankedTester = rankWith(1, or(isNumberControl, isIntegerControl));

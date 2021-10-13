@@ -7,6 +7,7 @@ import {BooleanInputCompiler} from './booleanInputCompiler';
 import {DateInputCompiler} from './dateInputCompiler';
 import {AbstractInputCompiler} from './abstractInputCompiler';
 import {SvgMapInputCompiler} from './svgMapInputCompiler';
+import {MultilineTextInputCompiler} from './multilineTextInputCompiler';
 
 export {
   AbstractInputCompiler,
@@ -17,7 +18,7 @@ export {
   DateInputCompiler,
 };
 
-export const inputCompilers: InputCompiler[] = [new TextInputCompiler(), new NumericInputCompiler(), new CurrencyInputCompiler(), new BooleanInputCompiler(), new DateInputCompiler(), new SvgMapInputCompiler()];
+export const inputCompilers: InputCompiler[] = [new TextInputCompiler(), new MultilineTextInputCompiler(), new NumericInputCompiler(), new CurrencyInputCompiler(), new BooleanInputCompiler(), new DateInputCompiler(), new SvgMapInputCompiler()];
 
 export const findInputCompiler = (form: Form, section: Section, input: Input): InputCompiler | undefined => inputCompilers
     .find((inputBuilder) => inputBuilder.supports(form, section, input));

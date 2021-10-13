@@ -1,13 +1,13 @@
 import React, {useCallback} from 'react';
 import {Meta, Story} from '@storybook/react';
 import {CellProps} from "@jsonforms/core";
-import {InputTextCell} from "./InputTextCell";
+import {InputMultilineTextCell} from "./InputMultilineTextCell";
 import {useArgs} from "@storybook/client-api";
 import {action} from "@storybook/addon-actions";
 
 export default {
-    title: 'Cells/InputTextCell',
-    component: InputTextCell,
+    title: 'Cells/InputMultilineTextCell',
+    component: InputMultilineTextCell,
     argTypes: {
         id: {table: {disable: true}}
     }
@@ -21,39 +21,29 @@ const Template: Story<CellProps> =
             updateArgs({data});
             logAction(path, data);
         }
-        return <InputTextCell {...props} handleChange={handleChange}/>
+        return <InputMultilineTextCell {...props} handleChange={handleChange}/>
     }
 Template.bind({});
 
 export const Default = Template.bind({});
 Default.args = {
-    data: 'I am a text value',
-    path: 'textCell',
+    data: 'I am a multiline text value\nA new line',
+    path: 'cell',
     schema: {
         type: 'string'
     },
     uischema: {
         type: 'Control',
-        scope: `#/properties/textCell`
+        scope: `#/properties/cell`
     }
 }
+
 
 export const Invalid = Template.bind({});
 Invalid.args = {
     ...Default.args,
-    data: 'What went wrong',
+    data: 'What went wrong\nGame over man.....',
     isValid: false
-}
-
-
-export const Pattern = Template.bind({});
-Pattern.args = {
-    ...Default.args,
-    data: 'No numbers please (I am set to accept no numeric characters only)',
-    schema: {
-        type: 'string',
-        pattern: "^([^0-9]*)$"
-    }
 }
 
 export const Disabled = Template.bind({});
@@ -61,7 +51,6 @@ Disabled.args = {
     ...Default.args,
     enabled: false
 }
-
 
 export const NotVisible = Template.bind({});
 NotVisible.args = {

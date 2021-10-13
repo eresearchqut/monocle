@@ -58,7 +58,6 @@ export const InputDateCell = (props: CellProps) => {
     }
 
 
-
     return (
         <Calendar
             dateFormat={localDateFormat()}
@@ -66,7 +65,7 @@ export const InputDateCell = (props: CellProps) => {
             id={id}
             value={data ? new Date(data) : undefined}
             className={className}
-            onChange={(e) => parseDate(e.value)} />
+            onChange={(e) => parseDate(e.value)}/>
     );
 
 };

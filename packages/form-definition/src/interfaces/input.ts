@@ -7,7 +7,7 @@ import {UniquelyIdentifiable} from "./uniquelyIdentifiable";
 
 
 export interface InputType extends UniquelyIdentifiable, Named, Requireable, Typed, Described, Labelled {
-    type: 'text' | 'numeric' | 'currency' | 'boolean' | 'date' | 'time' | 'date-time' | 'email' | 'svg-map'
+    type: 'text' | 'multiline-text' | 'numeric' | 'currency' | 'boolean' | 'date' | 'time' | 'date-time' | 'email' | 'svg-map'
 }
 
 /**
@@ -17,7 +17,6 @@ export interface BooleanInput extends InputType {
     type: 'boolean'
 }
 
-
 /**
  * @title Text
  */
@@ -25,8 +24,16 @@ export interface TextInput extends InputType {
     type: 'text',
     minLength?: number,
     maxLength?: number,
-    multiline?: boolean,
-    regularExpression?: string
+    pattern?: string
+}
+
+/**
+ * @title Text
+ */
+export interface MultilineTextInput extends InputType {
+    type: 'multiline-text',
+    minLength?: number,
+    maxLength?: number,
 }
 
 /**
@@ -92,4 +99,4 @@ export interface SvgMapInput extends InputType {
 /**
  * @title Input
  */
-export type Input = TextInput | NumericInput | CurrencyInput | BooleanInput | DateInput | SvgMapInput;
+export type Input = TextInput | MultilineTextInput | NumericInput | CurrencyInput | BooleanInput | DateInput | SvgMapInput;

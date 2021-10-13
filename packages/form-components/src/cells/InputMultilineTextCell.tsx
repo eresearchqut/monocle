@@ -1,19 +1,20 @@
 import React from 'react';
-import {CellProps, isStringControl, RankedTester, rankWith} from '@jsonforms/core';
+import {CellProps, isMultiLineControl, RankedTester, rankWith} from '@jsonforms/core';
 import {withJsonFormsCellProps} from '@jsonforms/react';
-import {InputText} from 'primereact/inputtext';
+
 import merge from 'lodash/merge';
 
-export interface InputTextCellOptions {
+import {InputTextarea} from "primereact/inputtextarea";
+
+export interface InputMultilineTextCellOptions {
     required?: boolean;
     focus?: boolean;
 }
 
-export const InputTextCell = (props: CellProps) => {
+export const InputMultilineTextCell = (props: CellProps) => {
     const {
         data,
         id,
-        schema,
         path,
         handleChange,
         config,
@@ -23,33 +24,31 @@ export const InputTextCell = (props: CellProps) => {
         isValid = true,
     } = props;
 
-    const {pattern} = schema;
-    const keyFilter = pattern ? new RegExp(pattern) : undefined;
-    const {required, focus} = merge({}, config, uischema?.options) as InputTextCellOptions;
-    const className = isValid ? undefined : 'p-invalid';
-
     if (!visible) {
         return null;
     }
 
+    const {required, focus} = merge({}, config, uischema?.options) as InputMultilineTextCellOptions;
+    const className = isValid ? undefined : 'p-invalid';
+
     return (
-        <InputText
+        <InputTextarea
             value={data || ''}
             id={id}
             className={className}
             disabled={!enabled}
             onChange={(e) => handleChange(path, e.target.value)}
-            keyfilter={keyFilter}
-            aria-required={required}
             autoFocus={focus}
+            aria-required={required}
         />
     );
+
 };
 
 /**
  * Default tester for text-based/string controls.
  * @type {RankedTester}
  */
-export const inputTextCellTester: RankedTester = rankWith(1, isStringControl);
+export const inputMultilineTextCellTester: RankedTester = rankWith(2, isMultiLineControl);
 
-export default withJsonFormsCellProps(InputTextCell);
+export default withJsonFormsCellProps(InputMultilineTextCell);

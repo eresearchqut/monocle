@@ -7,7 +7,7 @@ import {TriStateCheckbox} from 'primereact/tristatecheckbox';
 import merge from "lodash/merge";
 
 
-export interface InputBooleanCellOptions  {
+export interface InputBooleanCellOptions {
     booleansAreTrueOrFalse?: boolean;
     required?: boolean;
 }

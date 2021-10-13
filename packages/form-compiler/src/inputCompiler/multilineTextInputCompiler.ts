@@ -4,9 +4,9 @@ import {Form, Input, Section} from '@trrf/form-definition';
 import {AbstractInputCompiler} from './abstractInputCompiler';
 import {TextInput} from '@trrf/form-definition/dist/interfaces';
 
-export class TextInputCompiler extends AbstractInputCompiler implements InputCompiler {
+export class MultilineTextInputCompiler extends AbstractInputCompiler implements InputCompiler {
   supports(form: Form, section: Section, input: Input): boolean {
-    return input.type === 'text';
+    return input.type === 'multiline-text';
   }
 
   schema(form: Form, section: Section, input: Input): JsonSchema {
@@ -15,7 +15,9 @@ export class TextInputCompiler extends AbstractInputCompiler implements InputCom
   }
 
   ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {
-    return this.uiControl(form, section, input);
+    return this.uiControl(form, section, input, {
+      multi: true,
+    });
   }
 }
 

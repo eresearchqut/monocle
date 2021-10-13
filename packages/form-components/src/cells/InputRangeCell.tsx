@@ -5,10 +5,11 @@ import {Slider} from 'primereact/slider';
 import merge from "lodash/merge";
 import {CellProps, optionIs, RankedTester, rankWith} from "@jsonforms/core";
 
-export interface InputRangeCellOptions  {
+export interface InputRangeCellOptions {
     orientation?: 'horizontal' | 'vertical'
     animate?: boolean,
-    step?: number
+    step?: number,
+    range?: boolean
 }
 
 export const InputRangeCell = (props: CellProps) => {

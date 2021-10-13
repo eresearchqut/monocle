@@ -1,12 +1,10 @@
-import * as React from "react";
+import React, {useCallback} from 'react';
 
 import {Meta, Story} from '@storybook/react';
-import {CellProps, ControlProps, createAjv} from "@jsonforms/core";
-import InputBooleanCell from "./InputBooleanCell";
-
-
-import {JsonFormsStateProvider} from "@jsonforms/react";
-
+import {InputBooleanCell} from "./InputBooleanCell";
+import {CellProps} from "@jsonforms/core";
+import {useArgs} from "@storybook/client-api";
+import {action} from "@storybook/addon-actions";
 
 export default {
     title: 'Cells/InputBooleanCell',
@@ -16,76 +14,50 @@ export default {
             options: [true, false, undefined],
             control: {type: 'radio'}
         },
-        uischema: {
-            table: {
-                disable: true
-            }
-        },
-        schema: {
-            table: {
-                disable: true
-            }
-        },
-        path: {
-            table: {
-                disable: true
-            }
-        }
-    },
-    decorators: [
-        (Story, context) => {
-            const {schema, uischema, data, path} = context.args as ControlProps;
-            const core = { schema, uischema, data: {[path]: data}, ajv: createAjv()};
-            return (
-                <JsonFormsStateProvider initState={{core}}>
-                    <Story/>
-                </JsonFormsStateProvider>
-            )
-        },
-    ]
+        id: {table: {disable: true}}
+    }
 } as Meta;
 
 const Template: Story<CellProps> =
-    (props) =>
-        <InputBooleanCell {...props}  />
+    (props) => {
+        const [, updateArgs] = useArgs();
+        const logAction = useCallback(action('handleChange'), []);
+        const handleChange = (path: string, data: any) => {
+            updateArgs({data});
+            logAction(path, data);
+        }
+        return <InputBooleanCell {...props} handleChange={handleChange}/>
+    }
 Template.bind({});
 
 export const Default = Template.bind({});
 Default.args = {
-    data: true,
-    path: 'booleanCell',
+    data: false,
+    id: 'cell',
     schema: {
         type: 'boolean'
     },
     uischema: {
         type: 'Control',
-        scope: `#/properties/booleanCell`
+        scope: '#/properties/cell'
     }
 }
+
 
 export const Required = Template.bind({});
 Required.args = {
     ...Default.args,
     uischema: {
         type: 'Control',
-        scope: `#/properties/booleanCell`,
+        scope: '#/properties/cell',
         options: {
             required: true
         }
     }
 }
 
-export const Optional = Template.bind({});
-Optional.args = {
-    ...Default.args,
-    uischema: {
-        type: 'Control',
-        scope: `#/properties/booleanCell`,
-        options: {
-            required: false
-        }
-    }
-}
+
+
 
 
 

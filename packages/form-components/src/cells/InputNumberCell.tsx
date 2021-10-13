@@ -5,38 +5,38 @@ import {withJsonFormsCellProps} from '@jsonforms/react';
 import {InputNumber} from 'primereact/inputnumber';
 import merge from "lodash/merge";
 
+export interface InputNumberCellOptions {
+    step?: number,
+    groupNumbers?: boolean
+    decimalPlaces?: number,
+    focus?: boolean
+}
+
 export const InputNumberCell = (props: CellProps) => {
     const {
         config,
         data,
         id,
-        enabled,
         uischema,
         schema,
         path,
         handleChange,
-        errors
+        visible = true,
+        isValid = true,
+        enabled = true
     } = props;
 
-    const appliedUiSchemaOptions = merge({}, config, uischema.options);
+    if (!visible) {
+        return null;
+    }
 
     const {minimum, maximum} = schema;
-    const {
-        step,
-        decimalPlaces,
-        currencyCode,
-        currencyDisplay,
-        groupNumbers,
-        locale = 'en-AU'
-    } = appliedUiSchemaOptions || {};
-    const mode = currencyCode ? 'currency' : 'decimal';
-    const minFractionDigits = decimalPlaces ? 1 : undefined;
-    const maxFractionDigits = decimalPlaces ? decimalPlaces : undefined;
+    const {groupNumbers, step, decimalPlaces, focus} = merge({}, config, uischema.options) as InputNumberCellOptions;
 
-    const className = [
-        mode === 'currency' ? 'p-inputwrapper-filled' : undefined,
-        errors.length === 0 ? undefined : 'p-invalid'
-    ].filter((className): className is string => !!className).join(' ');
+    const minFractionDigits = decimalPlaces ? 1 : undefined;
+    const maxFractionDigits = decimalPlaces;
+
+    const className = isValid ? undefined : 'p-invalid';
 
     return (
         <InputNumber
@@ -45,17 +45,13 @@ export const InputNumberCell = (props: CellProps) => {
             min={minimum}
             max={maximum}
             step={step}
-            mode={mode}
-            locale={locale}
             useGrouping={!!groupNumbers}
-            currency={currencyCode}
-            currencyDisplay={currencyDisplay}
             minFractionDigits={minFractionDigits}
             maxFractionDigits={maxFractionDigits}
             disabled={!enabled}
             className={className}
             onChange={(e) => handleChange(path, e.value)}
-            autoFocus={uischema.options && uischema.options.focus}
+            autoFocus={focus}
         />
     );
 };

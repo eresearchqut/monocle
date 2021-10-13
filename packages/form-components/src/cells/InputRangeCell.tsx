@@ -25,7 +25,7 @@ export const InputRangeCell = (props: CellProps) => {
     } = props;
 
     const {minimum, maximum} = schema;
-    const {orientation, animate, step} = merge({}, config, uischema.options) as InputRangeCellOptions;
+    const {orientation, range, step} = merge({}, config, uischema.options) as InputRangeCellOptions;
 
     if (!visible) {
         return null;
@@ -37,6 +37,9 @@ export const InputRangeCell = (props: CellProps) => {
                 disabled={!enabled}
                 min={minimum}
                 max={maximum}
+                orientation={orientation}
+                step={step}
+                range={range}
                 onChange={(e) => handleChange(path, e.value)}
         />
     );

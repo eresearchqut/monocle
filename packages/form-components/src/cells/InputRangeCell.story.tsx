@@ -13,8 +13,9 @@ export default {
     component: InputRangeCell,
     argTypes: {
         id: {table: {disable: true}},
-        schema: {table: {disable: true}},
-        uischema: {table: {disable: true}}
+        handleChange: {
+            control: 'func'
+        }
     }
 } as Meta;
 
@@ -84,4 +85,42 @@ MinimumMaximum.args = {
         minimum: 40,
         maximum: 50
     },
+}
+
+export const VerticalOrientation = Template.bind({});
+VerticalOrientation.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/cell',
+        options: {
+            orientation: 'vertical'
+        }
+    }
+}
+
+export const Step = Template.bind({});
+Step.args = {
+    ...Default.args,
+    data: 5.5,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/cell',
+        options: {
+            step: 0.5
+        }
+    }
+}
+
+export const Range = Template.bind({});
+Range.args = {
+    ...Default.args,
+    data: [10, 20],
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/cell',
+        options: {
+            range: true
+        }
+    }
 }

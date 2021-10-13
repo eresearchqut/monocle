@@ -8,11 +8,26 @@ import {
 import {withJsonFormsEnumCellProps} from '@jsonforms/react';
 import {Dropdown} from 'primereact/dropdown';
 
+
 export const InputSelectCell = (props: EnumCellProps) => {
-    const {data, id, enabled, path, handleChange, options} = props;
+    const {data, id, enabled = true, visible = true, isValid = true, path, handleChange, options} = props;
+
+    if (!visible) {
+        return null;
+    }
+
+    const className = isValid ? undefined : 'p-invalid';
+
     return (
-        <Dropdown id={id} disabled={!enabled} value={data} optionLabel="label" optionValue="value" options={options}
-                  onChange={(e) => handleChange(path, e.value)}/>
+        <Dropdown
+            id={id}
+            value={data}
+            optionLabel='label'
+            optionValue='value'
+            options={options}
+            disabled={!enabled}
+            className={className}
+            onChange={(e) => handleChange(path, e.value)}/>
     );
 };
 

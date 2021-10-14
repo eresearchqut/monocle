@@ -2,47 +2,42 @@ import * as React from "react";
 
 import {Meta, Story} from '@storybook/react';
 
-import {ControlProps, createAjv} from "@jsonforms/core";
-import { JsonFormsStateProvider } from '@jsonforms/react';
+import {ControlProps, createAjv, } from "@jsonforms/core";
+import { JsonFormsStateProvider, JsonFormsReactProps, useJsonForms } from '@jsonforms/react';
 import InputBooleanControl from "./InputBooleanControl";
 
 import {cells} from "../index";
+import {useArgs} from "@storybook/client-api";
+import {useCallback} from "react";
+import {action} from "@storybook/addon-actions";
+
+
+const ChangeEmitter : React.FC<JsonFormsReactProps> = ({onChange}) => {
+    const ctx = useJsonForms();
+    const { data, errors } = ctx.core;
+    React.useEffect(() => {
+        onChange({ data, errors });
+    }, [data, errors]);
+    return null;
+};
 
 export default {
     title: 'Controls/InputBooleanControl',
     component: InputBooleanControl,
-    argTypes: {
-        data: {
-            options: [true, false, undefined],
-            control: {type: 'radio'}
-        },
-        uischema: {
-            table: {
-                disable: true
-            }
-        },
-        schema: {
-            table: {
-                disable: true
-            }
-        },
-        path: {
-            table: {
-                disable: true
-            }
-        },
-        cells: {
-            table: {
-                disable: true
-            }
-        }
-    },
     decorators: [
         (Story, context) => {
-            const {schema, uischema, data, path} = context.args as ControlProps;
-            const core = { schema, uischema, data: {[path]: data}, ajv: createAjv()};
+            const {schema, uischema, data} = context.args as ControlProps;
+            const core = { schema, uischema, data, ajv: createAjv()};
+            const [, updateArgs] = useArgs();
+            const logAction = useCallback(action('onChange'), []);
             return (
-                <JsonFormsStateProvider initState={{core, cells}}>
+                <JsonFormsStateProvider initState={{core, cells}} >
+                    <ChangeEmitter
+                        onChange={({ data }) => {
+                            updateArgs({data});
+                            logAction( data);
+                        }}
+                    />
                     <Story/>
                 </JsonFormsStateProvider>
             )
@@ -57,18 +52,18 @@ Template.bind({});
 
 export const Default = Template.bind({});
 Default.args = {
-    data: true,
-    path: 'booleanControl',
+    data: {control: true},
+    path: 'control',
     schema: {
         properties: {
-            booleanControl: {
+            control: {
                 type: 'boolean'
             }
         }
     },
     uischema: {
         type: 'Control',
-        scope: `#/properties/booleanControl`
+        scope: `#/properties/control`
     },
     cells
 }
@@ -76,9 +71,17 @@ Default.args = {
 export const Required = Template.bind({});
 Required.args = {
     ...Default.args,
+    schema: {
+        required: ['control'],
+        properties: {
+            control: {
+                type: 'boolean'
+            }
+        }
+    },
     uischema: {
         type: 'Control',
-        scope: `#/properties/booleanControl`,
+        scope: `#/properties/control`,
         options: {
             required: true
         }
@@ -90,7 +93,7 @@ Optional.args = {
     ...Default.args,
     uischema: {
         type: 'Control',
-        scope: `#/properties/booleanControl`,
+        scope: `#/properties/control`,
         options: {
             required: false
         }
@@ -102,7 +105,7 @@ AlternativeLabel.args = {
     ...Default.args,
     uischema: {
         type: 'Control',
-        scope: `#/properties/booleanControl`,
+        scope: `#/properties/control`,
         label: 'I control booleans!'
     }
 }
@@ -112,7 +115,7 @@ Description.args = {
     ...Default.args,
     uischema: {
         type: 'Control',
-        scope: `#/properties/booleanControl`,
+        scope: `#/properties/control`,
         options: {
             description: 'I am sometime true (for me to be true, please click)'
         }

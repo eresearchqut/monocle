@@ -2,8 +2,8 @@ import * as React from "react";
 
 import {Meta, Story} from '@storybook/react';
 
-import {ControlProps, createAjv, } from "@jsonforms/core";
-import { JsonFormsStateProvider, JsonFormsReactProps, useJsonForms } from '@jsonforms/react';
+import {ControlProps, createAjv, JsonFormsCore,} from "@jsonforms/core";
+import {JsonFormsStateProvider, JsonFormsReactProps, useJsonForms} from '@jsonforms/react';
 import InputBooleanControl from "./InputBooleanControl";
 
 import {cells} from "../index";
@@ -12,11 +12,13 @@ import {useCallback} from "react";
 import {action} from "@storybook/addon-actions";
 
 
-const ChangeEmitter : React.FC<JsonFormsReactProps> = ({onChange}) => {
+const ChangeEmitter: React.FC<JsonFormsReactProps> = ({onChange}) => {
     const ctx = useJsonForms();
-    const { data, errors } = ctx.core;
+    const {data, errors} = ctx.core as JsonFormsCore;
     React.useEffect(() => {
-        onChange({ data, errors });
+        if (onChange) {
+            onChange({data, errors});
+        }
     }, [data, errors]);
     return null;
 };
@@ -27,15 +29,15 @@ export default {
     decorators: [
         (Story, context) => {
             const {schema, uischema, data} = context.args as ControlProps;
-            const core = { schema, uischema, data, ajv: createAjv()};
+            const core = {schema, uischema, data, ajv: createAjv()};
             const [, updateArgs] = useArgs();
             const logAction = useCallback(action('onChange'), []);
             return (
-                <JsonFormsStateProvider initState={{core, cells}} >
+                <JsonFormsStateProvider initState={{core, cells}}>
                     <ChangeEmitter
-                        onChange={({ data }) => {
+                        onChange={({data}) => {
                             updateArgs({data});
-                            logAction( data);
+                            logAction(data);
                         }}
                     />
                     <Story/>
@@ -47,7 +49,7 @@ export default {
 
 const Template: Story<ControlProps> =
     (props) =>
-        <InputBooleanControl schema={props.schema} uischema={props.uischema}  />
+        <InputBooleanControl schema={props.schema} uischema={props.uischema}/>
 Template.bind({});
 
 export const Default = Template.bind({});

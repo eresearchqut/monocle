@@ -2,59 +2,44 @@ import * as React from "react";
 
 import {Meta, Story} from '@storybook/react';
 
-import {ControlProps, createAjv} from "@jsonforms/core";
-import {JsonFormsStateProvider} from '@jsonforms/react';
+import {ControlProps, createAjv, JsonFormsCore} from "@jsonforms/core";
+import {JsonFormsReactProps, JsonFormsStateProvider, useJsonForms} from '@jsonforms/react';
 import InputControl from "./InputControl";
 
-import {renderers, cells} from "../index";
-import {Tooltip} from 'primereact/tooltip';
+import {useArgs} from "@storybook/client-api";
+import {useCallback} from "react";
+import {action} from "@storybook/addon-actions";
+import {cells} from "../index";
+
+
+const ChangeEmitter : React.FC<JsonFormsReactProps> = ({onChange}) => {
+    const ctx = useJsonForms();
+    const {data, errors} = ctx.core as JsonFormsCore;
+    React.useEffect(() => {
+        if (onChange) {
+            onChange({data, errors});
+        }
+    }, [data, errors]);
+    return null;
+};
 
 export default {
     title: 'Controls/InputControl',
     component: InputControl,
-    args: {
-        cells,
-        renderers
-    },
-    argTypes: {
-        data: {
-            table: {
-                disable: true
-            }
-        },
-        uischema: {
-            table: {
-                disable: true
-            }
-        },
-        schema: {
-            table: {
-                disable: true
-            }
-        },
-        path: {
-            table: {
-                disable: true
-            }
-        },
-        cells: {
-            table: {
-                disable: true
-            }
-        },
-        renderers: {
-            table: {
-                disable: true
-            }
-        }
-    },
     decorators: [
         (Story, context) => {
             const {schema, uischema, data} = context.args as ControlProps;
-            const core = {schema, uischema, data, ajv: createAjv()};
+            const core = { schema, uischema, data, ajv: createAjv()};
+            const [, updateArgs] = useArgs();
+            const logAction = useCallback(action('onChange'), []);
             return (
-                <JsonFormsStateProvider initState={{core, cells, renderers}}>
-                    <Tooltip target=".tooltip" />
+                <JsonFormsStateProvider initState={{core, cells}} >
+                    <ChangeEmitter
+                        onChange={({ data }) => {
+                            updateArgs({data});
+                            logAction( data);
+                        }}
+                    />
                     <Story/>
                 </JsonFormsStateProvider>
             )
@@ -69,8 +54,17 @@ Template.bind({});
 
 export const Text = Template.bind({});
 Text.args = {
+    data: {
+        firstName: 'Lando',
+        endNotes: 'I appear at the end',
+        lastName: '',
+        position: 'Intergalactic Gambler',
+        classification: 'A',
+        age: 52,
+        notes: 'Will betray Han\n(at earliest convenience)',
+    },
     schema: {
-        required: ['firstName', 'endNotes'],
+        required: ['position', 'endNotes'],
         properties: {
             firstName: {
                 type: 'string'
@@ -78,6 +72,14 @@ Text.args = {
             lastName: {
                 type: 'string',
                 description: 'Family or surname, should come after your first name'
+            },
+            position: {
+                type: 'string',
+            },
+            classification: {
+                type: 'string',
+                minLength: 2,
+                description: 'I have a minimum length of two characters'
             },
             notes: {
                 type: 'string'
@@ -92,15 +94,11 @@ Text.args = {
             },
         }
     },
-    data: {
-        firstName: 'Lando',
-        age: 52,
-        notes: 'Will betray Han\n(at earliest convenience)',
-    },
     uischema: {
         type: 'Control',
         scope: '#/properties/firstName'
-    }
+    },
+    cells
 }
 
 export const TextRequired = Template.bind({});
@@ -108,7 +106,7 @@ TextRequired.args = {
     ...Text.args,
     uischema: {
         type: 'Control',
-        scope: '#/properties/firstName'
+        scope: '#/properties/position'
     }
 }
 
@@ -128,8 +126,17 @@ TextMultiline.args = {
         type: 'Control',
         scope: '#/properties/notes',
         options: {
-            multiline: true
+            multi: true
         }
+    }
+}
+
+export const TextInvalid = Template.bind({});
+TextInvalid.args = {
+    ...Text.args,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/classification'
     }
 }
 
@@ -140,7 +147,7 @@ TextMultilineRequired.args = {
         type: 'Control',
         scope: '#/properties/endNotes',
         options: {
-            multiline: true
+            multi: true
         }
     }
 }

@@ -3,12 +3,7 @@ import {ControlProps, isControl, NOT_APPLICABLE, RankedTester, rankWith} from '@
 import {DispatchCell, withJsonFormsControlProps} from '@jsonforms/react';
 import maxBy from 'lodash/maxBy';
 
-import {Badge} from 'primereact/badge';
-
-
 export const InputControl = (props: ControlProps) => {
-
-
     const {
         id,
         schema,

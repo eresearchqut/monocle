@@ -7,10 +7,14 @@ import {
     inputDateCellTester,
     InputNumberCell,
     inputNumberCellTester,
+    InputRangeCell,
+    inputRangeCellTester,
     InputSelectCell,
     inputSelectCellTester,
     InputTextCell,
     inputTextCellTester,
+    InputMultilineTextCell,
+    inputMultilineTextCellTester,
 
 } from './cells';;
 
@@ -38,5 +42,7 @@ export const cells: { tester: RankedTester; cell: any }[] = [
     {tester: inputDateCellTester, cell: InputDateCell},
     {tester: inputNumberCellTester, cell: InputNumberCell},
     {tester: inputSelectCellTester, cell: InputSelectCell},
-    {tester: inputTextCellTester, cell: InputTextCell}
+    {tester: inputRangeCellTester, cell: InputRangeCell},
+    {tester: inputTextCellTester, cell: InputTextCell},
+    {tester: inputMultilineTextCellTester, cell: InputMultilineTextCell}
 ];

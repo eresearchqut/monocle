@@ -10,13 +10,7 @@ import {useArgs} from '@storybook/client-api';
 
 export default {
     title: 'Cells/InputRangeCell',
-    component: InputRangeCell,
-    argTypes: {
-        id: {table: {disable: true}},
-        handleChange: {
-            control: 'func'
-        }
-    }
+    component: InputRangeCell
 } as Meta;
 
 const Template: Story<CellProps> =

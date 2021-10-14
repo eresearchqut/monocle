@@ -1,13 +1,19 @@
 import React, {useCallback} from 'react';
+
 import {Meta, Story} from '@storybook/react';
+import {InputDateCell} from "./InputDateCell";
 import {CellProps} from "@jsonforms/core";
-import {InputMultilineTextCell} from "./InputMultilineTextCell";
 import {useArgs} from "@storybook/client-api";
 import {action} from "@storybook/addon-actions";
 
 export default {
-    title: 'Cells/InputMultilineTextCell',
-    component: InputMultilineTextCell
+    title: 'Cells/InputDateCell',
+    component: InputDateCell,
+    argTypes: {
+        data: {
+            control: {type: 'date'}
+        }
+    }
 } as Meta;
 
 const Template: Story<CellProps> =
@@ -18,20 +24,24 @@ const Template: Story<CellProps> =
             updateArgs({data});
             logAction(path, data);
         }
-        return <InputMultilineTextCell {...props} handleChange={handleChange}/>
+        return <InputDateCell {...props} handleChange={handleChange}/>
     }
 Template.bind({});
 
 export const Default = Template.bind({});
 Default.args = {
-    data: 'I am a multiline text value\nA new line',
-    path: 'cell',
+    data: '2021-06-30',
+    id: 'cell',
+    config: {
+        locale: 'en-AU'
+    },
     schema: {
-        type: 'string'
+        type: 'string',
+        format: 'date'
     },
     uischema: {
         type: 'Control',
-        scope: `#/properties/cell`
+        scope: '#/properties/cell'
     }
 }
 
@@ -39,7 +49,6 @@ Default.args = {
 export const Invalid = Template.bind({});
 Invalid.args = {
     ...Default.args,
-    data: 'What went wrong\nGame over man.....',
     isValid: false
 }
 
@@ -55,8 +64,17 @@ NotVisible.args = {
     visible: false
 }
 
-
-
+export const HideCalendarIcon = Template.bind({});
+HideCalendarIcon.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/cell',
+        options: {
+            hideCalendarIcon: true
+        }
+    }
+}
 
 
 

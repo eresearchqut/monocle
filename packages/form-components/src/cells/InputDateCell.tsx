@@ -1,11 +1,15 @@
 import React from 'react';
-import {CellProps, isDateControl, RankedTester, rankWith} from '@jsonforms/core';
+import {CellProps, isDateControl, isVisible, RankedTester, rankWith} from '@jsonforms/core';
 import {withJsonFormsCellProps} from '@jsonforms/react';
-
 
 import isEmpty from "lodash/isEmpty";
 import {Calendar} from "primereact/calendar";
 import merge from "lodash/merge";
+
+export interface InputDateCellOptions {
+    locale?: string,
+    hideCalendarIcon?: boolean
+}
 
 export const InputDateCell = (props: CellProps) => {
 
@@ -13,16 +17,20 @@ export const InputDateCell = (props: CellProps) => {
         config,
         data,
         id,
-        enabled,
         uischema,
         path,
         handleChange,
-        errors
+        visible = true,
+        isValid = true,
+        enabled = true,
     } = props;
 
-    const appliedUiSchemaOptions = merge({}, config, uischema.options);
-    const className = errors.length === 0 ? undefined : 'p-invalid';
-    const {locale = 'en-AU'} = appliedUiSchemaOptions;
+    if (!visible) {
+        return null;
+    }
+
+    const className = isValid ? undefined : 'p-invalid';
+    const {locale, hideCalendarIcon} = merge({}, config, uischema.options) as InputDateCellOptions;
 
     const parseDate = (dateValue: Date | Date[] | undefined) => {
         if (dateValue instanceof Date) {
@@ -37,7 +45,6 @@ export const InputDateCell = (props: CellProps) => {
             }
         }
     }
-
 
     const localDateFormat = () => {
         const formatObj = new Intl.DateTimeFormat(locale).formatToParts(new Date());
@@ -57,10 +64,10 @@ export const InputDateCell = (props: CellProps) => {
             .join("");
     }
 
-
     return (
         <Calendar
             dateFormat={localDateFormat()}
+            showIcon={!hideCalendarIcon}
             disabled={!enabled}
             id={id}
             value={data ? new Date(data) : undefined}

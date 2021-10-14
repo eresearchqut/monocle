@@ -13,8 +13,7 @@ export default {
         data: {
             options: [true, false, undefined],
             control: {type: 'radio'}
-        },
-        id: {table: {disable: true}}
+        }
     }
 } as Meta;
 

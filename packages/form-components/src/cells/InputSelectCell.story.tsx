@@ -7,10 +7,7 @@ import {action} from "@storybook/addon-actions";
 
 export default {
     title: 'Cells/InputSelectCell',
-    component: InputSelectCell,
-    argTypes: {
-        id: {table: {disable: true}}
-    }
+    component: InputSelectCell
 } as Meta;
 
 const Template: Story<EnumCellProps> =

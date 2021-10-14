@@ -57,7 +57,7 @@ export const InputNumberCell = (props: CellProps) => {
 };
 
 /**
- * Default tester for numeric controls.
+ * Default tester for numeric cells.
  * @type {RankedTester}
  */
 export const inputNumberCellTester: RankedTester = rankWith(1, or(isNumberControl, isIntegerControl));

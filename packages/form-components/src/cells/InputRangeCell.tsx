@@ -1,14 +1,14 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {withJsonFormsCellProps} from '@jsonforms/react';
-import {Slider} from 'primereact/slider';
+import {Slider, SliderChangeParams} from 'primereact/slider';
 
 import merge from "lodash/merge";
-import {CellProps, optionIs, RankedTester, rankWith} from "@jsonforms/core";
+import {and, CellProps, optionIs, RankedTester, rankWith, uiTypeIs} from "@jsonforms/core";
 
 export interface InputRangeCellOptions {
     orientation?: 'horizontal' | 'vertical'
     animate?: boolean,
-    step?: number,
+
     range?: boolean
 }
 
@@ -25,28 +25,45 @@ export const InputRangeCell = (props: CellProps) => {
         visible = true
     } = props;
 
-    const {minimum, maximum} = schema;
-    const {orientation, range, step} = merge({}, config, uischema.options) as InputRangeCellOptions;
+    const [value, setValue] = useState(data);
+    const {minimum, maximum, multipleOf} = schema;
+    const {orientation, range} = merge({}, config, uischema.options) as InputRangeCellOptions;
 
     if (!visible) {
         return null;
     }
 
+    const onChange = (e: SliderChangeParams) => {
+        if (e.originalEvent.type === 'click') {
+            handleChange(path, e.value);
+        }
+        setValue(() => e.value);
+    }
+
     return (
         <Slider id={id}
-                value={data}
+                value={value}
                 disabled={!enabled}
                 min={minimum}
                 max={maximum}
                 orientation={orientation}
-                step={step}
+                step={multipleOf}
                 range={range}
-                onChange={(e) => handleChange(path, e.value)}
+                onChange={onChange}
+                onSlideEnd={(e) => handleChange(path, value)}
+
         />
     );
 };
 
 
-export const inputRangeCellTester: RankedTester = rankWith(2, optionIs('type', 'range'));
+/**
+ * Default tester for range controls.
+ * @type {RankedTester}
+ */
+export const inputRangeCellTester: RankedTester = rankWith(2, and(
+    uiTypeIs('Control'),
+    optionIs('type', 'range')
+));
 
 export default withJsonFormsCellProps(InputRangeCell);

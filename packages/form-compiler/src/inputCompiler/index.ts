@@ -1,5 +1,6 @@
 import {TextInputCompiler} from './textInputCompiler';
 import {NumericInputCompiler} from './numericInputCompiler';
+import {RangeInputCompiler} from './rangeInputCompiler';
 import {CurrencyInputCompiler} from './currencyInputCompiler';
 import InputCompiler from '../interfaces/inputCompiler';
 import {Form, Input, Section} from '@trrf/form-definition';
@@ -13,12 +14,13 @@ export {
   AbstractInputCompiler,
   TextInputCompiler,
   NumericInputCompiler,
+  RangeInputCompiler,
   CurrencyInputCompiler,
   BooleanInputCompiler,
   DateInputCompiler,
 };
 
-export const inputCompilers: InputCompiler[] = [new TextInputCompiler(), new MultilineTextInputCompiler(), new NumericInputCompiler(), new CurrencyInputCompiler(), new BooleanInputCompiler(), new DateInputCompiler(), new SvgMapInputCompiler()];
+export const inputCompilers: InputCompiler[] = [new RangeInputCompiler(), new TextInputCompiler(), new MultilineTextInputCompiler(), new NumericInputCompiler(), new CurrencyInputCompiler(), new BooleanInputCompiler(), new DateInputCompiler(), new SvgMapInputCompiler()];
 
 export const findInputCompiler = (form: Form, section: Section, input: Input): InputCompiler | undefined => inputCompilers
     .find((inputBuilder) => inputBuilder.supports(form, section, input));

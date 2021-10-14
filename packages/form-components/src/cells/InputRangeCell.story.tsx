@@ -93,17 +93,14 @@ VerticalOrientation.args = {
     }
 }
 
-export const Step = Template.bind({});
-Step.args = {
+export const MultipleOf = Template.bind({});
+MultipleOf.args = {
     ...Default.args,
     data: 5.5,
-    uischema: {
-        type: 'Control',
-        scope: '#/properties/cell',
-        options: {
-            step: 0.5
-        }
-    }
+    schema: {
+        type: 'number',
+        multipleOf: 0.5
+    },
 }
 
 export const Range = Template.bind({});

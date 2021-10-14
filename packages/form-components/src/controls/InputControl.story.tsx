@@ -12,7 +12,7 @@ import {action} from "@storybook/addon-actions";
 import {cells} from "../index";
 
 
-const ChangeEmitter : React.FC<JsonFormsReactProps> = ({onChange}) => {
+const ChangeEmitter: React.FC<JsonFormsReactProps> = ({onChange}) => {
     const ctx = useJsonForms();
     const {data, errors} = ctx.core as JsonFormsCore;
     React.useEffect(() => {
@@ -29,15 +29,15 @@ export default {
     decorators: [
         (Story, context) => {
             const {schema, uischema, data} = context.args as ControlProps;
-            const core = { schema, uischema, data, ajv: createAjv()};
+            const core = {schema, uischema, data, ajv: createAjv()};
             const [, updateArgs] = useArgs();
             const logAction = useCallback(action('onChange'), []);
             return (
-                <JsonFormsStateProvider initState={{core, cells}} >
+                <JsonFormsStateProvider initState={{core, cells}}>
                     <ChangeEmitter
-                        onChange={({ data }) => {
+                        onChange={({data}) => {
                             updateArgs({data});
-                            logAction( data);
+                            logAction(data);
                         }}
                     />
                     <Story/>
@@ -52,8 +52,8 @@ const Template: Story<ControlProps> =
         <InputControl {...props} id="static"/>
 Template.bind({});
 
-export const Text = Template.bind({});
-Text.args = {
+export const Default = Template.bind({});
+Default.args = {
     data: {
         firstName: 'Lando',
         endNotes: 'I appear at the end',
@@ -103,7 +103,7 @@ Text.args = {
 
 export const TextRequired = Template.bind({});
 TextRequired.args = {
-    ...Text.args,
+    ...Default.args,
     uischema: {
         type: 'Control',
         scope: '#/properties/position'
@@ -112,16 +112,25 @@ TextRequired.args = {
 
 export const TextDescription = Template.bind({});
 TextDescription.args = {
-    ...Text.args,
+    ...Default.args,
     uischema: {
         type: 'Control',
         scope: '#/properties/lastName'
     }
 }
 
-export const TextMultiline = Template.bind({});
-TextMultiline.args = {
-    ...Text.args,
+export const TextInvalid = Template.bind({});
+TextInvalid.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/classification'
+    }
+}
+
+export const MultilineText = Template.bind({});
+MultilineText.args = {
+    ...Default.args,
     uischema: {
         type: 'Control',
         scope: '#/properties/notes',
@@ -131,18 +140,9 @@ TextMultiline.args = {
     }
 }
 
-export const TextInvalid = Template.bind({});
-TextInvalid.args = {
-    ...Text.args,
-    uischema: {
-        type: 'Control',
-        scope: '#/properties/classification'
-    }
-}
-
-export const TextMultilineRequired = Template.bind({});
-TextMultilineRequired.args = {
-    ...Text.args,
+export const MultilineTextRequired = Template.bind({});
+MultilineTextRequired.args = {
+    ...Default.args,
     uischema: {
         type: 'Control',
         scope: '#/properties/endNotes',
@@ -152,11 +152,17 @@ TextMultilineRequired.args = {
     }
 }
 
-export const NumberWithMinMax = Template.bind({});
-NumberWithMinMax.args = {
-    ...Text.args,
+export const RangeWithMinMax = Template.bind({});
+RangeWithMinMax.args = {
+    ...Default.args,
+    // data: {
+    //     age: 52
+    // },
     uischema: {
         type: 'Control',
         scope: '#/properties/age',
+        options: {
+            type: 'range'
+        }
     }
 }

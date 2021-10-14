@@ -40,6 +40,13 @@ Example.args = {
                         required: true,
                     },
                     {
+                        id: '7df198be-f9c6-4ad1-bf40-98c06d1df550',
+                        type: 'range',
+                        minimum: 35,
+                        maximum: 125,
+                        name: 'Age'
+                    },
+                    {
                         id: '5b701630-62e7-4b97-8b99-cb5e4143393a',
                         type: 'date',
                         required: true,

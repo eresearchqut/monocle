@@ -1,15 +1,21 @@
-import React, {useState, useEffect} from 'react';
-import {withJsonFormsCellProps} from '@jsonforms/react';
+import React, {useState} from 'react';
 import {Slider, SliderChangeParams} from 'primereact/slider';
+
 
 import merge from "lodash/merge";
 import {and, CellProps, optionIs, RankedTester, rankWith, uiTypeIs} from "@jsonforms/core";
+import {InputNumber, InputNumberChangeParams} from "primereact/inputnumber";
+import { Tooltip } from 'primereact/tooltip';
+import {withJsonFormsCellProps} from "@jsonforms/react";
+import { Badge } from 'primereact/badge';
 
 export interface InputRangeCellOptions {
-    orientation?: 'horizontal' | 'vertical'
-    animate?: boolean,
-
-    range?: boolean
+    animate?: boolean
+    groupNumbers?: boolean
+    upperLabel?: string
+    lowerLabel?: string
+    focus?: boolean
+    locale?: string
 }
 
 export const InputRangeCell = (props: CellProps) => {
@@ -27,32 +33,48 @@ export const InputRangeCell = (props: CellProps) => {
 
     const [value, setValue] = useState(data);
     const {minimum, maximum, multipleOf} = schema;
-    const {orientation, range} = merge({}, config, uischema.options) as InputRangeCellOptions;
+    const {groupNumbers = false, focus, locale} = merge({}, config, uischema.options) as InputRangeCellOptions;
 
     if (!visible) {
         return null;
     }
 
-    const onChange = (e: SliderChangeParams) => {
+    const onSliderChange = (e: SliderChangeParams) => {
         if (e.originalEvent.type === 'click') {
             handleChange(path, e.value);
         }
         setValue(() => e.value);
     }
 
-    return (
-        <Slider id={id}
-                value={value}
-                disabled={!enabled}
-                min={minimum}
-                max={maximum}
-                orientation={orientation}
-                step={multipleOf}
-                range={range}
-                onChange={onChange}
-                onSlideEnd={(e) => handleChange(path, value)}
+    const onInputChange = (e: InputNumberChangeParams) => {
+        setValue(() => e.value);
+        handleChange(path, e.value);
+    }
 
-        />
+    return (
+        <React.Fragment>
+            <InputNumber id={`${id}-input`}
+                         value={value}
+                         min={minimum}
+                         max={maximum}
+                         onChange={onInputChange}
+                         step={multipleOf}
+                         showButtons
+                         useGrouping={groupNumbers}
+                         disabled={!enabled}
+                         locale={locale}
+                         autoFocus={focus}/>
+            <Slider id={id}
+                        value={value}
+                        disabled={!enabled}
+                        min={minimum}
+                        max={maximum}
+                        step={multipleOf}
+                        onChange={onSliderChange}
+                        onSlideEnd={(e) => handleChange(path, value)}
+                />
+            <Tooltip target={`#${id}>.p-slider-handle`} content={value} position='top' event='focus'  />
+        </React.Fragment>
     );
 };
 

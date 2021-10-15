@@ -14,10 +14,13 @@ export const ComponentSelector: FunctionComponent = () => {
     const iconMap: Map<string, string> = new Map<string, string>([
         ['DateInput', 'pi-calendar'],
         ['BooleanInput', 'pi-check-square'],
-        ['TextInput', 'pi-align-left'],
+        ['MultilineTextInput', 'pi-align-left'],
+        ['TextInput', 'pi-ellipsis-h'],
         ['SvgMapInput', 'pi-image'],
         ['NumericInput', 'pi-sort-numeric-up'],
-        ['CurrencyInput', 'pi-money-bill']
+        ['CurrencyInput', 'pi-money-bill'],
+        ['RangeInput', 'pi-sliders-h']
+
     ]);
 
     const title = (definition: any) => startCase(definition?.title || '');

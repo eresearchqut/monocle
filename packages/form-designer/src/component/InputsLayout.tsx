@@ -37,7 +37,7 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                    }) => {
 
     const inputs = data as Array<Input>;
-    const [collapsed, setCollapsed] = useState<Map<string, boolean>>(new Map<string, boolean>(inputs.map((input => [input.id,true]))));
+    const [collapsed, setCollapsed] = useState<Map<string, boolean>>(new Map<string, boolean>(inputs.map((input => [input.id, true]))));
     const isCollapsed = (input: UniquelyIdentifiable): boolean | undefined => collapsed.get(input.id);
     const handleToggle = (input: UniquelyIdentifiable) => (event: any): void => {
         setCollapsed((currentState) => {
@@ -51,9 +51,11 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
         ['date', 'pi-calendar'],
         ['boolean', 'pi-check-square'],
         ['text', 'pi-align-left'],
+        ['multiline-text', 'pi-align-left'],
         ['svg-map', 'pi-image'],
         ['numeric', 'pi-sort-numeric-up'],
-        ['currency', 'pi-money-bill']
+        ['currency', 'pi-money-bill'],
+        ['range', 'pi-sliders-h']
     ]);
 
     const panelHeaderTemplate = (options: PanelHeaderTemplateOptions,
@@ -156,7 +158,7 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
                         {droppableProvided.placeholder}
                     </div>
                 )}
-        </Droppable>
+            </Droppable>
         </React.Fragment>
     );
 };

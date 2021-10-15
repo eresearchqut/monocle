@@ -7,7 +7,6 @@ import {Meta, Story} from "@storybook/react";
 import {action} from '@storybook/addon-actions';
 import {useArgs} from '@storybook/client-api';
 
-
 export default {
     title: 'Cells/InputRangeCell',
     component: InputRangeCell
@@ -81,17 +80,7 @@ MinimumMaximum.args = {
     },
 }
 
-export const VerticalOrientation = Template.bind({});
-VerticalOrientation.args = {
-    ...Default.args,
-    uischema: {
-        type: 'Control',
-        scope: '#/properties/cell',
-        options: {
-            orientation: 'vertical'
-        }
-    }
-}
+
 
 export const MultipleOf = Template.bind({});
 MultipleOf.args = {
@@ -103,15 +92,15 @@ MultipleOf.args = {
     },
 }
 
-export const Range = Template.bind({});
-Range.args = {
+export const Focus = Template.bind({});
+Focus.args = {
     ...Default.args,
-    data: [10, 20],
+    data: 45,
     uischema: {
         type: 'Control',
         scope: '#/properties/cell',
         options: {
-            range: true
+            focus: true
         }
     }
 }

@@ -126,7 +126,7 @@ TimeIncludeSeconds.args = {
 }
 
 export const TimeStepSeconds = Template.bind({});
-TimeIncludeSeconds.args = {
+TimeStepSeconds.args = {
     ...Time.args,
     uischema: {
         type: 'Control',

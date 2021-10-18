@@ -48,6 +48,6 @@ export const InputMarkdownCell = (props: CellProps) => {
  * Default tester for text-based/string controls.
  * @type {RankedTester}
  */
-export const inputMarkdownCellTester: RankedTester = rankWith(3, optionIs('type', 'rich-text'));
+export const inputMarkdownCellTester: RankedTester = rankWith(3, optionIs('type', 'markdown'));
 
 export default withJsonFormsCellProps(InputMarkdownCell);

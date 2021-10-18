@@ -56,7 +56,7 @@ export const Default = Template.bind({});
 Default.args = {
     data: {
         firstName: 'Lando',
-        endNotes: 'I appear at the end',
+        endNotes: '# One\n## two\n### three\n#### four\n* One\n* Two\n* Three\n* Four',
         lastName: '',
         position: 'Intergalactic Gambler',
         classification: 'A',
@@ -156,14 +156,14 @@ MultilineText.args = {
     }
 }
 
-export const MultilineTextRequired = Template.bind({});
-MultilineTextRequired.args = {
+export const Markdown = Template.bind({});
+Markdown.args = {
     ...Default.args,
     uischema: {
         type: 'Control',
         scope: '#/properties/endNotes',
         options: {
-            multi: true
+            type: 'markdown'
         }
     }
 }

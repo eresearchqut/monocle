@@ -29,7 +29,7 @@ export const InputRangeCell = (props: CellProps) => {
 
     const [value, setValue] = useState(data);
     const {minimum, maximum, multipleOf} = schema;
-    const {groupNumbers = false, focus, locale} = merge({}, config, uischema.options) as InputRangeCellOptions;
+    const {groupNumbers = false, focus, locale, upperLabel, lowerLabel} = merge({}, config, uischema.options) as InputRangeCellOptions;
 
     if (!visible) {
         return null;
@@ -46,6 +46,11 @@ export const InputRangeCell = (props: CellProps) => {
         setValue(() => e.value);
         handleChange(path, e.value);
     }
+
+    const labels =  (upperLabel || lowerLabel) ? (<div className="p-d-flex p-jc-between p-mt-2">
+        <div>{lowerLabel}</div>
+        <div>{upperLabel}</div>
+    </div>) : undefined;
 
     return (
         <React.Fragment>
@@ -69,6 +74,7 @@ export const InputRangeCell = (props: CellProps) => {
                     onChange={onSliderChange}
                     onSlideEnd={(e) => handleChange(path, value)}
             />
+            {labels}
         </React.Fragment>
     );
 };

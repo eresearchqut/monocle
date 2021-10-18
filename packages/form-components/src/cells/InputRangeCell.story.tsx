@@ -104,3 +104,22 @@ Focus.args = {
         }
     }
 }
+
+export const Labels = Template.bind({});
+Labels.args = {
+    ...Default.args,
+    data: 3,
+    schema: {
+        type: 'number',
+        minimum: 1,
+        maximum: 5
+    },
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/cell',
+        options: {
+            lowerLabel: 'Bad',
+            upperLabel: 'Good'
+        }
+    }
+}

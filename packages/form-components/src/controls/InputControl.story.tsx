@@ -181,7 +181,9 @@ RangeWithMinMax.args = {
         type: 'Control',
         scope: '#/properties/age',
         options: {
-            type: 'range'
+            type: 'range',
+            lowerLabel: 'Young',
+            upperLabel: 'Old'
         }
     }
 }

@@ -8,7 +8,10 @@ import {action} from "@storybook/addon-actions";
 
 export default {
     title: 'Cells/InputCalendarCell',
-    component: InputCalendarCell
+    component: InputCalendarCell,
+    argTypes: {
+        data: { control: 'text' },
+    },
 } as Meta;
 
 const Template: Story<CellProps> =
@@ -168,6 +171,22 @@ TimeStepMilliseconds.args = {
 
 
 
+export const DateTime = Template.bind({});
+DateTime.args = {
+    data: '2021-06-30T23:59:00.000Z',
+    id: 'cell',
+    config: {
+        locale: 'en-AU'
+    },
+    schema: {
+        type: 'string',
+        format: 'date-time'
+    },
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/cell'
+    }
+}
 
 
 

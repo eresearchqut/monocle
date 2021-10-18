@@ -62,6 +62,9 @@ Default.args = {
         classification: 'A',
         age: 52,
         notes: 'Will betray Han\n(at earliest convenience)',
+        starDate: '2130-06-09',
+        starDateTime: '2130-06-09T12:34:00.000Z',
+        starTime: '12:34:00.000Z',
     },
     schema: {
         required: ['position', 'endNotes'],
@@ -85,9 +88,20 @@ Default.args = {
             notes: {
                 type: 'string'
             },
-
             endNotes: {
                 type: 'string'
+            },
+            starDate: {
+                type: 'string',
+                format: 'date'
+            },
+            starDateTime: {
+                type: 'string',
+                format: 'date-time'
+            },
+            starTime: {
+                type: 'string',
+                format: 'time'
             },
             age: {
                 type: 'number',
@@ -178,5 +192,32 @@ Select.args = {
     uischema: {
         type: 'Control',
         scope: '#/properties/position'
+    }
+}
+
+export const Date = Template.bind({});
+Date.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/starDate'
+    }
+}
+
+export const DateTime= Template.bind({});
+DateTime.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/starDateTime'
+    }
+}
+
+export const Time = Template.bind({});
+Time.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/starTime'
     }
 }

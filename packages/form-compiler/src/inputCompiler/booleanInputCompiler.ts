@@ -1,12 +1,12 @@
 import {InputCompiler} from '../interfaces';
 import {JsonSchema, UISchemaElement} from '@jsonforms/core';
-import {BooleanInput, CurrencyInput, Form, Input, Section} from '@trrf/form-definition';
+import {BooleanInput, Form, Input, InputType, Section} from '@trrf/form-definition';
 import {AbstractInputCompiler} from './abstractInputCompiler';
 
 
 export class BooleanInputCompiler extends AbstractInputCompiler implements InputCompiler {
     supports(form: Form, section: Section, input: Input): boolean {
-        return input.type === 'boolean';
+        return input.type === InputType.BOOLEAN;
     }
 
     schema(form: Form, section: Section, input: Input): JsonSchema {

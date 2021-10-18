@@ -1,12 +1,12 @@
 import {InputCompiler} from '../interfaces';
 import {JsonSchema, UISchemaElement} from '@jsonforms/core';
-import {CurrencyInput, Form, Input, Section} from '@trrf/form-definition';
+import {CurrencyInput, Form, Input, InputType, Section} from '@trrf/form-definition';
 import {AbstractInputCompiler} from './abstractInputCompiler';
 
 
 export class CurrencyInputCompiler extends AbstractInputCompiler implements InputCompiler {
   supports(form: Form, section: Section, input: Input): boolean {
-    return input.type === 'currency';
+    return input.type === InputType.CURRENCY;
   }
 
   schema(form: Form, section: Section, input: Input): JsonSchema {

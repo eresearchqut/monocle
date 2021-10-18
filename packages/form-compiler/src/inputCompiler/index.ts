@@ -9,20 +9,30 @@ import {CalendarInputCompiler} from './calendarInputCompiler';
 import {AbstractInputCompiler} from './abstractInputCompiler';
 import {SvgMapInputCompiler} from './svgMapInputCompiler';
 import {MultilineTextInputCompiler} from './multilineTextInputCompiler';
+import {MarkdownInputCompiler} from "./markdownInputCompiler";
 
 export {
-  AbstractInputCompiler,
-  TextInputCompiler,
-  NumericInputCompiler,
-  RangeInputCompiler,
-  CurrencyInputCompiler,
-  BooleanInputCompiler,
-  CalendarInputCompiler,
+    AbstractInputCompiler,
+    TextInputCompiler,
+    MarkdownInputCompiler,
+    NumericInputCompiler,
+    RangeInputCompiler,
+    CurrencyInputCompiler,
+    BooleanInputCompiler,
+    CalendarInputCompiler,
 };
 
-export const inputCompilers: InputCompiler[] = [new RangeInputCompiler(), new TextInputCompiler(), new MultilineTextInputCompiler(), new NumericInputCompiler(), new CurrencyInputCompiler(), new BooleanInputCompiler(), new CalendarInputCompiler(), new SvgMapInputCompiler()];
+export const inputCompilers: InputCompiler[] = [
+    new RangeInputCompiler(),
+    new TextInputCompiler(),
+    new MultilineTextInputCompiler(),
+    new MarkdownInputCompiler(),
+    new NumericInputCompiler(),
+    new CurrencyInputCompiler(),
+    new BooleanInputCompiler(),
+    new CalendarInputCompiler(),
+    new SvgMapInputCompiler()
+];
 
 export const findInputCompiler = (form: Form, section: Section, input: Input): InputCompiler | undefined => inputCompilers
     .find((inputBuilder) => inputBuilder.supports(form, section, input));
-
-

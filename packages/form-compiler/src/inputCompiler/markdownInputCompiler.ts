@@ -1,17 +1,17 @@
 import {InputCompiler} from '../interfaces';
 import {JsonSchema, UISchemaElement} from '@jsonforms/core';
-import {Form, Input, InputType, Section} from '@trrf/form-definition';
+import {Form, Input, Section} from '@trrf/form-definition';
 import {AbstractInputCompiler} from './abstractInputCompiler';
-import {TextInput} from '@trrf/form-definition/dist/interfaces';
+import {MarkdownInput} from '@trrf/form-definition';
 
-export class TextInputCompiler extends AbstractInputCompiler implements InputCompiler {
+export class MarkdownInputCompiler extends AbstractInputCompiler implements InputCompiler {
   supports(form: Form, section: Section, input: Input): boolean {
-    return input.type === InputType.TEXT;
+    return input.type === 'markdown';
   }
 
   schema(form: Form, section: Section, input: Input): JsonSchema {
-    const {maxLength, minLength, description} = input as TextInput;
-    return {type: 'string', maxLength, minLength, description} as JsonSchema;
+    const {description} = input as MarkdownInput;
+    return {type: 'string', description} as JsonSchema;
   }
 
   ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {

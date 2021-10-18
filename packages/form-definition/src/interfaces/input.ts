@@ -5,23 +5,37 @@ import {Described} from './described';
 import {Labelled} from "./labeled";
 import {UniquelyIdentifiable} from "./uniquelyIdentifiable";
 
+export enum InputType {
+    BOOLEAN = 'boolean',
+    CURRENCY = 'currency',
+    DATE = 'date',
+    DATE_TIME = 'date-time',
+    MARKDOWN = 'markdown',
+    MULTILINE_TEXT = 'multiline-text',
+    NUMERIC = 'numeric',
+    RANGE = 'range',
+    SVG_MAP = 'svg-map',
+    TEXT = 'text',
+    TIME = 'time'
+}
 
-export interface InputType extends UniquelyIdentifiable, Named, Requireable, Typed, Described, Labelled {
-    type: 'text' | 'multiline-text' | 'numeric' | 'range' | 'currency' | 'boolean' | 'date' | 'time' | 'date-time' | 'email' | 'svg-map'
+
+export interface AbstractInput extends Typed<InputType>, Named, UniquelyIdentifiable, Described, Labelled, Requireable {
+
 }
 
 /**
  * @title Boolean
  */
-export interface BooleanInput extends InputType {
-    type: 'boolean'
+export interface BooleanInput extends AbstractInput {
+    type: InputType.BOOLEAN
 }
 
 /**
  * @title Text
  */
-export interface TextInput extends InputType {
-    type: 'text',
+export interface TextInput extends AbstractInput {
+    type: InputType.TEXT
     minLength?: number,
     maxLength?: number,
     pattern?: string
@@ -30,17 +44,24 @@ export interface TextInput extends InputType {
 /**
  * @title Multiline Text
  */
-export interface MultilineTextInput extends InputType {
-    type: 'multiline-text',
+export interface MultilineTextInput extends AbstractInput {
+    type: InputType.MULTILINE_TEXT
     minLength?: number,
     maxLength?: number,
 }
 
 /**
+ * @title Markdown
+ */
+export interface MarkdownInput extends AbstractInput {
+    type: InputType.MARKDOWN
+}
+
+/**
  * @title Date
  */
-export interface DateInput extends InputType {
-    type: 'date',
+export interface DateInput extends AbstractInput {
+    type: InputType.DATE
 
     /**
      * @TJS-format date
@@ -57,8 +78,8 @@ export interface DateInput extends InputType {
 /**
  * @title Time
  */
-export interface TimeInput extends InputType {
-    type: 'time',
+export interface TimeInput extends AbstractInput {
+    type: InputType.TIME,
     /**
      * 24 or 12 hour time
      */
@@ -80,7 +101,7 @@ export interface TimeInput extends InputType {
      */
     stepMinutes?: number
     /**
-     * 	Seconds to change per step.
+     *    Seconds to change per step.
      */
     stepSeconds?: number
     /**
@@ -92,8 +113,8 @@ export interface TimeInput extends InputType {
 /**
  * @title Date Time
  */
-export interface DateTimeInput extends InputType {
-    type: 'date-time',
+export interface DateTimeInput extends AbstractInput {
+    type: InputType.DATE_TIME,
 
     /**
      * 24 or 12 hour time
@@ -116,7 +137,7 @@ export interface DateTimeInput extends InputType {
      */
     stepMinutes?: number
     /**
-     * 	Seconds to change per step.
+     *    Seconds to change per step.
      */
     stepSeconds?: number
     /**
@@ -138,8 +159,8 @@ export interface DateTimeInput extends InputType {
 /**
  * @title Numeric
  */
-export interface NumericInput extends InputType {
-    type: 'numeric',
+export interface NumericInput extends AbstractInput {
+    type: InputType.NUMERIC,
     minimum?: number,
     maximum?: number,
     locale?: string,
@@ -160,8 +181,8 @@ export interface NumericInput extends InputType {
 /**
  * @title Range
  */
-export interface RangeInput extends InputType {
-    type: 'range',
+export interface RangeInput extends AbstractInput {
+    type: InputType.RANGE,
     minimum?: number,
     maximum?: number,
     increment?: number
@@ -170,8 +191,8 @@ export interface RangeInput extends InputType {
 /**
  * @title Currency
  */
-export interface CurrencyInput extends InputType {
-    type: 'currency',
+export interface CurrencyInput extends AbstractInput {
+    type: InputType.CURRENCY,
     currencyCode: string,
     currencyDisplay?: 'symbol' | 'name',
     locale?: string,
@@ -184,8 +205,8 @@ export interface CurrencyInput extends InputType {
  * @title Svg Map
  *
  */
-export interface SvgMapInput extends InputType {
-    type: 'svg-map',
+export interface SvgMapInput extends AbstractInput {
+    type: InputType.SVG_MAP,
     map: 'body' | 'painScale',
     multiselect?: boolean
 }
@@ -193,4 +214,5 @@ export interface SvgMapInput extends InputType {
 /**
  * @title Input
  */
-export type Input = TextInput | MultilineTextInput | NumericInput | RangeInput | CurrencyInput | BooleanInput | DateInput | TimeInput | DateTimeInput | SvgMapInput;
+export type Input = TextInput | MultilineTextInput | NumericInput | RangeInput | CurrencyInput | BooleanInput
+    | DateInput | TimeInput | DateTimeInput | SvgMapInput | MarkdownInput;

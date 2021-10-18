@@ -1,5 +1,3 @@
-export interface Typed {
-
-    type?: string;
-
+export interface Typed<T> {
+    type: T;
 }

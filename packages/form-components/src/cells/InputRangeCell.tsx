@@ -1,13 +1,9 @@
 import React, {useState} from 'react';
 import {Slider, SliderChangeParams} from 'primereact/slider';
-
-
 import merge from "lodash/merge";
 import {and, CellProps, optionIs, RankedTester, rankWith, uiTypeIs} from "@jsonforms/core";
 import {InputNumber, InputNumberChangeParams} from "primereact/inputnumber";
-import { Tooltip } from 'primereact/tooltip';
 import {withJsonFormsCellProps} from "@jsonforms/react";
-import { Badge } from 'primereact/badge';
 
 export interface InputRangeCellOptions {
     animate?: boolean
@@ -65,15 +61,14 @@ export const InputRangeCell = (props: CellProps) => {
                          locale={locale}
                          autoFocus={focus}/>
             <Slider id={id}
-                        value={value}
-                        disabled={!enabled}
-                        min={minimum}
-                        max={maximum}
-                        step={multipleOf}
-                        onChange={onSliderChange}
-                        onSlideEnd={(e) => handleChange(path, value)}
-                />
-            <Tooltip target={`#${id}>.p-slider-handle`} content={value} position='top' event='focus'  />
+                    value={value}
+                    disabled={!enabled}
+                    min={minimum}
+                    max={maximum}
+                    step={multipleOf}
+                    onChange={onSliderChange}
+                    onSlideEnd={(e) => handleChange(path, value)}
+            />
         </React.Fragment>
     );
 };

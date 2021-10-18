@@ -2,7 +2,7 @@ import * as React from "react";
 
 import {Meta, Story} from '@storybook/react';
 
-import {ControlProps, createAjv, JsonFormsCore} from "@jsonforms/core";
+import {ControlProps, JsonFormsCore, createAjv} from "@jsonforms/core";
 import {JsonFormsReactProps, JsonFormsStateProvider, useJsonForms} from '@jsonforms/react';
 import InputControl from "./InputControl";
 
@@ -10,7 +10,6 @@ import {useArgs} from "@storybook/client-api";
 import {useCallback} from "react";
 import {action} from "@storybook/addon-actions";
 import {cells} from "../index";
-
 
 const ChangeEmitter: React.FC<JsonFormsReactProps> = ({onChange}) => {
     const ctx = useJsonForms();

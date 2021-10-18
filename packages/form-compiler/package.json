@@ -20,7 +20,7 @@
         "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0 --fix"
     },
     "dependencies": {
-        "@jsonforms/core": "^3.0.0-alpha.0",
+        "@jsonforms/core": "^3.0.0-alpha.1",
         "@trrf/form-components": "1.0.0",
         "@trrf/form-definition": "1.0.0",
         "cldr-core": "^39.0.0",

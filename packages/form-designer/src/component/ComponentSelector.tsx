@@ -1,29 +1,14 @@
 import React, {FunctionComponent} from 'react';
 
-import {JsonSchema} from '@jsonforms/core';
 import startCase from 'lodash/startCase';
-
-const inputSchema = require('../schema/input.json') as JsonSchema;
-
-
 import {Draggable, Droppable} from 'react-beautiful-dnd';
-import {Avatar} from 'primereact/avatar';
+import {InputType, SectionType} from "@trrf/form-definition";
+import ComponentIcon from "./ComponentIcon";
 
 export const ComponentSelector: FunctionComponent = () => {
 
-    const iconMap: Map<string, string> = new Map<string, string>([
-        ['DateInput', 'pi-calendar'],
-        ['BooleanInput', 'pi-check-square'],
-        ['MultilineTextInput', 'pi-align-left'],
-        ['TextInput', 'pi-ellipsis-h'],
-        ['SvgMapInput', 'pi-image'],
-        ['NumericInput', 'pi-sort-numeric-up'],
-        ['CurrencyInput', 'pi-money-bill'],
-        ['RangeInput', 'pi-sliders-h']
 
-    ]);
-
-    const title = (definition: any) => startCase(definition?.title || '');
+    const title = (inputType: InputType) => startCase(inputType || '');
 
     return (
         <React.Fragment>
@@ -43,15 +28,13 @@ export const ComponentSelector: FunctionComponent = () => {
                                              {...draggableProvided.draggableProps}
                                              {...draggableProvided.dragHandleProps}
                                              className={`p-mb-2 p-p-2 p-shadow-2 ${snapshot.isDragging ? 'input-dragging' : ''}`}>
-                                            <Avatar icon='pi pi-bars' className="p-mr-2"
-                                                    shape="circle"/>
+                                            <ComponentIcon componentType={SectionType.DEFAULT} />
                                             <span className={'p-text-nowrap'}>Section</span>
                                         </div>
                                         {snapshot.isDragging && (
                                             <div
                                                 className="p-mb-2 p-p-2 p-shadow-2 input-clone">
-                                                <Avatar icon='pi pi-bars' className="p-mr-2"
-                                                        shape="circle"/>
+                                                <ComponentIcon componentType={SectionType.DEFAULT} />
                                                 <span className={'p-text-nowrap'}>Section</span>
                                             </div>
                                         )}
@@ -71,11 +54,11 @@ export const ComponentSelector: FunctionComponent = () => {
                         <div
                             className="p-d-flex p-flex-column"
                             ref={droppableProvided.innerRef}>
-                            {Object.entries(inputSchema.definitions as { [s: string]: JsonSchema }).map(([key, definition], index) => // @ts-ignore
+                            {Object.values(InputType).map((inputType, index) => // @ts-ignore
                                 (
                                     <Draggable
-                                        key={key}
-                                        draggableId={key}
+                                        key={inputType}
+                                        draggableId={inputType}
                                         index={index}>
                                         {(draggableProvided, snapshot) => (
                                             <React.Fragment>
@@ -83,16 +66,14 @@ export const ComponentSelector: FunctionComponent = () => {
                                                      {...draggableProvided.draggableProps}
                                                      {...draggableProvided.dragHandleProps}
                                                      className={`p-mb-2 p-p-2 p-shadow-2 ${snapshot.isDragging ? 'input-dragging' : ''}`}>
-                                                    <Avatar icon={`pi ${iconMap.get(key)}`} className="p-mr-2"
-                                                            shape="circle"/>
-                                                    <span className={'p-text-nowrap'}>{title(definition)}</span>
+                                                    <ComponentIcon componentType={inputType} />
+                                                    <span className={'p-text-nowrap'}>{title(inputType)}</span>
                                                 </div>
                                                 {snapshot.isDragging && (
                                                     <div
                                                         className="p-mb-2 p-p-2 p-shadow-2 input-clone">
-                                                        <Avatar icon={`pi ${iconMap.get(key)}`} className="p-mr-2"
-                                                                shape="circle"/>
-                                                        <span className={'p-text-nowrap'}>{title(definition)}</span>
+                                                        <ComponentIcon componentType={inputType} />
+                                                        <span className={'p-text-nowrap'}>{title(inputType)}</span>
                                                     </div>
                                                 )}
                                             </React.Fragment>

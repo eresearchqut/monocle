@@ -3,7 +3,7 @@ import {FormDesignerCanvas} from './FormDesignerCanvas';
 import {FormPreview} from './FormPreview';
 import {ComponentSelector} from './ComponentSelector';
 
-import {Form, Input, Section} from '@trrf/form-definition';
+import {Form, Input, Section, SectionType} from '@trrf/form-definition';
 import {ErrorObject} from 'ajv';
 import {DragDropContext, DropResult} from "react-beautiful-dnd";
 import {JsonSchema} from "@jsonforms/core";
@@ -57,7 +57,7 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
                 const definition = JSON.parse(JSON.stringify(currentState));
                 if (type === 'sections') {
                     if (result.source.droppableId === 'sectionSelector') {
-                        const section = {id: uuidv4(), inputs: []}
+                        const section = {id: uuidv4(), type: SectionType.DEFAULT, inputs: []}
                         definition.sections.splice(destination.index || 0, 0, section);
                     } else if (destination) {
                         const index = definition.sections.findIndex((section: Section) => section.id === result.draggableId);
@@ -70,7 +70,7 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
                     const destinationSectionIndex = parseInt(result.destination?.droppableId.split('.')[1] || '0');
                     const destinationSection = definition.sections[destinationSectionIndex];
                     if (result.source.droppableId === 'inputSelector') {
-                        const type = get(inputSchema.definitions, `${result.draggableId}.properties.type.enum.0`);
+                        const type = result.draggableId;
                         const input = {type, id: uuidv4()}
                         destinationSection.inputs.splice(destination.index || 0, 0, input);
                     } else if (destination) {

@@ -53,6 +53,88 @@ export interface DateInput extends InputType {
     maximum?: string
 }
 
+
+/**
+ * @title Time
+ */
+export interface TimeInput extends InputType {
+    type: 'time',
+    /**
+     * 24 or 12 hour time
+     */
+    hourFormat?: '24' | '12',
+    /**
+     * Display seconds controls
+     */
+    includeSeconds?: boolean,
+    /**
+     * Display millisecond controls
+     */
+    includeMilliseconds?: boolean
+    /**
+     * Hours to change per step.
+     */
+    stepHours?: number
+    /**
+     * Minutes to change per step
+     */
+    stepMinutes?: number
+    /**
+     * 	Seconds to change per step.
+     */
+    stepSeconds?: number
+    /**
+     * Milliseconds to change per step.
+     */
+    stepMilliseconds?: number
+}
+
+/**
+ * @title Date Time
+ */
+export interface DateTimeInput extends InputType {
+    type: 'date-time',
+
+    /**
+     * 24 or 12 hour time
+     */
+    hourFormat?: '24' | '12',
+    /**
+     * Display seconds controls
+     */
+    includeSeconds?: boolean,
+    /**
+     * Display millisecond controls
+     */
+    includeMilliseconds?: boolean
+    /**
+     * Hours to change per step.
+     */
+    stepHours?: number
+    /**
+     * Minutes to change per step
+     */
+    stepMinutes?: number
+    /**
+     * 	Seconds to change per step.
+     */
+    stepSeconds?: number
+    /**
+     * Milliseconds to change per step.
+     */
+    stepMilliseconds?: number
+
+    /**
+     * @TJS-format date
+     */
+    minimum?: string,
+
+    /**
+     * @TJS-format date
+     */
+    maximum?: string
+}
+
 /**
  * @title Numeric
  */
@@ -60,6 +142,7 @@ export interface NumericInput extends InputType {
     type: 'numeric',
     minimum?: number,
     maximum?: number,
+    locale?: string,
 
     /**
      * @minimum 0
@@ -91,6 +174,7 @@ export interface CurrencyInput extends InputType {
     type: 'currency',
     currencyCode: string,
     currencyDisplay?: 'symbol' | 'name',
+    locale?: string,
     minimum?: number,
     maximum?: number
 }
@@ -109,4 +193,4 @@ export interface SvgMapInput extends InputType {
 /**
  * @title Input
  */
-export type Input = TextInput | MultilineTextInput | NumericInput | RangeInput | CurrencyInput | BooleanInput | DateInput | SvgMapInput;
+export type Input = TextInput | MultilineTextInput | NumericInput | RangeInput | CurrencyInput | BooleanInput | DateInput | TimeInput | DateTimeInput | SvgMapInput;

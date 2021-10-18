@@ -75,6 +75,7 @@ Default.args = {
             },
             position: {
                 type: 'string',
+                enum: ['Intergalactic Gambler', 'Bounty Hunter', 'Smuggler']
             },
             classification: {
                 type: 'string',
@@ -84,6 +85,7 @@ Default.args = {
             notes: {
                 type: 'string'
             },
+
             endNotes: {
                 type: 'string'
             },
@@ -152,6 +154,9 @@ MultilineTextRequired.args = {
     }
 }
 
+
+
+
 export const RangeWithMinMax = Template.bind({});
 RangeWithMinMax.args = {
     ...Default.args,
@@ -164,5 +169,14 @@ RangeWithMinMax.args = {
         options: {
             type: 'range'
         }
+    }
+}
+
+export const Select = Template.bind({});
+Select.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/position'
     }
 }

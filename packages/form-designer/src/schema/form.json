@@ -57,6 +57,9 @@
                     "description": "Label can be provided to override the name",
                     "type": "string"
                 },
+                "locale": {
+                    "type": "string"
+                },
                 "maximum": {
                     "type": "number"
                 },
@@ -121,6 +124,78 @@
             "title": "Date",
             "type": "object"
         },
+        "DateTimeInput": {
+            "properties": {
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "hourFormat": {
+                    "description": "24 or 12 hour time",
+                    "enum": [
+                        "12",
+                        "24"
+                    ],
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "includeMilliseconds": {
+                    "description": "Display millisecond controls",
+                    "type": "boolean"
+                },
+                "includeSeconds": {
+                    "description": "Display seconds controls",
+                    "type": "boolean"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "maximum": {
+                    "format": "date",
+                    "type": "string"
+                },
+                "minimum": {
+                    "format": "date",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "stepHours": {
+                    "description": "Hours to change per step.",
+                    "type": "number"
+                },
+                "stepMilliseconds": {
+                    "description": "Milliseconds to change per step.",
+                    "type": "number"
+                },
+                "stepMinutes": {
+                    "description": "Minutes to change per step",
+                    "type": "number"
+                },
+                "stepSeconds": {
+                    "description": "Seconds to change per step.",
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "date-time"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Date Time",
+            "type": "object"
+        },
         "DefaultSection": {
             "properties": {
                 "description": {
@@ -145,6 +220,12 @@
                             },
                             {
                                 "$ref": "#/definitions/DateInput"
+                            },
+                            {
+                                "$ref": "#/definitions/TimeInput"
+                            },
+                            {
+                                "$ref": "#/definitions/DateTimeInput"
                             },
                             {
                                 "$ref": "#/definitions/NumericInput"
@@ -241,6 +322,9 @@
                 },
                 "label": {
                     "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "locale": {
                     "type": "string"
                 },
                 "maximum": {
@@ -389,6 +473,70 @@
                 }
             },
             "title": "Text",
+            "type": "object"
+        },
+        "TimeInput": {
+            "properties": {
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "hourFormat": {
+                    "description": "24 or 12 hour time",
+                    "enum": [
+                        "12",
+                        "24"
+                    ],
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "includeMilliseconds": {
+                    "description": "Display millisecond controls",
+                    "type": "boolean"
+                },
+                "includeSeconds": {
+                    "description": "Display seconds controls",
+                    "type": "boolean"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "stepHours": {
+                    "description": "Hours to change per step.",
+                    "type": "number"
+                },
+                "stepMilliseconds": {
+                    "description": "Milliseconds to change per step.",
+                    "type": "number"
+                },
+                "stepMinutes": {
+                    "description": "Minutes to change per step",
+                    "type": "number"
+                },
+                "stepSeconds": {
+                    "description": "Seconds to change per step.",
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "time"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Time",
             "type": "object"
         }
     },

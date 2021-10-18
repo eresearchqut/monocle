@@ -1,5 +1,5 @@
 import InputBooleanCell, {inputBooleanCellTester} from './InputBooleanCell';
-import InputDateCell, {inputDateCellTester} from './InputDateCell';
+import InputCalendarCell, {inputCalendarCellTester} from './InputCalendarCell';
 import InputNumberCell, {inputNumberCellTester} from './InputNumberCell';
 import InputRangeCell, {inputRangeCellTester} from './InputRangeCell';
 import InputTextCell, {inputTextCellTester} from './InputTextCell';
@@ -12,8 +12,8 @@ export {
     inputMultilineTextCellTester,
     InputBooleanCell,
     inputBooleanCellTester,
-    InputDateCell,
-    inputDateCellTester,
+    InputCalendarCell,
+    inputCalendarCellTester,
     InputNumberCell,
     inputNumberCellTester,
     InputRangeCell,

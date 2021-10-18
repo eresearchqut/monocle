@@ -2,6 +2,7 @@ import React from 'react';
 import {ControlProps, isControl, NOT_APPLICABLE, RankedTester, rankWith} from '@jsonforms/core';
 import {DispatchCell, withJsonFormsControlProps} from '@jsonforms/react';
 import maxBy from 'lodash/maxBy';
+import { Message } from 'primereact/message';
 
 export const InputControl = (props: ControlProps) => {
     const {
@@ -12,7 +13,8 @@ export const InputControl = (props: ControlProps) => {
         visible,
         path,
         required,
-        cells
+        cells,
+        errors
     } = props;
 
     if (!visible) {
@@ -49,6 +51,9 @@ export const InputControl = (props: ControlProps) => {
             <div className="p-text-light p-mb-2">{description}</div>
             }
             {dispatchCell}
+            {errors &&
+            <small id={`${id}-error`} className="p-text-light p-error p-mt-2">{errors}</small>
+            }
         </div>
     );
 

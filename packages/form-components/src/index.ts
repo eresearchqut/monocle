@@ -3,8 +3,8 @@ import {RankedTester} from '@jsonforms/core';
 import {
     InputBooleanCell,
     inputBooleanCellTester,
-    InputDateCell,
-    inputDateCellTester,
+    InputCalendarCell,
+    inputCalendarCellTester,
     InputNumberCell,
     inputNumberCellTester,
     InputRangeCell,
@@ -39,7 +39,7 @@ export const renderers: { tester: RankedTester; renderer: any }[] = [
 
 export const cells: { tester: RankedTester; cell: any }[] = [
     {tester: inputBooleanCellTester, cell: InputBooleanCell},
-    {tester: inputDateCellTester, cell: InputDateCell},
+    {tester: inputCalendarCellTester, cell: InputCalendarCell},
     {tester: inputNumberCellTester, cell: InputNumberCell},
     {tester: inputSelectCellTester, cell: InputSelectCell},
     {tester: inputRangeCellTester, cell: InputRangeCell},

@@ -210,6 +210,9 @@
                     "items": {
                         "anyOf": [
                             {
+                                "$ref": "#/definitions/OptionInput"
+                            },
+                            {
                                 "$ref": "#/definitions/BooleanInput"
                             },
                             {
@@ -384,6 +387,63 @@
                 }
             },
             "title": "Numeric",
+            "type": "object"
+        },
+        "Option<string>": {
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "OptionInput": {
+            "properties": {
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "displayOptions": {
+                    "description": "Are options displayed at all times, single select radio, multiselect checklist",
+                    "type": "boolean"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "multiselect": {
+                    "description": "Can multiple options be selected",
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "options": {
+                    "items": {
+                        "$ref": "#/definitions/Option<string>"
+                    },
+                    "minItems": 1,
+                    "type": "array"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "option"
+                    ],
+                    "type": "string"
+                }
+            },
             "type": "object"
         },
         "RangeInput": {

@@ -7,6 +7,8 @@ import {
     inputCalendarCellTester,
     InputNumberCell,
     inputNumberCellTester,
+    InputRadioCell,
+    inputRadioCellTester,
     InputRangeCell,
     inputRangeCellTester,
     InputSelectCell,
@@ -17,7 +19,6 @@ import {
     inputMultilineTextCellTester,
     InputMarkdownCell,
     inputMarkdownCellTester,
-
 } from './cells';;
 
 
@@ -44,6 +45,7 @@ export const cells: { tester: RankedTester; cell: any }[] = [
     {tester: inputCalendarCellTester, cell: InputCalendarCell},
     {tester: inputNumberCellTester, cell: InputNumberCell},
     {tester: inputSelectCellTester, cell: InputSelectCell},
+    {tester: inputRadioCellTester, cell: InputRadioCell},
     {tester: inputRangeCellTester, cell: InputRangeCell},
     {tester: inputTextCellTester, cell: InputTextCell},
     {tester: inputMarkdownCellTester, cell: InputMarkdownCell},

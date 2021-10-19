@@ -73,6 +73,7 @@ Default.args = {
             },
             lastName: {
                 type: 'string',
+                minLength: 3,
                 description: 'Family or surname, should come after your first name'
             },
             position: {
@@ -81,8 +82,11 @@ Default.args = {
             },
             classification: {
                 type: 'string',
-                minLength: 2,
-                description: 'I have a minimum length of two characters'
+                oneOf: [
+                    { const: 'A', title: 'Option A' },
+                    { const: 'B' },
+                    { const: 'C', title: 'Option C' }
+                ]
             },
             notes: {
                 type: 'string'
@@ -134,12 +138,15 @@ TextDescription.args = {
     }
 }
 
-export const TextInvalid = Template.bind({});
-TextInvalid.args = {
+export const Radio = Template.bind({});
+Radio.args = {
     ...Default.args,
     uischema: {
         type: 'Control',
-        scope: '#/properties/classification'
+        scope: '#/properties/classification',
+        options: {
+            format: 'radio'
+        }
     }
 }
 

@@ -6,7 +6,7 @@ import {
     RankedTester,
     rankWith,
 } from '@jsonforms/core';
-import {withJsonFormsEnumCellProps} from '@jsonforms/react';
+import {withJsonFormsEnumCellProps, withJsonFormsOneOfEnumCellProps} from '@jsonforms/react';
 import {RadioButton} from 'primereact/radiobutton';
 
 export const InputRadioCell = (props: EnumCellProps) => {
@@ -18,12 +18,13 @@ export const InputRadioCell = (props: EnumCellProps) => {
 
 
     return (
-        <React.Fragment>
+        <div className="p-d-flex p-flex-column p-flex-md-row">
             {options.map((option, index) => (
-                <div className='p-field-radiobutton' key={composePaths(path, `${index}`)}>
+
+                <div className='p-field-radiobutton p-mr-md-2' key={composePaths(path, `${index}`)}>
                     <RadioButton
                         disabled={!enabled}
-                        id={composePaths(path, `${index}`)}
+                        inputId={composePaths(path, `${index}`)}
                         name={id}
                         value={option.value}
                         onChange={(e) => handleChange(path, option.value)}
@@ -32,7 +33,7 @@ export const InputRadioCell = (props: EnumCellProps) => {
                     <label htmlFor={composePaths(path, `${index}`)}>{option.label}</label>
                 </div>
             ))}
-        </React.Fragment>
+        </div>
     );
 };
 
@@ -42,6 +43,6 @@ export const inputRadioCellTester: RankedTester = rankWith(
     and(isOneOfEnumControl, optionIs('format', 'radio'))
 );
 
-export default withJsonFormsEnumCellProps(InputRadioCell);
+export default withJsonFormsOneOfEnumCellProps(InputRadioCell);
 
 

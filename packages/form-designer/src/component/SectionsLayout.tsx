@@ -1,25 +1,21 @@
 import React, {FunctionComponent, useState} from 'react';
 import {
+    and,
     ArrayControlProps,
     composePaths,
-    isObjectArrayWithNesting,
-    RankedTester,
-    rankWith,
-    findUISchema,
-    scopeEndsWith,
-    JsonFormsUISchemaRegistryEntry, and
+    findUISchema, isObjectArrayWithNesting,
+    JsonFormsUISchemaRegistryEntry, RankedTester, rankWith,
+    scopeEndsWith
 } from '@jsonforms/core';
-import {
-    withJsonFormsArrayControlProps, JsonFormsDispatch
-} from '@jsonforms/react';
+import {JsonFormsDispatch, withJsonFormsArrayControlProps} from '@jsonforms/react';
 
-import {Droppable, Draggable, DraggableProvidedDragHandleProps} from 'react-beautiful-dnd';
+import {Draggable, DraggableProvidedDragHandleProps, Droppable} from 'react-beautiful-dnd';
 import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType} from "primereact/panel";
 import {MenuItem} from "primereact/menuitem";
 import {SplitButton} from "primereact/splitbutton";
 
-import {Section, UniquelyIdentifiable} from "@trrf/form-definition";
-import {Avatar} from "primereact/avatar";
+import {Section, SectionType, UniquelyIdentifiable} from "@trrf/form-definition";
+import ComponentIcon from "./ComponentIcon";
 
 export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                          data,
@@ -77,8 +73,7 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
 
         return (
             <div className={className} {...dragHandleProps}>
-                <Avatar icon='pi pi-align-justify' className="p-mr-2"
-                        shape="circle"/>
+                <ComponentIcon componentType={SectionType.DEFAULT}/>
                 <div className={titleClassName}>{label || name}</div>
                 <div className="p-ml-auto">
                     <SplitButton icon={collapsed ? 'pi pi-window-minimize' : 'pi pi-window-maximize'}
@@ -92,58 +87,59 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
 
     const panelContent = (index: number) => {
 
-        const childPath = composePaths(path, `${index}`);
-        const foundUISchema =
-            findUISchema(
-                uischemas as JsonFormsUISchemaRegistryEntry[],
-                schema,
-                uischema.scope,
-                path,
-                undefined,
-                uischema,
-                rootSchema,
+            const childPath = composePaths(path, `${index}`);
+            const foundUISchema =
+                findUISchema(
+                    uischemas as JsonFormsUISchemaRegistryEntry[],
+                    schema,
+                    uischema.scope,
+                    path,
+                    undefined,
+                    uischema,
+                    rootSchema,
+                );
+            return (
+                <JsonFormsDispatch
+                    schema={schema}
+                    uischema={foundUISchema}
+                    path={childPath}
+                    renderers={renderers}
+                    cells={cells}
+                />
             );
-        return (
-            <JsonFormsDispatch
-                schema={schema}
-                uischema={foundUISchema}
-                path={childPath}
-                renderers={renderers}
-                cells={cells}
-            />
-        );
-    };
+        }
+    ;
 
     return (
         <React.Fragment>
-                <Droppable droppableId={path} type='sections'>
-                    {(droppableProvided, snapshot) => (
-                        <div ref={droppableProvided.innerRef}
-                             {...droppableProvided.droppableProps}
-                             className='sections'>
-                            {sections.map((section: Section, index) =>
-                                (
-                                    <Draggable
-                                        key={section.id}
-                                        draggableId={section.id}
-                                        index={index}>
-                                        {(draggableProvided, snapshot) => (
-                                            <div ref={draggableProvided.innerRef}
-                                                 {...draggableProvided.draggableProps} className='section'>
-                                                <Panel
-                                                    headerTemplate={(options) => panelHeaderTemplate(options, index, section, draggableProvided.dragHandleProps)}
-                                                    toggleable onToggle={handleToggle(section)}
-                                                    collapsed={isCollapsed(section)}>
-                                                    {panelContent(index)}
-                                                </Panel>
-                                            </div>
-                                        )}
-                                    </Draggable>
-                                ))}
-                            {droppableProvided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
+            <Droppable droppableId={path} type='sections'>
+                {(droppableProvided, snapshot) => (
+                    <div ref={droppableProvided.innerRef}
+                         {...droppableProvided.droppableProps}
+                         className='sections'>
+                        {sections.map((section: Section, index) =>
+                            (
+                                <Draggable
+                                    key={section.id}
+                                    draggableId={section.id}
+                                    index={index}>
+                                    {(draggableProvided, snapshot) => (
+                                        <div ref={draggableProvided.innerRef}
+                                             {...draggableProvided.draggableProps} className='section'>
+                                            <Panel
+                                                headerTemplate={(options) => panelHeaderTemplate(options, index, section, draggableProvided.dragHandleProps)}
+                                                toggleable onToggle={handleToggle(section)}
+                                                collapsed={isCollapsed(section)}>
+                                                {panelContent(index)}
+                                            </Panel>
+                                        </div>
+                                    )}
+                                </Draggable>
+                            ))}
+                        {droppableProvided.placeholder}
+                    </div>
+                )}
+            </Droppable>
 
         </React.Fragment>
     );

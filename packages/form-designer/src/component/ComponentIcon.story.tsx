@@ -15,31 +15,31 @@ const Template: Story<ComponentIconProps> =
 Template.bind({});
 
 export const Boolean = Template.bind({});
-Boolean.args = {inputType: InputType.BOOLEAN};
+Boolean.args = {componentType: InputType.BOOLEAN};
 
 export const Currency = Template.bind({});
-Currency.args = {inputType: InputType.CURRENCY};
+Currency.args = {componentType: InputType.CURRENCY};
 
 export const Date = Template.bind({});
-Date.args = {inputType: InputType.DATE};
+Date.args = {componentType: InputType.DATE};
 
 export const DateTime = Template.bind({});
-DateTime.args = {inputType: InputType.DATE_TIME};
+DateTime.args = {componentType: InputType.DATE_TIME};
 
 export const Markdown = Template.bind({});
-Markdown.args = {inputType: InputType.MARKDOWN};
+Markdown.args = {componentType: InputType.MARKDOWN};
 
 export const MultilineText = Template.bind({});
-MultilineText.args = {inputType: InputType.MULTILINE_TEXT};
+MultilineText.args = {componentType: InputType.MULTILINE_TEXT};
 
 export const Numeric = Template.bind({});
-Numeric.args = {inputType: InputType.NUMERIC};
+Numeric.args = {componentType: InputType.NUMERIC};
 
 export const Range = Template.bind({});
-Range.args = {inputType: InputType.RANGE};
+Range.args = {componentType: InputType.RANGE};
 
 export const Text = Template.bind({});
-Text.args = {inputType: InputType.TEXT};
+Text.args = {componentType: InputType.TEXT};
 
 export const Time = Template.bind({});
-Time.args = {inputType: InputType.TIME};
+Time.args = {componentType: InputType.TIME};

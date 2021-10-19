@@ -28,21 +28,28 @@ const renderers: { tester: RankedTester; renderer: any }[] = [
 export interface FormCanvasProps {
     definition: Form
     onChange?(state: Pick<JsonFormsCore, 'data' | 'errors'>): void;
+    locale?: string;
 }
 
 // TODO, the form schema should probable be a prop
 const schema = require('../schema/form.json');
 
-export const FormDesignerCanvas: FunctionComponent<FormCanvasProps> = ({definition, onChange}) => {
+export const FormDesignerCanvas: FunctionComponent<FormCanvasProps> = ({definition, onChange,     locale}) => {
+
+    const config = {
+        locale,
+        booleansAreTrueOrFalse: true
+    }
+
     return (
         <div className='form-designer-canvas'>
             <JsonForms
+                config={config}
                 data={definition}
                 schema={schema}
                 renderers={renderers}
                 cells={cells}
                 onChange={onChange}
-                config={{booleansAreTrueOrFalse: true}}
             />
         </div>
     );

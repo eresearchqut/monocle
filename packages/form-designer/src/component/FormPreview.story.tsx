@@ -15,6 +15,7 @@ Template.bind({});
 
 export const Example = Template.bind({});
 Example.args = {
+
     data: {
         firstSection: {
             textValue: 'I am some text',
@@ -23,6 +24,7 @@ Example.args = {
         },
     },
     definition: require('./definition.story.json'),
+    locale: 'en_AU',
 };
 
 

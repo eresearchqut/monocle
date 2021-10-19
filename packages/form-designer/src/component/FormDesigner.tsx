@@ -6,19 +6,15 @@ import {ComponentSelector} from './ComponentSelector';
 import {Form, Input, Section, SectionType} from '@trrf/form-definition';
 import {ErrorObject} from 'ajv';
 import {DragDropContext, DropResult} from "react-beautiful-dnd";
-import {JsonSchema} from "@jsonforms/core";
 import {v4 as uuidv4} from 'uuid';
-import get from "lodash/get";
-import Sticky from 'react-stickynode';
 
-const inputSchema = require('../schema/input.json') as JsonSchema;
+import Sticky from 'react-stickynode';
 
 export interface FormDesignerProps {
     definition: Form;
     data?: any;
-
+    locale?: string,
     onDefinitionChange?(state: { errors?: ErrorObject[], data: any }): void;
-
     onDataChange?(state: { errors?: ErrorObject[], data: any }): void;
 }
 
@@ -26,7 +22,8 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
                                                                        definition,
                                                                        data,
                                                                        onDefinitionChange,
-                                                                       onDataChange
+                                                                       onDataChange,
+                                                                       locale
                                                                    }) => {
 
     const [formDefinition, setFormDefinition] = useState<Form>(definition);
@@ -102,10 +99,11 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
                     </Sticky>
                 </div>
                 <div className="p-col-12 p-md-6">
-                    <FormDesignerCanvas definition={formDefinition} onChange={handleDefinitionChange}/>
+                    <FormDesignerCanvas definition={formDefinition} onChange={handleDefinitionChange} locale={locale}/>
                 </div>
                 <div className="p-col-12 p-md-4">
-                    <FormPreview definition={formDefinition} data={formData} onChange={handleDataChange}/>
+                    <FormPreview definition={formDefinition} data={formData} onChange={handleDataChange}
+                                 locale={locale}/>
                 </div>
             </div>
 

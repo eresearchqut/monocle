@@ -26,7 +26,7 @@ Template.bind({});
 export const Example = Template.bind({});
 Example.args = {
     definition: require('./definition.story.json'),
-    locale: 'en_AU'
+    locale: 'en-AU'
 };
 
 

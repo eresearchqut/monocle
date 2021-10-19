@@ -9,8 +9,8 @@
         {
           "id":"fba2b164-1a8d-4fa2-9483-6e062eb71d64",
           "type":"text",
-          "minLength":100,
-          "maxLength":200,
+          "minLength":3,
+          "maxLength":30,
           "name":"Patient name",
           "description":"First, Middle, Last",
           "required":true

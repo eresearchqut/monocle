@@ -15,7 +15,7 @@ import isEmpty from 'lodash/isEmpty';
 
 const omittedScopes = ['#/properties/type', '#/properties/id'];
 const sortFirst = [
-    '#/properties/name', '#/properties/label', '#/properties/description',
+    '#/properties/name', '#/properties/label', '#/properties/description', '#/properties/minimum',  '#/properties/maximum',
 ];
 const sortLast = [
     '#/properties/inputs', '#/properties/sections'

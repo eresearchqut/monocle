@@ -23,7 +23,7 @@ Example.args = {
         },
     },
     definition: require('./definition.story.json'),
-    locale: 'en_AU'
+    locale: 'en-AU'
 };
 
 

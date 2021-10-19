@@ -10,6 +10,7 @@ export interface InputNumberCellOptions {
     groupNumbers?: boolean
     decimalPlaces?: number,
     focus?: boolean
+    locale?: string
 }
 
 export const InputNumberCell = (props: CellProps) => {
@@ -31,7 +32,7 @@ export const InputNumberCell = (props: CellProps) => {
     }
 
     const {minimum, maximum} = schema;
-    const {groupNumbers, step, decimalPlaces, focus} = merge({}, config, uischema.options) as InputNumberCellOptions;
+    const {groupNumbers, step, decimalPlaces, focus, locale} = merge({}, config, uischema.options) as InputNumberCellOptions;
 
     const minFractionDigits = decimalPlaces ? 1 : undefined;
     const maxFractionDigits = decimalPlaces;
@@ -45,6 +46,7 @@ export const InputNumberCell = (props: CellProps) => {
             min={minimum}
             max={maximum}
             step={step}
+            locale={locale}
             useGrouping={!!groupNumbers}
             minFractionDigits={minFractionDigits}
             maxFractionDigits={maxFractionDigits}

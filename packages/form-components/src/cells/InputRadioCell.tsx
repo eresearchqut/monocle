@@ -6,7 +6,7 @@ import {
     RankedTester,
     rankWith,
 } from '@jsonforms/core';
-import {withJsonFormsEnumCellProps, withJsonFormsOneOfEnumCellProps} from '@jsonforms/react';
+import {withJsonFormsOneOfEnumCellProps} from '@jsonforms/react';
 import {RadioButton} from 'primereact/radiobutton';
 
 export const InputRadioCell = (props: EnumCellProps) => {
@@ -16,11 +16,9 @@ export const InputRadioCell = (props: EnumCellProps) => {
         return null;
     }
 
-
     return (
         <div className="p-d-flex p-flex-column p-flex-md-row">
             {options.map((option, index) => (
-
                 <div className='p-field-radiobutton p-mr-md-2' key={composePaths(path, `${index}`)}>
                     <RadioButton
                         disabled={!enabled}

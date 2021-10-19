@@ -3,7 +3,7 @@ import InputCalendarCell, {inputCalendarCellTester} from './InputCalendarCell';
 import InputMarkdownCell, {inputMarkdownCellTester} from './InputMarkdownCell';
 import InputNumberCell, {inputNumberCellTester} from './InputNumberCell';
 import InputRangeCell, {inputRangeCellTester} from './InputRangeCell';
-import InputRadioCell, {inputRadioCellTester} from './InputRadioCell';
+import InputRadioGroupCell, {inputRadioGroupCellTester} from './InputRadioGroupCell';
 import InputTextCell, {inputTextCellTester} from './InputTextCell';
 import InputMultilineTextCell, {inputMultilineTextCellTester} from './InputMultilineTextCell';
 import InputSelectCell, {inputSelectCellTester} from './InputSelectCell';
@@ -20,8 +20,8 @@ export {
     inputMarkdownCellTester,
     InputNumberCell,
     inputNumberCellTester,
-    InputRadioCell,
-    inputRadioCellTester,
+    InputRadioGroupCell,
+    inputRadioGroupCellTester,
     InputRangeCell,
     inputRangeCellTester,
     InputTextCell,

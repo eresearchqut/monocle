@@ -9,7 +9,7 @@ import {
 import {withJsonFormsOneOfEnumCellProps} from '@jsonforms/react';
 import {RadioButton} from 'primereact/radiobutton';
 
-export const InputRadioCell = (props: EnumCellProps) => {
+export const InputRadioGroupCell = (props: EnumCellProps) => {
     const {id, data, enabled = true, visible = true, path, handleChange, options} = props;
 
     if (!visible || !options) {
@@ -36,11 +36,11 @@ export const InputRadioCell = (props: EnumCellProps) => {
 };
 
 
-export const inputRadioCellTester: RankedTester = rankWith(
+export const inputRadioGroupCellTester: RankedTester = rankWith(
     3,
     and(isOneOfEnumControl, optionIs('format', 'radio'))
 );
 
-export default withJsonFormsOneOfEnumCellProps(InputRadioCell);
+export default withJsonFormsOneOfEnumCellProps(InputRadioGroupCell);
 
 

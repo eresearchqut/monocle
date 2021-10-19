@@ -1,13 +1,13 @@
 import React, {useCallback} from 'react';
 import {Meta, Story} from '@storybook/react';
 import {EnumCellProps} from "@jsonforms/core";
-import {InputRadioCell} from "./InputRadioCell";
+import {InputRadioGroupCell} from "./InputRadioGroupCell";
 import {useArgs} from "@storybook/client-api";
 import {action} from "@storybook/addon-actions";
 
 export default {
-    title: 'Cells/InputRadioCell',
-    component: InputRadioCell
+    title: 'Cells/InputRadioGroupCell',
+    component: InputRadioGroupCell
 } as Meta;
 
 const Template: Story<EnumCellProps> =
@@ -18,7 +18,7 @@ const Template: Story<EnumCellProps> =
             updateArgs({data});
             logAction(path, data);
         }
-        return <InputRadioCell {...props} handleChange={handleChange}/>
+        return <InputRadioGroupCell {...props} handleChange={handleChange}/>
     }
 Template.bind({});
 

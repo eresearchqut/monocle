@@ -4,7 +4,7 @@ import {Form, Input, InputType, Section} from '@trrf/form-definition';
 import {AbstractInputCompiler} from './abstractInputCompiler';
 
 
-export class CalendarInputCompiler extends AbstractInputCompiler implements InputCompiler {
+export class DateTimeInputCompiler extends AbstractInputCompiler implements InputCompiler {
     supports(form: Form, section: Section, input: Input): boolean {
         return input.type === InputType.DATE || input.type === InputType.DATE_TIME || input.type === InputType.TIME;
     }

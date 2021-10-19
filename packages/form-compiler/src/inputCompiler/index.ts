@@ -5,11 +5,12 @@ import {CurrencyInputCompiler} from './currencyInputCompiler';
 import InputCompiler from '../interfaces/inputCompiler';
 import {Form, Input, Section} from '@trrf/form-definition';
 import {BooleanInputCompiler} from './booleanInputCompiler';
-import {CalendarInputCompiler} from './calendarInputCompiler';
+import {DateTimeInputCompiler} from './dateTimeInputCompiler';
 import {AbstractInputCompiler} from './abstractInputCompiler';
 import {SvgMapInputCompiler} from './svgMapInputCompiler';
 import {MultilineTextInputCompiler} from './multilineTextInputCompiler';
 import {MarkdownInputCompiler} from "./markdownInputCompiler";
+import {OptionInputCompiler} from './optionInputCompiler';
 
 export {
     AbstractInputCompiler,
@@ -17,9 +18,10 @@ export {
     MarkdownInputCompiler,
     NumericInputCompiler,
     RangeInputCompiler,
+    OptionInputCompiler,
     CurrencyInputCompiler,
     BooleanInputCompiler,
-    CalendarInputCompiler,
+    DateTimeInputCompiler,
 };
 
 export const inputCompilers: InputCompiler[] = [
@@ -28,9 +30,10 @@ export const inputCompilers: InputCompiler[] = [
     new MultilineTextInputCompiler(),
     new MarkdownInputCompiler(),
     new NumericInputCompiler(),
+    new OptionInputCompiler(),
     new CurrencyInputCompiler(),
     new BooleanInputCompiler(),
-    new CalendarInputCompiler(),
+    new DateTimeInputCompiler(),
     new SvgMapInputCompiler()
 ];
 

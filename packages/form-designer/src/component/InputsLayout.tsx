@@ -15,15 +15,17 @@ import {
 import {Droppable, Draggable, DraggableProvidedDragHandleProps} from 'react-beautiful-dnd';
 import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType} from "primereact/panel";
 import {MenuItem} from "primereact/menuitem";
-import {SplitButton} from "primereact/splitbutton";
+import {v4 as uuidv4} from 'uuid';
 
 import {Input, UniquelyIdentifiable} from "@trrf/form-definition";
-import {Avatar} from "primereact/avatar";
+import {Menubar} from 'primereact/menubar';
 import ComponentIcon from "./ComponentIcon";
+import {confirmDialog} from 'primereact/confirmdialog';
 
 //https://codesandbox.io/s/40p81qy7v0?file=/index.js:1751-1776
 
 export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
+                                                                       id,
                                                                        data,
                                                                        path,
                                                                        schema,
@@ -34,7 +36,8 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                        uischemas,
                                                                        moveUp,
                                                                        moveDown,
-                                                                       removeItems
+                                                                       removeItems,
+                                                                       addItem
                                                                    }) => {
 
     const inputs = data as Array<Input>;
@@ -62,21 +65,45 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
 
         const collapsed = isCollapsed(input);
         const menuOptions: MenuItem[] = [
-            removeItems ? {
-                label: 'Remove Input',
-                icon: 'pi pi-times-circle',
-                command: removeItems(path, [index]),
-            } : [],
-            ...enableMoveUp && moveUp ? [{
-                label: 'Move Input Up',
-                icon: 'pi pi-chevron-circle-up',
-                command: moveUp(path, index),
-            }] : [],
-            ...enableMoveDown && moveDown ? [{
-                label: 'Move Input Down',
-                icon: 'pi pi-chevron-circle-down',
-                command: moveDown(path, index),
-            }] : [],
+            collapsed ? {
+                label: 'Edit ',
+                icon: 'pi pi-window-maximize',
+                command: handleToggle(input)
+            } : {
+                label: 'Close',
+                icon: 'pi pi-window-minimize',
+                command: handleToggle(input)
+            },
+            {
+                label: 'Options',
+                icon: 'pi pi-fw pi-cog',
+                items: [
+                    {
+                        label: 'Copy Input',
+                        icon: 'pi pi-copy',
+                        command: addItem(path, {...input, id: uuidv4()}),
+                    },
+                    removeItems ? {
+                        label: 'Remove Input',
+                        icon: 'pi pi-times-circle',
+                        command: () => confirmDialog({
+                            message: 'Are you sure?',
+                            icon: 'pi pi-exclamation-triangle',
+                            accept: removeItems(path, [index]),
+                            reject: () => null
+                        })
+                    } : [],
+                    ...enableMoveUp && moveUp ? [{
+                        label: 'Move Input Up',
+                        icon: 'pi pi-chevron-circle-up',
+                        command: moveUp(path, index),
+                    }] : [],
+                    ...enableMoveDown && moveDown ? [{
+                        label: 'Move Input Down',
+                        icon: 'pi pi-chevron-circle-down',
+                        command: moveDown(path, index),
+                    }] : []]
+            }
         ];
 
         return (
@@ -86,10 +113,7 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
                 </div>
                 <div className={titleClassName}>{label || name}</div>
                 <div className="p-ml-auto">
-                    <SplitButton icon={collapsed ? 'pi pi-window-minimize' : 'pi pi-window-maximize'}
-                                 dropdownIcon="pi pi-bars"
-                                 onClick={options.onTogglerClick}
-                                 model={menuOptions}/>
+                    <Menubar model={menuOptions}/>
                 </div>
             </div>
         );

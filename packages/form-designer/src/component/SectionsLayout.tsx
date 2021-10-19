@@ -12,10 +12,11 @@ import {JsonFormsDispatch, withJsonFormsArrayControlProps} from '@jsonforms/reac
 import {Draggable, DraggableProvidedDragHandleProps, Droppable} from 'react-beautiful-dnd';
 import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType} from "primereact/panel";
 import {MenuItem} from "primereact/menuitem";
-import {SplitButton} from "primereact/splitbutton";
 
 import {Section, SectionType, UniquelyIdentifiable} from "@trrf/form-definition";
+import {Menubar} from 'primereact/menubar';
 import ComponentIcon from "./ComponentIcon";
+import {confirmDialog} from 'primereact/confirmdialog';
 
 export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                          data,
@@ -54,21 +55,36 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
         const {label, name} = section;
         const collapsed = isCollapsed(section);
         const menuOptions: MenuItem[] = [
-            removeItems ? {
-                label: 'Remove Section',
-                icon: 'pi pi-times-circle',
-                command: removeItems(path, [index]),
-            } : [],
-            ...enableMoveUp && moveUp ? [{
-                label: 'Move Section Up',
-                icon: 'pi pi-chevron-circle-up',
-                command: moveUp(path, index),
-            }] : [],
-            ...enableMoveDown && moveDown ? [{
-                label: 'Move Section Down',
-                icon: 'pi pi-chevron-circle-down',
-                command: moveDown(path, index),
-            }] : [],
+            collapsed ? {
+                label: 'Edit ',
+                icon: 'pi pi-window-maximize',
+
+                command: handleToggle(section)
+            } : {
+                label: 'Close',
+                icon: 'pi pi-window-minimize',
+                command: handleToggle(section)
+            },
+            {
+                label: 'Options',
+                icon: 'pi pi-fw pi-cog',
+                items: [
+                    removeItems ? {
+                        label: 'Remove Section',
+                        icon: 'pi pi-times-circle',
+                        command: removeItems(path, [index]),
+                    } : [],
+                    ...enableMoveUp && moveUp ? [{
+                        label: 'Move Section Up',
+                        icon: 'pi pi-chevron-circle-up',
+                        command: moveUp(path, index),
+                    }] : [],
+                    ...enableMoveDown && moveDown ? [{
+                        label: 'Move Section Down',
+                        icon: 'pi pi-chevron-circle-down',
+                        command: moveDown(path, index),
+                    }] : []]
+            }
         ];
 
         return (
@@ -76,10 +92,7 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
                 <ComponentIcon componentType={SectionType.DEFAULT}/>
                 <div className={titleClassName}>{label || name}</div>
                 <div className="p-ml-auto">
-                    <SplitButton icon={collapsed ? 'pi pi-window-minimize' : 'pi pi-window-maximize'}
-                                 dropdownIcon="pi pi-bars"
-                                 onClick={options.onTogglerClick}
-                                 model={menuOptions}/>
+                    <Menubar model={menuOptions} />
                 </div>
             </div>
         );

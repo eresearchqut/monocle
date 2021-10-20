@@ -14,15 +14,17 @@ import {withJsonFormsCellProps} from "@jsonforms/react";
 
 export const InputMultiselectCell = (props: CellProps) => {
 
-    const {id, data, enabled = true, visible = true, path, handleChange, schema} = props;
+    const {id, data, enabled = true, visible = true, path, handleChange, schema, isValid = true} = props;
     const options: EnumOption[] = ((schema.items as JsonSchema)?.oneOf as JsonSchema[]).map(oneOfToEnumOptionMapper);
 
     if (!visible || !options) {
         return null;
     }
+    const className = isValid ? undefined : 'p-invalid';
 
     return (
         <MultiSelect
+            className={className}
             disabled={!enabled}
             id={id}
             value={data} options={options}

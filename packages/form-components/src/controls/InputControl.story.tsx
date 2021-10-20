@@ -227,12 +227,21 @@ RangeWithMinMax.args = {
     }
 }
 
-export const Select = Template.bind({});
-Select.args = {
+export const SelectEnum = Template.bind({});
+SelectEnum.args = {
     ...Default.args,
     uischema: {
         type: 'Control',
         scope: '#/properties/position'
+    }
+}
+
+export const SelectOptions = Template.bind({});
+SelectOptions.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/classification'
     }
 }
 

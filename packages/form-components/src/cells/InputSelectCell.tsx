@@ -1,16 +1,20 @@
 import React from 'react';
 import {
-    EnumCellProps,
+    or,
     isEnumControl,
-    RankedTester,
+    isOneOfEnumControl,
+    oneOfToEnumOptionMapper,
+    enumToEnumOptionMapper   ,
     rankWith,
+    CellProps, EnumOption, JsonSchema, RankedTester
 } from '@jsonforms/core';
 import {withJsonFormsEnumCellProps} from '@jsonforms/react';
 import {Dropdown} from 'primereact/dropdown';
 
-
-export const InputSelectCell = (props: EnumCellProps) => {
-    const {data, id, enabled = true, visible = true, isValid = true, path, handleChange, options} = props;
+export const InputSelectCell = (props: CellProps) => {
+    const {data, id, schema, enabled = true, visible = true, isValid = true, path, handleChange} = props;
+    const options: EnumOption[] = schema.enum ? schema.enum.map(enumToEnumOptionMapper) :
+        (schema.oneOf as JsonSchema[]).map(oneOfToEnumOptionMapper);
 
     if (!visible) {
         return null;
@@ -31,6 +35,6 @@ export const InputSelectCell = (props: EnumCellProps) => {
     );
 };
 
-export const inputSelectCellTester: RankedTester = rankWith(2, isEnumControl);
+export const inputSelectCellTester: RankedTester = rankWith(2, or(isEnumControl, isOneOfEnumControl));
 
 export default withJsonFormsEnumCellProps(InputSelectCell);

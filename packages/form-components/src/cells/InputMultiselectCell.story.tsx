@@ -45,6 +45,12 @@ Default.args = {
     }
 }
 
+export const Invalid = Template.bind({});
+Invalid.args = {
+    ...Default.args,
+    isValid: false,
+}
+
 export const OneSelected = Template.bind({});
 OneSelected.args = {
     ...Default.args,

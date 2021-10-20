@@ -24,12 +24,12 @@ Template.bind({});
 
 export const Default = Template.bind({});
 Default.args = {
-    data: 2,
+    data: 'Two',
     id: 'cell',
     path: 'cell',
-    options: [{value: 1, label: 'One (1)'}, {value: 2, label: 'Two (2)'}, {value: 3, label: 'Three (3)'}],
     schema: {
-        type: 'string'
+        type: 'string',
+        enum: ['One', 'Two', 'Three']
     },
     uischema: {
         type: 'Control',
@@ -56,3 +56,22 @@ Disabled.args = {
     enabled: false
 }
 
+
+export const OneOf = Template.bind({});
+OneOf.args = {
+    data: 2,
+    id: 'cell',
+    path: 'cell',
+    schema: {
+        type: 'number',
+        oneOf: [
+            { const: 1, title: 'Option A' },
+            { const: 2, title: 'Option B'},
+            { const: 3, title: 'Option C' }
+        ]
+    },
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/cell`
+    }
+}

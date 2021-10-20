@@ -174,6 +174,15 @@ CheckboxGroup.args = {
     }
 }
 
+export const Multiselect = Template.bind({});
+Multiselect.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/classifications'
+    }
+}
+
 export const MultilineText = Template.bind({});
 MultilineText.args = {
     ...Default.args,

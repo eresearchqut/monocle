@@ -1,6 +1,8 @@
 import {RankedTester} from '@jsonforms/core';
 
 import {
+    InputMultiselectCell,
+    inputMultiselectCellTester,
     InputBooleanCell,
     inputBooleanCellTester,
     InputCheckboxGroupCell,
@@ -52,5 +54,6 @@ export const cells: { tester: RankedTester; cell: any }[] = [
     {tester: inputRangeCellTester, cell: InputRangeCell},
     {tester: inputTextCellTester, cell: InputTextCell},
     {tester: inputMarkdownCellTester, cell: InputMarkdownCell},
-    {tester: inputMultilineTextCellTester, cell: InputMultilineTextCell}
+    {tester: inputMultilineTextCellTester, cell: InputMultilineTextCell},
+    {tester: inputMultiselectCellTester, cell: InputMultiselectCell}
 ];

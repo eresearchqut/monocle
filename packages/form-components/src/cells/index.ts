@@ -7,12 +7,15 @@ import InputRangeCell, {inputRangeCellTester} from './InputRangeCell';
 import InputRadioGroupCell, {inputRadioGroupCellTester} from './InputRadioGroupCell';
 import InputTextCell, {inputTextCellTester} from './InputTextCell';
 import InputMultilineTextCell, {inputMultilineTextCellTester} from './InputMultilineTextCell';
+import InputMultiselectCell, {inputMultiselectCellTester} from './InputMultiselectCell';
 import InputSelectCell, {inputSelectCellTester} from './InputSelectCell';
 
 
 export {
     InputCheckboxGroupCell,
     inputCheckboxGroupCellTester,
+    InputMultiselectCell,
+    inputMultiselectCellTester,
     InputMultilineTextCell,
     inputMultilineTextCellTester,
     InputBooleanCell,

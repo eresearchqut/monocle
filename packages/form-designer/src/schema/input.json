@@ -356,13 +356,16 @@
             "title": "Numeric",
             "type": "object"
         },
-        "Option<string>": {
+        "Option<string|number>": {
             "properties": {
                 "label": {
                     "type": "string"
                 },
                 "value": {
-                    "type": "string"
+                    "type": [
+                        "string",
+                        "number"
+                    ]
                 }
             },
             "type": "object"
@@ -393,9 +396,16 @@
                     "description": "The name of the element",
                     "type": "string"
                 },
+                "optionType": {
+                    "enum": [
+                        "number",
+                        "string"
+                    ],
+                    "type": "string"
+                },
                 "options": {
                     "items": {
-                        "$ref": "#/definitions/Option<string>"
+                        "$ref": "#/definitions/Option<string|number>"
                     },
                     "minItems": 1,
                     "type": "array"

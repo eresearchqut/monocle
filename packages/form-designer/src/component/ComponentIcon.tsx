@@ -7,7 +7,15 @@ import {
     faQuestion,
     faClock,
     faCalendarAlt,
-    faTextWidth, faTextHeight, faMoneyBill, faSortNumericUp, faSlidersH, faCheckSquare, faVectorSquare, faLayerGroup
+    faTextWidth,
+    faTextHeight,
+    faMoneyBill,
+    faSortNumericUp,
+    faSlidersH,
+    faCheckSquare,
+    faVectorSquare,
+    faLayerGroup,
+    faClipboardCheck
 } from '@fortawesome/free-solid-svg-icons';
 import {faMarkdown} from "@fortawesome/free-brands-svg-icons";
 import {Avatar} from 'primereact/avatar';
@@ -24,6 +32,7 @@ const iconMap: Map<InputType | SectionType, IconDefinition> = new Map<InputType 
     [InputType.MARKDOWN, faMarkdown],
     [InputType.MULTILINE_TEXT, faTextHeight],
     [InputType.NUMERIC, faSortNumericUp],
+    [InputType.OPTION, faClipboardCheck],
     [InputType.RANGE, faSlidersH],
     [InputType.SVG_MAP, faVectorSquare],
     [InputType.TEXT, faTextWidth],

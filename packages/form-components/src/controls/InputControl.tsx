@@ -2,7 +2,6 @@ import React from 'react';
 import {ControlProps, isControl, NOT_APPLICABLE, RankedTester, rankWith} from '@jsonforms/core';
 import {DispatchCell, withJsonFormsControlProps} from '@jsonforms/react';
 import maxBy from 'lodash/maxBy';
-import { Message } from 'primereact/message';
 
 export const InputControl = (props: ControlProps) => {
     const {

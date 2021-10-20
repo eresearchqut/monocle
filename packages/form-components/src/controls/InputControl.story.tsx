@@ -59,6 +59,7 @@ Default.args = {
         lastName: '',
         position: 'Intergalactic Gambler',
         classification: 'A',
+        classifications: ['B', 'C'],
         age: 52,
         notes: 'Will betray Han\n(at earliest convenience)',
         starDate: '2130-06-09',
@@ -87,6 +88,17 @@ Default.args = {
                     { const: 'B' },
                     { const: 'C', title: 'Option C' }
                 ]
+            },
+            classifications: {
+                type: 'array',
+                items: {
+                    type: 'string',
+                    oneOf: [
+                        { const: 'A', title: 'Option A' },
+                        { const: 'B' },
+                        { const: 'C', title: 'Option C' }
+                    ]
+                }
             },
             notes: {
                 type: 'string'
@@ -138,14 +150,26 @@ TextDescription.args = {
     }
 }
 
-export const Radio = Template.bind({});
-Radio.args = {
+export const RadioGroup = Template.bind({});
+RadioGroup.args = {
     ...Default.args,
     uischema: {
         type: 'Control',
         scope: '#/properties/classification',
         options: {
             format: 'radio'
+        }
+    }
+}
+
+export const CheckboxGroup = Template.bind({});
+CheckboxGroup.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/classifications',
+        options: {
+            format: 'checkbox'
         }
     }
 }

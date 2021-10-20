@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react';
 import {Meta, Story} from '@storybook/react';
-import {ControlProps, DispatchPropsOfMultiEnumControl, OwnPropsOfEnum} from "@jsonforms/core";
+import {CellProps, ControlProps, DispatchPropsOfMultiEnumControl, OwnPropsOfEnum} from "@jsonforms/core";
 import {InputCheckboxGroupCell} from "./InputCheckboxGroupCell";
 import {useArgs} from "@storybook/client-api";
 import {action} from "@storybook/addon-actions";
@@ -11,7 +11,7 @@ export default {
     component: InputCheckboxGroupCell
 } as Meta;
 
-const Template: Story<ControlProps & OwnPropsOfEnum & DispatchPropsOfMultiEnumControl> =
+const Template: Story<CellProps> =
     (props) => {
         const [, updateArgs] = useArgs();
         const logAction = useCallback(action('handleChange'), []);
@@ -28,9 +28,16 @@ Default.args = {
     data: [],
     id: 'cell',
     path: 'cell',
-    options: [{value: 1, label: 'One (1)'}, {value: 2, label: 'Two (2)'}, {value: 3, label: 'Three (3)'}],
     schema: {
-        type: 'string'
+        type: 'array',
+        items: {
+            type: 'number',
+            oneOf: [
+                { const: 1, title: 'Option A' },
+                { const: 2, title: 'Option B'},
+                { const: 3, title: 'Option C' }
+            ]
+        }
     },
     uischema: {
         type: 'Control',

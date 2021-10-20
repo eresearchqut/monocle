@@ -1,18 +1,24 @@
-import React, {useState} from 'react';
+import React, {ComponentType, useMemo, useState} from 'react';
 import {
-    and, composePaths, ControlProps, DispatchPropsOfMultiEnumControl,
-     isAnyOfControl,
-    optionIs, OwnPropsOfEnum,
+    and,
+    composePaths,
+    hasType,
+    optionIs,
     RankedTester,
     rankWith,
+    schemaMatches,
+    schemaSubPathMatches,
+    CellProps, EnumOption, JsonSchema, oneOfToEnumOptionMapper
 } from '@jsonforms/core';
 import {Checkbox, CheckboxChangeParams} from 'primereact/checkbox';
-import {withJsonFormsMultiEnumProps} from "@jsonforms/react/lib/JsonFormsContext";
+import {withJsonFormsCellProps} from "@jsonforms/react";
 
-export const InputCheckboxGroupCell = (props: ControlProps & OwnPropsOfEnum & DispatchPropsOfMultiEnumControl) => {
-    const {id, data, enabled = true, visible = true, path, handleChange, options} = props;
+export const InputCheckboxGroupCell = (props: CellProps) => {
 
+
+    const {id, data, enabled = true, visible = true, path, handleChange, schema} = props;
     const [values, setValues] = useState<string[]>(data || []);
+    const options: EnumOption[] = ((schema.items as JsonSchema)?.oneOf as JsonSchema[]).map(oneOfToEnumOptionMapper);
 
     const onChange = (e: CheckboxChangeParams) => {
         setValues((currentlySelected) => {
@@ -54,9 +60,13 @@ export const InputCheckboxGroupCell = (props: ControlProps & OwnPropsOfEnum & Di
 
 export const inputCheckboxGroupCellTester: RankedTester = rankWith(
     3,
-    and(isAnyOfControl, optionIs('format', 'checkbox'))
+    and(
+        schemaMatches(schema => hasType(schema, 'array') && !Array.isArray(schema.items)),
+        schemaSubPathMatches('items', schema => schema.hasOwnProperty("oneOf")),
+        optionIs('format', 'checkbox')
+    )
 );
 
-export default withJsonFormsMultiEnumProps(InputCheckboxGroupCell);
+export default withJsonFormsCellProps(InputCheckboxGroupCell);
 
 

@@ -318,21 +318,7 @@
             "title": "Numeric",
             "type": "object"
         },
-        "Option<string|number>": {
-            "properties": {
-                "label": {
-                    "type": "string"
-                },
-                "value": {
-                    "type": [
-                        "string",
-                        "number"
-                    ]
-                }
-            },
-            "type": "object"
-        },
-        "OptionInput": {
+        "OptionsInput": {
             "properties": {
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
@@ -358,7 +344,7 @@
                     "description": "The name of the element",
                     "type": "string"
                 },
-                "optionType": {
+                "optionValueType": {
                     "enum": [
                         "number",
                         "string"
@@ -366,9 +352,24 @@
                     "type": "string"
                 },
                 "options": {
-                    "items": {
-                        "$ref": "#/definitions/Option<string|number>"
-                    },
+                    "description": "Option values and labels",
+                    "items": [
+                        {
+                            "properties": {
+                                "label": {
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": [
+                                        "string",
+                                        "number"
+                                    ]
+                                }
+                            },
+                            "type": "object"
+                        }
+                    ],
+                    "maxItems": 1,
                     "minItems": 1,
                     "type": "array"
                 },
@@ -378,11 +379,12 @@
                 },
                 "type": {
                     "enum": [
-                        "option"
+                        "options"
                     ],
                     "type": "string"
                 }
             },
+            "title": "Options",
             "type": "object"
         },
         "RangeInput": {
@@ -587,7 +589,7 @@
             "items": {
                 "anyOf": [
                     {
-                        "$ref": "#/definitions/OptionInput"
+                        "$ref": "#/definitions/OptionsInput"
                     },
                     {
                         "$ref": "#/definitions/BooleanInput"

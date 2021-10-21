@@ -35,6 +35,7 @@ export * from './cells';
 export * from './layouts';
 
 export const renderers: { tester: RankedTester; renderer: any }[] = [
+
     {tester: horizontalLayoutTester, renderer: HorizontalLayout},
     {tester: inputControlTester, renderer: InputControl},
     {tester: inputBooleanControlTester, renderer: InputBooleanControl},

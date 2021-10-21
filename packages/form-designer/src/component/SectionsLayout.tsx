@@ -16,7 +16,6 @@ import {MenuItem} from "primereact/menuitem";
 import {Section, SectionType, UniquelyIdentifiable} from "@trrf/form-definition";
 import {Menubar} from 'primereact/menubar';
 import ComponentIcon from "./ComponentIcon";
-import {confirmDialog} from 'primereact/confirmdialog';
 
 export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                          data,

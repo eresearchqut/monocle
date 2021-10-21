@@ -22,11 +22,14 @@ const AnyOfRenderer = ({
                            uischema,
                            uischemas,
                        }: StatePropsOfCombinator) => {
+
+
     const anyOf = 'anyOf';
 
-    if (!visible || !schema) {
-        return undefined;
+    if (!visible || !schema ) {
+        return null;
     }
+
 
     const _schema = resolveSubSchemas(schema, rootSchema, anyOf);
     const anyOfRenderInfos = createCombinatorRenderInfos(
@@ -50,6 +53,7 @@ const AnyOfRenderer = ({
             cells={cells}
         />
     );
+
 };
 
 export const anyOfLayoutTester: RankedTester = rankWith(

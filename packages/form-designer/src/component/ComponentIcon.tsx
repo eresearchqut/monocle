@@ -32,7 +32,7 @@ const iconMap: Map<InputType | SectionType, IconDefinition> = new Map<InputType 
     [InputType.MARKDOWN, faMarkdown],
     [InputType.MULTILINE_TEXT, faTextHeight],
     [InputType.NUMERIC, faSortNumericUp],
-    [InputType.OPTION, faClipboardCheck],
+    [InputType.OPTIONS, faClipboardCheck],
     [InputType.RANGE, faSlidersH],
     [InputType.SVG_MAP, faVectorSquare],
     [InputType.TEXT, faTextWidth],

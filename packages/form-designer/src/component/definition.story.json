@@ -53,10 +53,10 @@
         },
         {
           "id": "17a08acb-9291-48f5-96d3-eda2689ecf8e",
-          "type": "option",
+          "type": "options",
           "name": "Is the patient experiencing marked weakness in one or more limb?",
           "required": true,
-          "optionType": "number",
+          "optionValueType": "number",
           "options": [
             {
               "label": "All of the time",

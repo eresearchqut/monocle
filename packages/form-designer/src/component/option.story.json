@@ -1,0 +1,37 @@
+{
+  "name": "Muscular Atrophy",
+  "sections": [
+    {
+      "id": "29a54c4c-c860-45d8-ab45-039cd27d49a0",
+      "name": "Assessment",
+      "type": "default",
+      "inputs": [
+        {
+          "id": "17a08acb-9291-48f5-96d3-eda2689ecf8e",
+          "type": "options",
+          "name": "Is the patient experiencing marked weakness in one or more limb?",
+          "required": true,
+          "optionValueType": "number",
+          "options": [
+            {
+              "label": "All of the time",
+              "value": 0
+            },
+            {
+              "label": "Some of the time",
+              "value": 1
+            },
+            {
+              "label": "First thing in the morning",
+              "value": 2
+            },
+            {
+              "label": "Late at night",
+              "value": 3
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -10,7 +10,7 @@ import {AbstractInputCompiler} from './abstractInputCompiler';
 import {SvgMapInputCompiler} from './svgMapInputCompiler';
 import {MultilineTextInputCompiler} from './multilineTextInputCompiler';
 import {MarkdownInputCompiler} from "./markdownInputCompiler";
-import {OptionInputCompiler} from './optionInputCompiler';
+import {OptionsInputCompiler} from './optionsInputCompiler';
 
 export {
     AbstractInputCompiler,
@@ -18,7 +18,7 @@ export {
     MarkdownInputCompiler,
     NumericInputCompiler,
     RangeInputCompiler,
-    OptionInputCompiler,
+    OptionsInputCompiler,
     CurrencyInputCompiler,
     BooleanInputCompiler,
     DateTimeInputCompiler,
@@ -30,7 +30,7 @@ export const inputCompilers: InputCompiler[] = [
     new MultilineTextInputCompiler(),
     new MarkdownInputCompiler(),
     new NumericInputCompiler(),
-    new OptionInputCompiler(),
+    new OptionsInputCompiler(),
     new CurrencyInputCompiler(),
     new BooleanInputCompiler(),
     new DateTimeInputCompiler(),

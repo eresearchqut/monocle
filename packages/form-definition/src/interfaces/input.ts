@@ -13,7 +13,7 @@ export enum InputType {
     MARKDOWN = 'markdown',
     MULTILINE_TEXT = 'multiline-text',
     NUMERIC = 'numeric',
-    OPTION = 'option',
+    OPTIONS = 'options',
     RANGE = 'range',
     SVG_MAP = 'svg-map',
     TEXT = 'text',
@@ -25,25 +25,32 @@ export interface AbstractInput extends Typed<InputType>, Named, UniquelyIdentifi
 
 }
 
-export interface Option<T> {
-    label: string,
-    value: T
-}
 
-export interface OptionInput extends AbstractInput {
-    type: InputType.OPTION;
+/**
+ * @title Options
+ */
+export interface OptionsInput extends AbstractInput {
+
+    type: InputType.OPTIONS;
+
     /**
      * Can multiple options be selected
      */
     multiselect: boolean,
+
     /**
      * Are options displayed at all times, single select radio, multiselect checklist
      */
     displayOptions: boolean,
+
+
+    optionValueType:  'string' | 'number'
+
     /**
-     * @TJS-minItems 1
+     * Option values and labels
      */
-    options: Option<string>[];
+    options: [{label: string, value: number | string}]
+
 }
 
 
@@ -239,5 +246,5 @@ export interface SvgMapInput extends AbstractInput {
 /**
  * @title Input
  */
-export type Input = TextInput | MultilineTextInput | NumericInput | OptionInput | RangeInput | CurrencyInput | BooleanInput
+export type Input = TextInput | MultilineTextInput | NumericInput | OptionsInput | RangeInput | CurrencyInput | BooleanInput
     | DateInput | TimeInput | DateTimeInput | SvgMapInput | MarkdownInput;

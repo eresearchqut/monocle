@@ -15,10 +15,12 @@ import InputsLayout, {inputsLayoutTester} from './InputsLayout';
 import SectionsLayout, {sectionsLayoutTester} from "./SectionsLayout";
 import AnyOfLayout, {anyOfLayoutTester} from './AnyOfLayout';
 import VerticalLayout, {verticalLayoutTester} from './VerticalLayout';
+import OptionsLayout, {optionsLayoutTester} from "./OptionsLayout";
 
 const renderers: { tester: RankedTester; renderer: any }[] = [
+    {tester: optionsLayoutTester, renderer: OptionsLayout},
     {tester: anyOfLayoutTester, renderer: AnyOfLayout},
-     {tester: inputsLayoutTester, renderer: InputsLayout},
+    {tester: inputsLayoutTester, renderer: InputsLayout},
     {tester: sectionsLayoutTester, renderer: SectionsLayout},
     {tester: inputControlTester, renderer: InputControl},
     {tester: inputBooleanControlTester, renderer: InputBooleanControl},
@@ -27,14 +29,16 @@ const renderers: { tester: RankedTester; renderer: any }[] = [
 
 export interface FormCanvasProps {
     definition: Form
+
     onChange?(state: Pick<JsonFormsCore, 'data' | 'errors'>): void;
+
     locale?: string;
 }
 
 // TODO, the form schema should probable be a prop
 const schema = require('../schema/form.json');
 
-export const FormDesignerCanvas: FunctionComponent<FormCanvasProps> = ({definition, onChange,     locale}) => {
+export const FormDesignerCanvas: FunctionComponent<FormCanvasProps> = ({definition, onChange, locale}) => {
 
     const config = {
         locale,

@@ -18,7 +18,7 @@ const sortFirst = [
     '#/properties/name', '#/properties/label', '#/properties/description', '#/properties/minimum',  '#/properties/maximum',
 ];
 const sortLast = [
-    '#/properties/inputs', '#/properties/sections'
+    '#/properties/inputs', '#/properties/options', , '#/properties/sections'
 ];
 
 const scopeOrder = (scope: string): number => sortLast.indexOf(scope) >= 0 ? 10000 :

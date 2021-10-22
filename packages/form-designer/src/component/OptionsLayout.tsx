@@ -3,9 +3,12 @@ import React, {FunctionComponent, useState} from 'react';
 import {
     ArrayControlProps,
     RankedTester,
-    and, isObjectArrayWithNesting, scopeEndsWith, rankWith
+    and,
+    isObjectArrayWithNesting,
+    scopeEndsWith,
+    rankWith, update
 } from '@jsonforms/core';
-import {withJsonFormsArrayControlProps} from '@jsonforms/react';
+import {withJsonFormsArrayControlProps, useJsonForms} from '@jsonforms/react';
 
 
 import {DataTable} from 'primereact/datatable';
@@ -29,8 +32,6 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                  addItem,
                                                                  uischema,
                                                                  schema,
-
-
                                                                  rootSchema,
                                                                  path,
                                                                  data,
@@ -43,7 +44,8 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
 
 
     const [options, setOptions] = useState<Option[]>(data || []);
-
+    const context = useJsonForms();
+    const onEditorSubmit = () => context.dispatch && context.dispatch(update(path, () => options));
 
     const handleChange = (optionIndex: number, option: Option) => setOptions((currentOptions) => {
         const newOptions = [...currentOptions];
@@ -68,7 +70,8 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
 
 
     return (
-        <DataTable value={options} header={'Options'} editMode='row'>
+        <DataTable value={options} header={'Options'} editMode='row' onRowEditSave={onEditorSubmit}
+                   onRowEditCancel={() => setOptions(() => data)}>
             <Column field="label" header="Label" editor={(props) => labelEditor(props as RowProps)}/>
             <Column field="value" header="Value" editor={(props) => valueEditor(props as RowProps)}/>
             <Column rowEditor/>

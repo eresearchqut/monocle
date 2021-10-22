@@ -6,9 +6,10 @@ import {
     and,
     isObjectArrayWithNesting,
     scopeEndsWith,
-    rankWith, update
+    rankWith, update,
 } from '@jsonforms/core';
 import {withJsonFormsArrayControlProps, useJsonForms} from '@jsonforms/react';
+import get from 'lodash/get';
 
 
 import {DataTable} from 'primereact/datatable';
@@ -30,22 +31,22 @@ interface RowProps extends ColumnProps {
 
 const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                  addItem,
-                                                                 uischema,
-                                                                 schema,
-                                                                 rootSchema,
+                                                                 removeItems,
                                                                  path,
                                                                  data,
                                                                  visible,
-                                                                 errors,
-                                                                 label,
-                                                                 removeItems,
-                                                                 childErrors
+
                                                              }) => {
 
 
     const [options, setOptions] = useState<Option[]>(data || []);
     const context = useJsonForms();
-    const onEditorSubmit = () => context.dispatch && context.dispatch(update(path, () => options));
+    const optionValueType = get(context.core?.data, path.replace('options', 'optionValueType')) || 'string';
+
+
+    const updateOptions = (newOptions: Option[]) => context.dispatch && context.dispatch(update(path, () => newOptions))
+    const onRowEditSave = () => updateOptions(options);
+
 
     const handleChange = (optionIndex: number, option: Option) => setOptions((currentOptions) => {
         const newOptions = [...currentOptions];
@@ -61,16 +62,23 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                 label: e.target.value
                                                             })}/>
 
-    const valueEditor = (props: RowProps) => <InputText value={props.rowData.value}
-                                                        onChange={(e) =>
-                                                            handleChange(props.rowIndex, {
-                                                                ...props.rowData,
-                                                                value: e.target.value
-                                                            })}/>
+    const valueEditor = (props: RowProps) => optionValueType === 'string' ?
+        <InputText value={props.rowData.value}
+                   onChange={(e) =>
+                   handleChange(props.rowIndex, {
+                       ...props.rowData,
+                       value: e.target.value
+                   })}/> :
+        <InputNumber value={props.rowData.value as number} useGrouping={false}
+                   onChange={(e) =>
+                       handleChange(props.rowIndex, {
+                           ...props.rowData,
+                           value: e.value
+                       })}/>
 
 
     return (
-        <DataTable value={options} header={'Options'} editMode='row' onRowEditSave={onEditorSubmit}
+        <DataTable value={options} header={'Options'} editMode='row' onRowEditSave={onRowEditSave}
                    onRowEditCancel={() => setOptions(() => data)}>
             <Column field="label" header="Label" editor={(props) => labelEditor(props as RowProps)}/>
             <Column field="value" header="Value" editor={(props) => valueEditor(props as RowProps)}/>

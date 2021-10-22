@@ -21,13 +21,15 @@ export const InputMultiselectCell = (props: CellProps) => {
         return null;
     }
     const className = isValid ? undefined : 'p-invalid';
+    const value = Array.isArray(data) ? data : [];
 
     return (
-        <MultiSelect
+        <MultiSelect display='chip'
             className={className}
             disabled={!enabled}
             id={id}
-            value={data} options={options}
+            value={value}
+            options={options}
             onChange={(e) =>  handleChange(path, e.value)}
         />
     );

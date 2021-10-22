@@ -13,7 +13,6 @@ export class OptionsInputCompiler extends AbstractInputCompiler implements Input
 
     schema(form: Form, section: Section, input: Input): JsonSchema {
         const {description, optionValueType, multiselect, options} = input as OptionsInput;
-        return {type: optionValueType, description} as JsonSchema;
         const choices = options.map(option => ({'const': option.value, title: option.label}))
         if (multiselect) {
             return {type: 'array', description, items: {type: optionValueType, oneOf: choices}} as JsonSchema;

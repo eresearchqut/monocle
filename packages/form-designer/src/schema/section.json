@@ -356,6 +356,10 @@
                     "items": [
                         {
                             "properties": {
+                                "id": {
+                                    "format": "uuid",
+                                    "type": "string"
+                                },
                                 "label": {
                                     "type": "string"
                                 },

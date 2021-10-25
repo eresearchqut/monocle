@@ -44,12 +44,19 @@ export interface OptionsInput extends AbstractInput {
     displayOptions: boolean,
 
 
-    optionValueType:  'string' | 'number'
+    optionValueType: 'string' | 'number'
 
     /**
      * Option values and labels
      */
-    options: [{label: string, value: number | string}]
+    options: [{
+        /**
+         * @format uuid
+         */
+        id: string,
+        label: string,
+        value: number | string
+    }]
 
 }
 
@@ -60,7 +67,6 @@ export interface OptionsInput extends AbstractInput {
 export interface BooleanInput extends AbstractInput {
     type: InputType.BOOLEAN
 }
-
 
 
 /**
@@ -246,5 +252,16 @@ export interface SvgMapInput extends AbstractInput {
 /**
  * @title Input
  */
-export type Input = TextInput | MultilineTextInput | NumericInput | OptionsInput | RangeInput | CurrencyInput | BooleanInput
-    | DateInput | TimeInput | DateTimeInput | SvgMapInput | MarkdownInput;
+export type Input =
+    TextInput
+    | MultilineTextInput
+    | NumericInput
+    | OptionsInput
+    | RangeInput
+    | CurrencyInput
+    | BooleanInput
+    | DateInput
+    | TimeInput
+    | DateTimeInput
+    | SvgMapInput
+    | MarkdownInput;

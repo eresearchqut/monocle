@@ -27,18 +27,16 @@ const renderers: { tester: RankedTester; renderer: any }[] = [
     {tester: verticalLayoutTester, renderer: VerticalLayout},
 ];
 
-export interface FormCanvasProps {
+export interface FormDesignerCanvasProps {
     definition: Form
-
     onChange?(state: Pick<JsonFormsCore, 'data' | 'errors'>): void;
-
     locale?: string;
 }
 
 // TODO, the form schema should probable be a prop
 const schema = require('../schema/form.json');
 
-export const FormDesignerCanvas: FunctionComponent<FormCanvasProps> = ({definition, onChange, locale}) => {
+export const FormDesignerCanvas: FunctionComponent<FormDesignerCanvasProps> = ({definition, onChange, locale}) => {
 
     const config = {
         locale,

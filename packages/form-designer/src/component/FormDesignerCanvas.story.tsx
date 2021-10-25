@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import {Meta, Story} from '@storybook/react';
-import {FormDesignerCanvas, FormCanvasProps} from './FormDesignerCanvas';
+import {FormDesignerCanvas, FormDesignerCanvasProps} from './FormDesignerCanvas';
 import {DragDropContext, DropResult, ResponderProvided} from "react-beautiful-dnd";
 
 export default {
@@ -18,9 +18,9 @@ export default {
     ]
 } as Meta;
 
-const Template: Story<FormCanvasProps> =
-    ({definition}) =>
-        <FormDesignerCanvas definition={definition}/>;
+const Template: Story<FormDesignerCanvasProps> =
+    (props) =>
+        <FormDesignerCanvas {...props}/>;
 Template.bind({});
 
 export const Example = Template.bind({});

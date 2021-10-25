@@ -59,18 +59,22 @@
           "optionValueType": "number",
           "options": [
             {
+              "id": "28c62ae5-b768-4f24-b0bb-5b4b4935755b",
               "label": "All of the time",
               "value": 0
             },
             {
+              "id": "1dcbf042-5ed7-4d6d-ab5d-9369b59fa396",
               "label": "Some of the time",
               "value": 1
             },
             {
+              "id": "0f00832e-15e6-4a18-8fb9-45a85cbdfba7",
               "label": "First thing in the morning",
               "value": 2
             },
             {
+              "id": "c2bfe0ea-ecfd-4115-8b37-5dfed66de57b",
               "label": "Late at night",
               "value": 3
             }

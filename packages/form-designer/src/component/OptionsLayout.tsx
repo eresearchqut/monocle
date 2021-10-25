@@ -10,7 +10,12 @@ import {
 } from '@jsonforms/core';
 import {withJsonFormsArrayControlProps, useJsonForms} from '@jsonforms/react';
 import get from 'lodash/get';
-import {DataTable, DataTableRowEditParams, DataTableEditingRows} from 'primereact/datatable';
+import {
+    DataTable,
+    DataTableRowEditParams,
+    DataTableEditingRows,
+    DataTableRowEditSaveParams
+} from 'primereact/datatable';
 import {Column, ColumnProps} from 'primereact/column';
 import {InputText} from 'primereact/inputtext';
 import {InputNumber} from 'primereact/inputnumber';
@@ -34,111 +39,31 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                  data,
                                                              }) => {
 
-    const [options, setOptions] = useState<Option[]>(data || []);
-    const [editingOptions, setEditingOptions] = useState<DataTableEditingRows>({});
+
+    const value = data as Option[];
+
+    const [editingRows, setEditingRows] = useState<DataTableEditingRows>({});
+    const [edits, setEdits] = useState<{ [key: string]: Option }>({})
+
     const context = useJsonForms();
     const optionValueType = get(context.core?.data, path.replace('options', 'optionValueType')) || 'string';
 
-    const updateOptions = (newOptions: Option[]) => context.dispatch && context.dispatch(update(path, () => newOptions))
-    const onRowEditSave = () => updateOptions(options);
+    const updateOptions = (options: Option[]) => context.dispatch && context.dispatch(update(path, () => options));
 
-    const handleChange = (optionIndex: number, option: Option) => setOptions((currentOptions) => {
-        const newOptions = [...currentOptions];
-        newOptions[optionIndex] = option;
-        return newOptions;
-    });
-
-    const onRowEditChange = (event: DataTableRowEditParams) => {
-        setEditingOptions(event.data)
-    };
-
-    const onRowEditCancel = (event: DataTableRowEditParams) => {
-        setOptions((currentOptions) => {
-            const resetOptions = [...currentOptions];
-            resetOptions[event.index] = data[event.index]
-            return resetOptions;
-        });
-    };
-
-    const addOption = () => {
-        const newOption = {id: uuidv4(), label: '', value: ''} as Option
-        setOptions((currentOptions) => [...currentOptions, newOption]);
-        setEditingOptions((currentOptions) => ({...currentOptions, ...{[`${newOption.id}`]: true}}));
-    };
-
-    const deleteOption = (option: Option) => {
-        setOptions((currentOptions) => [...currentOptions].filter((currentOption => currentOption.id !== option.id)));
-        updateOptions(options);
-    };
 
     const moveOption = (fromIndex: number, toIndex: number) => {
-        setOptions((currentOptions) => {
-            const newOptions = [...currentOptions];
-            const element = newOptions[fromIndex];
-            newOptions.splice(fromIndex, 1);
-            newOptions.splice(toIndex, 0, element);
-            return newOptions;
-        });
+        const options = [...value];
+        const element = options[fromIndex];
+        options.splice(fromIndex, 1);
+        options.splice(toIndex, 0, element);
         updateOptions(options);
-    };
-
-    const labelEditor = (props: RowProps) => <InputText value={props.rowData.label}
-                                                        onChange={(e) =>
-                                                            handleChange(props.rowIndex, {
-                                                                ...props.rowData,
-                                                                label: e.target.value
-                                                            })}/>
-
-    const valueEditor = (props: RowProps) => optionValueType === 'string' ?
-        <InputText value={props.rowData.value}
-                   onChange={(e) =>
-                       handleChange(props.rowIndex, {
-                           ...props.rowData,
-                           value: e.target.value
-                       })}/> :
-        <InputNumber value={props.rowData.value as number} useGrouping={false}
-                     onChange={(e) =>
-                         handleChange(props.rowIndex, {
-                             ...props.rowData,
-                             value: e.value
-                         })}/>
-
-
-    const header = (
-        <div className="p-d-flex">
-            <label>Options</label>
-            <Button icon="pi pi-plus" className="p-button-rounded p-button-text p-ml-auto" onClick={() => addOption()}/>
-        </div>
-    );
-
-    const deleteActions = (option: Option) => {
-
-
-        const confirm = () => {
-            confirmDialog({
-                message: `Are you sure you want to delete ${option.label}?`,
-                header: 'Confirm Deletion',
-                icon: 'pi pi-exclamation-triangle',
-                accept: () => deleteOption(option),
-            });
-        }
-
-        return (
-
-
-            <Button icon="pi pi-fw pi-trash p-clickable" className="p-row-editor-init p-link"
-                    onClick={confirm}/>
-
-
-        )
     };
 
     const moveActions = (option: Option) => {
 
-        const index = options.findIndex((found) => found.id === option.id);
+        const index = value.findIndex((found) => found.id === option.id);
         const canMoveUp = index != 0;
-        const canMoveDown = index < options.length - 1;
-
+        const canMoveDown = index < value.length - 1;
 
         return (
             <React.Fragment>
@@ -154,17 +79,117 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
         )
     };
 
+    const onRowEditInit = (event: DataTableRowEditParams) => setEdits((currentEdits) => ({
+        ...currentEdits,
+        [event.data.id]: {...event.data}
+    }));
+
+    const onRowEditCancel = (event: DataTableRowEditParams) => {
+        console.log('onRowEditCancel', event, edits[event.data.id]);
+        setEdits((currentEdits) => {
+            const newEdits = {...currentEdits};
+            delete newEdits[event.data.id];
+            return newEdits
+        });
+    };
+
+    const onRowEditChange = (event: DataTableRowEditParams) => {
+        setEditingRows(event.data)
+    };
+
+    const onRowEditSave = (event: DataTableRowEditSaveParams) => {
+        const options = [...value];
+        options[event.index] = edits[event.data.id];
+        updateOptions(options);
+        onRowEditCancel(event);
+    }
+
+    const editLabel = (id: string, value: string) => {
+        setEdits((currentEdits) => {
+            const newEdits = {...currentEdits};
+            newEdits[id].label = value
+            return newEdits
+        });
+    }
+
+    const editValue = (id: string, value: string | number) => {
+        setEdits((currentEdits) => {
+            const newEdits = {...currentEdits};
+            newEdits[id].value = value
+            return newEdits
+        });
+    }
+
+    const labelEditor = (props: RowProps) =>
+        <InputText value={edits[props.rowData.id].label}
+                   onChange={(e) => editLabel(props.rowData.id, e.target.value)}/>
+
+    const valueEditor = (props: RowProps) => optionValueType === 'string' ?
+        <InputText value={edits[props.rowData.id].value}
+                   onChange={(e) => editValue(props.rowData.id, e.target.value)}/> :
+        <InputNumber value={edits[props.rowData.id].value as number}
+                     onChange={(e) => editValue(props.rowData.id, e.value)}
+                     useGrouping={false}/>
+
+
+    const addOption = () => {
+        const newOption = {id: uuidv4(), label: '', value: ''} as Option;
+        value.push(newOption);
+        setEdits((currentEdits) => {
+            const newEdits = {...currentEdits};
+            newEdits[newOption.id] = newOption
+            return newEdits
+        });
+        setEditingRows((currentOptions) => ({...currentOptions, ...{[`${newOption.id}`]: true}}));
+    };
+
+
+    const deleteOption = (optionToDelete: Option) => {
+        updateOptions(value.filter((option) => option.id != optionToDelete.id));
+    };
+
+    const deleteActions = (option: Option) => {
+        const confirm = () => {
+            confirmDialog({
+                message: `Are you sure you want to delete ${option.label}?`,
+                header: 'Confirm Deletion',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => deleteOption(option),
+            });
+        }
+        return (
+            <Button icon="pi pi-fw pi-trash p-clickable" className="p-row-editor-init p-link"
+                    onClick={confirm}/>
+        )
+    };
+
+    const header = (
+        <div className="p-d-flex">
+            <label>Options</label>
+            <Button icon="pi pi-plus" className="p-button-rounded p-button-text p-ml-auto"
+                    onClick={() => addOption()}
+            />
+        </div>
+    );
+
 
     return (
-        <DataTable dataKey='id' editMode='row' value={options} header={header} onRowEditSave={onRowEditSave}
-                   onRowEditCancel={onRowEditCancel} editingRows={editingOptions}
-                   onRowEditChange={onRowEditChange}>
-            <Column field="label" header="Label" editor={(props) => labelEditor(props as RowProps)}/>
-            <Column field="value" header="Value" editor={(props) => valueEditor(props as RowProps)}/>
+        <DataTable dataKey='id'
+                   editMode='row'
+                   value={value}
+                   header={header}
+                   editingRows={editingRows}
+                   onRowEditInit={onRowEditInit}
+                   onRowEditCancel={onRowEditCancel}
+                   onRowEditChange={onRowEditChange}
+                   onRowEditSave={onRowEditSave}>
+            <Column field="label" header="Label"
+                    editor={(props) => labelEditor(props as RowProps)}/>
+            <Column field="value" header="Value"
+                    editor={(props) => valueEditor(props as RowProps)}/>
             <Column rowEditor/>
             <Column body={moveActions}/>
             <Column body={deleteActions}/>
-
         </DataTable>
     )
 
@@ -181,3 +206,7 @@ export const optionsLayoutTester: RankedTester = rankWith(
 );
 
 export default withJsonFormsArrayControlProps(OptionsLayout);
+
+
+
+

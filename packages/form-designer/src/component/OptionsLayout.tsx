@@ -187,9 +187,9 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
                     editor={(props) => labelEditor(props as RowProps)}/>
             <Column field="value" header="Value"
                     editor={(props) => valueEditor(props as RowProps)}/>
-            <Column rowEditor/>
-            <Column body={moveActions}/>
-            <Column body={deleteActions}/>
+            <Column rowEditor header="Edit"/>
+            <Column body={moveActions} header="Move"/>
+            <Column body={deleteActions} header="Delete"/>
         </DataTable>
     )
 

@@ -3,7 +3,7 @@ import {FormDesignerCanvas} from './FormDesignerCanvas';
 import {FormPreview} from './FormPreview';
 import {ComponentSelector} from './ComponentSelector';
 
-import {Form, Input, Section, SectionType} from '@trrf/form-definition';
+import {Form, Input, InputType, Section, SectionType} from '@trrf/form-definition';
 import {ErrorObject} from 'ajv';
 import {DragDropContext, DropResult} from "react-beautiful-dnd";
 import {v4 as uuidv4} from 'uuid';
@@ -14,7 +14,9 @@ export interface FormDesignerProps {
     definition: Form;
     data?: any;
     locale?: string,
+
     onDefinitionChange?(state: { errors?: ErrorObject[], data: any }): void;
+
     onDataChange?(state: { errors?: ErrorObject[], data: any }): void;
 }
 
@@ -68,7 +70,15 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
                     const destinationSection = definition.sections[destinationSectionIndex];
                     if (result.source.droppableId === 'inputSelector') {
                         const type = result.draggableId;
-                        const input = {type, id: uuidv4()}
+                        const input = type === InputType.OPTIONS ? {
+                            type,
+                            id: uuidv4(),
+                            optionValueType: 'string',
+                            options: []
+                        } : {
+                            type,
+                            id: uuidv4()
+                        };
                         destinationSection.inputs.splice(destination.index || 0, 0, input);
                     } else if (destination) {
                         const sourceSectionIndex = parseInt(source?.droppableId.split('.')[1] || '0');

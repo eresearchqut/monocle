@@ -66,11 +66,11 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
         const menuOptions: MenuItem[] = [
             collapsed ? {
                 label: 'Edit ',
-                icon: 'pi pi-window-maximize',
+                icon: 'pi pi-window-minimise',
                 command: handleToggle(input)
             } : {
                 label: 'Close',
-                icon: 'pi pi-window-minimize',
+                icon: 'pi pi-window-maximize',
                 command: handleToggle(input)
             },
             {

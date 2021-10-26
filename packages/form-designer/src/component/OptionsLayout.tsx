@@ -40,7 +40,11 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
                                                              }) => {
 
 
-    const value = data as Option[];
+    const value: Option[] = data;
+
+
+    // const initialEditRows = value && value.length === 1 && value[0].label === '' ? {[value[0].id]: true} : {};
+    // const initialEdits = value && value.length === 1 && value[0].label === '' ? {[value[0].id]: value[0]} : {};
 
     const [editingRows, setEditingRows] = useState<DataTableEditingRows>({});
     const [edits, setEdits] = useState<{ [key: string]: Option }>({})
@@ -50,6 +54,20 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
 
     const updateOptions = (options: Option[]) => context.dispatch && context.dispatch(update(path, () => options));
 
+    const addOption = () => {
+        const newOption = {id: uuidv4(), label: '', value: ''} as Option;
+        // if (!value) {
+        //     updateOptions([newOption]);
+        // } else {
+            value.push(newOption);
+            setEdits((currentEdits) => {
+                const newEdits = {...currentEdits};
+                newEdits[newOption.id] = newOption
+                return newEdits
+            });
+            setEditingRows((currentOptions) => ({...currentOptions, ...{[`${newOption.id}`]: true}}));
+        // }
+    };
 
     const moveOption = (fromIndex: number, toIndex: number) => {
         const options = [...value];
@@ -130,18 +148,6 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
         <InputNumber value={edits[props.rowData.id].value as number}
                      onChange={(e) => editValue(props.rowData.id, e.value)}
                      useGrouping={false}/>
-
-
-    const addOption = () => {
-        const newOption = {id: uuidv4(), label: '', value: ''} as Option;
-        value.push(newOption);
-        setEdits((currentEdits) => {
-            const newEdits = {...currentEdits};
-            newEdits[newOption.id] = newOption
-            return newEdits
-        });
-        setEditingRows((currentOptions) => ({...currentOptions, ...{[`${newOption.id}`]: true}}));
-    };
 
 
     const deleteOption = (optionToDelete: Option) => {

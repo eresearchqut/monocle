@@ -3,8 +3,6 @@ import {JsonSchema, UISchemaElement} from '@jsonforms/core';
 import {OptionsInput, Form, Input, InputType, Section} from '@trrf/form-definition';
 import {AbstractInputCompiler} from './abstractInputCompiler';
 
-
-
 export class OptionsInputCompiler extends AbstractInputCompiler implements InputCompiler {
 
     supports(form: Form, section: Section, input: Input): boolean {
@@ -13,7 +11,7 @@ export class OptionsInputCompiler extends AbstractInputCompiler implements Input
 
     schema(form: Form, section: Section, input: Input): JsonSchema {
         const {description, optionValueType, multiselect, options} = input as OptionsInput;
-        const choices = options.map(option => ({'const': option.value, title: option.label}))
+        const choices = options?.map(option => ({'const': option.value, title: option.label}))
         if (multiselect) {
             return {type: 'array', description, items: {type: optionValueType, oneOf: choices}} as JsonSchema;
         } else {
@@ -22,10 +20,13 @@ export class OptionsInputCompiler extends AbstractInputCompiler implements Input
     }
 
     ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {
-        const {displayOptions, multiselect} = input as OptionsInput;
+        const {displayOptions, multiselect, options} = input as OptionsInput;
+        if (!(Array.isArray(options) && options.length)) {
+            return undefined;
+        }
         const format = displayOptions ? multiselect ? 'checkbox' : 'radio' : 'select';
-        const options = {format, multiselect}
-        return this.uiControl(form, section, input, options);
+        const uiSchemaOptions = {format, multiselect}
+        return this.uiControl(form, section, input, uiSchemaOptions);
     }
 }
 

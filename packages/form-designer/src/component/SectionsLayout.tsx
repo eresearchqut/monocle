@@ -48,26 +48,24 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
                                  section: Section,
                                  dragHandleProps: DraggableProvidedDragHandleProps | undefined): PanelHeaderTemplateType => {
         const titleClassName = `${options.titleClassName} p-pl-1 pi-mr-2`;
-        const className = `${options.className} p-d-flex`;
+        const className = `${options.className}`;
         const enableMoveUp = index != 0;
         const enableMoveDown = index < sections.length - 1;
         const {label, name} = section;
         const collapsed = isCollapsed(section);
         const menuOptions: MenuItem[] = [
-            collapsed ? {
-                label: 'Edit ',
-                icon: 'pi pi-window-maximize',
-
-                command: handleToggle(section)
-            } : {
-                label: 'Close',
-                icon: 'pi pi-window-minimize',
-                command: handleToggle(section)
-            },
             {
-                label: 'Options',
                 icon: 'pi pi-fw pi-cog',
                 items: [
+                    collapsed ? {
+                        label: 'Edit Section',
+                        icon: 'pi pi-window-maximize',
+                        command: handleToggle(section)
+                    } : {
+                        label: 'Minimise Section',
+                        icon: 'pi pi-window-minimize',
+                        command: handleToggle(section)
+                    },
                     removeItems ? {
                         label: 'Remove Section',
                         icon: 'pi pi-times-circle',
@@ -88,11 +86,12 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
 
         return (
             <div className={className} {...dragHandleProps}>
-                <ComponentIcon componentType={SectionType.DEFAULT}/>
-                <div className={titleClassName}>{label || name}</div>
-                <div className="p-ml-auto">
-                    <Menubar model={menuOptions} />
+                <div className='p-d-flex p-ai-center'>
+                    <ComponentIcon componentType={SectionType.DEFAULT}/>
+                    <div className={titleClassName}>{label || name}</div>
                 </div>
+                <Menubar model={menuOptions} />
+
             </div>
         );
     };

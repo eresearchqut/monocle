@@ -56,7 +56,7 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
                                  input: Input,
                                  dragHandleProps: DraggableProvidedDragHandleProps | undefined): PanelHeaderTemplateType => {
 
-        const className = `${options.className} p-d-flex`;
+        const className = `${options.className}`;
         const titleClassName = `${options.titleClassName} p-mr-3`;
         const enableMoveUp = index != 0;
         const enableMoveDown = index < inputs.length - 1;
@@ -64,19 +64,18 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
 
         const collapsed = isCollapsed(input);
         const menuOptions: MenuItem[] = [
-            collapsed ? {
-                label: 'Edit ',
-                icon: 'pi pi-window-minimise',
-                command: handleToggle(input)
-            } : {
-                label: 'Close',
-                icon: 'pi pi-window-maximize',
-                command: handleToggle(input)
-            },
             {
-                label: 'Options',
                 icon: 'pi pi-fw pi-cog',
                 items: [
+                    collapsed ? {
+                        label: 'Edit Input',
+                        icon: 'pi pi-pencil',
+                        command: handleToggle(input)
+                    } : {
+                        label: 'Minimise Section',
+                        icon: 'pi pi-window-maximize',
+                        command: handleToggle(input)
+                    },
                     {
                         label: 'Copy Input',
                         icon: 'pi pi-copy',
@@ -107,13 +106,13 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
 
         return (
             <div className={className}  {...dragHandleProps}>
-                <div className="p-mr-3">
-                    <ComponentIcon componentType={type}/>
+                <div className='p-d-flex p-ai-center'>
+                    <div className="p-mr-3">
+                        <ComponentIcon componentType={type}/>
+                    </div>
+                    <div className={titleClassName}>{label || name}</div>
                 </div>
-                <div className={titleClassName}>{label || name}</div>
-                <div className="p-ml-auto">
-                    <Menubar model={menuOptions}/>
-                </div>
+                <Menubar model={menuOptions}/>
             </div>
         );
     };

@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useState} from 'react';
+import React, {FunctionComponent, useState, useRef} from 'react';
 
 import {
     ArrayControlProps,
@@ -19,6 +19,7 @@ import {
 import {Column, ColumnProps} from 'primereact/column';
 import {InputText} from 'primereact/inputtext';
 import {InputNumber} from 'primereact/inputnumber';
+import {Messages} from 'primereact/messages';
 import {Button} from 'primereact/button'
 import {v4 as uuidv4} from "uuid";
 import {confirmDialog} from 'primereact/confirmdialog';
@@ -43,11 +44,9 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
     const value: Option[] = data;
 
 
-    // const initialEditRows = value && value.length === 1 && value[0].label === '' ? {[value[0].id]: true} : {};
-    // const initialEdits = value && value.length === 1 && value[0].label === '' ? {[value[0].id]: value[0]} : {};
-
     const [editingRows, setEditingRows] = useState<DataTableEditingRows>({});
     const [edits, setEdits] = useState<{ [key: string]: Option }>({})
+    const messages = useRef<Messages>(null);
 
     const context = useJsonForms();
     const optionValueType = get(context.core?.data, path.replace('options', 'optionValueType')) || 'string';
@@ -56,17 +55,13 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
 
     const addOption = () => {
         const newOption = {id: uuidv4(), label: '', value: ''} as Option;
-        // if (!value) {
-        //     updateOptions([newOption]);
-        // } else {
-            value.push(newOption);
-            setEdits((currentEdits) => {
-                const newEdits = {...currentEdits};
-                newEdits[newOption.id] = newOption
-                return newEdits
-            });
-            setEditingRows((currentOptions) => ({...currentOptions, ...{[`${newOption.id}`]: true}}));
-        // }
+        value.push(newOption);
+        setEdits((currentEdits) => {
+            const newEdits = {...currentEdits};
+            newEdits[newOption.id] = newOption
+            return newEdits
+        });
+        setEditingRows((currentOptions) => ({...currentOptions, ...{[`${newOption.id}`]: true}}));
     };
 
     const moveOption = (fromIndex: number, toIndex: number) => {
@@ -103,23 +98,26 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
     }));
 
     const onRowEditCancel = (event: DataTableRowEditParams) => {
-        console.log('onRowEditCancel', event, edits[event.data.id]);
         setEdits((currentEdits) => {
             const newEdits = {...currentEdits};
             delete newEdits[event.data.id];
             return newEdits
         });
+        messages?.current?.clear();
     };
 
     const onRowEditChange = (event: DataTableRowEditParams) => {
-        setEditingRows(event.data)
+        setEditingRows(event.data);
     };
 
     const onRowEditSave = (event: DataTableRowEditSaveParams) => {
-        const options = [...value];
-        options[event.index] = edits[event.data.id];
-        updateOptions(options);
-        onRowEditCancel(event);
+        if (event.valid) {
+            const options = [...value];
+            options[event.index] = edits[event.data.id];
+            updateOptions(options);
+            onRowEditCancel(event);
+            messages?.current?.clear();
+        }
     }
 
     const editLabel = (id: string, value: string) => {
@@ -136,6 +134,26 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
             newEdits[id].value = value
             return newEdits
         });
+    }
+
+    const rowEditorValidator = (data: Option) => {
+        const edited = edits[data.id];
+        const nonUnique = value.find((option) => {
+                if (edited.id !== option.id && (edited.label === option.label || edited.value === option.value)) {
+                    return true;
+                }
+                return false;
+            }
+        )
+        if (messages?.current && nonUnique) {
+            messages.current.show([
+                {
+                    severity: 'error', summary: 'Option labels and values must be unique', sticky: true
+                }
+            ]);
+            return false;
+        }
+        return true;
     }
 
     const labelEditor = (props: RowProps) =>
@@ -170,33 +188,40 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({
     };
 
     const header = (
-        <div className="p-d-flex">
+        <div className="p-d-flex p-ai-center">
             <label>Options</label>
             <Button icon="pi pi-plus" className="p-button-rounded p-button-text p-ml-auto"
-                    onClick={() => addOption()}
+                    onClick={() => addOption()} aria-label='Add Option' tooltip='Add Option'
             />
         </div>
     );
 
-
     return (
-        <DataTable dataKey='id'
-                   editMode='row'
-                   value={value}
-                   header={header}
-                   editingRows={editingRows}
-                   onRowEditInit={onRowEditInit}
-                   onRowEditCancel={onRowEditCancel}
-                   onRowEditChange={onRowEditChange}
-                   onRowEditSave={onRowEditSave}>
-            <Column field="label" header="Label"
-                    editor={(props) => labelEditor(props as RowProps)}/>
-            <Column field="value" header="Value"
-                    editor={(props) => valueEditor(props as RowProps)}/>
-            <Column rowEditor header="Edit"/>
-            <Column body={moveActions} header="Move"/>
-            <Column body={deleteActions} header="Delete"/>
-        </DataTable>
+        <React.Fragment>
+            <Messages ref={messages}/>
+            <DataTable dataKey='id'
+                       editMode='row'
+                       value={value}
+                       header={header}
+                       editingRows={editingRows}
+                       onRowEditInit={onRowEditInit}
+                       onRowEditCancel={onRowEditCancel}
+                       onRowEditChange={onRowEditChange}
+                       onRowEditSave={onRowEditSave}
+                       rowEditorValidator={rowEditorValidator}
+
+            >
+                <Column field="label" header="Label"
+                        editor={(props) => labelEditor(props as RowProps)}/>
+                <Column field="value" header="Value"
+                        editor={(props) => valueEditor(props as RowProps)}/>
+                <Column rowEditor header="Edit"/>
+                <Column body={moveActions} header="Move"/>
+                <Column body={deleteActions} header="Delete"/>
+            </DataTable>
+        </React.Fragment>
+
+
     )
 
 }

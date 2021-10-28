@@ -103,15 +103,15 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
         <DragDropContext onDragEnd={onDragEnd}>
 
             <div className="p-grid form-designer" id="form-designer">
-                <div className="p-col-12 p-md-2">
+                <div className="p-col-12 p-lg-1 p-md-2">
                     <Sticky enableTransforms={false}>
                         <ComponentSelector/>
                     </Sticky>
                 </div>
-                <div className="p-col-12 p-md-6">
+                <div className="p-col-12 p-lg-8 p-md-7">
                     <FormDesignerCanvas definition={formDefinition} onChange={handleDefinitionChange} locale={locale}/>
                 </div>
-                <div className="p-col-12 p-md-4">
+                <div className="p-col-12 p-lg-3">
                     <FormPreview definition={formDefinition} data={formData} onChange={handleDataChange}
                                  locale={locale}/>
                 </div>

@@ -20,93 +20,92 @@ export interface InputSignatureCellOptions extends HTMLCanvasElement, SignatureP
 
 export const InputSignatureCell = (props: CellProps) => {
 
-        const {
-            config,
-            data,
-            uischema,
-            path,
-            handleChange,
-            visible = true,
-            isValid = true
-        } = props;
+    const {
+        config,
+        data,
+        uischema,
+        path,
+        handleChange,
+        visible = true,
+        isValid = true
+    } = props;
 
-        const [editModeEnabled, setEditModeEnabled] = useState<boolean>(false);
+    const [editModeEnabled, setEditModeEnabled] = useState<boolean>(false);
 
-        const signaturePad = useRef<SignaturePad>(null);
+    const signaturePad = useRef<SignaturePad>(null);
 
-        useEffect(() => {
-            signaturePad.current?.fromDataURL(data);
-        }, [signaturePad, editModeEnabled]);
+    useEffect(() => {
+        signaturePad.current?.fromDataURL(data);
+    }, [signaturePad, editModeEnabled]);
 
-        if (!visible) {
-            return null;
-        }
-
-        const inputSignatureCellOptions = merge({}, config, uischema.options) as InputSignatureCellOptions;
-        const {mimeType, clearOnResize = false} = inputSignatureCellOptions
-        const className = isValid ? undefined : 'p-invalid';
-
-        const save = () => {
-            handleChange(path, signaturePad.current?.toDataURL(mimeType))
-            setEditModeEnabled(false);
-        }
-
-        const actionsMenu: MenuItem[] = [
-
-            {
-                label: 'Save',
-                icon: 'pi pi-save',
-                command: save
-            },
-            {
-                label: 'Reset',
-                icon: 'pi pi-refresh',
-                command: () => {
-                    signaturePad.current?.clear()
-                    signaturePad.current?.fromDataURL(data)
-                }
-
-            },
-            {
-                label: 'Clear',
-                icon: 'pi pi-times',
-                command: () => signaturePad.current?.clear()
-            }
-        ];
-
-        const editMenu: MenuItem[] = [
-            {
-                label: 'Sign',
-                icon: 'pi pi-pencil',
-                command: () => setEditModeEnabled(true)
-            }
-        ];
-
-        if (editModeEnabled) {
-            return (
-                <React.Fragment>
-                    <SignaturePad ref={signaturePad}
-                                  canvasProps={{width: 500, height: 200, className: 'sigCanvas'}}
-                                  clearOnResize={clearOnResize}
-                    />
-                    <Menubar model={actionsMenu}/>
-                </React.Fragment>
-            )
-        }
-
-        return (
-
-            <React.Fragment>
-
-                <Image src={data}/>
-                <Menubar model={editMenu}/>
-            </React.Fragment>
-
-
-        );
-
+    if (!visible) {
+        return null;
     }
-;
+
+    const inputSignatureCellOptions = merge({}, config, uischema.options) as InputSignatureCellOptions;
+    const {mimeType} = inputSignatureCellOptions
+    const className = isValid ? undefined : 'p-invalid';
+
+    const save = () => {
+        handleChange(path, signaturePad.current?.toDataURL(mimeType))
+        setEditModeEnabled(false);
+    }
+
+    const actionsMenu: MenuItem[] = [
+
+        {
+            label: 'Save',
+            icon: 'pi pi-save',
+            command: save
+        },
+        {
+            label: 'Reset',
+            icon: 'pi pi-refresh',
+            command: () => {
+                signaturePad.current?.clear()
+                signaturePad.current?.fromDataURL(data)
+            }
+
+        },
+        {
+            label: 'Clear',
+            icon: 'pi pi-times',
+            command: () => signaturePad.current?.clear()
+        }
+    ];
+
+    const editMenu: MenuItem[] = [
+        {
+            label: 'Sign',
+            icon: 'pi pi-pencil',
+            command: () => setEditModeEnabled(true)
+        }
+    ];
+
+
+    const style = {
+        color: '#000000',
+        border: '1px solid #000000',
+        ':hover': {
+            color: '#ffffff'
+        }
+    };
+
+
+    return (
+        <React.Fragment>
+            <Menubar model={actionsMenu}/>
+            <div style={style}>
+                <SignaturePad ref={signaturePad}
+                              canvasProps={{className: 'signature-canvas'}}
+                              clearOnResize={false}
+                />
+            </div>
+
+        </React.Fragment>
+    )
+}
+
 
 /**
  * Default tester for date controls.

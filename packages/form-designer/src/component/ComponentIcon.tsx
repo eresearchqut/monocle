@@ -15,7 +15,7 @@ import {
     faCheckSquare,
     faVectorSquare,
     faLayerGroup,
-    faClipboardCheck
+    faClipboardCheck, faSignature
 } from '@fortawesome/free-solid-svg-icons';
 import {faMarkdown} from "@fortawesome/free-brands-svg-icons";
 import {Avatar} from 'primereact/avatar';
@@ -34,6 +34,7 @@ const iconMap: Map<InputType | SectionType, IconDefinition> = new Map<InputType 
     [InputType.NUMERIC, faSortNumericUp],
     [InputType.OPTIONS, faClipboardCheck],
     [InputType.RANGE, faSlidersH],
+    [InputType.SIGNATURE, faSignature],
     [InputType.SVG_MAP, faVectorSquare],
     [InputType.TEXT, faTextWidth],
     [InputType.TIME, faClock]

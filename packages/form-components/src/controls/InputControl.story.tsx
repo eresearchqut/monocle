@@ -77,6 +77,9 @@ Default.args = {
                 minLength: 3,
                 description: 'Family or surname, should come after your first name'
             },
+            signature: {
+                type: 'string'
+            },
             position: {
                 type: 'string',
                 enum: ['Intergalactic Gambler', 'Bounty Hunter', 'Smuggler']
@@ -244,6 +247,19 @@ SelectOptions.args = {
         scope: '#/properties/classification'
     }
 }
+
+export const Signature = Template.bind({});
+Signature.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/signature',
+        options: {
+            type: 'signature'
+        }
+    }
+}
+
 
 export const Date = Template.bind({});
 Date.args = {

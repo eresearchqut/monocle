@@ -23,6 +23,8 @@ import {
     inputMultilineTextCellTester,
     InputMarkdownCell,
     inputMarkdownCellTester,
+    InputSignatureCell,
+    inputSignatureCellTester
 } from './cells';;
 
 
@@ -56,5 +58,6 @@ export const cells: { tester: RankedTester; cell: any }[] = [
     {tester: inputTextCellTester, cell: InputTextCell},
     {tester: inputMarkdownCellTester, cell: InputMarkdownCell},
     {tester: inputMultilineTextCellTester, cell: InputMultilineTextCell},
-    {tester: inputMultiselectCellTester, cell: InputMultiselectCell}
+    {tester: inputMultiselectCellTester, cell: InputMultiselectCell},
+    {tester: inputSignatureCellTester, cell: InputSignatureCell}
 ];

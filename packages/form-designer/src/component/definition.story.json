@@ -27,6 +27,12 @@
           "type": "date",
           "required": true,
           "name": "Visit date"
+        },
+        {
+          "id": "dcedb616-a3f9-4f71-b5c5-8d8b784ba8ff",
+          "type": "signature",
+          "name": "Sign Here",
+          "required": true
         }
       ]
     },

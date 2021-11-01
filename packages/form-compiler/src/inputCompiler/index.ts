@@ -11,6 +11,7 @@ import {SvgMapInputCompiler} from './svgMapInputCompiler';
 import {MultilineTextInputCompiler} from './multilineTextInputCompiler';
 import {MarkdownInputCompiler} from "./markdownInputCompiler";
 import {OptionsInputCompiler} from './optionsInputCompiler';
+import {SignatureInputCompiler} from './signatureInputCompiler';
 
 export {
     AbstractInputCompiler,
@@ -22,6 +23,7 @@ export {
     CurrencyInputCompiler,
     BooleanInputCompiler,
     DateTimeInputCompiler,
+    SignatureInputCompiler
 };
 
 export const inputCompilers: InputCompiler[] = [
@@ -34,7 +36,8 @@ export const inputCompilers: InputCompiler[] = [
     new CurrencyInputCompiler(),
     new BooleanInputCompiler(),
     new DateTimeInputCompiler(),
-    new SvgMapInputCompiler()
+    new SvgMapInputCompiler(),
+    new SignatureInputCompiler()
 ];
 
 export const findInputCompiler = (form: Form, section: Section, input: Input): InputCompiler | undefined => inputCompilers

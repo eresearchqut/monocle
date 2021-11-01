@@ -69,22 +69,24 @@ export const InputSignatureCell = (props: CellProps) => {
         return (
             <div className={'signature-container'} ref={ref}>
                 <canvas ref={canvas}/>
-                <Button label="Save" icon="pi pi-save" className="p-button-outlined"
-                        onClick={save}/>
-                <Button label="Cancel" className="p-button-outlined p-ml-1" icon="pi pi-times"
-                        onClick={() => setEditing(false)}/>
+                <div className='p-d-inline-flex'>
+                    <Button label="Save" icon="pi pi-save" className="p-button-outlined"
+                            onClick={save}/>
+                    <Button label="Cancel" className="p-button-outlined p-ml-1" icon="pi pi-times"
+                            onClick={() => setEditing(false)}/>
+                </div>
             </div>
         )
     }
 
     return (
-        <div className="p-d-flex p-flex-column" ref={ref}>
-            <Image src={data} />
+        <div ref={ref}>
+            <Image src={data}/>
             {enabled &&
-                <div>
-                    <Button label="Sign" className="p-button-outlined p-mt-1" icon="pi pi-pencil"
-                            onClick={() => setEditing(true)}/>
-                </div>
+            <div className='p-d-inline-flex'>
+                <Button label="Sign" className="p-button-outlined p-mt-1" icon="pi pi-pencil"
+                        onClick={() => setEditing(true)}/>
+            </div>
             }
         </div>
     )

@@ -9,7 +9,7 @@ import InputTextCell, {inputTextCellTester} from './InputTextCell';
 import InputMultilineTextCell, {inputMultilineTextCellTester} from './InputMultilineTextCell';
 import InputMultiselectCell, {inputMultiselectCellTester} from './InputMultiselectCell';
 import InputSelectCell, {inputSelectCellTester} from './InputSelectCell';
-
+import InputSignatureCell, {inputSignatureCellTester} from './InputSignatureCell';
 
 export {
     InputCheckboxGroupCell,
@@ -33,6 +33,8 @@ export {
     InputTextCell,
     inputTextCellTester,
     InputSelectCell,
-    inputSelectCellTester
+    inputSelectCellTester,
+    InputSignatureCell,
+    inputSignatureCellTester
 };
 

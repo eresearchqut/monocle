@@ -11,7 +11,7 @@
   },
   "scripts": {
     "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
-    "copy-files": "copyfiles -u 1 src/**/*.scss dist/ && copyfiles -u 1 src/**/*.svg dist/ && copyfiles package.json dist/",
+    "copy-files": "copyfiles -u 1 \"src/**/*.scss\" dist/ && copyfiles -u 1 \"src/**/*.svg\" dist/ && copyfiles package.json dist/",
     "prepack": "yarn build",
     "build": "yarn clean && tsc --build && yarn copy-files",
     "test": "jest --no-cache",

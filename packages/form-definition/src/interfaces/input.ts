@@ -15,6 +15,7 @@ export enum InputType {
     NUMERIC = 'numeric',
     OPTIONS = 'options',
     RANGE = 'range',
+    SIGNATURE = 'signature',
     SVG_MAP = 'svg-map',
     TEXT = 'text',
     TIME = 'time'
@@ -249,6 +250,16 @@ export interface SvgMapInput extends AbstractInput {
     multiselect?: boolean
 }
 
+
+/**
+ * @title Signature
+ *
+ */
+export interface Signature extends AbstractInput {
+    type: InputType.SIGNATURE
+}
+
+
 /**
  * @title Input
  */
@@ -263,5 +274,6 @@ export type Input =
     | DateInput
     | TimeInput
     | DateTimeInput
+    | Signature
     | SvgMapInput
     | MarkdownInput;

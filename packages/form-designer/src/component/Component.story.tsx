@@ -1,17 +1,17 @@
 import * as React from 'react';
 
 import {Meta, Story} from '@storybook/react';
-import ComponentIcon, {ComponentIconProps} from './ComponentIcon';
+import Component, {ComponentProps} from './Component';
 import {InputType} from "@trrf/form-definition";
 
 export default {
-    title: 'Component/ComponentIcon',
-    component: ComponentIcon,
+    title: 'Component/Component',
+    component: Component,
 } as Meta;
 
-const Template: Story<ComponentIconProps> =
+const Template: Story<ComponentProps> =
     (props) =>
-        <ComponentIcon {...props} />;
+        <Component {...props} />;
 Template.bind({});
 
 export const Boolean = Template.bind({});
@@ -37,6 +37,9 @@ Numeric.args = {componentType: InputType.NUMERIC};
 
 export const Range = Template.bind({});
 Range.args = {componentType: InputType.RANGE};
+
+export const Signature = Template.bind({});
+Signature.args = {componentType: InputType.SIGNATURE};
 
 export const Text = Template.bind({});
 Text.args = {componentType: InputType.TEXT};

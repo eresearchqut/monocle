@@ -15,7 +15,7 @@ import {MenuItem} from "primereact/menuitem";
 
 import {Section, SectionType, UniquelyIdentifiable} from "@trrf/form-definition";
 import {Menubar} from 'primereact/menubar';
-import ComponentIcon from "./ComponentIcon";
+import Component from "./Component";
 
 export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                          data,
@@ -87,7 +87,7 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
         return (
             <div className={className} {...dragHandleProps}>
                 <div className='p-d-flex p-ai-center'>
-                    <ComponentIcon componentType={SectionType.DEFAULT}/>
+                    <Component componentType={SectionType.DEFAULT}/>
                     <div className={titleClassName}>{label || name}</div>
                 </div>
                 <Menubar model={menuOptions} />

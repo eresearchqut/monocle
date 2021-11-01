@@ -18,9 +18,10 @@ import {
     faClipboardCheck, faSignature
 } from '@fortawesome/free-solid-svg-icons';
 import {faMarkdown} from "@fortawesome/free-brands-svg-icons";
-import {Avatar} from 'primereact/avatar';
 import {InputType, SectionType} from "@trrf/form-definition";
 import startCase from "lodash/startCase";
+import uniqueId from 'lodash/uniqueId';
+import './component.scss';
 
 
 const iconMap: Map<InputType | SectionType, IconDefinition> = new Map<InputType | SectionType, IconDefinition>([
@@ -40,20 +41,23 @@ const iconMap: Map<InputType | SectionType, IconDefinition> = new Map<InputType 
     [InputType.TIME, faClock]
 ]);
 
-export interface ComponentIconProps {
+export interface ComponentProps {
     componentType: InputType | SectionType
 }
 
-export const ComponentIcon: FunctionComponent<ComponentIconProps> = ({componentType}) => {
+export const Component: FunctionComponent<ComponentProps> = ({componentType}) => {
 
     const title = startCase(componentType || '');
+    const id = uniqueId(componentType);
 
     return (
-        <Avatar className={'p-mr-2'} >
-            <FontAwesomeIcon icon={iconMap.get(componentType) || faQuestion} title={title} aria-label={title}/>
-        </Avatar>
+        <div className='p-d-inline-flex p-flex-column p-jc-center p-button p-button-outlined component' style={{width: '6em', height: '6em'}} title={title} aria-label={title}>
+            <FontAwesomeIcon icon={iconMap.get(componentType) || faQuestion}  aria-labelledby={id}
+                             size="2x" fixedWidth/>
+            <label id={id} style={{width: '5em'}} className='p-text-center p-text-truncate p-mt-2 p-ml-2 p-mr-2'>{title}</label>
+        </div>
     );
 };
 
 
-export default ComponentIcon;
+export default Component;

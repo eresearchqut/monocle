@@ -1,8 +1,9 @@
 import * as React from 'react';
 
 import {Meta, Story} from '@storybook/react';
-import {ComponentSelector} from './ComponentSelector';
-import {DragDropContext, DropResult, ResponderProvided} from "react-beautiful-dnd";
+import {ComponentSelector, ComponentSelectorProps} from './ComponentSelector';
+import {DragDropContext,  DropResult, ResponderProvided} from "react-beautiful-dnd";
+import {SectionType, InputType} from "@trrf/form-definition";
 
 export default {
     title: 'Component/ComponentSelector',
@@ -18,12 +19,13 @@ export default {
     ]
 } as Meta;
 
-const Template: Story =
+const Template: Story<ComponentSelectorProps> =
     (props) =>
         <ComponentSelector {...props} />;
 Template.bind({});
 
-export const Example = Template.bind({});
-Example.args = {};
+export const InputTypeComponents = Template.bind({});
+InputTypeComponents.args = {componentTypes: Object.values(InputType)};
 
-
+export const SectionTypeComponents = Template.bind({});
+SectionTypeComponents.args = {componentTypes: Object.values(SectionType)};

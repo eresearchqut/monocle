@@ -1,91 +1,91 @@
 import React, {FunctionComponent} from 'react';
 
-import startCase from 'lodash/startCase';
 import {Draggable, Droppable} from 'react-beautiful-dnd';
 import {InputType, SectionType} from "@trrf/form-definition";
-import ComponentIcon from "./ComponentIcon";
+import Component, {ComponentProps} from "./Component";
 
-export const ComponentSelector: FunctionComponent = () => {
+import './component-selector.scss';
+
+export interface ComponentDraggableProps extends ComponentProps {
+    index: number;
+}
 
 
-    const title = (inputType: InputType) => startCase(inputType || '');
+const ComponentDraggable: FunctionComponent<ComponentDraggableProps> = ({componentType, index}) => <Draggable
+    key={componentType}
+    draggableId={componentType}
+    index={index}>
+    {(draggableProvided, snapshot) => (
+        <React.Fragment>
+            <div ref={draggableProvided.innerRef}
+                 {...draggableProvided.draggableProps}
+                 {...draggableProvided.dragHandleProps}
+                 className={'component-selector-dragging p-d-inline-flex'}>
+                <Component componentType={componentType}/>
+            </div>
+            {snapshot.isDragging && (
+                <div
+                    className={`${snapshot.isDragging ? 'component-selector-dragging p-d-inline-flex' : 'component-selector-clone p-d-inline-flex'}`}>
+                    <Component componentType={componentType}/>
+                </div>
+            )}
+        </React.Fragment>
+    )}
+</Draggable>
+
+export interface ComponentSelectorProps  {
+    componentTypes: Array<InputType|SectionType>
+}
+
+export const ComponentSelector: FunctionComponent<ComponentSelectorProps> = ({componentTypes}) => {
+
 
     return (
-        <React.Fragment>
-            <div className='section-selector'>
-                <Droppable droppableId="sectionSelector" type="sections" isDropDisabled={true}>
-                    {(droppableProvided, snapshot) => (
-                        <div
-                            className="p-d-flex p-flex-column"
-                            ref={droppableProvided.innerRef}>
-                            <Draggable
 
-                                draggableId='section'
-                                index={0}>
-                                {(draggableProvided, snapshot) => (
-                                    <React.Fragment>
-                                        <div ref={draggableProvided.innerRef}
-                                             {...draggableProvided.draggableProps}
-                                             {...draggableProvided.dragHandleProps}
-                                             className={`p-mb-2 p-p-2 p-shadow-2 ${snapshot.isDragging ? 'input-dragging' : ''}`}>
-                                            <ComponentIcon componentType={SectionType.DEFAULT} />
-                                            <span className={'p-text-nowrap'}>Section</span>
-                                        </div>
-                                        {snapshot.isDragging && (
-                                            <div
-                                                className="p-mb-2 p-p-2 p-shadow-2 input-clone">
-                                                <ComponentIcon componentType={SectionType.DEFAULT} />
-                                                <span className={'p-text-nowrap'}>Section</span>
-                                            </div>
-                                        )}
-                                    </React.Fragment>
-                                )}
-                            </Draggable>
+        <div className={'component-selector'}>
+
+            {/*<Droppable droppableId="sectionSelector" type="sections" isDropDisabled={true}>*/}
+            {/*    {(droppableProvided, snapshot) => (*/}
+            {/*        <div*/}
+            {/*            className="p-d-flex"*/}
+            {/*            ref={droppableProvided.innerRef}>*/}
+            {/*            <Draggable*/}
+            {/*                draggableId='section'*/}
+            {/*                index={0}>*/}
+            {/*                {(draggableProvided, snapshot) => (*/}
+            {/*                    <React.Fragment>*/}
+            {/*                        <div ref={draggableProvided.innerRef}*/}
+            {/*                             {...draggableProvided.draggableProps}*/}
+            {/*                             {...draggableProvided.dragHandleProps}*/}
+            {/*                             className={`${snapshot.isDragging ? 'input-dragging' : ''}`}>*/}
+            {/*                            <Component componentType={SectionType.DEFAULT} />*/}
+            {/*                        </div>*/}
+            {/*                        {snapshot.isDragging && (*/}
+            {/*                            <div*/}
+            {/*                                className="input-clone">*/}
+            {/*                                <Component componentType={SectionType.DEFAULT} />*/}
+            {/*                            </div>*/}
+            {/*                        )}*/}
+            {/*                    </React.Fragment>*/}
+            {/*                )}*/}
+            {/*            </Draggable>*/}
+            {/*        </div>*/}
+            {/*    )}*/}
+            {/*</Droppable>*/}
+
+
+            <Droppable droppableId="inputSelector" type="inputs" isDropDisabled={true} isCombineEnabled={false}>
+                {(droppableProvided, snapshot) => (
+                    <React.Fragment>
+                        <div className='component-selector'
+                             ref={droppableProvided.innerRef}>
+                            {componentTypes.map((componentType, index) => ComponentDraggable({componentType: componentType, index}))}
                         </div>
-                    )}
-                </Droppable>
+                        {droppableProvided.placeholder}
+                    </React.Fragment>
+                )}
+            </Droppable>
 
-            </div>
-
-
-            <div className='input-selector'>
-                <Droppable droppableId="inputSelector" type="inputs" isDropDisabled={true}>
-                    {(droppableProvided, snapshot) => (
-                        <div
-                            className="p-d-flex p-flex-column"
-                            ref={droppableProvided.innerRef}>
-                            {Object.values(InputType).map((inputType, index) => // @ts-ignore
-                                (
-                                    <Draggable
-                                        key={inputType}
-                                        draggableId={inputType}
-                                        index={index}>
-                                        {(draggableProvided, snapshot) => (
-                                            <React.Fragment>
-                                                <div ref={draggableProvided.innerRef}
-                                                     {...draggableProvided.draggableProps}
-                                                     {...draggableProvided.dragHandleProps}
-                                                     className={`p-mb-2 p-p-2 p-shadow-2 ${snapshot.isDragging ? 'input-dragging' : ''}`}>
-                                                    <ComponentIcon componentType={inputType} />
-                                                    <span className={'p-text-nowrap'}>{title(inputType)}</span>
-                                                </div>
-                                                {snapshot.isDragging && (
-                                                    <div
-                                                        className="p-mb-2 p-p-2 p-shadow-2 input-clone">
-                                                        <ComponentIcon componentType={inputType} />
-                                                        <span className={'p-text-nowrap'}>{title(inputType)}</span>
-                                                    </div>
-                                                )}
-                                            </React.Fragment>
-                                        )}
-                                    </Draggable>
-                                )
-                            )}
-                        </div>
-                    )}
-                </Droppable>
-
-            </div>
-        </React.Fragment>
+        </div>
     );
 };

@@ -19,7 +19,7 @@ import {v4 as uuidv4} from 'uuid';
 
 import {Input, UniquelyIdentifiable} from "@trrf/form-definition";
 import {Menubar} from 'primereact/menubar';
-import ComponentIcon from "./ComponentIcon";
+import Component from "./Component";
 import {confirmDialog} from 'primereact/confirmdialog';
 
 //https://codesandbox.io/s/40p81qy7v0?file=/index.js:1751-1776
@@ -108,7 +108,7 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
             <div className={className}  {...dragHandleProps}>
                 <div className='p-d-flex p-ai-center'>
                     <div className="p-mr-3">
-                        <ComponentIcon componentType={type}/>
+                        <Component componentType={type}/>
                     </div>
                     <div className={titleClassName}>{label || name}</div>
                 </div>

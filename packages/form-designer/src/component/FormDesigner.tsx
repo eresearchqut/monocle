@@ -105,7 +105,7 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
             <div className="p-grid form-designer" id="form-designer">
                 <div className="p-col-12 p-lg-1 p-md-2">
                     <Sticky enableTransforms={false}>
-                        <ComponentSelector/>
+                        <ComponentSelector componentTypes={Object.values(InputType)}/>
                     </Sticky>
                 </div>
                 <div className="p-col-12 p-lg-8 p-md-7">

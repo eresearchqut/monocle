@@ -9,9 +9,6 @@ import {withJsonFormsCellProps} from '@jsonforms/react';
 import merge from "lodash/merge";
 import SignaturePad from 'signature_pad';
 import {Image} from 'primereact/image';
-
-import {MenuItem} from "primereact/menuitem";
-import {Menubar} from 'primereact/menubar';
 import {useResizeDetector} from 'react-resize-detector';
 import {trimCanvas} from "../utils/trimCanvas";
 

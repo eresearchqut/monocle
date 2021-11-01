@@ -1,7 +1,7 @@
 import React, {FunctionComponent, useState, useEffect} from 'react';
 import {FormDesignerCanvas} from './FormDesignerCanvas';
 import {FormPreview} from './FormPreview';
-import {ComponentSelector} from './ComponentSelector';
+import ComponentSelector from './ComponentSelector';
 
 import {Form, Input, InputType, Section, SectionType} from '@trrf/form-definition';
 import {ErrorObject} from 'ajv';
@@ -102,16 +102,16 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
 
         <DragDropContext onDragEnd={onDragEnd}>
 
-            <div className="p-grid form-designer" id="form-designer">
-                <div className="p-col-12 p-lg-1 p-md-2">
-                    <Sticky enableTransforms={false}>
+            <div className="p-d-flex form-designer" id="form-designer">
+                <div style={{width: '8em'}}>
+                    {/*<Sticky enableTransforms={false}>*/}
                         <ComponentSelector componentTypes={Object.values(InputType)}/>
-                    </Sticky>
+                    {/*</Sticky>*/}
                 </div>
-                <div className="p-col-12 p-lg-8 p-md-7">
+                <div className='p-mr-4' >
                     <FormDesignerCanvas definition={formDefinition} onChange={handleDefinitionChange} locale={locale}/>
                 </div>
-                <div className="p-col-12 p-lg-3">
+                <div >
                     <FormPreview definition={formDefinition} data={formData} onChange={handleDataChange}
                                  locale={locale}/>
                 </div>

@@ -1,16 +1,3 @@
-.component-selector {
-
-
-}
-
-
-.component-selector {
-
-  .component-selector-clone {
-    display: none !important;
-  }
-
-  .component-selector-dragging {
-    opacity: revert;
-  }
+.component-draggable {
+  user-select: none;
 }

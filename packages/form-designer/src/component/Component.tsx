@@ -22,6 +22,7 @@ import {InputType, SectionType} from "@trrf/form-definition";
 import startCase from "lodash/startCase";
 import uniqueId from 'lodash/uniqueId';
 import './component.scss';
+import {DraggableProvided} from "react-beautiful-dnd";
 
 
 const iconMap: Map<InputType | SectionType, IconDefinition> = new Map<InputType | SectionType, IconDefinition>([
@@ -43,18 +44,29 @@ const iconMap: Map<InputType | SectionType, IconDefinition> = new Map<InputType 
 
 export interface ComponentProps {
     componentType: InputType | SectionType
+    draggableProvided?: DraggableProvided
 }
 
-export const Component: FunctionComponent<ComponentProps> = ({componentType}) => {
+export const Component: FunctionComponent<ComponentProps> = ({componentType, draggableProvided}) => {
 
     const title = startCase(componentType || '');
     const id = uniqueId(componentType);
+    const style = Object.assign({width: '4em', height: '4em'}, draggableProvided?.draggableProps.style);
+    const baseClasses = 'p-d-inline-flex p-flex-column p-jc-center p-button p-button-outlined p-m-1 '
+    const className = draggableProvided ? `${baseClasses}  component-draggable` : baseClasses
 
     return (
-        <div className='p-d-inline-flex p-flex-column p-jc-center p-button p-button-outlined component' style={{width: '6em', height: '6em'}} title={title} aria-label={title}>
+        <div
+            ref={draggableProvided?.innerRef}
+            {...draggableProvided?.draggableProps}
+            {...draggableProvided?.dragHandleProps}
+            style={style}
+            className={className}
+            title={title}
+            aria-label={title}>
             <FontAwesomeIcon icon={iconMap.get(componentType) || faQuestion}  aria-labelledby={id}
-                             size="2x" fixedWidth/>
-            <label id={id} style={{width: '5em'}} className='p-text-center p-text-truncate p-mt-2 p-ml-2 p-mr-2'>{title}</label>
+                              fixedWidth />
+            {/*<label id={id} style={{width: '4em', fontSize: '0.8em'}} className='p-text-center p-text-light p-text-truncate p-mt-2 p-ml-2 p-mr-2'>{title}</label>*/}
         </div>
     );
 };

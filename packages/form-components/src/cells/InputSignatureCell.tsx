@@ -7,15 +7,20 @@ import {
 } from '@jsonforms/core';
 import {withJsonFormsCellProps} from '@jsonforms/react';
 import merge from "lodash/merge";
-import SignaturePad from 'react-signature-canvas';
+import SignaturePad from 'signature_pad';
 import {Image} from 'primereact/image';
-import {SignaturePadOptions} from "signature_pad";
+
 import {MenuItem} from "primereact/menuitem";
 import {Menubar} from 'primereact/menubar';
+import {useResizeDetector} from 'react-resize-detector';
+import {trimCanvas} from "../utils/trimCanvas";
 
-export interface InputSignatureCellOptions extends HTMLCanvasElement, SignaturePadOptions {
+import {Button} from 'primereact/button';
+
+import './signature.scss';
+
+export interface InputSignatureCellOptions {
     mimeType?: 'image/png' | 'image/jpg' | 'image/svg+xml'; // default  'image/png',
-    clearOnResize?: boolean
 }
 
 export const InputSignatureCell = (props: CellProps) => {
@@ -26,84 +31,67 @@ export const InputSignatureCell = (props: CellProps) => {
         uischema,
         path,
         handleChange,
-        visible = true,
-        isValid = true
+        enabled = true,
+        visible = true
     } = props;
 
-    const [editModeEnabled, setEditModeEnabled] = useState<boolean>(false);
 
-    const signaturePad = useRef<SignaturePad>(null);
+    const {width, height, ref} = useResizeDetector();
+    const canvas = useRef<HTMLCanvasElement>(null);
+
+    const [editing, setEditing] = useState<boolean>(!data);
 
     useEffect(() => {
-        signaturePad.current?.fromDataURL(data);
-    }, [signaturePad, editModeEnabled]);
+        if (enabled && editing && ref.current && canvas.current && width && height) {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.current.width = width * ratio - 2;
+            new SignaturePad(canvas.current, {
+                // It's Necessary to use an opaque color when saving image as JPEG;
+                // this option can be omitted if only saving as PNG or SVG
+                backgroundColor: 'rgb(255, 255, 255)'
+            });
+        }
+    }, [editing, ref, width, height, canvas]);
 
     if (!visible) {
         return null;
     }
 
     const inputSignatureCellOptions = merge({}, config, uischema.options) as InputSignatureCellOptions;
-    const {mimeType} = inputSignatureCellOptions
-    const className = isValid ? undefined : 'p-invalid';
+    const {mimeType} = inputSignatureCellOptions;
 
     const save = () => {
-        handleChange(path, signaturePad.current?.toDataURL(mimeType))
-        setEditModeEnabled(false);
+        if (canvas?.current) {
+            trimCanvas(canvas.current);
+            handleChange(path, canvas.current.toDataURL(mimeType));
+        }
+        setEditing(false);
     }
 
-    const actionsMenu: MenuItem[] = [
-
-        {
-            label: 'Save',
-            icon: 'pi pi-save',
-            command: save
-        },
-        {
-            label: 'Reset',
-            icon: 'pi pi-refresh',
-            command: () => {
-                signaturePad.current?.clear()
-                signaturePad.current?.fromDataURL(data)
-            }
-
-        },
-        {
-            label: 'Clear',
-            icon: 'pi pi-times',
-            command: () => signaturePad.current?.clear()
-        }
-    ];
-
-    const editMenu: MenuItem[] = [
-        {
-            label: 'Sign',
-            icon: 'pi pi-pencil',
-            command: () => setEditModeEnabled(true)
-        }
-    ];
-
-
-    const style = {
-        color: '#000000',
-        border: '1px solid #000000',
-        ':hover': {
-            color: '#ffffff'
-        }
-    };
-
+    if (editing) {
+        return (
+            <div className={'signature-container'} ref={ref}>
+                <canvas ref={canvas}/>
+                <Button label="Save" icon="pi pi-save" className="p-button-outlined"
+                        onClick={save}/>
+                <Button label="Cancel" className="p-button-outlined p-ml-1" icon="pi pi-times"
+                        onClick={() => setEditing(false)}/>
+            </div>
+        )
+    }
 
     return (
-        <React.Fragment>
-            <Menubar model={actionsMenu}/>
-            <div style={style}>
-                <SignaturePad ref={signaturePad}
-                              canvasProps={{className: 'signature-canvas'}}
-                              clearOnResize={false}
-                />
-            </div>
-
-        </React.Fragment>
+        <div className="p-d-flex p-flex-column" ref={ref}>
+            <Image src={data} />
+            {enabled &&
+                <div>
+                    <Button label="Sign" className="p-button-outlined p-mt-1" icon="pi pi-pencil"
+                            onClick={() => setEditing(true)}/>
+                </div>
+            }
+        </div>
     )
+
 }
 
 

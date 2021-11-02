@@ -14,6 +14,7 @@ import {
 
 import {Droppable, Draggable, DraggableProvided} from 'react-beautiful-dnd';
 import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType} from "primereact/panel";
+
 import {MenuItem} from "primereact/menuitem";
 import {v4 as uuidv4} from 'uuid';
 
@@ -22,7 +23,9 @@ import {Menubar} from 'primereact/menubar';
 import Component from "./Component";
 import {confirmDialog} from 'primereact/confirmdialog';
 
-//https://codesandbox.io/s/40p81qy7v0?file=/index.js:1751-1776
+
+import {Ripple} from 'primereact/ripple';
+
 
 export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                        id,
@@ -55,46 +58,32 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
 
         const enableMoveUp = index != 0;
         const enableMoveDown = index < inputs.length - 1;
-
         const menuOptions: MenuItem[] = [
             {
-                icon: 'pi pi-fw pi-cog',
-                items: [
-                    collapsed ? {
-                        label: 'Edit Input',
-                        icon: 'pi pi-pencil',
-                        command: handleToggle(input)
-                    } : {
-                        label: 'Minimise Section',
-                        icon: 'pi pi-window-maximize',
-                        command: handleToggle(input)
-                    },
-                    {
-                        label: 'Copy Input',
-                        icon: 'pi pi-copy',
-                        command: addItem(path, {...input, id: uuidv4()}),
-                    },
-                    removeItems ? {
-                        label: 'Remove Input',
-                        icon: 'pi pi-times-circle',
-                        command: () => confirmDialog({
-                            message: 'Are you sure?',
-                            icon: 'pi pi-exclamation-triangle',
-                            accept: removeItems(path, [index]),
-                            reject: () => null
-                        })
-                    } : [],
-                    ...enableMoveUp && moveUp ? [{
-                        label: 'Move Input Up',
-                        icon: 'pi pi-chevron-circle-up',
-                        command: moveUp(path, index),
-                    }] : [],
-                    ...enableMoveDown && moveDown ? [{
-                        label: 'Move Input Down',
-                        icon: 'pi pi-chevron-circle-down',
-                        command: moveDown(path, index),
-                    }] : []]
-            }
+                label: 'Copy Input',
+                icon: 'pi pi-copy',
+                command: addItem(path, {...input, id: uuidv4()}),
+            },
+            removeItems ? {
+                label: 'Remove Input',
+                icon: 'pi pi-times-circle',
+                command: () => confirmDialog({
+                    message: 'Are you sure?',
+                    icon: 'pi pi-exclamation-triangle',
+                    accept: removeItems(path, [index]),
+                    reject: () => null
+                })
+            } : [],
+            ...enableMoveUp && moveUp ? [{
+                label: 'Move Input Up',
+                icon: 'pi pi-chevron-circle-up',
+                command: moveUp(path, index),
+            }] : [],
+            ...enableMoveDown && moveDown ? [{
+                label: 'Move Input Down',
+                icon: 'pi pi-chevron-circle-down',
+                command: moveDown(path, index),
+            }] : []
         ];
 
         return <Menubar model={menuOptions}/>
@@ -105,16 +94,26 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
                                  draggableProvided: DraggableProvided | undefined): PanelHeaderTemplateType => {
 
 
-        const {label, name, type} = input;
+        const {label, name, type, description} = input;
         const className = `${options.className} p-p-1`
+        const toggleIcon = options.collapsed ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
 
         return (
-            <Component className={className} componentType={type} draggableProvided={draggableProvided}
-                       label={label || name}/>
+
+            <div className={className}>
+                <Component componentType={type} draggableProvided={draggableProvided} description={description}
+                           label={label || name}/>
+
+                <button className={options.togglerClassName} onClick={options.onTogglerClick}>
+                    <span className={toggleIcon}></span>
+                    <Ripple/>
+                </button>
+            </div>
         );
     };
 
-    const panelContent = (index: number) => {
+
+    const panelContent = (input: Input, index: number) => {
         const childPath = composePaths(path, `${index}`);
         const foundUISchema =
             findUISchema(
@@ -127,13 +126,16 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
                 rootSchema,
             );
         return (
-            <JsonFormsDispatch
-                schema={schema}
-                uischema={foundUISchema}
-                path={childPath}
-                renderers={renderers}
-                cells={cells}
-            />
+            <React.Fragment>
+                <JsonFormsDispatch
+                    schema={schema}
+                    uischema={foundUISchema}
+                    path={childPath}
+                    renderers={renderers}
+                    cells={cells}
+                />
+                {menubar(input, index)}
+            </React.Fragment>
         );
     };
 
@@ -153,10 +155,11 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
                                 {(draggableProvided, snapshot) => (
                                     <Panel
                                         headerTemplate={(options) => panelHeaderTemplate(options, input, draggableProvided)}
+
                                         toggleable
                                         onToggle={handleToggle(input)}
                                         collapsed={isCollapsed(input)}>
-                                        {panelContent(index)}
+                                        {panelContent(input, index)}
                                     </Panel>
                                 )}
                             </Draggable>

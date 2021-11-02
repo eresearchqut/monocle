@@ -49,11 +49,11 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
                                  section: Section,
                                  draggableProvided: DraggableProvided | undefined): PanelHeaderTemplateType => {
 
-        const {label, name} = section;
+        const {label, name, description} = section;
         const className = `${options.className} p-p-1`
 
         return (
-            <Component className={className} componentType={SectionType.DEFAULT} draggableProvided={draggableProvided} label={label || name}/>
+            <Component className={className} componentType={SectionType.DEFAULT} draggableProvided={draggableProvided} label={label || name} description={description}/>
         );
     };
 

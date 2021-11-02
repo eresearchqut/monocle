@@ -109,7 +109,8 @@ export interface ComponentProps {
     label?: string
     description?: string
     draggableProvided?: DraggableProvided,
-    className?: string
+    className?: string,
+
 }
 
 export const Component: FunctionComponent<ComponentProps> = ({

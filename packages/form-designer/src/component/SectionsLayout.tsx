@@ -60,7 +60,7 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
     const menubar = (section: Section, index: number) => {
 
         const enableMoveUp = index != 0;
-        const enableMoveDown = index < inputs.length - 1;
+        const enableMoveDown = index < sections.length - 1;
 
         const menuOptions: MenuItem[] = [
             {

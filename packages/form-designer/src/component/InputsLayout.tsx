@@ -153,7 +153,8 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
                                 {(draggableProvided, snapshot) => (
                                     <Panel
                                         headerTemplate={(options) => panelHeaderTemplate(options, input, draggableProvided)}
-                                        toggleable onToggle={handleToggle(input)}
+                                        toggleable
+                                        onToggle={handleToggle(input)}
                                         collapsed={isCollapsed(input)}>
                                         {panelContent(index)}
                                     </Panel>

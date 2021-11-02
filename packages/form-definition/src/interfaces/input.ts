@@ -21,7 +21,6 @@ export enum InputType {
     TIME = 'time'
 }
 
-
 export interface AbstractInput extends Typed<InputType>, Named, UniquelyIdentifiable, Described, Labelled, Requireable {
 
 }

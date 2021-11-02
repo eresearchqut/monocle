@@ -14,28 +14,28 @@ const ComponentSelector: FunctionComponent<ComponentSelectorProps> = ({component
     return (
 
 
-            <Droppable droppableId="inputSelector" type="inputs" isDropDisabled={true} >
-                {(droppableProvided, snapshot) => (
-                    <div ref={droppableProvided.innerRef}>
-                        {componentTypes.map((componentType, index) =>
-                            <Draggable
-                                key={componentType}
-                                draggableId={componentType}
-                                index={index}>
-                                {(draggableProvided, snapshot) => (
-                                    <React.Fragment>
-                                        <Component draggableProvided={draggableProvided} componentType={componentType}/>
-                                        {snapshot.isDragging && (
-                                            <Component componentType={componentType}/>
-                                        )}
-                                    </React.Fragment>
-                                )}
-                            </Draggable>
-                        )}
-                        {droppableProvided.placeholder}
-                    </div>
-                )}
-            </Droppable>
+        <Droppable droppableId="inputSelector" type="inputs" isDropDisabled={true}>
+            {(droppableProvided, snapshot) => (
+                <div ref={droppableProvided.innerRef} className='p-d-flex p-flex-column'>
+                    {componentTypes.map((componentType, index) =>
+                        <Draggable
+                            key={componentType}
+                            draggableId={componentType}
+                            index={index}>
+                            {(draggableProvided, snapshot) => (
+                                <React.Fragment>
+                                    <Component draggableProvided={draggableProvided} componentType={componentType}/>
+                                    {snapshot.isDragging && (
+                                        <Component componentType={componentType}/>
+                                    )}
+                                </React.Fragment>
+                            )}
+                        </Draggable>
+                    )}
+                    {droppableProvided.placeholder}
+                </div>
+            )}
+        </Droppable>
 
     );
 };

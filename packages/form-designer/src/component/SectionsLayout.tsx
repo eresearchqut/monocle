@@ -9,7 +9,7 @@ import {
 } from '@jsonforms/core';
 import {JsonFormsDispatch, withJsonFormsArrayControlProps} from '@jsonforms/react';
 
-import {Draggable, DraggableProvidedDragHandleProps, Droppable} from 'react-beautiful-dnd';
+import {Draggable, DraggableProvided, DraggableProvidedDragHandleProps, Droppable} from 'react-beautiful-dnd';
 import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType} from "primereact/panel";
 import {MenuItem} from "primereact/menuitem";
 
@@ -46,7 +46,7 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
     const panelHeaderTemplate = (options: PanelHeaderTemplateOptions,
                                  index: number,
                                  section: Section,
-                                 dragHandleProps: DraggableProvidedDragHandleProps | undefined): PanelHeaderTemplateType => {
+                                 draggableProvided: DraggableProvided | undefined): PanelHeaderTemplateType => {
         const titleClassName = `${options.titleClassName} p-pl-1 pi-mr-2`;
         const className = `${options.className}`;
         const enableMoveUp = index != 0;
@@ -85,12 +85,13 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
         ];
 
         return (
-            <div className={className} {...dragHandleProps}>
+            <div className={className}>
                 <div className='p-d-flex p-ai-center'>
-                    <Component componentType={SectionType.DEFAULT}/>
+                    <Component componentType={SectionType.DEFAULT} iconOnly={true}
+                               draggableProvided={draggableProvided}/>
                     <div className={titleClassName}>{label || name}</div>
                 </div>
-                <Menubar model={menuOptions} />
+                <Menubar model={menuOptions}/>
 
             </div>
         );
@@ -135,15 +136,14 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
                                     draggableId={section.id}
                                     index={index}>
                                     {(draggableProvided, snapshot) => (
-                                        <div ref={draggableProvided.innerRef}
-                                             {...draggableProvided.draggableProps} className='section'>
-                                            <Panel
-                                                headerTemplate={(options) => panelHeaderTemplate(options, index, section, draggableProvided.dragHandleProps)}
-                                                toggleable onToggle={handleToggle(section)}
-                                                collapsed={isCollapsed(section)}>
-                                                {panelContent(index)}
-                                            </Panel>
-                                        </div>
+
+                                        <Panel
+                                            headerTemplate={(options) => panelHeaderTemplate(options, index, section, draggableProvided)}
+                                            toggleable onToggle={handleToggle(section)}
+                                            collapsed={isCollapsed(section)}>
+                                            {panelContent(index)}
+                                        </Panel>
+
                                     )}
                                 </Draggable>
                             ))}

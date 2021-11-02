@@ -40,8 +40,7 @@ export const InputSignatureCell = (props: CellProps) => {
 
     useEffect(() => {
         if (enabled && editing && ref.current && canvas.current && width && height) {
-            const ratio = Math.max(window.devicePixelRatio || 1, 1);
-            canvas.current.width = width * ratio - 2;
+            canvas.current.width = width - 10;
             new SignaturePad(canvas.current, {
                 // It's Necessary to use an opaque color when saving image as JPEG;
                 // this option can be omitted if only saving as PNG or SVG
@@ -67,8 +66,10 @@ export const InputSignatureCell = (props: CellProps) => {
 
     if (editing) {
         return (
-            <div className={'signature-container'} ref={ref}>
-                <canvas ref={canvas}/>
+            <div className={'p-d-flex-column'}>
+                <div className={'signature-container'} ref={ref}>
+                    <canvas ref={canvas}/>
+                </div>
                 <div className='p-d-inline-flex'>
                     <Button label="Save" icon="pi pi-save" className="p-button-outlined"
                             onClick={save}/>
@@ -80,8 +81,10 @@ export const InputSignatureCell = (props: CellProps) => {
     }
 
     return (
-        <div ref={ref}>
-            <Image src={data}/>
+        <div ref={ref} className={'p-d-flex-column'}>
+            <div className={'signature-image'}>
+                <Image src={data}/>
+            </div>
             {enabled &&
             <div className='p-d-inline-flex'>
                 <Button label="Sign" className="p-button-outlined p-mt-1" icon="pi pi-pencil"

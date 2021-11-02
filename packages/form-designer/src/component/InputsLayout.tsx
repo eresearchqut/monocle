@@ -108,7 +108,7 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
             <div className={className}  {...dragHandleProps}>
                 <div className='p-d-flex p-ai-center'>
                     <div className="p-mr-3">
-                        <Component componentType={type}/>
+                        <Component componentType={type} iconOnly={true}/>
                     </div>
                     <div className={titleClassName}>{label || name}</div>
                 </div>

@@ -24,49 +24,125 @@ import uniqueId from 'lodash/uniqueId';
 import './component.scss';
 import {DraggableProvided} from "react-beautiful-dnd";
 
+export interface ComponentMetadata {
+    icon: IconDefinition
+    label: string,
+    description: string
+}
 
-const iconMap: Map<InputType | SectionType, IconDefinition> = new Map<InputType | SectionType, IconDefinition>([
-    [SectionType.DEFAULT, faLayerGroup],
-    [InputType.BOOLEAN, faCheckSquare],
-    [InputType.CURRENCY, faMoneyBill],
-    [InputType.DATE, faCalendar],
-    [InputType.DATE_TIME, faCalendarAlt],
-    [InputType.MARKDOWN, faMarkdown],
-    [InputType.MULTILINE_TEXT, faTextHeight],
-    [InputType.NUMERIC, faSortNumericUp],
-    [InputType.OPTIONS, faClipboardCheck],
-    [InputType.RANGE, faSlidersH],
-    [InputType.SIGNATURE, faSignature],
-    [InputType.SVG_MAP, faVectorSquare],
-    [InputType.TEXT, faTextWidth],
-    [InputType.TIME, faClock]
+
+const iconMap: Map<InputType | SectionType, ComponentMetadata> = new Map<InputType | SectionType, ComponentMetadata>([
+    [SectionType.DEFAULT, {
+        icon: faLayerGroup,
+        label: 'Section',
+        description: 'A section that contains one or more form elements'
+    }],
+    [InputType.BOOLEAN, {
+        icon: faCheckSquare,
+        label: 'Checkbox',
+        description: 'A single checkbox, suitable for yes or no answers'
+    }],
+    [InputType.CURRENCY, {
+        icon: faMoneyBill,
+        label: 'Currency',
+        description: 'Monetary amount'
+    }],
+    [InputType.DATE, {
+        icon: faCalendar,
+        label: 'Date',
+        description: 'A date picker, does not include time selection'
+    }],
+    [InputType.DATE_TIME, {
+        icon: faCalendarAlt,
+        label: 'Date Time',
+        description: 'A date picker that includes time selection'
+    }],
+    [InputType.MARKDOWN, {
+        icon: faMarkdown,
+        label: 'Markdown',
+        description: 'Rich text editor that support markdown syntax'
+    }],
+    [InputType.MULTILINE_TEXT, {
+        icon: faTextHeight,
+        label: 'Multiline Text',
+        description: 'Multiline plain text input'
+    }],
+    [InputType.NUMERIC, {
+        icon: faSortNumericUp,
+        label: 'Number',
+        description: 'Numeric input'
+    }],
+    [InputType.OPTIONS, {
+        icon: faClipboardCheck,
+        label: 'Options',
+        description: 'Option input that supports single or multiple choice'
+    }],
+    [InputType.RANGE, {
+        icon: faSlidersH,
+        label: 'Range',
+        description: 'Numeric range selection'
+    }],
+    [InputType.SIGNATURE, {
+        icon: faSignature,
+        label: 'Signature',
+        description: 'Digital signature input'
+    }],
+    [InputType.SVG_MAP, {
+        icon: faVectorSquare,
+        label: 'Image map',
+        description: 'Select an option from an image. Single or multiselect'
+    }],
+    [InputType.TEXT, {
+        icon: faTextWidth,
+        label: 'Text',
+        description: 'Single line text input'
+    }],
+    [InputType.TIME, {
+        icon: faClock,
+        label: 'Time',
+        description: 'Time picker (without date)'
+    }]
+
 ]);
+
 
 export interface ComponentProps {
     componentType: InputType | SectionType
+    iconOnly?: boolean
     draggableProvided?: DraggableProvided
 }
 
-export const Component: FunctionComponent<ComponentProps> = ({componentType, draggableProvided}) => {
+export const Component: FunctionComponent<ComponentProps> = ({
+                                                                 componentType,
+                                                                 iconOnly,
+                                                                 draggableProvided
+                                                             }) => {
 
-    const title = startCase(componentType || '');
-    const id = uniqueId(componentType);
-    const style = Object.assign({width: '4em', height: '4em'}, draggableProvided?.draggableProps.style);
-    const baseClasses = 'p-d-inline-flex p-flex-column p-jc-center p-button p-button-outlined p-m-1 '
-    const className = draggableProvided ? `${baseClasses}  component-draggable` : baseClasses
+
+    const componentMetadata = iconMap.get(componentType)
+
 
     return (
         <div
             ref={draggableProvided?.innerRef}
             {...draggableProvided?.draggableProps}
             {...draggableProvided?.dragHandleProps}
-            style={style}
-            className={className}
-            title={title}
-            aria-label={title}>
-            <FontAwesomeIcon icon={iconMap.get(componentType) || faQuestion}  aria-labelledby={id}
-                              fixedWidth />
-            {/*<label id={id} style={{width: '4em', fontSize: '0.8em'}} className='p-text-center p-text-light p-text-truncate p-mt-2 p-ml-2 p-mr-2'>{title}</label>*/}
+            style={draggableProvided?.draggableProps.style}
+            className={'p-d-flex'}>
+            <FontAwesomeIcon className='p-button p-button-outlined'
+
+                             title={componentMetadata?.label}
+                             icon={componentMetadata?.icon || faQuestion}
+                             style={{width: '4em', height: '4em'}}
+                             fixedWidth/>
+            {!iconOnly &&
+            <div className='p-d-inline-flex p-flex-column p-ml-2 p-mt-2'>
+                <label className={'p-text-bold'}>{componentMetadata?.label}</label>
+                <small className={'p-text-light'}>{componentMetadata?.description}</small>
+            </div>
+            }
+
+
         </div>
     );
 };

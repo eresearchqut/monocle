@@ -14,12 +14,12 @@ import {JsonFormsCore, RankedTester} from '@jsonforms/core';
 import AnyOfLayout, {anyOfLayoutTester} from './AnyOfLayout';
 import VerticalLayout, {verticalLayoutTester} from './VerticalLayout';
 import OptionsLayout, {optionsLayoutTester} from "./OptionsLayout";
-import ComponentLayout, {componentLayoutTester} from "./ComponentLayout";
+import ComponentLayout, {componentsLayoutTester} from "./ComponentsLayout";
 
 const renderers: { tester: RankedTester; renderer: any }[] = [
     {tester: optionsLayoutTester, renderer: OptionsLayout},
     {tester: anyOfLayoutTester, renderer: AnyOfLayout},
-    {tester: componentLayoutTester, renderer: ComponentLayout},
+    {tester: componentsLayoutTester, renderer: ComponentLayout},
     {tester: inputControlTester, renderer: InputControl},
     {tester: inputBooleanControlTester, renderer: InputBooleanControl},
     {tester: verticalLayoutTester, renderer: VerticalLayout},

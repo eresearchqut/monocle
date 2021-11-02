@@ -26,7 +26,7 @@ import {confirmDialog} from 'primereact/confirmdialog';
 
 import {Ripple} from 'primereact/ripple';
 
-export const ComponentLayout: FunctionComponent<ArrayControlProps> = ({
+export const ComponentsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                           id,
                                                                           data,
                                                                           path,
@@ -184,9 +184,9 @@ export const isComponentsLayout = and(
     isObjectArrayWithNesting, or(scopeEndsWith('inputs'), scopeEndsWith('sections'))
 );
 
-export const componentLayoutTester: RankedTester = rankWith(
+export const componentsLayoutTester: RankedTester = rankWith(
     2,
     isComponentsLayout,
 );
 
-export default withJsonFormsArrayControlProps(ComponentLayout);
+export default withJsonFormsArrayControlProps(ComponentsLayout);

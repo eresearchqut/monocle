@@ -16,6 +16,7 @@ import {MenuItem} from "primereact/menuitem";
 import {Section, SectionType, UniquelyIdentifiable} from "@trrf/form-definition";
 import {Menubar} from 'primereact/menubar';
 import Component from "./Component";
+import {v4 as uuidv4} from "uuid";
 
 export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                          data,
@@ -48,10 +49,19 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
                                  section: Section,
                                  draggableProvided: DraggableProvided | undefined): PanelHeaderTemplateType => {
 
-        const enableMoveUp = index != 0;
-        const enableMoveDown = index < sections.length - 1;
         const {label, name} = section;
-        const collapsed = isCollapsed(section);
+        const className = `${options.className} p-p-1`
+
+        return (
+            <Component className={className} componentType={SectionType.DEFAULT} draggableProvided={draggableProvided} label={label || name}/>
+        );
+    };
+
+    const menubar = (section: Section, index: number) => {
+
+        const enableMoveUp = index != 0;
+        const enableMoveDown = index < inputs.length - 1;
+
         const menuOptions: MenuItem[] = [
             {
                 icon: 'pi pi-fw pi-cog',
@@ -83,10 +93,10 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
             }
         ];
 
-        return (
-            <Component className={options.className} componentType={SectionType.DEFAULT} draggableProvided={draggableProvided} label={label || name}/>
-        );
-    };
+
+        return <Menubar model={menuOptions}/>
+    }
+
 
     const panelContent = (index: number) => {
 
@@ -114,7 +124,6 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
     ;
 
     return (
-        <React.Fragment>
             <Droppable droppableId={path} type='sections'>
                 {(droppableProvided, snapshot) => (
                     <div ref={droppableProvided.innerRef}
@@ -140,8 +149,6 @@ export const SectionsLayout: FunctionComponent<ArrayControlProps> = ({
                     </div>
                 )}
             </Droppable>
-
-        </React.Fragment>
     );
 };
 

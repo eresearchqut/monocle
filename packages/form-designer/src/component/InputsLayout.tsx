@@ -51,16 +51,11 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
         })
     };
 
-    const panelHeaderTemplate = (options: PanelHeaderTemplateOptions,
-                                 index: number,
-                                 input: Input,
-                                 draggableProvided: DraggableProvided | undefined): PanelHeaderTemplateType => {
+    const menubar = (input: Input, index: number) => {
 
         const enableMoveUp = index != 0;
         const enableMoveDown = index < inputs.length - 1;
-        const {label, name, type} = input;
 
-        const collapsed = isCollapsed(input);
         const menuOptions: MenuItem[] = [
             {
                 icon: 'pi pi-fw pi-cog',
@@ -102,10 +97,20 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
             }
         ];
 
+        return <Menubar model={menuOptions}/>
+    }
 
+    const panelHeaderTemplate = (options: PanelHeaderTemplateOptions,
+                                 input: Input,
+                                 draggableProvided: DraggableProvided | undefined): PanelHeaderTemplateType => {
+
+
+        const {label, name, type} = input;
+        const className = `${options.className} p-p-1`
 
         return (
-            <Component className={options.className} componentType={type} draggableProvided={draggableProvided} label={label || name}/>
+            <Component className={className} componentType={type} draggableProvided={draggableProvided}
+                       label={label || name}/>
         );
     };
 
@@ -134,34 +139,32 @@ export const InputsLayout: FunctionComponent<ArrayControlProps> = ({
 
 
     return (
-        <React.Fragment>
-            <Droppable droppableId={path} type='inputs'>
-                {(droppableProvided, snapshot) => (
-                    <div ref={droppableProvided.innerRef}
-                         {...droppableProvided.droppableProps}>
-                        {inputs.map((input: Input, index) =>
-                            (
-                                <Draggable
-                                    key={input.id}
-                                    draggableId={input.id}
-                                    index={index}>
-                                    {(draggableProvided, snapshot) => (
 
-                                        <Panel
-                                            headerTemplate={(options) => panelHeaderTemplate(options, index, input, draggableProvided)}
-                                            toggleable onToggle={handleToggle(input)}
-                                            collapsed={isCollapsed(input)}>
-                                            {panelContent(index)}
-                                        </Panel>
+        <Droppable droppableId={path} type='inputs'>
+            {(droppableProvided, snapshot) => (
+                <div ref={droppableProvided.innerRef}
+                     {...droppableProvided.droppableProps}>
+                    {inputs.map((input: Input, index) =>
+                        (
+                            <Draggable
+                                key={input.id}
+                                draggableId={input.id}
+                                index={index}>
+                                {(draggableProvided, snapshot) => (
+                                    <Panel
+                                        headerTemplate={(options) => panelHeaderTemplate(options, input, draggableProvided)}
+                                        toggleable onToggle={handleToggle(input)}
+                                        collapsed={isCollapsed(input)}>
+                                        {panelContent(index)}
+                                    </Panel>
+                                )}
+                            </Draggable>
+                        ))}
+                    {droppableProvided.placeholder}
+                </div>
+            )}
+        </Droppable>
 
-                                    )}
-                                </Draggable>
-                            ))}
-                        {droppableProvided.placeholder}
-                    </div>
-                )}
-            </Droppable>
-        </React.Fragment>
     );
 };
 

@@ -107,6 +107,7 @@ const componentDefaults: Map<InputType | SectionType, ComponentMetadata> =
 export interface ComponentProps {
     componentType: InputType | SectionType
     label?: string
+    description?: string
     draggableProvided?: DraggableProvided,
     className?: string
 }
@@ -115,13 +116,14 @@ export const Component: FunctionComponent<ComponentProps> = ({
                                                                  componentType,
                                                                  label,
                                                                  className,
+                                                                 description,
                                                                  draggableProvided
                                                              }) => {
 
 
     const metadata = componentDefaults.get(componentType);
     const title = label ? label : metadata?.label;
-    const description = label ? undefined : metadata?.description;
+    const guidance = description ? description : metadata?.description;
 
     return (
         <div
@@ -139,7 +141,7 @@ export const Component: FunctionComponent<ComponentProps> = ({
 
             <div className='p-d-inline-flex p-flex-column p-ml-2 p-mt-2'>
                 <label className={'p-text-bold'}>{title}</label>
-                {description && <small className={'p-text-light'}>{description}</small>}
+                {guidance && <small className={'p-text-light'}>{guidance}</small>}
             </div>
 
 

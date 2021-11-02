@@ -24,9 +24,9 @@ const ComponentSelector: FunctionComponent<ComponentSelectorProps> = ({component
                             index={index}>
                             {(draggableProvided, snapshot) => (
                                 <React.Fragment>
-                                    <Component draggableProvided={draggableProvided} componentType={componentType}/>
+                                    <Component draggableProvided={draggableProvided} componentType={componentType} className={'p-m-2'}/>
                                     {snapshot.isDragging && (
-                                        <Component componentType={componentType}/>
+                                        <Component componentType={componentType} className={'p-m-1'}/>
                                     )}
                                 </React.Fragment>
                             )}

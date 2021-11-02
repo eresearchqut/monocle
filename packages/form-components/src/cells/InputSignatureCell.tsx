@@ -40,7 +40,7 @@ export const InputSignatureCell = (props: CellProps) => {
 
     useEffect(() => {
         if (enabled && editing && ref.current && canvas.current && width && height) {
-            canvas.current.width = width - 10;
+            canvas.current.width = width - 2;
             new SignaturePad(canvas.current, {
                 // It's Necessary to use an opaque color when saving image as JPEG;
                 // this option can be omitted if only saving as PNG or SVG

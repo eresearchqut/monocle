@@ -110,6 +110,7 @@ export interface ComponentProps {
     description?: string
     draggableProvided?: DraggableProvided,
     className?: string,
+    children?: React.ReactNode
 
 }
 
@@ -118,7 +119,8 @@ export const Component: FunctionComponent<ComponentProps> = ({
                                                                  label,
                                                                  className,
                                                                  description,
-                                                                 draggableProvided
+                                                                 draggableProvided,
+                                                                 children
                                                              }) => {
 
 
@@ -145,7 +147,7 @@ export const Component: FunctionComponent<ComponentProps> = ({
                 {guidance && <small className={'p-text-light'}>{guidance}</small>}
             </div>
 
-
+            {children}
 
         </div>
     );

@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useState, useEffect} from 'react';
+import React, {FunctionComponent, useState} from 'react';
 import {FormDesignerCanvas} from './FormDesignerCanvas';
 import {FormPreview} from './FormPreview';
 import ComponentSelector from './ComponentSelector';

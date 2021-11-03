@@ -44,6 +44,19 @@ Default.args = {
     }
 }
 
+export const QueryMode = Template.bind({});
+QueryMode.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/cell`,
+        options: {
+            type: 'address',
+            mode: 'query'
+        }
+    }
+}
+
 export const Invalid = Template.bind({});
 Invalid.args = {
     ...Default.args,

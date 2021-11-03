@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {CellProps, isStringControl, optionIs, RankedTester, rankWith} from '@jsonforms/core';
+import {CellProps, optionIs, RankedTester, rankWith} from '@jsonforms/core';
 import {withJsonFormsCellProps} from '@jsonforms/react';
 import {InputText} from 'primereact/inputtext';
 import merge from 'lodash/merge';
@@ -16,6 +16,7 @@ import {Column} from "primereact/column";
 export interface InputAddressCellOptions {
     required?: boolean;
     focus?: boolean;
+    mode: 'query' | 'full'
 }
 
 export interface GeocodeAddressWithRoad extends GeocodeAddress {
@@ -50,11 +51,25 @@ export const InputAddressCell = (props: CellProps) => {
     } = props;
 
 
-    const {required} = merge({}, config, uischema?.options) as InputAddressCellOptions;
+    const {required, mode} = merge({}, config, uischema?.options) as InputAddressCellOptions;
     const className = isValid ? undefined : 'p-invalid';
 
+    const [query, setQuery] = useState<string | undefined>(data as string);
     const [address, setAddress] = useState<Address | undefined>(data as Address);
     const [verifiedAddresses, setVerifiedAddresses] = useState<Address[]>([]);
+
+    useEffect(() => {
+
+        if (query) {
+            let searchWithTimeout = setTimeout(() => {
+                search();
+            }, 800);
+
+            return () => clearTimeout(searchWithTimeout);
+        }
+
+
+    }, [query]);
 
     useEffect(() => {
         handleChange(path, address);
@@ -68,8 +83,12 @@ export const InputAddressCell = (props: CellProps) => {
         return null;
     }
 
-    const verify = () => {
-        const request: GeocodeRequest = {
+    const search = () => {
+        const request: GeocodeRequest = mode === 'query' ? {
+            q: query,
+            addressdetails: true,
+            limit: 10
+        } : {
             street: [address?.streetNumber, address?.street].filter((value) => value).join(' '),
             city: address?.city,
             state: address?.state,
@@ -104,6 +123,7 @@ export const InputAddressCell = (props: CellProps) => {
         const fieldId = `${id}-${fieldName}`;
         const label = startCase(fieldName);
 
+
         return (
             <div className={`p-field p-md-${columnWidth}`}>
                 <span className="p-float-label">
@@ -125,6 +145,27 @@ export const InputAddressCell = (props: CellProps) => {
 
     }
 
+    if (mode === 'query') {
+        return (<React.Fragment>
+            <InputText
+                value={query}
+                id={id}
+                className={className}
+                disabled={!enabled}
+                onChange={(e) => setQuery(e.target.value)}
+                aria-required={required}
+            />
+            <DataTable value={verifiedAddresses} onRowSelect={e => handleChange(path, e.data)} selectionMode={'single'}>
+                <Column field="streetNumber"></Column>
+                <Column field="street"></Column>
+                <Column field="suburb"></Column>
+                <Column field="city"></Column>
+                <Column field="state"></Column>
+                <Column field="postalCode"></Column>
+            </DataTable>
+        </React.Fragment>)
+
+    }
 
     return (
         <React.Fragment>
@@ -136,9 +177,8 @@ export const InputAddressCell = (props: CellProps) => {
                 {addressField('state', 4)}
                 {addressField('country', 4)}
                 {addressField('postalCode', 4)}
-
             </div>
-            <Button label={'Verify Address'} onClick={() => verify()} disabled={!enabled}/>
+            <Button label={'Search'} onClick={search} disabled={!enabled}/>
             <DataTable value={verifiedAddresses} onRowSelect={e => handleChange(path, e.data)} selectionMode={'single'}>
                 <Column field="streetNumber"></Column>
                 <Column field="street"></Column>

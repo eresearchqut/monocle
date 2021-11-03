@@ -1,23 +1,28 @@
 html {
-	font-size: 80%;
+  font-size: 80%;
 }
 
 
+.form-designer-canvas {
+  .p-col {
+    padding: 0.25rem;
+  }
 
-.form-designer {
+  .p-field {
+    margin-bottom: 0.5rem;
+  }
 
-	.form-designer-canvas {
-		.p-col {
-			padding: 0.25rem;
-		}
-		.p-field {
-			margin-bottom: 0.5rem;
-		}
-		.section {
-			margin-bottom: 1rem;
-		}
-		.p-fieldset-content {
-			padding: 0;
-		}
-	}
+  .section {
+    margin-bottom: 1rem;
+  }
+
+  .p-fieldset-content {
+    padding: 0;
+  }
+
+  .p-panel {
+    .p-panel-content {
+      padding: 0.9em;
+    }
+  }
 }

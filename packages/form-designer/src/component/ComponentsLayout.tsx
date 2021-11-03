@@ -27,23 +27,22 @@ import {confirmDialog} from 'primereact/confirmdialog';
 import {Ripple} from 'primereact/ripple';
 
 export const ComponentsLayout: FunctionComponent<ArrayControlProps> = ({
-                                                                          id,
-                                                                          data,
-                                                                          path,
-                                                                          schema,
-                                                                          uischema,
-                                                                          renderers,
-                                                                          cells,
-                                                                          rootSchema,
-                                                                          uischemas,
-                                                                          moveUp,
-                                                                          moveDown,
-                                                                          removeItems,
-                                                                          addItem
-                                                                      }) => {
+                                                                           id,
+                                                                           data,
+                                                                           path,
+                                                                           schema,
+                                                                           uischema,
+                                                                           renderers,
+                                                                           cells,
+                                                                           rootSchema,
+                                                                           uischemas,
+                                                                           moveUp,
+                                                                           moveDown,
+                                                                           removeItems,
+                                                                           addItem
+                                                                       }) => {
 
-        console.log(id, data, path, schema, uischema)
-
+    console.log(id, data, path, schema, uischema)
 
 
     const components = data as Array<Input | Section>;
@@ -95,7 +94,7 @@ export const ComponentsLayout: FunctionComponent<ArrayControlProps> = ({
             }] : []
         ];
 
-        return <Menubar model={menuOptions}/>
+        return <Menubar model={menuOptions} className={'p-p-0 p-m-0 p-mb-2'} style={{borderStyle: 'dashed'}}/>
     }
 
     const panelHeaderTemplate = (options: PanelHeaderTemplateOptions,
@@ -136,16 +135,15 @@ export const ComponentsLayout: FunctionComponent<ArrayControlProps> = ({
                 rootSchema,
             );
         return (
-            <React.Fragment>
-                <JsonFormsDispatch
-                    schema={schema}
-                    uischema={foundUISchema}
-                    path={childPath}
-                    renderers={renderers}
-                    cells={cells}
-                />
-                {menubar(component, index)}
-            </React.Fragment>
+
+            <JsonFormsDispatch
+                schema={schema}
+                uischema={foundUISchema}
+                path={childPath}
+                renderers={renderers}
+                cells={cells}
+            />
+
         );
     };
 
@@ -161,13 +159,17 @@ export const ComponentsLayout: FunctionComponent<ArrayControlProps> = ({
                                 draggableId={component.id}
                                 index={index}>
                                 {(draggableProvided, snapshot) => (
-                                    <Panel
-                                        headerTemplate={(options) => panelHeaderTemplate(options, component, draggableProvided)}
-                                        toggleable
-                                        onToggle={handleToggle(component)}
-                                        collapsed={isCollapsed(component)}>
-                                        {panelContent(component, index)}
-                                    </Panel>
+                                    <React.Fragment>
+                                        <Panel
+                                            className={'p-mt-2'}
+                                            headerTemplate={(options) => panelHeaderTemplate(options, component, draggableProvided)}
+                                            toggleable
+                                            onToggle={handleToggle(component)}
+                                            collapsed={isCollapsed(component)}>
+                                            {panelContent(component, index)}
+                                        </Panel>
+                                        {!isCollapsed(component) && menubar(component, index)}
+                                    </React.Fragment>
                                 )}
                             </Draggable>
                         ))}

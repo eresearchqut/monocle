@@ -6,6 +6,7 @@ import {Labelled} from "./labeled";
 import {UniquelyIdentifiable} from "./uniquelyIdentifiable";
 
 export enum InputType {
+    ADDRESS = 'address',
     BOOLEAN = 'boolean',
     CURRENCY = 'currency',
     DATE = 'date',
@@ -22,6 +23,17 @@ export enum InputType {
 }
 
 export interface AbstractInput extends Typed<InputType>, Named, UniquelyIdentifiable, Described, Labelled, Requireable {
+
+}
+
+
+/**
+ * @title Address
+ */
+export interface AddressInput extends AbstractInput {
+
+    type: InputType.ADDRESS;
+
 
 }
 
@@ -262,17 +274,17 @@ export interface Signature extends AbstractInput {
 /**
  * @title Input
  */
-export type Input =
-    TextInput
+export type Input = AddressInput
+    | BooleanInput
+    | CurrencyInput
+    | DateInput
+    | DateTimeInput
+    | MarkdownInput
     | MultilineTextInput
     | NumericInput
     | OptionsInput
     | RangeInput
-    | CurrencyInput
-    | BooleanInput
-    | DateInput
-    | TimeInput
-    | DateTimeInput
     | Signature
     | SvgMapInput
-    | MarkdownInput;
+    | TextInput
+    | TimeInput;

@@ -59,13 +59,13 @@ export const InputAddressCell = (props: CellProps) => {
 
         const request: GeocodeRequest =
             {
-                street: [address?.streetNumber, address?.street].filter((value) => value).join(' '),
+                street: [address?.streetNumber, address?.street].filter((value) => value)?.join(' '),
                 city: address?.city,
                 state: address?.state,
                 country: address?.country,
                 county: address?.suburb,
                 postalcode: address?.postalCode,
-                countrycodes: [countryCodes.join(',')],
+                countrycodes: countryCodes,
                 addressdetails: true,
                 limit: 50
             }

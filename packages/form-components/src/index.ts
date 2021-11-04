@@ -24,7 +24,7 @@ import {
     InputMarkdownCell,
     inputMarkdownCellTester,
     InputSignatureCell,
-    inputSignatureCellTester
+    inputSignatureCellTester, inputAddressCellTester, InputAddressCell
 } from './cells';;
 
 
@@ -48,6 +48,7 @@ export const renderers: { tester: RankedTester; renderer: any }[] = [
 ];
 
 export const cells: { tester: RankedTester; cell: any }[] = [
+    {tester: inputAddressCellTester, cell: InputAddressCell},
     {tester: inputCheckboxGroupCellTester, cell: InputCheckboxGroupCell},
     {tester: inputBooleanCellTester, cell: InputBooleanCell},
     {tester: inputCalendarCellTester, cell: InputCalendarCell},

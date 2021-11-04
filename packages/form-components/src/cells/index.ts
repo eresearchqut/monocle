@@ -1,3 +1,4 @@
+import InputAddressCell, {inputAddressCellTester} from './InputAddressCell';
 import InputBooleanCell, {inputBooleanCellTester} from './InputBooleanCell';
 import InputCalendarCell, {inputCalendarCellTester} from './InputCalendarCell';
 import InputCheckboxGroupCell, {inputCheckboxGroupCellTester} from './InputCheckboxGroupCell';
@@ -12,6 +13,8 @@ import InputSelectCell, {inputSelectCellTester} from './InputSelectCell';
 import InputSignatureCell, {inputSignatureCellTester} from './InputSignatureCell';
 
 export {
+    InputAddressCell,
+    inputAddressCellTester,
     InputCheckboxGroupCell,
     inputCheckboxGroupCellTester,
     InputMultiselectCell,

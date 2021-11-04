@@ -28,8 +28,7 @@ Template.bind({});
 export const Default = Template.bind({});
 Default.args = {
     data: {
-        "street": "Grove Street",
-        "country": "Australia"
+        "street": "Grove Street"
     },
     path: 'cell',
     schema: {
@@ -44,18 +43,20 @@ Default.args = {
     }
 }
 
-export const QueryMode = Template.bind({});
-QueryMode.args = {
+export const CountryCodes = Template.bind({});
+CountryCodes.args = {
     ...Default.args,
     uischema: {
         type: 'Control',
         scope: `#/properties/cell`,
         options: {
             type: 'address',
-            mode: 'query'
+            countryCodes: ['au', 'nz']
         }
     }
 }
+
+
 
 export const Invalid = Template.bind({});
 Invalid.args = {

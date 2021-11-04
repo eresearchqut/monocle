@@ -7,8 +7,7 @@ import startCase from 'lodash/startCase';
 import get from 'lodash/get';
 import set from 'lodash/set';
 
-import * as Nominatim from "nominatim-browser";
-import {GeocodeRequest, GeocodeAddress, NominatimResponse} from "nominatim-browser";
+import {geocode, GeocodeRequest, NominatimResponse} from "../client/nominatimClient";
 import {Button} from "primereact/button";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
@@ -16,11 +15,7 @@ import {Column} from "primereact/column";
 export interface InputAddressCellOptions {
     required?: boolean;
     focus?: boolean;
-    mode: 'query' | 'full'
-}
-
-export interface GeocodeAddressWithRoad extends GeocodeAddress {
-    road: string
+    countryCodes: Array<string>
 }
 
 export interface Address {
@@ -31,9 +26,6 @@ export interface Address {
     state?: string;
     country?: string;
     postalCode?: string;
-    latitude?: string;
-    longitude?: string;
-    boundingBox?: string[]
 }
 
 export const InputAddressCell = (props: CellProps) => {
@@ -51,67 +43,44 @@ export const InputAddressCell = (props: CellProps) => {
     } = props;
 
 
-    const {required, mode} = merge({}, config, uischema?.options) as InputAddressCellOptions;
+    const {required, focus, countryCodes} = merge({}, config, uischema?.options) as InputAddressCellOptions;
+
+
     const className = isValid ? undefined : 'p-invalid';
-
-    const [query, setQuery] = useState<string | undefined>(data as string);
-    const [address, setAddress] = useState<Address | undefined>(data as Address);
-    const [verifiedAddresses, setVerifiedAddresses] = useState<Address[]>([]);
-
-    useEffect(() => {
-
-        if (query) {
-            let searchWithTimeout = setTimeout(() => {
-                search();
-            }, 800);
-
-            return () => clearTimeout(searchWithTimeout);
-        }
-
-
-    }, [query]);
-
-    useEffect(() => {
-        handleChange(path, address);
-    }, [address]);
-
-    useEffect(() => {
-        setAddress(data);
-    }, [data]);
+    const [searchResults, setSearchResults] = useState<Address[]>([]);
 
     if (!visible) {
         return null;
     }
 
     const search = () => {
-        const request: GeocodeRequest = mode === 'query' ? {
-            q: query,
-            addressdetails: true,
-            limit: 10
-        } : {
-            street: [address?.streetNumber, address?.street].filter((value) => value).join(' '),
-            city: address?.city,
-            state: address?.state,
-            country: address?.country,
-            county: address?.suburb,
-            postalcode: address?.postalCode,
-            addressdetails: true,
-            limit: 10
-        }
 
-        Nominatim.geocode(request)
-            .then((results: NominatimResponse[]) => setVerifiedAddresses(
+        const address = data as Address;
+
+        const request: GeocodeRequest =
+            {
+                street: [address?.streetNumber, address?.street].filter((value) => value).join(' '),
+                city: address?.city,
+                state: address?.state,
+                country: address?.country,
+                county: address?.suburb,
+                postalcode: address?.postalCode,
+                countrycodes: [countryCodes.join(',')],
+                addressdetails: true,
+                limit: 50
+            }
+
+        geocode(request)
+            .then((results: NominatimResponse[]) => setSearchResults(
                 () => results.map(result => ({
+                    displayName: result.display_name,
                     streetNumber: result.address.house_number,
-                    street: (result.address as GeocodeAddressWithRoad).road,
+                    street: result.address.road,
                     suburb: result.address.suburb,
                     city: result.address.city,
                     state: result.address.state,
                     country: result.address.country,
-                    postalCode: result.address.postcode,
-                    latitude: result.lat,
-                    longitude: result.lon,
-                    boundingBox: result.boundingbox
+                    postalCode: result.address.postcode
                 }))
             ))
             .catch((error: any) => console.error(error));
@@ -123,19 +92,17 @@ export const InputAddressCell = (props: CellProps) => {
         const fieldId = `${id}-${fieldName}`;
         const label = startCase(fieldName);
 
-
         return (
-            <div className={`p-field p-md-${columnWidth}`}>
+            <div className={`p-field p-col-12 p-sm-${columnWidth}`}>
                 <span className="p-float-label">
-
                     <InputText
-                        value={get(address, fieldName)}
+                        value={get(data as Address, fieldName)}
                         id={id}
                         className={className}
                         disabled={!enabled}
                         onChange={(e) =>
-                            setAddress((currentAddress) =>
-                                set(Object.assign({} as Address, currentAddress), fieldName, e.target.value))}
+                            handleChange(path,
+                                set(Object.assign({} as Address, data), fieldName, e.target.value))}
                         aria-required={required}
                     />
                     <label htmlFor={fieldId} aria-required={required}>{label}</label>
@@ -145,47 +112,22 @@ export const InputAddressCell = (props: CellProps) => {
 
     }
 
-    if (mode === 'query') {
-        return (<React.Fragment>
-            <InputText
-                value={query}
-                id={id}
-                className={className}
-                disabled={!enabled}
-                onChange={(e) => setQuery(e.target.value)}
-                aria-required={required}
-            />
-            <DataTable value={verifiedAddresses} onRowSelect={e => handleChange(path, e.data)} selectionMode={'single'}>
-                <Column field="streetNumber"></Column>
-                <Column field="street"></Column>
-                <Column field="suburb"></Column>
-                <Column field="city"></Column>
-                <Column field="state"></Column>
-                <Column field="postalCode"></Column>
-            </DataTable>
-        </React.Fragment>)
-
-    }
 
     return (
         <React.Fragment>
-            <div className="p-fluid p-grid">
+            <div className="p-fluid p-grid p-mt-3">
                 {addressField('streetNumber', 2)}
                 {addressField('street', 6)}
                 {addressField('suburb', 4)}
-                {addressField('city', 4)}
-                {addressField('state', 4)}
+                {addressField('city', 3)}
+                {addressField('state', 3)}
                 {addressField('country', 4)}
-                {addressField('postalCode', 4)}
+                {addressField('postalCode', 2)}
             </div>
             <Button label={'Search'} onClick={search} disabled={!enabled}/>
-            <DataTable value={verifiedAddresses} onRowSelect={e => handleChange(path, e.data)} selectionMode={'single'}>
-                <Column field="streetNumber"></Column>
-                <Column field="street"></Column>
-                <Column field="suburb"></Column>
-                <Column field="city"></Column>
-                <Column field="state"></Column>
-                <Column field="postalCode"></Column>
+            <DataTable value={searchResults} onRowSelect={e => handleChange(path, e.data)} selectionMode={'single'}>
+                <Column field="displayName"></Column>
+
             </DataTable>
         </React.Fragment>
 
@@ -199,6 +141,6 @@ export const InputAddressCell = (props: CellProps) => {
         RankedTester
     }
  */
-export const inputTextCellTester: RankedTester = rankWith(2, optionIs('type', 'address'));
+export const inputAddressCellTester: RankedTester = rankWith(2, optionIs('type', 'address'));
 
 export default withJsonFormsCellProps(InputAddressCell);

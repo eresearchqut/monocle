@@ -77,6 +77,32 @@ Default.args = {
                 minLength: 3,
                 description: 'Family or surname, should come after your first name'
             },
+            homeAddress: {
+                type: 'object',
+                properties: {
+                    streetNumber: {
+                        type: 'string'
+                    },
+                    street: {
+                        type: 'string'
+                    },
+                    suburb: {
+                        type: 'string'
+                    },
+                    city: {
+                        type: 'string'
+                    },
+                    state: {
+                        type: 'string'
+                    },
+                    country: {
+                        type: 'string'
+                    },
+                    postalCode: {
+                        type: 'string'
+                    }
+                }
+            },
             signature: {
                 type: 'string'
             },
@@ -133,6 +159,18 @@ Default.args = {
         scope: '#/properties/firstName'
     },
     cells
+}
+
+export const Address = Template.bind({});
+Address.args = {
+    ...Default.args,
+    uischema: {
+        type: 'Control',
+        scope: '#/properties/homeAddress',
+        options: {
+            type: 'address'
+        }
+    }
 }
 
 export const TextRequired = Template.bind({});

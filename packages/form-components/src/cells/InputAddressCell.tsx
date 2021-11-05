@@ -1,7 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import {CellProps, composePaths, optionIs, RankedTester, rankWith, UISchemaElement} from '@jsonforms/core';
+import React, {useState} from 'react';
+import {CellProps, optionIs, RankedTester, rankWith} from '@jsonforms/core';
 import {withJsonFormsCellProps} from '@jsonforms/react';
-import {InputText} from 'primereact/inputtext';
 import merge from 'lodash/merge';
 import startCase from 'lodash/startCase';
 import get from 'lodash/get';
@@ -9,13 +8,12 @@ import set from 'lodash/set';
 
 
 import {geocode, GeocodeRequest, NominatimResponse} from "../client/nominatimClient";
-import {Button} from "primereact/button";
-import {DataTable} from "primereact/datatable";
-import {Column} from "primereact/column";
-import {Country, InputCountryCell} from "./InputCountryCell";
-import {Dropdown, DropdownChangeParams} from "primereact/dropdown";
+
+import {Country} from "./InputCountryCell";
+import {Dropdown} from "primereact/dropdown";
 import {filterCountries} from "../utils/countryRegionUtils";
-import {MultiSelectChangeParams} from "primereact/multiselect";
+import {AutoComplete, AutoCompleteCompleteMethodParams} from "primereact/autocomplete";
+import { Fieldset } from 'primereact/fieldset';
 
 export interface InputAddressCellOptions {
     required?: boolean;
@@ -38,19 +36,16 @@ export const InputAddressCell = (props: CellProps) => {
         data,
         id,
         config,
-        schema,
         uischema,
         path,
         handleChange,
         visible = true,
         enabled = true,
         isValid = true,
-
     } = props;
 
 
-    const {required, focus, countryCodes} = merge({}, config, uischema?.options) as InputAddressCellOptions;
-
+    const {required, countryCodes, focus} = merge({}, config, uischema?.options) as InputAddressCellOptions;
 
     const className = isValid ? undefined : 'p-invalid';
     const [searchResults, setSearchResults] = useState<Address[]>([]);
@@ -59,20 +54,13 @@ export const InputAddressCell = (props: CellProps) => {
         return null;
     }
 
-    const search = () => {
-
-        const address = data as Address;
+    const search = (e: AutoCompleteCompleteMethodParams) => {
 
         const request: GeocodeRequest =
             {
-                street: [address?.streetNumber, address?.street].filter((value) => value)?.join(' '),
-                city: address?.city,
-                state: address?.state,
-                country: address?.country?.name,
-                county: address?.suburb,
-                postalcode: address?.postalCode,
-                countrycodes: countryCodes?.map((countryCode) => countryCode.toLowerCase()),
+                q: e.query,
                 addressdetails: true,
+                countrycodes: countryCodes?.map((countryCode) => countryCode.toLowerCase()),
                 limit: 50
             }
 
@@ -93,60 +81,61 @@ export const InputAddressCell = (props: CellProps) => {
     }
 
 
-    const addressField = (fieldName: string, columnWidth: number) => {
+    const addressField = (fieldName: string) => {
 
         const fieldId = `${id}-${fieldName}`;
         const label = startCase(fieldName);
 
-
-
-
         return (
-            <div className={`p-field p-col-12 p-sm-${columnWidth}`}>
-                <span className="p-float-label">
-                    {fieldName === 'country' &&
-                        <Dropdown
-                            id={id}
-                            optionLabel={'name'}
-                            value={get(data as Address, fieldName)}
-                            options={filterCountries({whitelist: countryCodes}).map(countryRegion => ({name: countryRegion.countryName, shortCode: countryRegion.countryShortCode}))}
-                            onChange={(e) => handleChange(path, set(Object.assign({} as Address, data), fieldName, e.target.value))}
-                        />
-                    }
-                    {fieldName !== 'country' &&
-                    <InputText
-                        value={get(data as Address, fieldName)}
-                        id={id}
-                        className={className}
-                        disabled={!enabled}
-                        onChange={(e) =>
-                        handleChange(path, set(Object.assign({} as Address, data), fieldName, e.target.value))} />
-                    }
-                    <label htmlFor={fieldId} aria-required={required}>{label}</label>
-                </span>
+            <div className={`p-field`}>
+                <label htmlFor={fieldId} aria-required={required}>{label}</label>
+                {fieldName === 'country' &&
+                <Dropdown
+                    id={id}
+                    showClear={true}
+                    disabled={!enabled}
+                    optionLabel={'name'}
+                    className={className}
+                    value={get(data as Address, fieldName)}
+                    options={filterCountries({whitelist: countryCodes}).map(countryRegion => ({
+                        name: countryRegion.countryName,
+                        shortCode: countryRegion.countryShortCode
+                    }))}
+                    onChange={(e) => handleChange(path, set(Object.assign({} as Address, data), fieldName, e.target.value))}
+                />
+                }
+                {fieldName !== 'country' &&
+                <AutoComplete
+                    appendTo={"self"}
+                    autoFocus={ focus && fieldName === 'streetNumber'}
+                    delay={800}
+                    completeMethod={search}
+                    suggestions={searchResults}
+                    value={get(data as Address, fieldName)}
+                    id={id}
+                    className={className}
+                    disabled={!enabled}
+                    field={'displayName'}
+                    onSelect={(e) => handleChange(path, e.value)}
+                    onChange={(e) =>
+                        handleChange(path, set(Object.assign({} as Address, data), fieldName, e.target.value))}/>
+                }
             </div>
         )
-
     }
 
-
     return (
-        <React.Fragment>
-            <div className="p-fluid p-grid p-mt-3">
-                {addressField('streetNumber', 2)}
-                {addressField('street', 6)}
-                {addressField('suburb', 4)}
-                {addressField('city', 3)}
-                {addressField('state', 3)}
-                {addressField('country', 4)}
-                {addressField('postalCode', 2)}
-            </div>
-            <Button label={'Search'} onClick={search} disabled={!enabled}/>
-            <DataTable value={searchResults} onRowSelect={e => handleChange(path, e.data)} selectionMode={'single'}>
-                <Column field="displayName"></Column>
 
-            </DataTable>
-        </React.Fragment>
+        <Fieldset className={`p-fluid`}>
+            {addressField('streetNumber')}
+            {addressField('street')}
+            {addressField('suburb')}
+            {addressField('city')}
+            {addressField('state')}
+            {addressField('country')}
+            {addressField('postalCode')}
+        </Fieldset>
+
 
     );
 };

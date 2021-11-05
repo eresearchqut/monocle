@@ -1,3 +1,4 @@
+import {AddressInputCompiler} from './addressInputCompiler';
 import {TextInputCompiler} from './textInputCompiler';
 import {NumericInputCompiler} from './numericInputCompiler';
 import {RangeInputCompiler} from './rangeInputCompiler';
@@ -15,6 +16,7 @@ import {SignatureInputCompiler} from './signatureInputCompiler';
 
 export {
     AbstractInputCompiler,
+    AddressInputCompiler,
     TextInputCompiler,
     MarkdownInputCompiler,
     NumericInputCompiler,
@@ -27,6 +29,7 @@ export {
 };
 
 export const inputCompilers: InputCompiler[] = [
+    new AddressInputCompiler(),
     new RangeInputCompiler(),
     new TextInputCompiler(),
     new MultilineTextInputCompiler(),

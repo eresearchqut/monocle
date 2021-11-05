@@ -42,9 +42,6 @@ export const ComponentsLayout: FunctionComponent<ArrayControlProps> = ({
                                                                            addItem
                                                                        }) => {
 
-    console.log(id, data, path, schema, uischema)
-
-
     const components = data as Array<Input | Section>;
     const startCollapsed = path.endsWith('inputs');
 

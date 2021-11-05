@@ -16,7 +16,7 @@ import {
     faVectorSquare,
     faLayerGroup,
     faClipboardCheck,
-    faSignature
+    faSignature, faMapPin
 } from '@fortawesome/free-solid-svg-icons';
 import {faMarkdown} from "@fortawesome/free-brands-svg-icons";
 import {InputType, SectionType} from "@trrf/form-definition";
@@ -35,6 +35,11 @@ const componentDefaults: Map<InputType | SectionType, ComponentMetadata> =
             icon: faLayerGroup,
             label: 'Section',
             description: 'A section that contains one or more form elements'
+        }],
+        [InputType.ADDRESS, {
+            icon: faMapPin,
+            label: 'Address',
+            description: 'Address input with lookup verification'
         }],
         [InputType.BOOLEAN, {
             icon: faCheckSquare,

@@ -26,7 +26,12 @@ const AnyOfRenderer = ({
 
     const anyOf = 'anyOf';
 
-    if (!visible || !schema ) {
+    if (indexOfFittingSchema === undefined) {
+        console.log(path, schema)
+        return null;
+    }
+
+    if (!visible || !schema) {
         return null;
     }
 

@@ -7,8 +7,11 @@ import {UniquelyIdentifiable} from "./uniquelyIdentifiable";
 
 export enum InputType {
     ADDRESS = 'address',
+
     BOOLEAN = 'boolean',
     CURRENCY = 'currency',
+    COUNTRY = 'country',
+    COUNTRY_REGION = 'country-region',
     DATE = 'date',
     DATE_TIME = 'date-time',
     MARKDOWN = 'markdown',
@@ -34,8 +37,27 @@ export interface AddressInput extends AbstractInput {
 
     type: InputType.ADDRESS;
 
+}
+
+/**
+ * @title Country
+ */
+export interface CountryInput extends AbstractInput {
+
+    type: InputType.COUNTRY;
+    multiselect: boolean,
 
 }
+
+/**
+ * @title Country Region
+ */
+export interface CountryRegionInput extends AbstractInput {
+
+    type: InputType.COUNTRY_REGION;
+
+}
+
 
 
 /**
@@ -276,6 +298,8 @@ export interface Signature extends AbstractInput {
  */
 export type Input = AddressInput
     | BooleanInput
+    | CountryInput
+    | CountryRegionInput
     | CurrencyInput
     | DateInput
     | DateTimeInput

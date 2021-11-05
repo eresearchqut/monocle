@@ -3,33 +3,21 @@ import {CellProps, optionIs, RankedTester, rankWith} from '@jsonforms/core';
 import {withJsonFormsCellProps} from '@jsonforms/react';
 
 import merge from 'lodash/merge';
-import {filterCountries, FilterCountriesProps} from "../utils/countryRegionUtils";
+import {filterCountries} from "../utils/countryRegionUtils";
 
-import {Dropdown, DropdownChangeParams, DropdownProps} from "primereact/dropdown";
+import {Dropdown, DropdownChangeParams} from "primereact/dropdown";
+import {MultiSelect, MultiSelectChangeParams} from "primereact/multiselect";
 
-export interface InputCountryCellOptions extends FilterCountriesProps {
+export interface InputCountryCellOptions {
     required?: boolean;
     focus?: boolean;
     multiselect?: boolean;
+    countryCodes: string[];
 }
 
 export interface Country {
     name: string;
     shortCode: string;
-}
-
-export interface CountryDropdownProps extends FilterCountriesProps, DropdownProps {
-
-}
-
-export const CountryDropdown = (props: CountryDropdownProps) => {
-
-    const counties: Country[] = filterCountries(props).map(countryRegion => ({name: countryRegion.countryName, shortCode: countryRegion.countryShortCode}));
-
-
-    return      (
-        <Dropdown {...props} options={counties} optionLabel='name' />
-    );
 }
 
 
@@ -48,25 +36,35 @@ export const InputCountryCell = (props: CellProps) => {
 
 
     const countryCellOptions = merge({}, config, uischema?.options) as InputCountryCellOptions;
-
+    const {countryCodes, multiselect} = countryCellOptions;
 
     const className = isValid ? undefined : 'p-invalid';
-
 
     if (!visible) {
         return null;
     }
 
-    const countryDropdownProps = {
+    const countryProps = {
         id,
         className,
+        whitelist: countryCodes,
         value: data,
         disabled: !enabled,
-        onChange: (e: DropdownChangeParams) => handleChange(path, e.value),
-        ...countryCellOptions
+        optionLabel: 'name',
+        display: 'chip',
+        options: filterCountries({whitelist: countryCodes}).map(countryRegion => ({
+            name: countryRegion.countryName,
+            shortCode: countryRegion.countryShortCode
+        })),
+        onChange: (e: DropdownChangeParams | MultiSelectChangeParams) => handleChange(path, e.value)
     }
 
-    return <CountryDropdown {...countryDropdownProps} />
+
+    if (multiselect) {
+        return <MultiSelect {...countryProps} />
+    }
+
+    return <Dropdown {...countryProps} />
 };
 
 /**

@@ -45,7 +45,54 @@ Default.args = {
     }
 }
 
-//
+export const CountryCodes = Template.bind({});
+CountryCodes.args = {
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/cell`,
+        options: {
+            type: 'country',
+            countryCodes: ['AU', 'NZ']
+        }
+    }
+}
+
+export const SingleCountry = Template.bind({});
+SingleCountry.args = {
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/cell`,
+        options: {
+            type: 'country',
+            countryCodes: ['AU']
+        }
+    }
+}
+
+export const Multiselect = Template.bind({});
+Multiselect.args = {
+    data: [{name: 'Australia', shortCode: 'AU'}],
+    schema: {
+        type: 'array',
+        items: {
+            type: 'object',
+            properties: {
+                name: {type: 'string'},
+                shortCode: {type: 'string'}
+            }
+        }
+    },
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/cell`,
+        options: {
+            type: 'country',
+            multiselect: true
+        }
+    }
+}
+
+
 // export const CountryCodes = Template.bind({});
 // CountryCodes.args = {
 //     ...Default.args,

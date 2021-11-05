@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {CellProps, optionIs, RankedTester, rankWith} from '@jsonforms/core';
+import {CellProps, composePaths, optionIs, RankedTester, rankWith, UISchemaElement} from '@jsonforms/core';
 import {withJsonFormsCellProps} from '@jsonforms/react';
 import {InputText} from 'primereact/inputtext';
 import merge from 'lodash/merge';
@@ -7,10 +7,15 @@ import startCase from 'lodash/startCase';
 import get from 'lodash/get';
 import set from 'lodash/set';
 
+
 import {geocode, GeocodeRequest, NominatimResponse} from "../client/nominatimClient";
 import {Button} from "primereact/button";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
+import {Country, InputCountryCell} from "./InputCountryCell";
+import {Dropdown, DropdownChangeParams} from "primereact/dropdown";
+import {filterCountries} from "../utils/countryRegionUtils";
+import {MultiSelectChangeParams} from "primereact/multiselect";
 
 export interface InputAddressCellOptions {
     required?: boolean;
@@ -24,7 +29,7 @@ export interface Address {
     suburb?: string;
     city?: string;
     state?: string;
-    country?: string;
+    country?: Country;
     postalCode?: string;
 }
 
@@ -33,6 +38,7 @@ export const InputAddressCell = (props: CellProps) => {
         data,
         id,
         config,
+        schema,
         uischema,
         path,
         handleChange,
@@ -62,10 +68,10 @@ export const InputAddressCell = (props: CellProps) => {
                 street: [address?.streetNumber, address?.street].filter((value) => value)?.join(' '),
                 city: address?.city,
                 state: address?.state,
-                country: address?.country,
+                country: address?.country?.name,
                 county: address?.suburb,
                 postalcode: address?.postalCode,
-                countrycodes: countryCodes,
+                countrycodes: countryCodes?.map((countryCode) => countryCode.toLowerCase()),
                 addressdetails: true,
                 limit: 50
             }
@@ -79,7 +85,7 @@ export const InputAddressCell = (props: CellProps) => {
                     suburb: result.address.suburb,
                     city: result.address.city,
                     state: result.address.state,
-                    country: result.address.country,
+                    country: {name: result.address.country, shortCode: result.address.country_code.toUpperCase()},
                     postalCode: result.address.postcode
                 }))
             ))
@@ -92,19 +98,30 @@ export const InputAddressCell = (props: CellProps) => {
         const fieldId = `${id}-${fieldName}`;
         const label = startCase(fieldName);
 
+
+
+
         return (
             <div className={`p-field p-col-12 p-sm-${columnWidth}`}>
                 <span className="p-float-label">
+                    {fieldName === 'country' &&
+                        <Dropdown
+                            id={id}
+                            optionLabel={'name'}
+                            value={get(data as Address, fieldName)}
+                            options={filterCountries({whitelist: countryCodes}).map(countryRegion => ({name: countryRegion.countryName, shortCode: countryRegion.countryShortCode}))}
+                            onChange={(e) => handleChange(path, set(Object.assign({} as Address, data), fieldName, e.target.value))}
+                        />
+                    }
+                    {fieldName !== 'country' &&
                     <InputText
                         value={get(data as Address, fieldName)}
                         id={id}
                         className={className}
                         disabled={!enabled}
                         onChange={(e) =>
-                            handleChange(path,
-                                set(Object.assign({} as Address, data), fieldName, e.target.value))}
-                        aria-required={required}
-                    />
+                        handleChange(path, set(Object.assign({} as Address, data), fieldName, e.target.value))} />
+                    }
                     <label htmlFor={fieldId} aria-required={required}>{label}</label>
                 </span>
             </div>

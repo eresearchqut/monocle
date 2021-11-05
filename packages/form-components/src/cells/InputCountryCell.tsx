@@ -1,12 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {CellProps, optionIs, RankedTester, rankWith} from '@jsonforms/core';
 import {withJsonFormsCellProps} from '@jsonforms/react';
 
 import merge from 'lodash/merge';
 import {filterCountries} from "../utils/countryRegionUtils";
 
-import {Dropdown, DropdownChangeParams} from "primereact/dropdown";
-import {MultiSelect, MultiSelectChangeParams} from "primereact/multiselect";
+import {Dropdown, DropdownChangeParams, DropdownProps} from "primereact/dropdown";
+import {MultiSelect, MultiSelectChangeParams, MultiSelectProps} from "primereact/multiselect";
 
 export interface InputCountryCellOptions {
     required?: boolean;
@@ -21,7 +21,9 @@ export interface Country {
 }
 
 
-export const InputCountryCell = (props: CellProps) => {
+
+
+export const InputCountryCell = (props: Partial<CellProps>) => {
     const {
         data,
         id,
@@ -44,6 +46,8 @@ export const InputCountryCell = (props: CellProps) => {
         return null;
     }
 
+
+
     const countryProps = {
         id,
         className,
@@ -56,7 +60,7 @@ export const InputCountryCell = (props: CellProps) => {
             name: countryRegion.countryName,
             shortCode: countryRegion.countryShortCode
         })),
-        onChange: (e: DropdownChangeParams | MultiSelectChangeParams) => handleChange(path, e.value)
+        onChange: (e: DropdownChangeParams | MultiSelectChangeParams) => handleChange?.(path || '', e.value)
     }
 
 

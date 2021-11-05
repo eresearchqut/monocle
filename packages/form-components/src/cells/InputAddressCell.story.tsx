@@ -51,7 +51,7 @@ CountryCodes.args = {
         scope: `#/properties/cell`,
         options: {
             type: 'address',
-            countryCodes: ['au', 'nz']
+            countryCodes: ['AU', 'NZ']
         }
     }
 }

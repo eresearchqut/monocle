@@ -3,6 +3,7 @@ import {TextInputCompiler} from './textInputCompiler';
 import {NumericInputCompiler} from './numericInputCompiler';
 import {RangeInputCompiler} from './rangeInputCompiler';
 import {CurrencyInputCompiler} from './currencyInputCompiler';
+import {CountryInputCompiler} from './countryInputCompiler';
 import InputCompiler from '../interfaces/inputCompiler';
 import {Form, Input, Section} from '@trrf/form-definition';
 import {BooleanInputCompiler} from './booleanInputCompiler';
@@ -22,6 +23,7 @@ export {
     NumericInputCompiler,
     RangeInputCompiler,
     OptionsInputCompiler,
+    CountryInputCompiler,
     CurrencyInputCompiler,
     BooleanInputCompiler,
     DateTimeInputCompiler,
@@ -37,6 +39,7 @@ export const inputCompilers: InputCompiler[] = [
     new NumericInputCompiler(),
     new OptionsInputCompiler(),
     new CurrencyInputCompiler(),
+    new CountryInputCompiler(),
     new BooleanInputCompiler(),
     new DateTimeInputCompiler(),
     new SvgMapInputCompiler(),

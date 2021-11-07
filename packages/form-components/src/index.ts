@@ -24,8 +24,12 @@ import {
     InputMarkdownCell,
     inputMarkdownCellTester,
     InputSignatureCell,
-    inputSignatureCellTester, inputAddressCellTester, InputAddressCell
-} from './cells';;
+    inputSignatureCellTester,
+    inputAddressCellTester,
+    InputAddressCell,
+    InputCountryCell,
+    inputCountryCellTester
+} from './cells';
 
 
 import {InputBooleanControl, inputBooleanControlTester, InputControl, inputControlTester, SvgMapControl, svgMapControlTester} from './controls';
@@ -50,6 +54,7 @@ export const renderers: { tester: RankedTester; renderer: any }[] = [
 export const cells: { tester: RankedTester; cell: any }[] = [
     {tester: inputAddressCellTester, cell: InputAddressCell},
     {tester: inputCheckboxGroupCellTester, cell: InputCheckboxGroupCell},
+    {tester: inputCountryCellTester, cell: InputCountryCell},
     {tester: inputBooleanCellTester, cell: InputBooleanCell},
     {tester: inputCalendarCellTester, cell: InputCalendarCell},
     {tester: inputNumberCellTester, cell: InputNumberCell},

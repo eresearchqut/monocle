@@ -16,7 +16,7 @@ import {
     faVectorSquare,
     faLayerGroup,
     faClipboardCheck,
-    faSignature, faMapPin
+    faSignature, faMapPin, faFlag
 } from '@fortawesome/free-solid-svg-icons';
 import {faMarkdown} from "@fortawesome/free-brands-svg-icons";
 import {InputType, SectionType} from "@trrf/form-definition";
@@ -45,6 +45,11 @@ const componentDefaults: Map<InputType | SectionType, ComponentMetadata> =
             icon: faCheckSquare,
             label: 'Checkbox',
             description: 'A single checkbox, suitable for yes or no answers'
+        }],
+        [InputType.COUNTRY, {
+            icon: faFlag,
+            label: 'Country',
+            description: 'Country selector'
         }],
         [InputType.CURRENCY, {
             icon: faMoneyBill,

@@ -46,13 +46,11 @@ export const InputCountryCell = (props: Partial<CellProps>) => {
         return null;
     }
 
-
-
     const countryProps = {
         id,
         className,
         whitelist: countryCodes,
-        value: data,
+        value: multiselect && !Array.isArray(data) ? [] : data,
         disabled: !enabled,
         optionLabel: 'name',
         display: 'chip',
@@ -78,6 +76,6 @@ export const InputCountryCell = (props: Partial<CellProps>) => {
         RankedTester
     }
  */
-export const inputCountryCellTester: RankedTester = rankWith(2, optionIs('type', 'country'));
+export const inputCountryCellTester: RankedTester = rankWith(3, optionIs('type', 'country'));
 
 export default withJsonFormsCellProps(InputCountryCell);

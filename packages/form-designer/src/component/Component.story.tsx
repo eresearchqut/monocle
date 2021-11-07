@@ -14,8 +14,15 @@ const Template: Story<ComponentProps> =
         <Component {...props} />;
 Template.bind({});
 
+export const Address = Template.bind({});
+Address.args = {componentType: InputType.ADDRESS};
+
+
 export const Boolean = Template.bind({});
 Boolean.args = {componentType: InputType.BOOLEAN};
+
+export const Country = Template.bind({});
+Country.args = {componentType: InputType.COUNTRY};
 
 export const Currency = Template.bind({});
 Currency.args = {componentType: InputType.CURRENCY};

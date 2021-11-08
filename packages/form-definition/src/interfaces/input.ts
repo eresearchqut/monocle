@@ -10,7 +10,6 @@ export enum InputType {
     BOOLEAN = 'boolean',
     CURRENCY = 'currency',
     COUNTRY = 'country',
-    COUNTRY_CODE = 'country-code',
     DATE = 'date',
     DATE_TIME = 'date-time',
     MARKDOWN = 'markdown',

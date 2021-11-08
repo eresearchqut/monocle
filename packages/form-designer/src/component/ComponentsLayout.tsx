@@ -19,7 +19,7 @@ import {Panel, PanelHeaderTemplateOptions, PanelHeaderTemplateType} from "primer
 import {MenuItem} from "primereact/menuitem";
 import {v4 as uuidv4} from 'uuid';
 
-import {Input, Section, UniquelyIdentifiable} from "@trrf/form-definition";
+import {Input, Section, UniquelyIdentifiable} from "@eresearchqut/form-definition";
 import {Menubar} from 'primereact/menubar';
 import Component from "./Component";
 import {confirmDialog} from 'primereact/confirmdialog';

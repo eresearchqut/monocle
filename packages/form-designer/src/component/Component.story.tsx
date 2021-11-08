@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import {Meta, Story} from '@storybook/react';
 import Component, {ComponentProps} from './Component';
-import {InputType} from "@trrf/form-definition";
+import {InputType} from "@eresearchqut/form-definition";
 
 export default {
     title: 'Component/Component',

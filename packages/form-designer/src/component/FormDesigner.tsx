@@ -3,7 +3,7 @@ import {FormDesignerCanvas} from './FormDesignerCanvas';
 import {FormPreview} from './FormPreview';
 import ComponentSelector from './ComponentSelector';
 
-import {Form, Input, InputType, Section, SectionType} from '@trrf/form-definition';
+import {Form, Input, InputType, Section, SectionType} from '@eresearchqut/form-definition';
 import {ErrorObject} from 'ajv';
 import {DragDropContext, DropResult} from "react-beautiful-dnd";
 import {v4 as uuidv4} from 'uuid';

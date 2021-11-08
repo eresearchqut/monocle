@@ -1,5 +1,5 @@
 import React, {FunctionComponent} from 'react';
-import {Form} from '@trrf/form-definition';
+import {Form} from '@eresearchqut/form-definition';
 import {JsonForms} from '@jsonforms/react';
 import {
     cells,
@@ -8,7 +8,7 @@ import {
     InputControl,
     inputControlTester,
 
-} from '@trrf/form-components';
+} from '@eresearchqut/form-components';
 
 import {JsonFormsCore, RankedTester} from '@jsonforms/core';
 import AnyOfLayout, {anyOfLayoutTester} from './AnyOfLayout';

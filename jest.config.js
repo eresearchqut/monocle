@@ -18,7 +18,7 @@ module.exports = {
     ...packages.reduce(
       (acc, name) => ({
         ...acc,
-        [`@trrf/${name}(.*)$`]: `<rootDir>/packages/./${name}/src/$1`,
+        [`@eresearchqut/${name}(.*)$`]: `<rootDir>/packages/./${name}/src/$1`,
       }),
       {}
     ),

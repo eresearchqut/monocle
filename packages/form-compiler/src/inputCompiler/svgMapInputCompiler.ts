@@ -1,6 +1,6 @@
 import {InputCompiler} from '../interfaces';
 import {JsonSchema, UISchemaElement} from '@jsonforms/core';
-import {Form, Input, InputType, Section, SvgMapInput} from '@trrf/form-definition';
+import {Form, Input, InputType, Section, SvgMapInput} from '@eresearchqut/form-definition';
 import {AbstractInputCompiler} from './abstractInputCompiler';
 
 export class SvgMapInputCompiler extends AbstractInputCompiler implements InputCompiler {

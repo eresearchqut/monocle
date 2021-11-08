@@ -1,5 +1,5 @@
 import {TextInputCompiler} from "../../src/inputCompiler/textInputCompiler";
-import {Form, Section, TextInput} from "@trrf/form-definition";
+import {Form, Section, TextInput} from "@eresearchqut/form-definition";
 
 
 describe('TextInputCompiler', () => {

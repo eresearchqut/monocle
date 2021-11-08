@@ -1,7 +1,7 @@
 import {CategorizationFormCompiler} from './categorizationFormCompiler';
 import {AbstractFormCompiler} from './abstractFormCompiler';
 import FormCompiler from '../interfaces/formCompiler';
-import {Form} from '@trrf/form-definition';
+import {Form} from '@eresearchqut/form-definition';
 
 export {
   FormCompiler, AbstractFormCompiler, CategorizationFormCompiler,

@@ -1,4 +1,4 @@
-import {Form} from "@trrf/form-definition";
+import {Form} from "@eresearchqut/form-definition";
 import {CategorySectionCompiler} from "../../src/sectionCompiler/categorySectionCompiler";
 
 describe('VerticalSectionBuilder', () => {

@@ -1,7 +1,7 @@
 import {SectionCompiler} from '../interfaces';
 
 import {JsonSchema, UISchemaElement, Category} from '@jsonforms/core';
-import {Form, Section} from '@trrf/form-definition';
+import {Form, Section} from '@eresearchqut/form-definition';
 import {AbstractSectionCompiler} from './abstractSectionCompiler';
 
 

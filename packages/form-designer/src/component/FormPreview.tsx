@@ -1,12 +1,12 @@
 import React, {FunctionComponent} from 'react';
-import {Form} from '@trrf/form-definition';
+import {Form} from '@eresearchqut/form-definition';
 import {JsonForms} from '@jsonforms/react';
 import {
     cells,
     renderers,
-} from '@trrf/form-components';
+} from '@eresearchqut/form-components';
 
-import {findFormCompiler} from '@trrf/form-compiler';
+import {findFormCompiler} from '@eresearchqut/form-compiler';
 
 import {JsonFormsCore} from '@jsonforms/core';
 

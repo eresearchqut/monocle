@@ -1,7 +1,7 @@
 import React, {FunctionComponent} from 'react';
 
 import {Draggable, Droppable} from 'react-beautiful-dnd';
-import {InputType, SectionType} from "@trrf/form-definition";
+import {InputType, SectionType} from "@eresearchqut/form-definition";
 import Component from "./Component";
 
 import './component-selector.scss';

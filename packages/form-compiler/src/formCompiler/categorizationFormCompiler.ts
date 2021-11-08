@@ -1,7 +1,7 @@
 import {FormCompiler} from '../interfaces';
 
 import {JsonSchema, UISchemaElement, Categorization} from '@jsonforms/core';
-import {Form} from '@trrf/form-definition';
+import {Form} from '@eresearchqut/form-definition';
 
 import {AbstractFormCompiler} from './abstractFormCompiler';
 

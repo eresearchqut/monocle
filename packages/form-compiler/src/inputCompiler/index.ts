@@ -6,7 +6,7 @@ import {CurrencyInputCompiler} from './currencyInputCompiler';
 import {CountryInputCompiler} from './countryInputCompiler';
 
 import InputCompiler from '../interfaces/inputCompiler';
-import {Form, Input, Section} from '@trrf/form-definition';
+import {Form, Input, Section} from '@eresearchqut/form-definition';
 import {BooleanInputCompiler} from './booleanInputCompiler';
 import {DateTimeInputCompiler} from './dateTimeInputCompiler';
 import {AbstractInputCompiler} from './abstractInputCompiler';

@@ -3,7 +3,7 @@ import * as React from 'react';
 import {Meta, Story} from '@storybook/react';
 import ComponentSelector, {ComponentSelectorProps} from './ComponentSelector';
 import {DragDropContext,  DropResult, ResponderProvided} from "react-beautiful-dnd";
-import {SectionType, InputType} from "@trrf/form-definition";
+import {SectionType, InputType} from "@eresearchqut/form-definition";
 
 export default {
     title: 'Component/ComponentSelector',

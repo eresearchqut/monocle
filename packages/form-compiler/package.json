@@ -1,5 +1,5 @@
 {
-    "name": "@trrf/form-compiler",
+    "name": "@eresearchqut/form-compiler",
     "version": "1.0.0",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -21,8 +21,8 @@
     },
     "dependencies": {
         "@jsonforms/core": "^3.0.0-alpha.1",
-        "@trrf/form-components": "1.0.0",
-        "@trrf/form-definition": "1.0.0",
+        "@eresearchqut/form-components": "1.0.0",
+        "@eresearchqut/form-definition": "1.0.0",
         "cldr-core": "^39.0.0",
         "inversify": "5.0.1",
         "lodash": "^4.14.171",

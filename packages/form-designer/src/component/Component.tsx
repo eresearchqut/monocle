@@ -19,7 +19,7 @@ import {
     faSignature, faMapPin, faFlag, faFlagCheckered
 } from '@fortawesome/free-solid-svg-icons';
 import {faMarkdown} from "@fortawesome/free-brands-svg-icons";
-import {InputType, SectionType} from "@trrf/form-definition";
+import {InputType, SectionType} from "@eresearchqut/form-definition";
 import {DraggableProvided} from "react-beautiful-dnd";
 import './component.scss';
 

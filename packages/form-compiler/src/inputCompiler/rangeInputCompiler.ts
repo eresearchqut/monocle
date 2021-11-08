@@ -1,6 +1,6 @@
 import {InputCompiler} from '../interfaces';
 import {JsonSchema, UISchemaElement} from '@jsonforms/core';
-import {Form, Input, InputType, NumericInput, Section} from '@trrf/form-definition';
+import {Form, Input, InputType, NumericInput, Section} from '@eresearchqut/form-definition';
 import {AbstractInputCompiler} from './abstractInputCompiler';
 
 export class RangeInputCompiler extends AbstractInputCompiler implements InputCompiler {

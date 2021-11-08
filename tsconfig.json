@@ -3,16 +3,16 @@
         "jsx": "react",
         "baseUrl": "./packages",
         "paths": {
-            "@trrf/form-components/*": [
+            "@eresearchqut/form-components/*": [
                 "form-components/src/*"
             ],
-            "@trrf/form-definition/*": [
+            "@eresearchqut/form-definition/*": [
                 "form-definition/src/*"
             ],
-            "@trrf/form-compiler/*": [
+            "@eresearchqut/form-compiler/*": [
                 "form-compiler/src/*"
             ],
-            "@trrf/form-designer/*": [
+            "@eresearchqut/form-designer/*": [
                 "form-designer/src/*"
             ]
         },

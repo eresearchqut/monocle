@@ -1,4 +1,4 @@
-import {Form, Input, Section} from '@trrf/form-definition';
+import {Form, Input, Section} from '@eresearchqut/form-definition';
 import {JsonSchema, UISchemaElement} from '@jsonforms/core';
 
 export default interface InputCompiler {

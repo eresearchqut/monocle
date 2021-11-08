@@ -1,5 +1,5 @@
 import {JsonSchema, UISchemaElement} from '@jsonforms/core';
-import {Form, Section} from '@trrf/form-definition';
+import {Form, Section} from '@eresearchqut/form-definition';
 import {findSectionCompiler} from '../sectionCompiler';
 import {generatePathFromName} from '../utils';
 

@@ -12,8 +12,6 @@ export interface ComponentSelectorProps {
 
 const ComponentSelector: FunctionComponent<ComponentSelectorProps> = ({componentTypes}) => {
     return (
-
-
         <Droppable droppableId="inputSelector" type="inputs" isDropDisabled={true}>
             {(droppableProvided, snapshot) => (
                 <div ref={droppableProvided.innerRef} className='p-d-flex p-flex-column'>

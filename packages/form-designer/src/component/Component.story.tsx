@@ -17,7 +17,6 @@ Template.bind({});
 export const Address = Template.bind({});
 Address.args = {componentType: InputType.ADDRESS};
 
-
 export const Boolean = Template.bind({});
 Boolean.args = {componentType: InputType.BOOLEAN};
 

@@ -11,6 +11,8 @@ export interface FilterCountriesProps {
 export const getRegions = (countryShortCode: string): Region[] | undefined => CountryRegionData
     .find(country => country.countryShortCode === countryShortCode)?.regions;
 
+export const getCountries = (): Country[] => CountryRegionData;
+
 export const filterCountries = (props: FilterCountriesProps) => {
 
     const {priorityCountries, whitelist, blacklist} = props;

@@ -31,9 +31,7 @@ import {
     inputCountryCellTester
 } from './cells';
 
-
 import {InputBooleanControl, inputBooleanControlTester, InputControl, inputControlTester, SvgMapControl, svgMapControlTester} from './controls';
-
 import {HorizontalLayout, horizontalLayoutTester, VerticalLayout, verticalLayoutTester, CategorizationLayout, categorizationLayoutTester, CategoryLayout, categoryLayoutTester} from './layouts';
 
 export * from './controls';
@@ -55,6 +53,7 @@ export const cells: { tester: RankedTester; cell: any }[] = [
     {tester: inputAddressCellTester, cell: InputAddressCell},
     {tester: inputCheckboxGroupCellTester, cell: InputCheckboxGroupCell},
     {tester: inputCountryCellTester, cell: InputCountryCell},
+
     {tester: inputBooleanCellTester, cell: InputBooleanCell},
     {tester: inputCalendarCellTester, cell: InputCalendarCell},
     {tester: inputNumberCellTester, cell: InputNumberCell},

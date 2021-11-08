@@ -4,6 +4,7 @@ import {NumericInputCompiler} from './numericInputCompiler';
 import {RangeInputCompiler} from './rangeInputCompiler';
 import {CurrencyInputCompiler} from './currencyInputCompiler';
 import {CountryInputCompiler} from './countryInputCompiler';
+
 import InputCompiler from '../interfaces/inputCompiler';
 import {Form, Input, Section} from '@trrf/form-definition';
 import {BooleanInputCompiler} from './booleanInputCompiler';
@@ -24,6 +25,7 @@ export {
     RangeInputCompiler,
     OptionsInputCompiler,
     CountryInputCompiler,
+
     CurrencyInputCompiler,
     BooleanInputCompiler,
     DateTimeInputCompiler,

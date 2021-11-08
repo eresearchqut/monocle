@@ -49,9 +49,9 @@ export class AddressInputCompiler extends AbstractInputCompiler implements Input
     }
 
     ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {
-        // const countryCodes = (input as AddressInput).restrictToCountries;
+        const countryCodes = (input as AddressInput).countryCodes;
         return this.uiControl(form, section, input,
-            // {countryCodes}
+            {countryCodes}
         );
     }
 }

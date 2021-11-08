@@ -50,6 +50,13 @@
     "definitions": {
         "AddressInput": {
             "properties": {
+                "countryCodes": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Restrict to\nRestrict the countries selectable to the following",
+                    "type": "array"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
@@ -69,12 +76,6 @@
                 "required": {
                     "description": "Can the element be flagged as required",
                     "type": "boolean"
-                },
-                "restrictToCountries": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
                 },
                 "type": {
                     "enum": [
@@ -119,7 +120,15 @@
             "type": "object"
         },
         "CountryInput": {
+            "description": "ISO 3166 Name and Short Code",
             "properties": {
+                "countryCodes": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Restrict to\nRestrict the countries selectable to the following",
+                    "type": "array"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"

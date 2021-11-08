@@ -16,7 +16,7 @@ import {
     faVectorSquare,
     faLayerGroup,
     faClipboardCheck,
-    faSignature, faMapPin, faFlag
+    faSignature, faMapPin, faFlag, faFlagCheckered
 } from '@fortawesome/free-solid-svg-icons';
 import {faMarkdown} from "@fortawesome/free-brands-svg-icons";
 import {InputType, SectionType} from "@trrf/form-definition";
@@ -49,7 +49,7 @@ const componentDefaults: Map<InputType | SectionType, ComponentMetadata> =
         [InputType.COUNTRY, {
             icon: faFlag,
             label: 'Country',
-            description: 'Country selector'
+            description: 'Country selector, stores ISO 3166 short code(s)'
         }],
         [InputType.CURRENCY, {
             icon: faMoneyBill,

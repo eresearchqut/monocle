@@ -10,6 +10,7 @@ export enum InputType {
     BOOLEAN = 'boolean',
     CURRENCY = 'currency',
     COUNTRY = 'country',
+    COUNTRY_CODE = 'country-code',
     DATE = 'date',
     DATE_TIME = 'date-time',
     MARKDOWN = 'markdown',
@@ -34,17 +35,29 @@ export interface AbstractInput extends Typed<InputType>, Named, UniquelyIdentifi
 export interface AddressInput extends AbstractInput {
 
     type: InputType.ADDRESS;
-    restrictToCountries: string[]
+
+    /**
+     * @title Restrict to
+     * Restrict the countries selectable to the following
+     */
+    countryCodes?: string[]
 
 }
 
 /**
  * @title Country
+ * @description ISO 3166 Name and Short Code
  */
 export interface CountryInput extends AbstractInput {
 
     type: InputType.COUNTRY;
     multiselect: boolean,
+
+    /**
+     * @title Restrict to
+     * Restrict the countries selectable to the following
+     */
+    countryCodes?: string[]
 
 }
 

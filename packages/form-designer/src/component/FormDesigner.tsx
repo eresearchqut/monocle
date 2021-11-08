@@ -98,26 +98,21 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
     };
 
     return (
-
-
         <DragDropContext onDragEnd={onDragEnd}>
-
             <div className="p-d-flex form-designer" id="form-designer">
                 <div  className='p-mr-4'>
                     {/*<Sticky enableTransforms={false}>*/}
                         <ComponentSelector componentTypes={Object.values(InputType)}/>
                     {/*</Sticky>*/}
                 </div>`
-                <div className='p-mr-4'   >
+                <div className='p-mr-4'>
                     <FormDesignerCanvas definition={formDefinition} onChange={handleDefinitionChange} locale={locale}/>
                 </div>
-                <div >
+                <div>
                     <FormPreview definition={formDefinition} data={formData} onChange={handleDataChange}
                                  locale={locale}/>
                 </div>
             </div>
-
         </DragDropContext>
-
     );
 };

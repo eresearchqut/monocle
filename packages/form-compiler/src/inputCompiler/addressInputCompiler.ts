@@ -31,15 +31,7 @@ export class AddressInputCompiler extends AbstractInputCompiler implements Input
                     type: 'string'
                 },
                 country: {
-                    type: 'object',
-                    properties: {
-                        name: {
-                            type: 'string'
-                        },
-                        shortCode: {
-                            type: 'string'
-                        }
-                    }
+                    type: 'string'
                 },
                 postalCode: {
                     type: 'string'

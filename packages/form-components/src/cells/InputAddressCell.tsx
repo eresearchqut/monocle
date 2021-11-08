@@ -27,7 +27,7 @@ export interface Address {
     suburb?: string;
     city?: string;
     state?: string;
-    country?: Country;
+    country?: string;
     postalCode?: string;
 }
 
@@ -54,11 +54,23 @@ export const InputAddressCell = (props: CellProps) => {
         return null;
     }
 
-    const search = (e: AutoCompleteCompleteMethodParams) => {
+    const search = (e: AutoCompleteCompleteMethodParams, fieldName: string) => {
+
+        const address = data as Address;
+
+        const queryBuilder = [
+            fieldName === 'streetNumber' ? e.query : address?.streetNumber,
+            fieldName === 'street' ? e.query : address?.street,
+            fieldName === 'suburb' ? e.query : address?.suburb,
+            fieldName === 'city' ? e.query : address?.city,
+            fieldName === 'state' ? e.query : address?.state,
+            fieldName === 'postalCode' ? e.query : address?.postalCode]
+
+        const query = queryBuilder.filter((queryPart) => queryPart !== undefined).join(' ');
 
         const request: GeocodeRequest =
             {
-                q: e.query,
+                q: query,
                 addressdetails: true,
                 countrycodes: countryCodes?.map((countryCode) => countryCode.toLowerCase()),
                 limit: 50
@@ -73,7 +85,7 @@ export const InputAddressCell = (props: CellProps) => {
                     suburb: result.address.suburb,
                     city: result.address.city,
                     state: result.address.state,
-                    country: {name: result.address.country, shortCode: result.address.country_code.toUpperCase()},
+                    country: result.address.country_code.toUpperCase(),
                     postalCode: result.address.postcode
                 }))
             ))
@@ -94,13 +106,11 @@ export const InputAddressCell = (props: CellProps) => {
                     id={id}
                     showClear={true}
                     disabled={!enabled}
-                    optionLabel={'name'}
+                    optionLabel={'countryName'}
+                    optionValue={'countryShortCode'}
                     className={className}
                     value={get(data as Address, fieldName)}
-                    options={filterCountries({whitelist: countryCodes}).map(countryRegion => ({
-                        name: countryRegion.countryName,
-                        shortCode: countryRegion.countryShortCode
-                    }))}
+                    options={filterCountries({whitelist: countryCodes})}
                     onChange={(e) => handleChange(path, set(Object.assign({} as Address, data), fieldName, e.target.value))}
                 />
                 }
@@ -109,7 +119,7 @@ export const InputAddressCell = (props: CellProps) => {
                     appendTo={"self"}
                     autoFocus={ focus && fieldName === 'streetNumber'}
                     delay={800}
-                    completeMethod={search}
+                    completeMethod={(e) => search(e, fieldName)}
                     suggestions={searchResults}
                     value={get(data as Address, fieldName)}
                     id={id}

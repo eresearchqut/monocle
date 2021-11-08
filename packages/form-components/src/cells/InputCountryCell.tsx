@@ -5,8 +5,8 @@ import {withJsonFormsCellProps} from '@jsonforms/react';
 import merge from 'lodash/merge';
 import {filterCountries} from "../utils/countryRegionUtils";
 
-import {Dropdown, DropdownChangeParams} from "primereact/dropdown";
-import {MultiSelect, MultiSelectChangeParams} from "primereact/multiselect";
+import {Dropdown, DropdownChangeParams, DropdownProps} from "primereact/dropdown";
+import {MultiSelect, MultiSelectChangeParams, MultiSelectProps} from "primereact/multiselect";
 
 export interface InputCountryCellOptions {
     required?: boolean;
@@ -48,7 +48,6 @@ export const InputCountryCell = (props: Partial<CellProps>) => {
         id,
         className,
         showClear: true,
-        whitelist: countryCodes,
         value: isMultiSelect && !Array.isArray(data) ? [] : data,
         disabled: !enabled,
         optionLabel: 'countryName',

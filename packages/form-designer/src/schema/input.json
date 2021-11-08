@@ -51,10 +51,10 @@
         "AddressInput": {
             "properties": {
                 "countryCodes": {
+                    "description": "Restrict the selectable countries to the following",
                     "items": {
                         "type": "string"
                     },
-                    "title": "Restrict to\nRestrict the countries selectable to the following",
                     "type": "array"
                 },
                 "description": {
@@ -120,13 +120,13 @@
             "type": "object"
         },
         "CountryInput": {
-            "description": "ISO 3166 Name and Short Code",
+            "description": "Displays ISO 3166 Country Name and saves Short Code",
             "properties": {
                 "countryCodes": {
+                    "description": "Restrict the selectable countries to the following",
                     "items": {
                         "type": "string"
                     },
-                    "title": "Restrict to\nRestrict the countries selectable to the following",
                     "type": "array"
                 },
                 "description": {

@@ -36,8 +36,7 @@ export interface AddressInput extends AbstractInput {
     type: InputType.ADDRESS;
 
     /**
-     * @title Restrict to
-     * Restrict the countries selectable to the following
+     * Restrict the selectable countries to the following
      */
     countryCodes?: string[]
 
@@ -45,7 +44,7 @@ export interface AddressInput extends AbstractInput {
 
 /**
  * @title Country
- * @description ISO 3166 Name and Short Code
+ * @description Displays ISO 3166 Country Name and saves Short Code
  */
 export interface CountryInput extends AbstractInput {
 
@@ -53,8 +52,7 @@ export interface CountryInput extends AbstractInput {
     multiselect: boolean,
 
     /**
-     * @title Restrict to
-     * Restrict the countries selectable to the following
+     * Restrict the selectable countries to the following
      */
     countryCodes?: string[]
 

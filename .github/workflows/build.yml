@@ -16,8 +16,12 @@ jobs:
         run: yarn install
       - name: Build Modules
         run: yarn build
+      - name: Configure Git User
+        run: |
+          git config --global user.email "eresearch@qut.edu.au"
+          git config --global user.name "@$GITHUB_ACTOR"
       - name: Publish Packages
-        run: yarn lerna publish minor --yes
+        run: yarn lerna publish minor --conventional-commits --yes
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Build Storybooks

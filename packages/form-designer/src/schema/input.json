@@ -1,806 +1,806 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "anyOf": [
-    {
-      "$ref": "#/definitions/AddressInput"
-    },
-    {
-      "$ref": "#/definitions/CountryInput"
-    },
-    {
-      "$ref": "#/definitions/OptionsInput"
-    },
-    {
-      "$ref": "#/definitions/BooleanInput"
-    },
-    {
-      "$ref": "#/definitions/TextInput"
-    },
-    {
-      "$ref": "#/definitions/MultilineTextInput"
-    },
-    {
-      "$ref": "#/definitions/MarkdownInput"
-    },
-    {
-      "$ref": "#/definitions/DateInput"
-    },
-    {
-      "$ref": "#/definitions/TimeInput"
-    },
-    {
-      "$ref": "#/definitions/DateTimeInput"
-    },
-    {
-      "$ref": "#/definitions/NumericInput"
-    },
-    {
-      "$ref": "#/definitions/RangeInput"
-    },
-    {
-      "$ref": "#/definitions/CurrencyInput"
-    },
-    {
-      "$ref": "#/definitions/SvgMapInput"
-    },
-    {
-      "$ref": "#/definitions/Signature"
-    }
-  ],
-  "definitions": {
-    "AddressInput": {
-      "properties": {
-        "countryCodes": {
-          "description": "Restrict the selectable countries to the following",
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "anyOf": [
+        {
+            "$ref": "#/definitions/AddressInput"
         },
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
+        {
+            "$ref": "#/definitions/CountryInput"
         },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
+        {
+            "$ref": "#/definitions/OptionsInput"
         },
-        "id": {
-          "format": "uuid",
-          "type": "string"
+        {
+            "$ref": "#/definitions/BooleanInput"
         },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
+        {
+            "$ref": "#/definitions/TextInput"
         },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
+        {
+            "$ref": "#/definitions/MultilineTextInput"
         },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
+        {
+            "$ref": "#/definitions/MarkdownInput"
         },
-        "type": {
-          "enum": [
-            "address"
-          ],
-          "type": "string"
+        {
+            "$ref": "#/definitions/DateInput"
+        },
+        {
+            "$ref": "#/definitions/TimeInput"
+        },
+        {
+            "$ref": "#/definitions/DateTimeInput"
+        },
+        {
+            "$ref": "#/definitions/NumericInput"
+        },
+        {
+            "$ref": "#/definitions/RangeInput"
+        },
+        {
+            "$ref": "#/definitions/CurrencyInput"
+        },
+        {
+            "$ref": "#/definitions/SvgMapInput"
+        },
+        {
+            "$ref": "#/definitions/Signature"
         }
-      },
-      "title": "Address",
-      "type": "object"
-    },
-    "BooleanInput": {
-      "properties": {
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
-        },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
-        },
-        "id": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
-        },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
-        },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
-        },
-        "type": {
-          "enum": [
-            "boolean"
-          ],
-          "type": "string"
-        }
-      },
-      "title": "Boolean",
-      "type": "object"
-    },
-    "CountryInput": {
-      "description": "Displays ISO 3166 Country Name and saves Short Code",
-      "properties": {
-        "countryCodes": {
-          "description": "Restrict the selectable countries to the following",
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
-        },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
-        },
-        "id": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
-        },
-        "multiselect": {
-          "type": "boolean"
-        },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
-        },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
-        },
-        "type": {
-          "enum": [
-            "country"
-          ],
-          "type": "string"
-        }
-      },
-      "title": "Country",
-      "type": "object"
-    },
-    "CurrencyInput": {
-      "properties": {
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
-        },
-        "currencyCode": {
-          "type": "string"
-        },
-        "currencyDisplay": {
-          "enum": [
-            "name",
-            "symbol"
-          ],
-          "type": "string"
-        },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
-        },
-        "id": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
-        },
-        "locale": {
-          "type": "string"
-        },
-        "maximum": {
-          "type": "number"
-        },
-        "minimum": {
-          "type": "number"
-        },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
-        },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
-        },
-        "type": {
-          "enum": [
-            "currency"
-          ],
-          "type": "string"
-        }
-      },
-      "title": "Currency",
-      "type": "object"
-    },
-    "DateInput": {
-      "properties": {
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
-        },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
-        },
-        "id": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
-        },
-        "maximum": {
-          "format": "date",
-          "type": "string"
-        },
-        "minimum": {
-          "format": "date",
-          "type": "string"
-        },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
-        },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
-        },
-        "type": {
-          "enum": [
-            "date"
-          ],
-          "type": "string"
-        }
-      },
-      "title": "Date",
-      "type": "object"
-    },
-    "DateTimeInput": {
-      "properties": {
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
-        },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
-        },
-        "hourFormat": {
-          "description": "24 or 12 hour time",
-          "enum": [
-            "12",
-            "24"
-          ],
-          "type": "string"
-        },
-        "id": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "includeMilliseconds": {
-          "description": "Display millisecond controls",
-          "type": "boolean"
-        },
-        "includeSeconds": {
-          "description": "Display seconds controls",
-          "type": "boolean"
-        },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
-        },
-        "maximum": {
-          "format": "date",
-          "type": "string"
-        },
-        "minimum": {
-          "format": "date",
-          "type": "string"
-        },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
-        },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
-        },
-        "stepHours": {
-          "description": "Hours to change per step.",
-          "type": "number"
-        },
-        "stepMilliseconds": {
-          "description": "Milliseconds to change per step.",
-          "type": "number"
-        },
-        "stepMinutes": {
-          "description": "Minutes to change per step",
-          "type": "number"
-        },
-        "stepSeconds": {
-          "description": "Seconds to change per step.",
-          "type": "number"
-        },
-        "type": {
-          "enum": [
-            "date-time"
-          ],
-          "type": "string"
-        }
-      },
-      "title": "Date Time",
-      "type": "object"
-    },
-    "MarkdownInput": {
-      "properties": {
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
-        },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
-        },
-        "id": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
-        },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
-        },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
-        },
-        "type": {
-          "enum": [
-            "markdown"
-          ],
-          "type": "string"
-        }
-      },
-      "title": "Markdown",
-      "type": "object"
-    },
-    "MultilineTextInput": {
-      "properties": {
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
-        },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
-        },
-        "id": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
-        },
-        "maxLength": {
-          "type": "number"
-        },
-        "minLength": {
-          "type": "number"
-        },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
-        },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
-        },
-        "type": {
-          "enum": [
-            "multiline-text"
-          ],
-          "type": "string"
-        }
-      },
-      "title": "Multiline Text",
-      "type": "object"
-    },
-    "NumericInput": {
-      "properties": {
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
-        },
-        "decimalPlaces": {
-          "minimum": 0,
-          "type": "integer"
-        },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
-        },
-        "groupNumbers": {
-          "description": "Whether to use grouping separators, such as thousands separators",
-          "type": "boolean"
-        },
-        "id": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "increment": {
-          "type": "number"
-        },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
-        },
-        "locale": {
-          "type": "string"
-        },
-        "maximum": {
-          "type": "number"
-        },
-        "minimum": {
-          "type": "number"
-        },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
-        },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
-        },
-        "type": {
-          "enum": [
-            "numeric"
-          ],
-          "type": "string"
-        }
-      },
-      "title": "Numeric",
-      "type": "object"
-    },
-    "OptionsInput": {
-      "properties": {
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
-        },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
-        },
-        "displayOptions": {
-          "description": "Are options displayed at all times, single select radio, multiselect checklist",
-          "type": "boolean"
-        },
-        "id": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
-        },
-        "multiselect": {
-          "description": "Can multiple options be selected",
-          "type": "boolean"
-        },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
-        },
-        "optionValueType": {
-          "enum": [
-            "number",
-            "string"
-          ],
-          "type": "string"
-        },
-        "options": {
-          "description": "Option values and labels",
-          "items": [
-            {
-              "properties": {
+    ],
+    "definitions": {
+        "AddressInput": {
+            "properties": {
+                "countryCodes": {
+                    "description": "Restrict the selectable countries to the following",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
                 "id": {
-                  "format": "uuid",
-                  "type": "string"
+                    "format": "uuid",
+                    "type": "string"
                 },
                 "label": {
-                  "type": "string"
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
                 },
-                "value": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "address"
+                    ],
+                    "type": "string"
                 }
-              },
-              "type": "object"
-            }
-          ],
-          "maxItems": 1,
-          "minItems": 1,
-          "type": "array"
+            },
+            "title": "Address",
+            "type": "object"
         },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
+        "BooleanInput": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "boolean"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Boolean",
+            "type": "object"
         },
-        "type": {
-          "enum": [
-            "options"
-          ],
-          "type": "string"
+        "CountryInput": {
+            "description": "Displays ISO 3166 Country Name and saves Short Code",
+            "properties": {
+                "countryCodes": {
+                    "description": "Restrict the selectable countries to the following",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "multiselect": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "country"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Country",
+            "type": "object"
+        },
+        "CurrencyInput": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "currencyCode": {
+                    "type": "string"
+                },
+                "currencyDisplay": {
+                    "enum": [
+                        "name",
+                        "symbol"
+                    ],
+                    "type": "string"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "locale": {
+                    "type": "string"
+                },
+                "maximum": {
+                    "type": "number"
+                },
+                "minimum": {
+                    "type": "number"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "currency"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Currency",
+            "type": "object"
+        },
+        "DateInput": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "maximum": {
+                    "format": "date",
+                    "type": "string"
+                },
+                "minimum": {
+                    "format": "date",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "date"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Date",
+            "type": "object"
+        },
+        "DateTimeInput": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "hourFormat": {
+                    "description": "24 or 12 hour time",
+                    "enum": [
+                        "12",
+                        "24"
+                    ],
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "includeMilliseconds": {
+                    "description": "Display millisecond controls",
+                    "type": "boolean"
+                },
+                "includeSeconds": {
+                    "description": "Display seconds controls",
+                    "type": "boolean"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "maximum": {
+                    "format": "date",
+                    "type": "string"
+                },
+                "minimum": {
+                    "format": "date",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "stepHours": {
+                    "description": "Hours to change per step.",
+                    "type": "number"
+                },
+                "stepMilliseconds": {
+                    "description": "Milliseconds to change per step.",
+                    "type": "number"
+                },
+                "stepMinutes": {
+                    "description": "Minutes to change per step",
+                    "type": "number"
+                },
+                "stepSeconds": {
+                    "description": "Seconds to change per step.",
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "date-time"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Date Time",
+            "type": "object"
+        },
+        "MarkdownInput": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "markdown"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Markdown",
+            "type": "object"
+        },
+        "MultilineTextInput": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "maxLength": {
+                    "type": "number"
+                },
+                "minLength": {
+                    "type": "number"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "multiline-text"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Multiline Text",
+            "type": "object"
+        },
+        "NumericInput": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "decimalPlaces": {
+                    "minimum": 0,
+                    "type": "integer"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "groupNumbers": {
+                    "description": "Whether to use grouping separators, such as thousands separators",
+                    "type": "boolean"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "increment": {
+                    "type": "number"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "locale": {
+                    "type": "string"
+                },
+                "maximum": {
+                    "type": "number"
+                },
+                "minimum": {
+                    "type": "number"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "numeric"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Numeric",
+            "type": "object"
+        },
+        "OptionsInput": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "displayOptions": {
+                    "description": "Are options displayed at all times, single select radio, multiselect checklist",
+                    "type": "boolean"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "multiselect": {
+                    "description": "Can multiple options be selected",
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "optionValueType": {
+                    "enum": [
+                        "number",
+                        "string"
+                    ],
+                    "type": "string"
+                },
+                "options": {
+                    "description": "Option values and labels",
+                    "items": [
+                        {
+                            "properties": {
+                                "id": {
+                                    "format": "uuid",
+                                    "type": "string"
+                                },
+                                "label": {
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": [
+                                        "string",
+                                        "number"
+                                    ]
+                                }
+                            },
+                            "type": "object"
+                        }
+                    ],
+                    "maxItems": 1,
+                    "minItems": 1,
+                    "type": "array"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "options"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Options",
+            "type": "object"
+        },
+        "RangeInput": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "increment": {
+                    "type": "number"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "maximum": {
+                    "type": "number"
+                },
+                "minimum": {
+                    "type": "number"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "range"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Range",
+            "type": "object"
+        },
+        "Signature": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "signature"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Signature",
+            "type": "object"
+        },
+        "SvgMapInput": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "map": {
+                    "enum": [
+                        "body",
+                        "painScale"
+                    ],
+                    "type": "string"
+                },
+                "multiselect": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "svg-map"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Svg Map",
+            "type": "object"
+        },
+        "TextInput": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "maxLength": {
+                    "type": "number"
+                },
+                "minLength": {
+                    "type": "number"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "pattern": {
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "text"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Text",
+            "type": "object"
+        },
+        "TimeInput": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "hourFormat": {
+                    "description": "24 or 12 hour time",
+                    "enum": [
+                        "12",
+                        "24"
+                    ],
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "includeMilliseconds": {
+                    "description": "Display millisecond controls",
+                    "type": "boolean"
+                },
+                "includeSeconds": {
+                    "description": "Display seconds controls",
+                    "type": "boolean"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "stepHours": {
+                    "description": "Hours to change per step.",
+                    "type": "number"
+                },
+                "stepMilliseconds": {
+                    "description": "Milliseconds to change per step.",
+                    "type": "number"
+                },
+                "stepMinutes": {
+                    "description": "Minutes to change per step",
+                    "type": "number"
+                },
+                "stepSeconds": {
+                    "description": "Seconds to change per step.",
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "time"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Time",
+            "type": "object"
         }
-      },
-      "title": "Options",
-      "type": "object"
     },
-    "RangeInput": {
-      "properties": {
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
-        },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
-        },
-        "id": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "increment": {
-          "type": "number"
-        },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
-        },
-        "maximum": {
-          "type": "number"
-        },
-        "minimum": {
-          "type": "number"
-        },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
-        },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
-        },
-        "type": {
-          "enum": [
-            "range"
-          ],
-          "type": "string"
-        }
-      },
-      "title": "Range",
-      "type": "object"
-    },
-    "Signature": {
-      "properties": {
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
-        },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
-        },
-        "id": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
-        },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
-        },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
-        },
-        "type": {
-          "enum": [
-            "signature"
-          ],
-          "type": "string"
-        }
-      },
-      "title": "Signature",
-      "type": "object"
-    },
-    "SvgMapInput": {
-      "properties": {
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
-        },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
-        },
-        "id": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
-        },
-        "map": {
-          "enum": [
-            "body",
-            "painScale"
-          ],
-          "type": "string"
-        },
-        "multiselect": {
-          "type": "boolean"
-        },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
-        },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
-        },
-        "type": {
-          "enum": [
-            "svg-map"
-          ],
-          "type": "string"
-        }
-      },
-      "title": "Svg Map",
-      "type": "object"
-    },
-    "TextInput": {
-      "properties": {
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
-        },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
-        },
-        "id": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
-        },
-        "maxLength": {
-          "type": "number"
-        },
-        "minLength": {
-          "type": "number"
-        },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
-        },
-        "pattern": {
-          "type": "string"
-        },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
-        },
-        "type": {
-          "enum": [
-            "text"
-          ],
-          "type": "string"
-        }
-      },
-      "title": "Text",
-      "type": "object"
-    },
-    "TimeInput": {
-      "properties": {
-        "countsToProgress": {
-          "description": "Does the input count to progress when completed",
-          "type": "boolean"
-        },
-        "description": {
-          "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
-          "type": "string"
-        },
-        "hourFormat": {
-          "description": "24 or 12 hour time",
-          "enum": [
-            "12",
-            "24"
-          ],
-          "type": "string"
-        },
-        "id": {
-          "format": "uuid",
-          "type": "string"
-        },
-        "includeMilliseconds": {
-          "description": "Display millisecond controls",
-          "type": "boolean"
-        },
-        "includeSeconds": {
-          "description": "Display seconds controls",
-          "type": "boolean"
-        },
-        "label": {
-          "description": "Label can be provided to override the name",
-          "type": "string"
-        },
-        "name": {
-          "description": "The name of the element",
-          "type": "string"
-        },
-        "required": {
-          "description": "Can the element be flagged as required",
-          "type": "boolean"
-        },
-        "stepHours": {
-          "description": "Hours to change per step.",
-          "type": "number"
-        },
-        "stepMilliseconds": {
-          "description": "Milliseconds to change per step.",
-          "type": "number"
-        },
-        "stepMinutes": {
-          "description": "Minutes to change per step",
-          "type": "number"
-        },
-        "stepSeconds": {
-          "description": "Seconds to change per step.",
-          "type": "number"
-        },
-        "type": {
-          "enum": [
-            "time"
-          ],
-          "type": "string"
-        }
-      },
-      "title": "Time",
-      "type": "object"
-    }
-  },
-  "title": "Input"
+    "title": "Input"
 }
 

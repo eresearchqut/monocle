@@ -114,11 +114,13 @@ AlternativeLabel.args = {
 export const Description = Template.bind({});
 Description.args = {
     ...Default.args,
-    uischema: {
-        type: 'Control',
-        scope: `#/properties/control`,
-        options: {
-            description: 'I am sometime true (for me to be true, please click)',
+    schema: {
+        required: ['control'],
+        properties: {
+            control: {
+                type: 'boolean',
+                description: 'I am sometime true (for me to be true, please click)',
+            },
         },
     },
 };

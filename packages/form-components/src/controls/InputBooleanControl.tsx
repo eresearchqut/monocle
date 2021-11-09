@@ -3,7 +3,6 @@ import { ControlProps, isBooleanControl, NOT_APPLICABLE, RankedTester, rankWith 
 import { DispatchCell, withJsonFormsControlProps } from '@jsonforms/react';
 
 import maxBy from 'lodash/maxBy';
-import merge from 'lodash/merge';
 
 export const InputBooleanControl = (props: ControlProps) => {
     const { schema, id, label, uischema, visible, path, cells, config } = props;
@@ -12,7 +11,7 @@ export const InputBooleanControl = (props: ControlProps) => {
         return null;
     }
 
-    const { description } = merge({}, config, uischema.options);
+    const { description } = schema;
     const cell = maxBy(cells, (r) => r.tester(uischema, schema));
 
     if (cell === undefined || cell.tester(uischema, schema) === NOT_APPLICABLE) {

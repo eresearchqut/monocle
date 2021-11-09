@@ -7,33 +7,33 @@ import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import merge from 'lodash/merge';
 
 export interface InputBooleanCellOptions {
-  booleansAreTrueOrFalse?: boolean;
-  required?: boolean;
+    booleansAreTrueOrFalse?: boolean;
+    required?: boolean;
 }
 
 export const InputBooleanCell = (props: CellProps) => {
-  const { path, data, id, handleChange, config, uischema } = props;
+    const { path, data, id, handleChange, config, uischema } = props;
 
-  const appliedUiSchemaOptions = merge({}, config, uischema?.options) as InputBooleanCellOptions;
-  if (appliedUiSchemaOptions.required || appliedUiSchemaOptions.booleansAreTrueOrFalse) {
+    const appliedUiSchemaOptions = merge({}, config, uischema?.options) as InputBooleanCellOptions;
+    if (appliedUiSchemaOptions.required || appliedUiSchemaOptions.booleansAreTrueOrFalse) {
+        return (
+            <Checkbox
+                inputId={id}
+                id={id + '-input'}
+                checked={!!data}
+                onChange={(e) => handleChange(path, e.checked)}
+            ></Checkbox>
+        );
+    }
+
     return (
-      <Checkbox
-        inputId={id}
-        id={id + '-input'}
-        checked={!!data}
-        onChange={(e) => handleChange(path, e.checked)}
-      ></Checkbox>
+        <TriStateCheckbox
+            value={data}
+            id={id + '-input'}
+            inputId={id}
+            onChange={(e) => handleChange(path, e.value)}
+        ></TriStateCheckbox>
     );
-  }
-
-  return (
-    <TriStateCheckbox
-      value={data}
-      id={id + '-input'}
-      inputId={id}
-      onChange={(e) => handleChange(path, e.value)}
-    ></TriStateCheckbox>
-  );
 };
 
 /**

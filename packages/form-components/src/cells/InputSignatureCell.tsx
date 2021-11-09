@@ -12,79 +12,79 @@ import { Button } from 'primereact/button';
 import './signature.scss';
 
 export interface InputSignatureCellOptions {
-  mimeType?: 'image/png' | 'image/jpg' | 'image/svg+xml'; // default  'image/png',
+    mimeType?: 'image/png' | 'image/jpg' | 'image/svg+xml'; // default  'image/png',
 }
 
 export const InputSignatureCell = (props: CellProps) => {
-  const { config, data, uischema, path, handleChange, enabled = true, visible = true } = props;
+    const { config, data, uischema, path, handleChange, enabled = true, visible = true } = props;
 
-  const { width, height, ref } = useResizeDetector();
-  const canvas = useRef<HTMLCanvasElement>(null);
+    const { width, height, ref } = useResizeDetector();
+    const canvas = useRef<HTMLCanvasElement>(null);
 
-  const [editing, setEditing] = useState<boolean>(!data);
+    const [editing, setEditing] = useState<boolean>(!data);
 
-  useEffect(() => {
-    if (enabled && editing && ref.current && canvas.current && width && height) {
-      canvas.current.width = width - 2;
-      new SignaturePad(canvas.current, {
-        // It's Necessary to use an opaque color when saving image as JPEG;
-        // this option can be omitted if only saving as PNG or SVG
-        backgroundColor: 'rgb(255, 255, 255)',
-      });
+    useEffect(() => {
+        if (enabled && editing && ref.current && canvas.current && width && height) {
+            canvas.current.width = width - 2;
+            new SignaturePad(canvas.current, {
+                // It's Necessary to use an opaque color when saving image as JPEG;
+                // this option can be omitted if only saving as PNG or SVG
+                backgroundColor: 'rgb(255, 255, 255)',
+            });
+        }
+    }, [enabled, editing, ref, width, height, canvas]);
+
+    if (!visible) {
+        return null;
     }
-  }, [enabled, editing, ref, width, height, canvas]);
 
-  if (!visible) {
-    return null;
-  }
+    const inputSignatureCellOptions = merge({}, config, uischema.options) as InputSignatureCellOptions;
+    const { mimeType } = inputSignatureCellOptions;
 
-  const inputSignatureCellOptions = merge({}, config, uischema.options) as InputSignatureCellOptions;
-  const { mimeType } = inputSignatureCellOptions;
+    const save = () => {
+        if (canvas?.current) {
+            trimCanvas(canvas.current);
+            handleChange(path, canvas.current.toDataURL(mimeType));
+        }
+        setEditing(false);
+    };
 
-  const save = () => {
-    if (canvas?.current) {
-      trimCanvas(canvas.current);
-      handleChange(path, canvas.current.toDataURL(mimeType));
+    if (editing) {
+        return (
+            <div className={'p-d-flex-column'}>
+                <div className={'signature-container'} ref={ref}>
+                    <canvas ref={canvas} />
+                </div>
+                <div className="p-d-inline-flex">
+                    <Button label="Save" icon="pi pi-save" className="p-button-outlined" onClick={save} />
+                    <Button
+                        label="Cancel"
+                        className="p-button-outlined p-ml-1"
+                        icon="pi pi-times"
+                        onClick={() => setEditing(false)}
+                    />
+                </div>
+            </div>
+        );
     }
-    setEditing(false);
-  };
 
-  if (editing) {
     return (
-      <div className={'p-d-flex-column'}>
-        <div className={'signature-container'} ref={ref}>
-          <canvas ref={canvas} />
+        <div ref={ref} className={'p-d-flex-column'}>
+            <div className={'signature-image'}>
+                <Image src={data} />
+            </div>
+            {enabled && (
+                <div className="p-d-inline-flex">
+                    <Button
+                        label="Sign"
+                        className="p-button-outlined p-mt-1"
+                        icon="pi pi-pencil"
+                        onClick={() => setEditing(true)}
+                    />
+                </div>
+            )}
         </div>
-        <div className="p-d-inline-flex">
-          <Button label="Save" icon="pi pi-save" className="p-button-outlined" onClick={save} />
-          <Button
-            label="Cancel"
-            className="p-button-outlined p-ml-1"
-            icon="pi pi-times"
-            onClick={() => setEditing(false)}
-          />
-        </div>
-      </div>
     );
-  }
-
-  return (
-    <div ref={ref} className={'p-d-flex-column'}>
-      <div className={'signature-image'}>
-        <Image src={data} />
-      </div>
-      {enabled && (
-        <div className="p-d-inline-flex">
-          <Button
-            label="Sign"
-            className="p-button-outlined p-mt-1"
-            icon="pi pi-pencil"
-            onClick={() => setEditing(true)}
-          />
-        </div>
-      )}
-    </div>
-  );
 };
 
 /**

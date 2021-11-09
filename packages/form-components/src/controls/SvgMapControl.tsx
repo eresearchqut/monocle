@@ -10,54 +10,54 @@ import { startCase } from 'lodash';
 import { MultiSelectSvgMap, SingleSelectSvgMap } from '../component/SvgMap';
 
 export class SvgMapControl extends Control<ControlProps, ControlState> {
-  render() {
-    const { id, label, data, uischema, path, handleChange, config } = this.props;
+    render() {
+        const { id, label, data, uischema, path, handleChange, config } = this.props;
 
-    const appliedUiSchemaOptions = merge({}, config, uischema.options);
-    const { map, hint, multiselect } = appliedUiSchemaOptions;
-    const itemTemplate = (item: string) => startCase(item);
+        const appliedUiSchemaOptions = merge({}, config, uischema.options);
+        const { map, hint, multiselect } = appliedUiSchemaOptions;
+        const itemTemplate = (item: string) => startCase(item);
 
-    const selectedItemTemplate = (item: string) => startCase(item);
-    // @ts-ignore
-    const svgMap = Maps[map];
+        const selectedItemTemplate = (item: string) => startCase(item);
+        // @ts-ignore
+        const svgMap = Maps[map];
 
-    return (
-      <React.Fragment>
-        <div className="p-field">
-          <label htmlFor={id} id={id + '-label'}>
-            {label}
-          </label>
-          {hint && <div className="p-text-light p-mb-2">{hint}</div>}
-          {multiselect && (
-            <AutoComplete
-              inputId={id}
-              id={id + '-selected'}
-              value={data || []}
-              multiple
-              itemTemplate={itemTemplate}
-              selectedItemTemplate={selectedItemTemplate}
-              onChange={(e) => handleChange(path, e.value)}
-            />
-          )}
-        </div>
+        return (
+            <React.Fragment>
+                <div className="p-field">
+                    <label htmlFor={id} id={id + '-label'}>
+                        {label}
+                    </label>
+                    {hint && <div className="p-text-light p-mb-2">{hint}</div>}
+                    {multiselect && (
+                        <AutoComplete
+                            inputId={id}
+                            id={id + '-selected'}
+                            value={data || []}
+                            multiple
+                            itemTemplate={itemTemplate}
+                            selectedItemTemplate={selectedItemTemplate}
+                            onChange={(e) => handleChange(path, e.value)}
+                        />
+                    )}
+                </div>
 
-        {multiselect && (
-          <MultiSelectSvgMap
-            map={svgMap}
-            value={data}
-            handleChange={(locationIds: string[]) => handleChange(path, locationIds)}
-          />
-        )}
-        {!multiselect && (
-          <SingleSelectSvgMap
-            map={svgMap}
-            value={data}
-            handleChange={(locationId: string | boolean | undefined) => handleChange(path, locationId)}
-          />
-        )}
-      </React.Fragment>
-    );
-  }
+                {multiselect && (
+                    <MultiSelectSvgMap
+                        map={svgMap}
+                        value={data}
+                        handleChange={(locationIds: string[]) => handleChange(path, locationIds)}
+                    />
+                )}
+                {!multiselect && (
+                    <SingleSelectSvgMap
+                        map={svgMap}
+                        value={data}
+                        handleChange={(locationId: string | boolean | undefined) => handleChange(path, locationId)}
+                    />
+                )}
+            </React.Fragment>
+        );
+    }
 }
 
 // export interface SvgMapControlElement extends UISchemaElement, Scopable {

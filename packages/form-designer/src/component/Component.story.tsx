@@ -5,8 +5,8 @@ import Component, { ComponentProps } from './Component';
 import { InputType } from '@eresearchqut/form-definition';
 
 export default {
-  title: 'Component/Component',
-  component: Component,
+    title: 'Component/Component',
+    component: Component,
 } as Meta;
 
 const Template: Story<ComponentProps> = (props) => <Component {...props} />;

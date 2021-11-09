@@ -17,35 +17,35 @@ import { OptionsInputCompiler } from './optionsInputCompiler';
 import { SignatureInputCompiler } from './signatureInputCompiler';
 
 export {
-  AbstractInputCompiler,
-  AddressInputCompiler,
-  TextInputCompiler,
-  MarkdownInputCompiler,
-  NumericInputCompiler,
-  RangeInputCompiler,
-  OptionsInputCompiler,
-  CountryInputCompiler,
-  CurrencyInputCompiler,
-  BooleanInputCompiler,
-  DateTimeInputCompiler,
-  SignatureInputCompiler,
+    AbstractInputCompiler,
+    AddressInputCompiler,
+    TextInputCompiler,
+    MarkdownInputCompiler,
+    NumericInputCompiler,
+    RangeInputCompiler,
+    OptionsInputCompiler,
+    CountryInputCompiler,
+    CurrencyInputCompiler,
+    BooleanInputCompiler,
+    DateTimeInputCompiler,
+    SignatureInputCompiler,
 };
 
 export const inputCompilers: InputCompiler[] = [
-  new AddressInputCompiler(),
-  new RangeInputCompiler(),
-  new TextInputCompiler(),
-  new MultilineTextInputCompiler(),
-  new MarkdownInputCompiler(),
-  new NumericInputCompiler(),
-  new OptionsInputCompiler(),
-  new CurrencyInputCompiler(),
-  new CountryInputCompiler(),
-  new BooleanInputCompiler(),
-  new DateTimeInputCompiler(),
-  new SvgMapInputCompiler(),
-  new SignatureInputCompiler(),
+    new AddressInputCompiler(),
+    new RangeInputCompiler(),
+    new TextInputCompiler(),
+    new MultilineTextInputCompiler(),
+    new MarkdownInputCompiler(),
+    new NumericInputCompiler(),
+    new OptionsInputCompiler(),
+    new CurrencyInputCompiler(),
+    new CountryInputCompiler(),
+    new BooleanInputCompiler(),
+    new DateTimeInputCompiler(),
+    new SvgMapInputCompiler(),
+    new SignatureInputCompiler(),
 ];
 
 export const findInputCompiler = (form: Form, section: Section, input: Input): InputCompiler | undefined =>
-  inputCompilers.find((inputBuilder) => inputBuilder.supports(form, section, input));
+    inputCompilers.find((inputBuilder) => inputBuilder.supports(form, section, input));

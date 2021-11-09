@@ -6,17 +6,17 @@ import { DragDropContext, DropResult, ResponderProvided } from 'react-beautiful-
 import { InputType, SectionType } from '@eresearchqut/form-definition';
 
 export default {
-  title: 'Component/ComponentSelector',
-  component: ComponentSelector,
-  decorators: [
-    (Story, context) => {
-      return (
-        <DragDropContext onDragEnd={(result: DropResult, provided: ResponderProvided) => console.log(result)}>
-          <Story />
-        </DragDropContext>
-      );
-    },
-  ],
+    title: 'Component/ComponentSelector',
+    component: ComponentSelector,
+    decorators: [
+        (Story, context) => {
+            return (
+                <DragDropContext onDragEnd={(result: DropResult, provided: ResponderProvided) => console.log(result)}>
+                    <Story />
+                </DragDropContext>
+            );
+        },
+    ],
 } as Meta;
 
 const Template: Story<ComponentSelectorProps> = (props) => <ComponentSelector {...props} />;

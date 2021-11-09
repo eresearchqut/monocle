@@ -5,45 +5,45 @@ import { InputText } from 'primereact/inputtext';
 import merge from 'lodash/merge';
 
 export interface InputTextCellOptions {
-  required?: boolean;
-  focus?: boolean;
+    required?: boolean;
+    focus?: boolean;
 }
 
 export const InputTextCell = (props: CellProps) => {
-  const {
-    data,
-    id,
-    schema,
-    path,
-    handleChange,
-    config,
-    uischema,
-    visible = true,
-    enabled = true,
-    isValid = true,
-  } = props;
+    const {
+        data,
+        id,
+        schema,
+        path,
+        handleChange,
+        config,
+        uischema,
+        visible = true,
+        enabled = true,
+        isValid = true,
+    } = props;
 
-  const { pattern } = schema;
-  const keyFilter = pattern ? new RegExp(pattern) : undefined;
-  const { required, focus } = merge({}, config, uischema?.options) as InputTextCellOptions;
-  const className = isValid ? undefined : 'p-invalid';
+    const { pattern } = schema;
+    const keyFilter = pattern ? new RegExp(pattern) : undefined;
+    const { required, focus } = merge({}, config, uischema?.options) as InputTextCellOptions;
+    const className = isValid ? undefined : 'p-invalid';
 
-  if (!visible) {
-    return null;
-  }
+    if (!visible) {
+        return null;
+    }
 
-  return (
-    <InputText
-      value={data || ''}
-      id={id}
-      className={className}
-      disabled={!enabled}
-      onChange={(e) => handleChange(path, e.target.value)}
-      keyfilter={keyFilter}
-      aria-required={required}
-      autoFocus={focus}
-    />
-  );
+    return (
+        <InputText
+            value={data || ''}
+            id={id}
+            className={className}
+            disabled={!enabled}
+            onChange={(e) => handleChange(path, e.target.value)}
+            keyfilter={keyFilter}
+            aria-required={required}
+            autoFocus={focus}
+        />
+    );
 };
 
 /**

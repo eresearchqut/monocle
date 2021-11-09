@@ -3,10 +3,10 @@ import InputBooleanControl, { inputBooleanControlTester } from './InputBooleanCo
 import SvgMapControl, { svgMapControlTester } from './SvgMapControl';
 
 export {
-  InputControl,
-  inputControlTester,
-  InputBooleanControl,
-  inputBooleanControlTester,
-  SvgMapControl,
-  svgMapControlTester,
+    InputControl,
+    inputControlTester,
+    InputBooleanControl,
+    inputBooleanControlTester,
+    SvgMapControl,
+    svgMapControlTester,
 };

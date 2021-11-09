@@ -1,6 +1,6 @@
 export interface Named {
-  /**
-   * The name of the element
-   */
-  name: string;
+    /**
+     * The name of the element
+     */
+    name: string;
 }

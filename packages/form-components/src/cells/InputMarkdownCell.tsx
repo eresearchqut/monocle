@@ -6,12 +6,12 @@ import 'easymde/dist/easymde.min.css';
 import SimpleMdeReact from 'react-simplemde-editor';
 
 export const InputMarkdownCell = (props: CellProps) => {
-  const { data, id, path, handleChange, visible = true } = props;
+    const { data, id, path, handleChange, visible = true } = props;
 
-  if (!visible) {
-    return null;
-  }
-  return <SimpleMdeReact id={id} value={data} onChange={(value) => handleChange(path, value)} />;
+    if (!visible) {
+        return null;
+    }
+    return <SimpleMdeReact id={id} value={data} onChange={(value) => handleChange(path, value)} />;
 };
 
 /**

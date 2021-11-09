@@ -4,43 +4,43 @@ import { AddressInput, Form, Input, InputType, Section } from '@eresearchqut/for
 import { AbstractInputCompiler } from './abstractInputCompiler';
 
 export class AddressInputCompiler extends AbstractInputCompiler implements InputCompiler {
-  supports(form: Form, section: Section, input: Input): boolean {
-    return input.type === InputType.ADDRESS;
-  }
+    supports(form: Form, section: Section, input: Input): boolean {
+        return input.type === InputType.ADDRESS;
+    }
 
-  schema(form: Form, section: Section, input: Input): JsonSchema {
-    const { description } = input as AddressInput;
-    return {
-      type: 'object',
-      description,
-      properties: {
-        streetNumber: {
-          type: 'string',
-        },
-        street: {
-          type: 'string',
-        },
-        suburb: {
-          type: 'string',
-        },
-        city: {
-          type: 'string',
-        },
-        state: {
-          type: 'string',
-        },
-        country: {
-          type: 'string',
-        },
-        postalCode: {
-          type: 'string',
-        },
-      },
-    } as JsonSchema;
-  }
+    schema(form: Form, section: Section, input: Input): JsonSchema {
+        const { description } = input as AddressInput;
+        return {
+            type: 'object',
+            description,
+            properties: {
+                streetNumber: {
+                    type: 'string',
+                },
+                street: {
+                    type: 'string',
+                },
+                suburb: {
+                    type: 'string',
+                },
+                city: {
+                    type: 'string',
+                },
+                state: {
+                    type: 'string',
+                },
+                country: {
+                    type: 'string',
+                },
+                postalCode: {
+                    type: 'string',
+                },
+            },
+        } as JsonSchema;
+    }
 
-  ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {
-    const countryCodes = (input as AddressInput).countryCodes;
-    return this.uiControl(form, section, input, { countryCodes });
-  }
+    ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {
+        const countryCodes = (input as AddressInput).countryCodes;
+        return this.uiControl(form, section, input, { countryCodes });
+    }
 }

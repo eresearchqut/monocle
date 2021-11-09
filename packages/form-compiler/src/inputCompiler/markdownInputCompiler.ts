@@ -4,16 +4,16 @@ import { Form, Input, MarkdownInput, Section } from '@eresearchqut/form-definiti
 import { AbstractInputCompiler } from './abstractInputCompiler';
 
 export class MarkdownInputCompiler extends AbstractInputCompiler implements InputCompiler {
-  supports(form: Form, section: Section, input: Input): boolean {
-    return input.type === 'markdown';
-  }
+    supports(form: Form, section: Section, input: Input): boolean {
+        return input.type === 'markdown';
+    }
 
-  schema(form: Form, section: Section, input: Input): JsonSchema {
-    const { description } = input as MarkdownInput;
-    return { type: 'string', description } as JsonSchema;
-  }
+    schema(form: Form, section: Section, input: Input): JsonSchema {
+        const { description } = input as MarkdownInput;
+        return { type: 'string', description } as JsonSchema;
+    }
 
-  ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {
-    return this.uiControl(form, section, input);
-  }
+    ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {
+        return this.uiControl(form, section, input);
+    }
 }

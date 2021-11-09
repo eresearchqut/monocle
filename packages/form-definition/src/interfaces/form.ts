@@ -7,5 +7,5 @@ import {Described} from './described';
  * @title Form
  */
 export interface Form extends Named, Labelled, Described {
-  sections: Section[];
+    sections: Section[];
 }

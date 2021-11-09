@@ -6,89 +6,89 @@ import { useArgs } from '@storybook/client-api';
 import { action } from '@storybook/addon-actions';
 
 export default {
-  title: 'Cells/InputCountryCell',
-  component: InputCountryCell,
-  argTypes: {
-    id: { table: { disable: true } },
-  },
+    title: 'Cells/InputCountryCell',
+    component: InputCountryCell,
+    argTypes: {
+        id: { table: { disable: true } },
+    },
 } as Meta;
 
 const Template: Story<CellProps> = (props) => {
-  const [, updateArgs] = useArgs();
-  const logAction = useCallback(action('handleChange'), []); // eslint-disable-line react-hooks/exhaustive-deps
-  const handleChange = (path: string, data: any) => {
-    updateArgs({ data });
-    logAction(path, data);
-  };
-  return <InputCountryCell {...props} handleChange={handleChange} />;
+    const [, updateArgs] = useArgs();
+    const logAction = useCallback(action('handleChange'), []); // eslint-disable-line react-hooks/exhaustive-deps
+    const handleChange = (path: string, data: any) => {
+        updateArgs({ data });
+        logAction(path, data);
+    };
+    return <InputCountryCell {...props} handleChange={handleChange} />;
 };
 Template.bind({});
 
 export const Default = Template.bind({});
 Default.args = {
-  data: {},
-  path: 'cell',
-  schema: {
-    type: 'object',
-    properties: {
-      name: { type: 'string' },
-      shortCode: { type: 'string' },
+    data: {},
+    path: 'cell',
+    schema: {
+        type: 'object',
+        properties: {
+            name: { type: 'string' },
+            shortCode: { type: 'string' },
+        },
     },
-  },
-  uischema: {
-    type: 'Control',
-    scope: `#/properties/cell`,
-    options: {
-      type: 'country',
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/cell`,
+        options: {
+            type: 'country',
+        },
     },
-  },
 };
 
 export const CountryCodes = Template.bind({});
 CountryCodes.args = {
-  uischema: {
-    type: 'Control',
-    scope: `#/properties/cell`,
-    options: {
-      type: 'country',
-      countryCodes: ['AU', 'NZ'],
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/cell`,
+        options: {
+            type: 'country',
+            countryCodes: ['AU', 'NZ'],
+        },
     },
-  },
 };
 
 export const SingleCountry = Template.bind({});
 SingleCountry.args = {
-  uischema: {
-    type: 'Control',
-    scope: `#/properties/cell`,
-    options: {
-      type: 'country',
-      countryCodes: ['AU'],
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/cell`,
+        options: {
+            type: 'country',
+            countryCodes: ['AU'],
+        },
     },
-  },
 };
 
 export const Multiselect = Template.bind({});
 Multiselect.args = {
-  data: [{ name: 'Australia', shortCode: 'AU' }],
-  schema: {
-    type: 'array',
-    items: {
-      type: 'object',
-      properties: {
-        name: { type: 'string' },
-        shortCode: { type: 'string' },
-      },
+    data: [{ name: 'Australia', shortCode: 'AU' }],
+    schema: {
+        type: 'array',
+        items: {
+            type: 'object',
+            properties: {
+                name: { type: 'string' },
+                shortCode: { type: 'string' },
+            },
+        },
     },
-  },
-  uischema: {
-    type: 'Control',
-    scope: `#/properties/cell`,
-    options: {
-      type: 'country',
-      multiselect: true,
+    uischema: {
+        type: 'Control',
+        scope: `#/properties/cell`,
+        options: {
+            type: 'country',
+            multiselect: true,
+        },
     },
-  },
 };
 
 // export const CountryCodes = Template.bind({});

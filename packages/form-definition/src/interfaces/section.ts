@@ -7,15 +7,15 @@ import { Typed } from './typed';
 import { Input } from './input';
 
 export enum SectionType {
-  DEFAULT = 'default',
+    DEFAULT = 'default',
 }
 
 export interface AbstractSection extends Typed<SectionType>, Named, UniquelyIdentifiable, Described, Labelled {
-  inputs: Input[];
+    inputs: Input[];
 }
 
 export interface DefaultSection extends AbstractSection {
-  type: SectionType.DEFAULT;
+    type: SectionType.DEFAULT;
 }
 
 /**

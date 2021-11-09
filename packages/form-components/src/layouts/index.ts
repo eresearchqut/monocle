@@ -4,12 +4,12 @@ import CategorizationLayout, { categorizationLayoutTester } from './Categorizati
 import CategoryLayout, { categoryLayoutTester } from './CategoryLayout';
 
 export {
-  HorizontalLayout,
-  horizontalLayoutTester,
-  VerticalLayout,
-  verticalLayoutTester,
-  CategorizationLayout,
-  categorizationLayoutTester,
-  CategoryLayout,
-  categoryLayoutTester,
+    HorizontalLayout,
+    horizontalLayoutTester,
+    VerticalLayout,
+    verticalLayoutTester,
+    CategorizationLayout,
+    categorizationLayoutTester,
+    CategoryLayout,
+    categoryLayoutTester,
 };

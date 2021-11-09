@@ -3,8 +3,6 @@ on: [ push ]
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -14,16 +12,24 @@ jobs:
           node-version: '16'
           cache: 'yarn'
           registry-url: 'https://npm.pkg.github.com'
+        env:
+          NPM_PKG_GITHUB_TOKEN: ${{ secrets.NPM_PKG_GITHUB_TOKEN }}
       - name: Install Dependencies
         run: yarn install
+        env:
+          NPM_PKG_GITHUB_TOKEN: ${{ secrets.NPM_PKG_GITHUB_TOKEN }}
       - name: Build Modules
         run: yarn build
+        env:
+          NPM_PKG_GITHUB_TOKEN: ${{ secrets.NPM_PKG_GITHUB_TOKEN }}
       - name: Configure Git User
         run: |
           git config --global user.email "eresearch@qut.edu.au"
           git config --global user.name "@$GITHUB_ACTOR"
       - name: Publish Packages
         run: yarn lerna publish minor --no-changelog --conventional-commits --yes
+        env:
+          NPM_PKG_GITHUB_TOKEN: ${{ secrets.NPM_PKG_GITHUB_TOKEN }}
       - name: Build Storybooks
         run: yarn build-storybooks
       - name: Publish Storybooks to Github Pages

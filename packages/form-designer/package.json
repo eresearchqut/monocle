@@ -1,6 +1,6 @@
 {
   "name": "@eresearchqut/form-designer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -24,14 +24,14 @@
     "build-storybook": "rimraf storybook-static && build-storybook -o ../../storybooks/form-designer"
   },
   "dependencies": {
+    "@eresearchqut/form-compiler": "1.0.0",
+    "@eresearchqut/form-components": "1.0.0",
+    "@eresearchqut/form-definition": "1.0.0",
     "@fortawesome/fontawesome-svg-core": "1.2.36",
     "@fortawesome/free-brands-svg-icons": "5.15.4",
     "@fortawesome/free-regular-svg-icons": "5.15.4",
     "@fortawesome/free-solid-svg-icons": "5.15.4",
     "@fortawesome/react-fontawesome": "0.1.15",
-    "@eresearchqut/form-compiler": "1.0.0",
-    "@eresearchqut/form-components": "1.0.0",
-    "@eresearchqut/form-definition": "1.0.0",
     "react-beautiful-dnd": "13.1.0",
     "react-json-editor-ajrm": "2.5.13",
     "react-stickynode": "^4.0.0",

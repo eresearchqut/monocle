@@ -12,6 +12,8 @@ jobs:
           node-version: '16'
           cache: 'yarn'
           registry-url: 'https://npm.pkg.github.com'
+          env:
+            GITHUB_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
       - name: Install Dependencies
         run: yarn install
       - name: Build Modules
@@ -22,8 +24,6 @@ jobs:
           git config --global user.name "@$GITHUB_ACTOR"
       - name: Publish Packages
         run: yarn lerna publish minor --no-changelog --conventional-commits --yes
-        env:
-          GITHUB_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
       - name: Build Storybooks
         run: yarn build-storybooks
       - name: Publish Storybooks to Github Pages

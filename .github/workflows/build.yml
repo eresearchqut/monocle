@@ -23,7 +23,7 @@ jobs:
       - name: Publish Packages
         run: yarn lerna publish minor --no-changelog --conventional-commits --yes
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
       - name: Build Storybooks
         run: yarn build-storybooks
       - name: Publish Storybooks to Github Pages

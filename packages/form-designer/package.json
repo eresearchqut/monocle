@@ -24,9 +24,9 @@
     "build-storybook": "rimraf storybook-static && build-storybook -o ../../storybooks/form-designer"
   },
   "dependencies": {
-    "@eresearchqut/form-compiler": "1.0.0",
-    "@eresearchqut/form-components": "1.0.0",
-    "@eresearchqut/form-definition": "1.0.0",
+    "@eresearchqut/form-compiler": "0.0.0",
+    "@eresearchqut/form-components": "0.0.0",
+    "@eresearchqut/form-definition": "0.0.0",
     "@fortawesome/fontawesome-svg-core": "1.2.36",
     "@fortawesome/free-brands-svg-icons": "5.15.4",
     "@fortawesome/free-regular-svg-icons": "5.15.4",

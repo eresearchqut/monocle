@@ -1,9 +1,8 @@
 {
   "name": "@eresearchqut/future-state-mono-repo",
   "license": "MIT",
+  "private": true,
   "workspaces": {
-    "name": "future-state-mono-repo",
-    "private": true,
     "packages": [
       "packages/*"
     ]

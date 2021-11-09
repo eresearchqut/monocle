@@ -23,8 +23,8 @@
         "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0 --fix"
     },
     "dependencies": {
-        "@eresearchqut/form-components": "1.0.0",
-        "@eresearchqut/form-definition": "1.0.0",
+        "@eresearchqut/form-components": "0.0.0",
+        "@eresearchqut/form-definition": "0.0.0",
         "@jsonforms/core": "^3.0.0-alpha.1",
         "cldr-core": "^39.0.0",
         "inversify": "5.0.1",

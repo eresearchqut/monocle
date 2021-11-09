@@ -1,6 +1,5 @@
 {
   "name": "@eresearchqut/future-state-mono-repo",
-  "version": "0.1.0",
   "license": "MIT",
   "workspaces": {
     "name": "future-state-mono-repo",

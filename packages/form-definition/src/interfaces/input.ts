@@ -4,6 +4,7 @@ import {Typed} from './typed';
 import {Described} from './described';
 import {Labelled} from "./labeled";
 import {UniquelyIdentifiable} from "./uniquelyIdentifiable";
+import {Progressable} from "./progressable";
 
 export enum InputType {
     ADDRESS = 'address',
@@ -23,7 +24,7 @@ export enum InputType {
     TIME = 'time'
 }
 
-export interface AbstractInput extends Typed<InputType>, Named, UniquelyIdentifiable, Described, Labelled, Requireable {
+export interface AbstractInput extends Typed<InputType>, Named, UniquelyIdentifiable, Described, Labelled, Requireable, Progressable {
 
 }
 

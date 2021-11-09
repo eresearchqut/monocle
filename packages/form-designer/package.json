@@ -9,6 +9,9 @@
     "directory": "packages/form-components",
     "url": "https://github.com/eresearchqut/future-state-mono-repo/tree/main/packages/form-designer"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "scripts": {
     "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
     "copy-files": "copyfiles -u 1 src/**/*.scss dist/ && copyfiles package.json dist/",

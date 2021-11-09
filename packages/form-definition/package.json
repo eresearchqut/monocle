@@ -7,7 +7,10 @@
     "repository": {
         "type": "git",
         "directory": "packages/form-definition",
-        "url": "https://github.com/eresearchqut/future-state-mono-repo/tree/main/packages/form-definition"
+        "url": "ssh://git@github.com:eresearchqut/future-state-mono-repo.git"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
     },
     "scripts": {
         "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",

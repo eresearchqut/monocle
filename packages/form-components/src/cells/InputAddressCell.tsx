@@ -9,7 +9,6 @@ import set from 'lodash/set';
 
 import {geocode, GeocodeRequest, NominatimResponse} from "../client/nominatimClient";
 
-import {Country} from "./InputCountryCell";
 import {Dropdown} from "primereact/dropdown";
 import {filterCountries} from "../utils/countryRegionUtils";
 import {AutoComplete, AutoCompleteCompleteMethodParams} from "primereact/autocomplete";
@@ -32,6 +31,7 @@ export interface Address {
 }
 
 export const InputAddressCell = (props: CellProps) => {
+
     const {
         data,
         id,

@@ -111,3 +111,6 @@ build
 
 # Story Books Static Site
 storybooks
+
+# OSX DS_Store files
+.DS_Store

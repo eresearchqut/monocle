@@ -1,10 +1,22 @@
 {
-  "name": "@eresearchqut/root",
-  "private": true,
+  "name": "@eresearchqut/future-state-mono-repo",
+  "version": "0.1.0",
+  "license": "MIT",
   "workspaces": {
+    "name": "future-state-mono-repo",
+    "private": true,
     "packages": [
       "packages/*"
     ]
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://npm.pkg.github.com/eresearchqut"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:eresearchqut/future-state-mono-repo.git",
+    "directory": "@eresearchqut/future-state-mono-repo"
   },
   "scripts": {
     "prepare": "node ./configure-references.js",
@@ -12,7 +24,8 @@
     "build": "lerna run build --stream",
     "build-storybooks": "rimraf storybooks && mkdir storybooks && lerna run build-storybook --stream",
     "lint": "lerna run lint --stream --parallel",
-    "test": "lerna run test --stream"
+    "test": "lerna run test --stream",
+    "publish": "lerna publish"
   },
   "devDependencies": {
     "@types/jest": "26.0.24",

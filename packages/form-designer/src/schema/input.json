@@ -57,6 +57,10 @@
                     },
                     "type": "array"
                 },
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
@@ -89,6 +93,10 @@
         },
         "BooleanInput": {
             "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
@@ -129,6 +137,10 @@
                     },
                     "type": "array"
                 },
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
@@ -164,6 +176,10 @@
         },
         "CurrencyInput": {
             "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "currencyCode": {
                     "type": "string"
                 },
@@ -215,6 +231,10 @@
         },
         "DateInput": {
             "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
@@ -255,6 +275,10 @@
         },
         "DateTimeInput": {
             "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
@@ -327,6 +351,10 @@
         },
         "MarkdownInput": {
             "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
@@ -359,6 +387,10 @@
         },
         "MultilineTextInput": {
             "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
@@ -397,6 +429,10 @@
         },
         "NumericInput": {
             "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "decimalPlaces": {
                     "minimum": 0,
                     "type": "integer"
@@ -449,6 +485,10 @@
         },
         "OptionsInput": {
             "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
@@ -522,6 +562,10 @@
         },
         "RangeInput": {
             "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
@@ -563,6 +607,10 @@
         },
         "Signature": {
             "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
@@ -595,6 +643,10 @@
         },
         "SvgMapInput": {
             "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
@@ -637,6 +689,10 @@
         },
         "TextInput": {
             "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
@@ -678,6 +734,10 @@
         },
         "TimeInput": {
             "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"

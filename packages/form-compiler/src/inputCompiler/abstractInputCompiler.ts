@@ -1,6 +1,6 @@
-import {UISchemaElement} from '@jsonforms/core';
-import {Form, Input, Section} from '@eresearchqut/form-definition';
-import {buildPropertyPath, generatePathFromName} from '../utils';
+import { UISchemaElement } from '@jsonforms/core';
+import { Form, Input, Section } from '@eresearchqut/form-definition';
+import { buildPropertyPath, generatePathFromName } from '../utils';
 
 import merge from 'lodash/merge';
 
@@ -19,4 +19,3 @@ export abstract class AbstractInputCompiler {
     return undefined;
   }
 }
-

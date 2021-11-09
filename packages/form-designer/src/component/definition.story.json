@@ -19,7 +19,9 @@
           "id": "6579e1c6-7d36-421d-aadd-316e35e88c7a",
           "type": "address",
           "name": "Home Address",
-          "countryCodes": ["AU"]
+          "countryCodes": [
+            "AU"
+          ]
         },
         {
           "id": "7df198be-f9c6-4ad1-bf40-98c06d1df550",

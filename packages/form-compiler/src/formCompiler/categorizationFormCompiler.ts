@@ -1,17 +1,17 @@
-import {FormCompiler} from '../interfaces';
+import { FormCompiler } from '../interfaces';
 
-import {JsonSchema, UISchemaElement, Categorization} from '@jsonforms/core';
-import {Form} from '@eresearchqut/form-definition';
+import { Categorization, JsonSchema, UISchemaElement } from '@jsonforms/core';
+import { Form } from '@eresearchqut/form-definition';
 
-import {AbstractFormCompiler} from './abstractFormCompiler';
+import { AbstractFormCompiler } from './abstractFormCompiler';
 
 export class CategorizationFormCompiler extends AbstractFormCompiler implements FormCompiler {
   schema(form: Form): JsonSchema | undefined {
     const properties = this.formProperties(form);
     if (properties) {
-      return {type: 'object', properties} as JsonSchema;
+      return { type: 'object', properties } as JsonSchema;
     }
-    return {type: 'object'};
+    return { type: 'object' };
   }
 
   ui(form: Form): UISchemaElement | undefined {
@@ -24,7 +24,7 @@ export class CategorizationFormCompiler extends AbstractFormCompiler implements 
       } as Categorization;
     }
     return {
-      'type': 'Categorization',
+      type: 'Categorization',
     } as Categorization;
   }
 }

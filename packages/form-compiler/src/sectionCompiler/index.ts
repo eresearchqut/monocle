@@ -1,11 +1,9 @@
-import {CategorySectionCompiler} from './categorySectionCompiler';
-import {AbstractSectionCompiler} from './abstractSectionCompiler';
+import { CategorySectionCompiler } from './categorySectionCompiler';
+import { AbstractSectionCompiler } from './abstractSectionCompiler';
 import SectionCompiler from '../interfaces/sectionCompiler';
-import {Form, Section} from '../../../form-definition';
+import { Form, Section } from '../../../form-definition';
 
-export {
-  SectionCompiler, AbstractSectionCompiler, CategorySectionCompiler,
-};
+export { SectionCompiler, AbstractSectionCompiler, CategorySectionCompiler };
 
 export const sectionCompilers: SectionCompiler[] = [new CategorySectionCompiler()];
 

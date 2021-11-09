@@ -1,13 +1,10 @@
-import {CategorizationFormCompiler} from './categorizationFormCompiler';
-import {AbstractFormCompiler} from './abstractFormCompiler';
+import { CategorizationFormCompiler } from './categorizationFormCompiler';
+import { AbstractFormCompiler } from './abstractFormCompiler';
 import FormCompiler from '../interfaces/formCompiler';
-import {Form} from '@eresearchqut/form-definition';
+import { Form } from '@eresearchqut/form-definition';
 
-export {
-  FormCompiler, AbstractFormCompiler, CategorizationFormCompiler,
-};
-
+export { FormCompiler, AbstractFormCompiler, CategorizationFormCompiler };
 
 export const formCompilers: FormCompiler[] = [new CategorizationFormCompiler()];
 
-export const findFormCompiler = (form: Form): FormCompiler | undefined => form ? formCompilers[0] : undefined;
+export const findFormCompiler = (form: Form): FormCompiler | undefined => (form ? formCompilers[0] : undefined);

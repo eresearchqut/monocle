@@ -1,47 +1,47 @@
 {
-    "name": "@eresearchqut/form-definition",
-    "version": "0.1.0",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "license": "MIT",
-    "repository": {
-        "type": "git",
-        "directory": "packages/form-definition",
-        "url": "ssh://git@github.com:eresearchqut/future-state-mono-repo.git"
+  "name": "@eresearchqut/form-definition",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "directory": "packages/form-definition",
+    "url": "ssh://git@github.com:eresearchqut/future-state-mono-repo.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "scripts": {
+    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "prepack": "yarn build",
+    "schema": "typescript-json-schema tsconfig.json Form --out ../form-designer/src/schema/form.json && typescript-json-schema tsconfig.json Section --out ../form-designer/src/schema/section.json && typescript-json-schema tsconfig.json Input --out ../form-designer/src/schema/input.json",
+    "build": "yarn clean && tsc --build && yarn schema && cp \"./package.json\" ./dist/",
+    "test": "echo 'notest'",
+    "storybook": "echo 'no storybook'",
+    "build-storybook": "echo 'build-storybook'",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0 --fix"
+  },
+  "devDependencies": {
+    "typescript-json-schema": "^0.50.1"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
     },
-    "publishConfig": {
-        "registry": "https://npm.pkg.github.com/"
-    },
-    "scripts": {
-        "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
-        "prepack": "yarn build",
-        "schema": "typescript-json-schema tsconfig.json Form --out ../form-designer/src/schema/form.json && typescript-json-schema tsconfig.json Section --out ../form-designer/src/schema/section.json && typescript-json-schema tsconfig.json Input --out ../form-designer/src/schema/input.json",
-        "build": "yarn clean && tsc --build && yarn schema && cp \"./package.json\" ./dist/",
-        "test": "echo 'notest'",
-        "storybook": "echo 'no storybook'",
-        "build-storybook": "echo 'build-storybook'",
-        "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0 --fix"
-    },
-    "devDependencies": {
-        "typescript-json-schema": "^0.50.1"
-    },
-    "jest": {
-        "testEnvironment": "jsdom",
-        "moduleFileExtensions": [
-            "ts",
-            "tsx",
-            "js"
-        ],
-        "transform": {
-            "^.+\\.(ts|tsx)$": "ts-jest"
-        },
-        "testMatch": [
-            "**/test/**/*.test.ts",
-            "**/test/**/*.test.tsx"
-        ],
-        "testPathIgnorePatterns": [
-            "/node_modules/",
-            "/dist/"
-        ]
-    }
+    "testMatch": [
+      "**/test/**/*.test.ts",
+      "**/test/**/*.test.tsx"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ]
+  }
 }

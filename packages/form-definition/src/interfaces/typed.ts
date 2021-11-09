@@ -1,3 +1,3 @@
 export interface Typed<T> {
-    type: T;
+  type: T;
 }

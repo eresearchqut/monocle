@@ -1,17 +1,17 @@
 {
-    "extends": "../../tsconfig.build.json",
-    "compilerOptions": {
-        "outDir": "./dist",
-        "rootDir": "./src",
-        "composite": true,
-        "plugins": [
-            {
-                "name": "typescript-plugin-css-modules"
-            }
-        ]
-    },
-    "include": [
-        "src/**/*"
-    ],
-    "references": []
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "composite": true,
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ]
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "references": []
 }

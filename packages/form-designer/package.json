@@ -35,7 +35,8 @@
     "react-beautiful-dnd": "13.1.0",
     "react-json-editor-ajrm": "2.5.13",
     "react-stickynode": "^4.0.0",
-    "sass": "^1.37.5"
+    "sass": "^1.37.5",
+    "typescript-json-schema": "^0.50.1"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",

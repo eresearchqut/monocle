@@ -7,18 +7,18 @@ import {JsonFormsReactProps, JsonFormsStateProvider, useJsonForms} from '@jsonfo
 import InputControl from "./InputControl";
 
 import {useArgs} from "@storybook/client-api";
-import {useCallback} from "react";
+import {useCallback, useEffect} from "react";
 import {action} from "@storybook/addon-actions";
 import {cells} from "../index";
 
 const ChangeEmitter: React.FC<JsonFormsReactProps> = ({onChange}) => {
     const ctx = useJsonForms();
     const {data, errors} = ctx.core as JsonFormsCore;
-    React.useEffect(() => {
+    useEffect(() => {
         if (onChange) {
             onChange({data, errors});
         }
-    }, [data, errors]);
+    }, [data, errors]);  // eslint-disable-line react-hooks/exhaustive-deps
     return null;
 };
 
@@ -30,7 +30,7 @@ export default {
             const {schema, uischema, data} = context.args as ControlProps;
             const core = {schema, uischema, data, ajv: createAjv()};
             const [, updateArgs] = useArgs();
-            const logAction = useCallback(action('onChange'), []);
+            const logAction = useCallback(action('onChange'), []); // eslint-disable-line react-hooks/exhaustive-deps
             return (
                 <JsonFormsStateProvider initState={{core, cells}}>
                     <ChangeEmitter
@@ -113,9 +113,9 @@ Default.args = {
             classification: {
                 type: 'string',
                 oneOf: [
-                    { const: 'A', title: 'Option A' },
-                    { const: 'B' },
-                    { const: 'C', title: 'Option C' }
+                    {const: 'A', title: 'Option A'},
+                    {const: 'B'},
+                    {const: 'C', title: 'Option C'}
                 ]
             },
             classifications: {
@@ -123,9 +123,9 @@ Default.args = {
                 items: {
                     type: 'string',
                     oneOf: [
-                        { const: 'A', title: 'Option A' },
-                        { const: 'B' },
-                        { const: 'C', title: 'Option C' }
+                        {const: 'A', title: 'Option A'},
+                        {const: 'B'},
+                        {const: 'C', title: 'Option C'}
                     ]
                 }
             },
@@ -249,8 +249,6 @@ Markdown.args = {
 }
 
 
-
-
 export const RangeWithMinMax = Template.bind({});
 RangeWithMinMax.args = {
     ...Default.args,
@@ -308,7 +306,7 @@ Date.args = {
     }
 }
 
-export const DateTime= Template.bind({});
+export const DateTime = Template.bind({});
 DateTime.args = {
     ...Default.args,
     uischema: {

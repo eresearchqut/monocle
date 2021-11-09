@@ -14,7 +14,7 @@ export default {
 const Template: Story<CellProps> =
     (props) => {
         const [, updateArgs] = useArgs();
-        const logAction = useCallback(action('handleChange'), []);
+        const logAction = useCallback(action('handleChange'), []); // eslint-disable-line react-hooks/exhaustive-deps
         const handleChange = (path: string, data: any) => {
             updateArgs({data});
             logAction(path, data);

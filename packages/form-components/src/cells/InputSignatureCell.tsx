@@ -47,7 +47,7 @@ export const InputSignatureCell = (props: CellProps) => {
                 backgroundColor: 'rgb(255, 255, 255)'
             });
         }
-    }, [editing, ref, width, height, canvas]);
+    }, [enabled, editing, ref, width, height, canvas]);
 
     if (!visible) {
         return null;

@@ -1,4 +1,6 @@
-const formDefinition = require('./schema/form.json');
+import form from './schema';
 
 export * from './interfaces';
-export default formDefinition;
+export * from './schema';
+
+export default form;

@@ -11,13 +11,14 @@ jobs:
         with:
           node-version: '16'
           cache: 'yarn'
+          registry-url: 'https://npm.pkg.github.com'
       - name: Build
         run: |
           yarn install
           yarn build
           yarn build-storybooks
       - name: Publish Packages
-        run: npm publish
+        run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish Storybooks to Github Pages

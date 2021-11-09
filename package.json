@@ -17,7 +17,7 @@
     "directory": "@eresearchqut/future-state-mono-repo"
   },
   "scripts": {
-    "prepare": "node ./configure-references.js",
+    "prepare": "lerna bootstrap --use-workspaces",
     "clean": "lerna run clean --stream",
     "build": "lerna run build --stream",
     "build-storybooks": "rimraf storybooks && mkdir storybooks && lerna run build-storybook --stream",

@@ -1,58 +1,49 @@
 {
-    "compilerOptions": {
-        "jsx": "react",
-        "baseUrl": "./packages",
-        "paths": {
-            "@eresearchqut/form-components/*": [
-                "form-components/src/*"
-            ],
-            "@eresearchqut/form-definition/*": [
-                "form-definition/src/*"
-            ],
-            "@eresearchqut/form-compiler/*": [
-                "form-compiler/src/*"
-            ],
-            "@eresearchqut/form-designer/*": [
-                "form-designer/src/*"
-            ]
-        },
-        "target": "es5",
-        "lib": [
-            "es2020",
-            "dom"
-        ],
-        "types": [
-            "reflect-metadata",
-            "jest"
-        ],
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "noImplicitAny": true,
-        "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": false,
-        "noResolve": false,
-        "noUnusedParameters": false,
-        "noUnusedLocals": true,
-        "strictNullChecks": true,
-        "resolveJsonModule": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true
+  "compilerOptions": {
+    "jsx": "react",
+    "baseUrl": "./packages",
+    "paths": {
+      "@eresearchqut/*": [
+        "./*/src"
+      ]
     },
-    "files": [],
-    "references": [
-        {
-            "path": "packages/form-compiler"
-        },
-        {
-            "path": "packages/form-components"
-        },
-        {
-            "path": "packages/form-definition"
-        },
-        {
-            "path": "packages/form-designer"
-        }
-    ]
+    "target": "es5",
+    "lib": [
+      "es2020",
+      "dom"
+    ],
+    "types": [
+      "reflect-metadata",
+      "jest"
+    ],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noImplicitAny": true,
+    "preserveConstEnums": true,
+    "suppressImplicitAnyIndexErrors": false,
+    "noResolve": false,
+    "noUnusedParameters": false,
+    "noUnusedLocals": true,
+    "strictNullChecks": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "packages/form-compiler"
+    },
+    {
+      "path": "packages/form-components"
+    },
+    {
+      "path": "packages/form-definition"
+    },
+    {
+      "path": "packages/form-designer"
+    }
+  ]
 }

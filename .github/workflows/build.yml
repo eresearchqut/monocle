@@ -17,7 +17,7 @@ jobs:
       - name: Build Modules
         run: yarn build
       - name: Publish Packages
-        run: yarn publish
+        run: yarn lerna publish minor
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Build Storybooks

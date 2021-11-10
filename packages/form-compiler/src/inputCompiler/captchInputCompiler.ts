@@ -1,6 +1,6 @@
 import { InputCompiler } from '../interfaces';
 import { JsonSchema, UISchemaElement } from '@jsonforms/core';
-import { BooleanInput, Form, Input, InputType, Section } from '@eresearchqut/form-definition';
+import { BooleanInput, CaptchaInput, Form, Input, InputType, Section } from '@eresearchqut/form-definition';
 import { AbstractInputCompiler } from './abstractInputCompiler';
 
 export class CaptchaInputCompiler extends AbstractInputCompiler implements InputCompiler {
@@ -9,7 +9,7 @@ export class CaptchaInputCompiler extends AbstractInputCompiler implements Input
     }
 
     schema(form: Form, section: Section, input: Input): JsonSchema {
-        const { description } = input as BooleanInput;
+        const { description } = input as CaptchaInput;
         return { type: 'string', description } as JsonSchema;
     }
 

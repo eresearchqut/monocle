@@ -1,8 +1,28 @@
 import { RankedTester } from '@jsonforms/core';
 
 import {
+    InputBooleanControl,
+    inputBooleanControlTester,
+    InputControl,
+    inputControlTester,
+    SvgMapControl,
+    svgMapControlTester,
+} from './controls';
+import {
+    CategorizationLayout,
+    categorizationLayoutTester,
+    CategoryLayout,
+    categoryLayoutTester,
+    HorizontalLayout,
+    horizontalLayoutTester,
+    VerticalLayout,
+    verticalLayoutTester,
+} from './layouts';
+import {
     InputAddressCell,
     inputAddressCellTester,
+    InputCaptchaCell,
+    inputCaptchaCellTester,
     InputBooleanCell,
     inputBooleanCellTester,
     InputCalendarCell,
@@ -31,25 +51,6 @@ import {
     inputTextCellTester,
 } from './cells';
 
-import {
-    InputBooleanControl,
-    inputBooleanControlTester,
-    InputControl,
-    inputControlTester,
-    SvgMapControl,
-    svgMapControlTester,
-} from './controls';
-import {
-    CategorizationLayout,
-    categorizationLayoutTester,
-    CategoryLayout,
-    categoryLayoutTester,
-    HorizontalLayout,
-    horizontalLayoutTester,
-    VerticalLayout,
-    verticalLayoutTester,
-} from './layouts';
-
 export * from './controls';
 export * from './cells';
 export * from './layouts';
@@ -68,7 +69,7 @@ export const cells: { tester: RankedTester; cell: any }[] = [
     { tester: inputAddressCellTester, cell: InputAddressCell },
     { tester: inputCheckboxGroupCellTester, cell: InputCheckboxGroupCell },
     { tester: inputCountryCellTester, cell: InputCountryCell },
-
+    { tester: inputCaptchaCellTester, cell: InputCaptchaCell },
     { tester: inputBooleanCellTester, cell: InputBooleanCell },
     { tester: inputCalendarCellTester, cell: InputCalendarCell },
     { tester: inputNumberCellTester, cell: InputNumberCell },

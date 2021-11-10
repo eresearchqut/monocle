@@ -20,6 +20,7 @@ import { SignatureInputCompiler } from './signatureInputCompiler';
 export {
     AbstractInputCompiler,
     AddressInputCompiler,
+    CaptchaInputCompiler,
     TextInputCompiler,
     MarkdownInputCompiler,
     NumericInputCompiler,

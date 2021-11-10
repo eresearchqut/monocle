@@ -12,28 +12,22 @@ jobs:
           node-version: '16'
           cache: 'yarn'
           registry-url: 'https://npm.pkg.github.com'
-        env:
-          NPM_PKG_GITHUB_TOKEN: ${{ secrets.NPM_PKG_GITHUB_TOKEN }}
-      - name: Install Dependencies
-        run: yarn install
-        env:
-          NPM_PKG_GITHUB_TOKEN: ${{ secrets.NPM_PKG_GITHUB_TOKEN }}
-      - name: Build Modules
-        run: yarn build
-        env:
-          NPM_PKG_GITHUB_TOKEN: ${{ secrets.NPM_PKG_GITHUB_TOKEN }}
       - name: Configure Git User
         run: |
           git config --global user.email "eresearch@qut.edu.au"
           git config --global user.name "@$GITHUB_ACTOR"
-      - name: Publish Packages
-        run: yarn lerna publish minor --no-changelog --conventional-commits --yes
-        env:
-          NPM_PKG_GITHUB_TOKEN: ${{ secrets.NPM_PKG_GITHUB_TOKEN }}
-      - name: Build Storybooks
-        run: yarn build-storybooks
-        env:
-          NPM_PKG_GITHUB_TOKEN: ${{ secrets.NPM_PKG_GITHUB_TOKEN }}
+      - name: Configure NPMRC
+        uses: ferluisxd/create-npmrc@3
+        with:
+          org_name: eresearchqut
+          env:
+            AUTH_TOKEN: ${{ secrets.NPM_PKG_GITHUB_TOKEN }}
+      - name: Build Package
+        run: |
+          yarn install
+          yarn build
+          yarn lerna publish minor --no-changelog --conventional-commits --yes
+          yarn build-storybooks
       - name: Publish Storybooks to Github Pages
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:

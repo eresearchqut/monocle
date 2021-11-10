@@ -32,6 +32,8 @@ jobs:
           NPM_PKG_GITHUB_TOKEN: ${{ secrets.NPM_PKG_GITHUB_TOKEN }}
       - name: Build Storybooks
         run: yarn build-storybooks
+        env:
+          NPM_PKG_GITHUB_TOKEN: ${{ secrets.NPM_PKG_GITHUB_TOKEN }}
       - name: Publish Storybooks to Github Pages
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:

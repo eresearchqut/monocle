@@ -8,6 +8,9 @@
             "$ref": "#/definitions/CountryInput"
         },
         {
+            "$ref": "#/definitions/CaptchaInput"
+        },
+        {
             "$ref": "#/definitions/OptionsInput"
         },
         {
@@ -125,6 +128,49 @@
                 }
             },
             "title": "Boolean",
+            "type": "object"
+        },
+        "CaptchaInput": {
+            "description": "I am not a robot using google recaptcha",
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "secretKey": {
+                    "type": "string"
+                },
+                "siteKey": {
+                    "type": "string"
+                },
+                "type": {
+                    "enum": [
+                        "captcha"
+                    ],
+                    "type": "string"
+                }
+            },
+            "title": "Captcha",
             "type": "object"
         },
         "CountryInput": {

@@ -1,4 +1,5 @@
 import { AddressInputCompiler } from './addressInputCompiler';
+import { CaptchaInputCompiler } from './captchInputCompiler';
 import { TextInputCompiler } from './textInputCompiler';
 import { NumericInputCompiler } from './numericInputCompiler';
 import { RangeInputCompiler } from './rangeInputCompiler';
@@ -33,6 +34,7 @@ export {
 
 export const inputCompilers: InputCompiler[] = [
     new AddressInputCompiler(),
+    new CaptchaInputCompiler(),
     new RangeInputCompiler(),
     new TextInputCompiler(),
     new MultilineTextInputCompiler(),

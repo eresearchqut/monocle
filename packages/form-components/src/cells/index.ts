@@ -1,5 +1,6 @@
 import InputAddressCell, { inputAddressCellTester } from './InputAddressCell';
 import InputBooleanCell, { inputBooleanCellTester } from './InputBooleanCell';
+import InputCaptchaCell, { inputCaptchaCellTester } from './InputCaptchaCell';
 import InputCountryCell, { inputCountryCellTester } from './InputCountryCell';
 import InputCalendarCell, { inputCalendarCellTester } from './InputCalendarCell';
 import InputCheckboxGroupCell, { inputCheckboxGroupCellTester } from './InputCheckboxGroupCell';
@@ -16,6 +17,8 @@ import InputSignatureCell, { inputSignatureCellTester } from './InputSignatureCe
 export {
     InputAddressCell,
     inputAddressCellTester,
+    InputCaptchaCell,
+    inputCaptchaCellTester,
     InputCheckboxGroupCell,
     inputCheckboxGroupCellTester,
     InputCountryCell,

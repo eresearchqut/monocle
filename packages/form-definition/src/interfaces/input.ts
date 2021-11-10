@@ -9,6 +9,7 @@ import { Progressable } from './progressable';
 export enum InputType {
     ADDRESS = 'address',
     BOOLEAN = 'boolean',
+    CAPTCHA = 'captcha',
     CURRENCY = 'currency',
     COUNTRY = 'country',
     DATE = 'date',
@@ -57,6 +58,18 @@ export interface CountryInput extends AbstractInput {
      * Restrict the selectable countries to the following
      */
     countryCodes?: string[];
+}
+
+/**
+ * @title Captcha
+ * @description I am not a robot using google recaptcha
+ */
+export interface CaptchaInput extends AbstractInput {
+    type: InputType.CAPTCHA;
+
+    siteKey: string;
+
+    secretKey: string;
 }
 
 /**
@@ -291,6 +304,7 @@ export interface Signature extends AbstractInput {
 export type Input =
     | AddressInput
     | BooleanInput
+    | CaptchaInput
     | CountryInput
     | CurrencyInput
     | DateInput

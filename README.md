@@ -2,21 +2,30 @@
 
 ## Background
 
-A proof of concept for future state projects. Based on https://github.com/ahoopen/typescript-mono-repo/tree/master
+Repository of future state modules. This repository will be renamed at some point.
 
 ## Build instructions
 
 ```
-yarn install
+yarn prepare
 yarn build
 ```
 
-## One liner to install packages and start form builder ui
+## Modules
+
+| Module | Description |
+|--------|-------------|
+| Form Definition | Typescript and JSON Schema definitions for Forms, Sections and Inputs |
+| Form Compiler | Compiles form definitions into json schema and ui schema definitions compatible with [JSONForms](https://jsonforms.io) |
+| Form Components | [JSONForms](https://jsonforms.io) layouts, controls and cell that render [Prime React](https://www.primefaces.org/primereact) react components |
+| Form Designer | Drag and Drop form designer that utilises the form-compiler and form-component packages |
+
+
+## Storybook
+
+To start the storybook for a package
 
 ```
-(yarn install && yarn build && cd packages/form-builder-ui && yarn start)
+cd [package-name]
+yarn storybook
 ```
-
-## One liner to view the form builder story book
-
-(yarn install && yarn build && cd packages/form-builder-ui && yarn storybook)

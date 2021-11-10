@@ -18,6 +18,9 @@ Address.args = { componentType: InputType.ADDRESS };
 export const Boolean = Template.bind({});
 Boolean.args = { componentType: InputType.BOOLEAN };
 
+export const Captcha = Template.bind({});
+Captcha.args = { componentType: InputType.CAPTCHA };
+
 export const Country = Template.bind({});
 Country.args = { componentType: InputType.COUNTRY };
 

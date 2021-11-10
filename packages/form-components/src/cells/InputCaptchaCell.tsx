@@ -10,7 +10,6 @@ export interface InputCaptchaCellOptions {
 
 export const InputCaptchaCell = (props: CellProps) => {
     const { config, handleChange, path, uischema, visible = true } = props;
-
     const { siteKey } = merge({}, config, uischema?.options) as InputCaptchaCellOptions;
 
     if (!visible) {

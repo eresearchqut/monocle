@@ -12,6 +12,7 @@ import {
     faMapPin,
     faMoneyBill,
     faQuestion,
+    faRobot,
     faSignature,
     faSlidersH,
     faSortNumericUp,
@@ -57,6 +58,14 @@ const componentDefaults: Map<InputType | SectionType, ComponentMetadata> = new M
             icon: faCheckSquare,
             label: 'Checkbox',
             description: 'A single checkbox, suitable for yes or no answers',
+        },
+    ],
+    [
+        InputType.CAPTCHA,
+        {
+            icon: faRobot,
+            label: 'Captcha',
+            description: 'I am not a robot',
         },
     ],
     [

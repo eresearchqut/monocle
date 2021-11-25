@@ -1,3 +1,4 @@
+import { startCase } from 'lodash';
 import React, { FocusEvent, FunctionComponent, MouseEvent } from 'react';
 import './svg-map.scss';
 
@@ -5,6 +6,7 @@ export interface Location {
     id: string;
     path: string;
     name?: string;
+    isSelectable?: boolean;
 }
 
 export interface Map {
@@ -56,6 +58,22 @@ export const SvgMap: FunctionComponent<SvgMapProps> = (props) => {
                 aria-label={props.map.label}
             >
                 {props.map.locations.map((location, index) => {
+                    const selectablePathAttrs = {
+                        tabIndex:
+                            typeof props.locationTabIndex === 'function'
+                                ? props.locationTabIndex(location, index)
+                                : props.locationTabIndex || 0,
+                        'aria-checked': props.isSelected && props.isSelected(location),
+                        onMouseOver: props.onLocationMouseOver,
+                        onMouseOut: props.onLocationMouseOut,
+                        onMouseMove: props.onLocationMouseMove,
+                        onClick: props.onLocationClick,
+                        onFocus: props.onLocationFocus,
+                        onBlur: props.onLocationBlur,
+                    };
+                    const isSelectable = location.isSelectable ?? true;
+                    const extraAtts = isSelectable ? selectablePathAttrs : {};
+
                     return (
                         <path
                             id={location.id}
@@ -67,25 +85,16 @@ export const SvgMap: FunctionComponent<SvgMapProps> = (props) => {
                                     ? props.locationClassName(location, index)
                                     : props.locationClassName || 'svg-map__location'
                             }
-                            tabIndex={
-                                typeof props.locationTabIndex === 'function'
-                                    ? props.locationTabIndex(location, index)
-                                    : props.locationTabIndex || 0
-                            }
                             role={props.locationRole || 'none'}
                             aria-label={
                                 typeof props.locationAriaLabel === 'function'
                                     ? props.locationAriaLabel(location, index)
                                     : location.name
                             }
-                            aria-checked={props.isSelected && props.isSelected(location)}
-                            onMouseOver={props.onLocationMouseOver}
-                            onMouseOut={props.onLocationMouseOut}
-                            onMouseMove={props.onLocationMouseMove}
-                            onClick={props.onLocationClick}
-                            onFocus={props.onLocationFocus}
-                            onBlur={props.onLocationBlur}
-                        />
+                            {...extraAtts}
+                        >
+                            <title>{location.name || startCase(location.id)}</title>
+                        </path>
                     );
                 })}
             </svg>

@@ -5,7 +5,12 @@ import { buildPropertyPath, generatePathFromName } from '../utils';
 import merge from 'lodash/merge';
 
 export abstract class AbstractInputCompiler {
-    uiControl(form: Form, section: Section, input: Input, options?: any): UISchemaElement | undefined {
+    uiControl(
+        form: Form,
+        section: Section,
+        input: Input,
+        options?: { [key: string]: any }
+    ): UISchemaElement | undefined {
         const inputProperty = generatePathFromName(input.name);
         if (inputProperty) {
             const sectionProperty = generatePathFromName(section.name);

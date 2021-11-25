@@ -8,6 +8,7 @@ import {
     faClipboardCheck,
     faClock,
     faFlag,
+    faEnvelope,
     faLayerGroup,
     faMapPin,
     faMoneyBill,
@@ -98,6 +99,14 @@ const componentDefaults: Map<InputType | SectionType, ComponentMetadata> = new M
             icon: faCalendarAlt,
             label: 'Date Time',
             description: 'A date picker that includes time selection',
+        },
+    ],
+    [
+        InputType.EMAIL,
+        {
+            icon: faEnvelope,
+            label: 'Email Address',
+            description: 'Input field with email key filter',
         },
     ],
     [

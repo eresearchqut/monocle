@@ -1,13 +1,13 @@
+import { Form, Input, Section } from '@eresearchqut/form-definition';
+import InputCompiler from '../interfaces/inputCompiler';
 import { AddressInputCompiler } from './addressInputCompiler';
-import { CaptchaInputCompiler } from './captchInputCompiler';
+import { CaptchaInputCompiler } from './captchaInputCompiler';
+import { EmailInputCompiler } from './emailInputCompiler';
 import { TextInputCompiler } from './textInputCompiler';
 import { NumericInputCompiler } from './numericInputCompiler';
 import { RangeInputCompiler } from './rangeInputCompiler';
 import { CurrencyInputCompiler } from './currencyInputCompiler';
 import { CountryInputCompiler } from './countryInputCompiler';
-
-import InputCompiler from '../interfaces/inputCompiler';
-import { Form, Input, Section } from '@eresearchqut/form-definition';
 import { BooleanInputCompiler } from './booleanInputCompiler';
 import { DateTimeInputCompiler } from './dateTimeInputCompiler';
 import { AbstractInputCompiler } from './abstractInputCompiler';
@@ -21,6 +21,7 @@ export {
     AbstractInputCompiler,
     AddressInputCompiler,
     CaptchaInputCompiler,
+    EmailInputCompiler,
     TextInputCompiler,
     MarkdownInputCompiler,
     NumericInputCompiler,
@@ -36,6 +37,7 @@ export {
 export const inputCompilers: InputCompiler[] = [
     new AddressInputCompiler(),
     new CaptchaInputCompiler(),
+    new EmailInputCompiler(),
     new RangeInputCompiler(),
     new TextInputCompiler(),
     new MultilineTextInputCompiler(),

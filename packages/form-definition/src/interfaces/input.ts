@@ -12,6 +12,7 @@ export enum InputType {
     CAPTCHA = 'captcha',
     CURRENCY = 'currency',
     COUNTRY = 'country',
+    EMAIL = 'email',
     DATE = 'date',
     DATE_TIME = 'date-time',
     MARKDOWN = 'markdown',
@@ -58,6 +59,14 @@ export interface CountryInput extends AbstractInput {
      * Restrict the selectable countries to the following
      */
     countryCodes?: string[];
+}
+
+/**
+ * @title Email
+ * @description Email Address
+ */
+export interface EmailInput extends AbstractInput {
+    type: InputType.EMAIL;
 }
 
 /**
@@ -309,6 +318,7 @@ export type Input =
     | CurrencyInput
     | DateInput
     | DateTimeInput
+    | EmailInput
     | MarkdownInput
     | MultilineTextInput
     | NumericInput

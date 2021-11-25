@@ -1,16 +1,20 @@
 import { InputCompiler } from '../interfaces';
 import { JsonSchema, UISchemaElement } from '@jsonforms/core';
-import { Form, Input, InputType, Section } from '@eresearchqut/form-definition';
+import { EmailInput, Form, Input, InputType, Section } from '@eresearchqut/form-definition';
 import { AbstractInputCompiler } from './abstractInputCompiler';
 
-export class SignatureInputCompiler extends AbstractInputCompiler implements InputCompiler {
+export class EmailInputCompiler extends AbstractInputCompiler implements InputCompiler {
     supports(form: Form, section: Section, input: Input): boolean {
-        return input.type === InputType.SIGNATURE;
+        return input.type === InputType.EMAIL;
     }
 
     schema(form: Form, section: Section, input: Input): JsonSchema {
-        const { description } = input;
-        return { type: 'string', description } as JsonSchema;
+        const { description } = input as EmailInput;
+        return {
+            type: 'string',
+            format: 'email',
+            description,
+        } as JsonSchema;
     }
 
     ui(form: Form, section: Section, input: Input): UISchemaElement | undefined {

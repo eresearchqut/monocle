@@ -9,7 +9,7 @@ export class CountryInputCompiler extends AbstractInputCompiler implements Input
     }
 
     schema(form: Form, section: Section, input: Input): JsonSchema {
-        const { description, multiselect, name } = input as CountryInput;
+        const { description, multiselect } = input as CountryInput;
 
         if (multiselect) {
             return {

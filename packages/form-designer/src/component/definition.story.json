@@ -16,6 +16,14 @@
           "required": true
         },
         {
+          "id": "18bd329e-2ad5-47f5-8695-5fb9ebcc7c08",
+          "type": "email",
+          "minLength": 3,
+          "maxLength": 30,
+          "name": "Email Address",
+          "required": true
+        },
+        {
           "id": "6579e1c6-7d36-421d-aadd-316e35e88c7a",
           "type": "address",
           "name": "Home Address",

@@ -33,6 +33,9 @@ Date.args = { componentType: InputType.DATE };
 export const DateTime = Template.bind({});
 DateTime.args = { componentType: InputType.DATE_TIME };
 
+export const Email = Template.bind({});
+Email.args = { componentType: InputType.EMAIL };
+
 export const Markdown = Template.bind({});
 Markdown.args = { componentType: InputType.MARKDOWN };
 

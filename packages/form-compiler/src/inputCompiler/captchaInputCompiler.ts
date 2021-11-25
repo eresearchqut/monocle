@@ -1,6 +1,6 @@
 import { InputCompiler } from '../interfaces';
 import { JsonSchema, UISchemaElement } from '@jsonforms/core';
-import { BooleanInput, CaptchaInput, Form, Input, InputType, Section } from '@eresearchqut/form-definition';
+import { CaptchaInput, Form, Input, InputType, Section } from '@eresearchqut/form-definition';
 import { AbstractInputCompiler } from './abstractInputCompiler';
 
 export class CaptchaInputCompiler extends AbstractInputCompiler implements InputCompiler {

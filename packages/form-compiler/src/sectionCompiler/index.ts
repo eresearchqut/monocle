@@ -7,4 +7,5 @@ export { SectionCompiler, AbstractSectionCompiler, CategorySectionCompiler };
 
 export const sectionCompilers: SectionCompiler[] = [new CategorySectionCompiler()];
 
-export const findSectionCompiler = (form: Form, section: Section): SectionCompiler | undefined => sectionCompilers[0];
+export const findSectionCompiler = (form: Form, section: Section): SectionCompiler | undefined =>
+    form && section ? sectionCompilers[0] : undefined;

@@ -34,7 +34,7 @@ yarn storybook
 
 If you are running Node 17+ on Linux, you might get an `ERR_OSSL_EVP_UNSUPPORTED` error when running `yarn storybook`.
 
-The fix is to `export NODEOPTIONS=--openssl-legacy-provider` before running `yarn storybook`.
+The fix is to `export NODE_OPTIONS=--openssl-legacy-provider` before running `yarn storybook`.
 
 [StackOwerflow reference](https://stackoverflow.com/questions/69394632/webpack-build-failing-with-err-ossl-evp-unsupported)
 

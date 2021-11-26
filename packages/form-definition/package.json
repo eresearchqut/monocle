@@ -15,7 +15,7 @@
   "scripts": {
     "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
     "prepack": "yarn build",
-    "schema": "typescript-json-schema tsconfig.json Form --out ./src/schema/form.json && typescript-json-schema tsconfig.json Section --out ./src/schema/section.json && typescript-json-schema tsconfig.json Input --out ./src/schema/input.json",
+    "schema": "typescript-json-schema ./tsconfig.json Form --out ./src/schema/form.json && typescript-json-schema ./tsconfig.json Section --out ./src/schema/section.json && typescript-json-schema ./tsconfig.json Input --out ./src/schema/input.json",
     "build": "yarn clean && tsc --build && yarn schema && cp \"./package.json\" ./dist/",
     "test": "echo 'notest'",
     "storybook": "echo 'no storybook'",

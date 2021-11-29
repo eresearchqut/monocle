@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: "Resource API Service Nested Application"
+
+Parameters:
+  Project:
+    Type: String
+    Description: "Project slug"
+    AllowedPattern: "[a-z0-9]{2,}"
+
+Resources:
+  RootTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${Project}_resources"
+      BillingMode: "PAY_PER_REQUEST"
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      StreamSpecification:
+        StreamViewType: "NEW_IMAGE"
+      ContributorInsightsSpecification:
+        Enabled: true
+      KeySchema:
+        - AttributeName: "PK"
+          KeyType: "HASH"
+        - AttributeName: "SK"
+          KeyType: "RANGE"
+      AttributeDefinitions:
+        - AttributeName: "PK"
+          AttributeType: "S"
+        - AttributeName: "SK"
+          AttributeType: "S"
+        - AttributeName: "GSI1-PK"
+          AttributeType: "S"
+        - AttributeName: "GSI1-SK"
+          AttributeType: "S"
+        - AttributeName: "GSI2-PK"
+          AttributeType: "S"
+        - AttributeName: "GSI2-SK"
+          AttributeType: "S"
+      GlobalSecondaryIndexes:
+        - IndexName: "GSI1"
+          KeySchema:
+            - AttributeName: "GSI1-PK"
+              KeyType: "HASH"
+            - AttributeName: "GSI1-SK"
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: "ALL"
+        - IndexName: "GSI2"
+          KeySchema:
+            - AttributeName: "GSI2-PK"
+              KeyType: "HASH"
+            - AttributeName: "GSI2-SK"
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: "ALL"
+
+Outputs:
+  RootTable:
+    Value: !GetAtt RootTable.Arn

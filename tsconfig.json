@@ -34,6 +34,9 @@
   "files": [],
   "references": [
     {
+      "path": "packages/form-api"
+    },
+    {
       "path": "packages/form-compiler"
     },
     {

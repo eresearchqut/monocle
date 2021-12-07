@@ -1,6 +1,7 @@
 import React, { FocusEvent, FunctionComponent, MouseEvent } from 'react';
 import { getMap, SvgNode } from './maps';
 import './svg-map.scss';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface HandlerPropsOfSvgMap {
     onLocationClick?: (event: MouseEvent<SVGPathElement>) => void;
@@ -31,6 +32,7 @@ export interface SvgNodeProps extends SvgMapProps {
 
 export interface SvgChildNodeProps extends SvgNodeProps {
     index: number;
+    key: string;
 }
 
 const Svg: FunctionComponent<SvgNodeProps> = (props: SvgNodeProps) => {
@@ -55,28 +57,29 @@ const Svg: FunctionComponent<SvgNodeProps> = (props: SvgNodeProps) => {
 };
 
 const Group: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) => {
-    const { node, index } = props;
+    const { node, key } = props;
     const { attributes } = node;
     const { id, name } = attributes;
 
     return (
-        <g id={id} name={name}>
+        <g id={id} name={name} key={key}>
             {node.children.map((childNode, index) => renderChildNode(props, childNode, index))}
         </g>
     );
 };
 
 const Path: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) => {
-    const { node, index } = props;
+    const { node, index, key } = props;
     const { attributes } = node;
-    const { id, d, name } = attributes;
+    const { id, d, name, stroke, strokeWidth, fill, transform } = attributes;
 
     return (
         <path
             id={id}
-            key={id}
+            key={key}
             name={name}
             d={d}
+            transform={transform}
             className={
                 typeof props.locationClassName === 'function'
                     ? props.locationClassName(node.attributes.id, index)
@@ -105,7 +108,10 @@ const Path: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) =>
 };
 
 export const renderChildNode = (props: SvgMapProps, node: SvgNode, index: number) => {
-    const childProps = { ...props, node, index };
+    const { attributes } = node;
+    const { id } = attributes;
+    const key = id || uuidv4();
+    const childProps = { ...props, node, index, key };
 
     if (node.name === 'path') return <Path {...childProps} />;
 

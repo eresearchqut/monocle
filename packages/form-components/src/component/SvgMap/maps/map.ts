@@ -1,7 +1,7 @@
 const maps = require('./svgs.json');
 
 export type NodeType = 'svg' | 'path' | 'g';
-export type AttributeName = 'id' | 'viewBox' | 'd' | 'name';
+export type AttributeName = 'id' | 'viewBox' | 'd' | 'name' | 'stroke' | 'strokeWidth' | 'fill' | 'transform';
 export interface SvgNode {
     name: NodeType;
     type: string;
@@ -9,7 +9,6 @@ export interface SvgNode {
     children: SvgNode[];
 }
 
-export const getMap = (id: string): SvgNode | undefined =>
-    (maps as SvgNode[]).find((map) => map.attributes['id'] === id);
+export const getMap = (id: string): SvgNode | undefined => (maps as SvgNode[]).find((map) => map.attributes.id === id);
 
 export default maps as SvgNode[];

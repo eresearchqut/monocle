@@ -19,3 +19,8 @@ export const Emotion = Template.bind({});
 Emotion.args = {
     map: 'Emotion',
 };
+
+export const PainScale = Template.bind({});
+PainScale.args = {
+    map: 'PainScale',
+};

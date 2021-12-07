@@ -1,8 +1,8 @@
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
-import SvgMap, { Location, Map } from './SvgMap';
+import SvgMap from './SvgMap';
 
 export interface SingleSelectSvgMapProps {
-    map: Map;
+    map: string;
     value: string;
     handleChange: (selectedLocationId: string | undefined) => void;
 }
@@ -19,7 +19,7 @@ export const SingleSelectSvgMap: FunctionComponent<SingleSelectSvgMapProps> = ({
         setSelected(() => value);
     }, [value]);
 
-    const isSelected = (location: Location) => location.id === selected;
+    const isSelected = (id: string, index: number) => (selected ? selected === id : false);
 
     const handleLocationClick = (event: MouseEvent<SVGPathElement>) => {
         event.preventDefault();

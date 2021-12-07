@@ -1,8 +1,8 @@
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
-import SvgMap, { Location, Map } from './SvgMap';
+import SvgMap from './SvgMap';
 
 export interface MultiSelectSvgMapProps {
-    map: Map;
+    map: string;
     value: string[];
     handleChange: (selectedLocationIds: string[]) => void;
 }
@@ -19,7 +19,7 @@ export const MultiSelectSvgMap: FunctionComponent<MultiSelectSvgMapProps> = ({ m
         setSelected(() => value);
     }, [value]);
 
-    const isSelected = (location: Location) => selected && selected.some((id) => location.id === id);
+    const isSelected = (id: string) => selected && selected.some((selectedId) => selectedId === id);
 
     const handleLocationClick = (event: MouseEvent<SVGPathElement>) => {
         event.preventDefault();

@@ -2,7 +2,6 @@ import React from 'react';
 import { and, ControlProps, ControlState, optionIs, RankedTester, rankWith, uiTypeIs } from '@jsonforms/core';
 import { Control, withJsonFormsControlProps } from '@jsonforms/react';
 
-import Maps from '../component/SvgMap/maps';
 import merge from 'lodash/merge';
 import { AutoComplete } from 'primereact/autocomplete';
 import { startCase } from 'lodash';
@@ -18,8 +17,6 @@ export class SvgMapControl extends Control<ControlProps, ControlState> {
         const itemTemplate = (item: string) => startCase(item);
 
         const selectedItemTemplate = (item: string) => startCase(item);
-        // @ts-ignore
-        const svgMap = Maps[map];
 
         return (
             <React.Fragment>
@@ -43,14 +40,14 @@ export class SvgMapControl extends Control<ControlProps, ControlState> {
 
                 {multiselect && (
                     <MultiSelectSvgMap
-                        map={svgMap}
+                        map={map}
                         value={data}
                         handleChange={(locationIds: string[]) => handleChange(path, locationIds)}
                     />
                 )}
                 {!multiselect && (
                     <SingleSelectSvgMap
-                        map={svgMap}
+                        map={map}
                         value={data}
                         handleChange={(locationId: string | boolean | undefined) => handleChange(path, locationId)}
                     />

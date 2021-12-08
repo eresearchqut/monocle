@@ -55,10 +55,10 @@ const Svg: FunctionComponent<SvgNodeProps> = (props: SvgNodeProps) => {
 const Group: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) => {
     const { node, key } = props;
     const { attributes } = node;
-    const { id, name } = attributes;
-
+    const { id } = attributes;
+    const className = `svg-group svg-${props.colorScheme || 'blue'}`;
     return (
-        <g id={id} name={name} key={key}>
+        <g id={id} key={key} className={className}>
             {node.children.map((childNode, index) => renderChildNode(props, childNode, index))}
         </g>
     );
@@ -67,8 +67,8 @@ const Group: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) =
 const Path: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) => {
     const { node, index, key } = props;
     const { attributes } = node;
-    const { id, d, name, stroke, 'stroke-width': strokeWidth, transform } = attributes;
-    const className = `svg-path svg-path-${props.colorScheme || 'blue'}`;
+    const { id, d, stroke, 'stroke-width': strokeWidth, transform } = attributes;
+    const className = `svg-path svg-${props.colorScheme || 'blue'}`;
     const tabIndex =
         typeof props.locationTabIndex === 'function'
             ? props.locationTabIndex(node.attributes.id, index)
@@ -77,14 +77,13 @@ const Path: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) =>
     const ariaLabel =
         typeof props.locationAriaLabel === 'function'
             ? props.locationAriaLabel(node.attributes.id, index)
-            : node.attributes.name;
+            : node.attributes.id;
     const ariaChecked = props.isSelected && props.isSelected(node.attributes.id, index);
 
     return (
         <path
             id={id}
             key={key}
-            name={name}
             d={d}
             transform={transform}
             stroke={stroke}
@@ -94,7 +93,6 @@ const Path: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) =>
             role={role}
             aria-label={ariaLabel}
             aria-checked={ariaChecked}
-            shape-rendering={'optimiseQuality'}
             onMouseOver={props.onLocationMouseOver}
             onMouseOut={props.onLocationMouseOut}
             onMouseMove={props.onLocationMouseMove}

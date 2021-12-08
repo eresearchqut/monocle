@@ -2,36 +2,34 @@
   width: 100%;
   stroke-linecap: round;
   stroke-linejoin: round;
+  stroke: var(--text-color);
+  fill: none;
 
+  [id] {
+    cursor: pointer;
 
-
-  .svg-path {
-
-    &[id] {
-      cursor: pointer;
-    }
-
-    stroke: var(--text-color);
-    fill: none;
     &:focus,
     &:hover {
       outline: 0;
     }
-
-    &.svg-path-blue[id] {
-      stroke: var(--blue-900);
-      fill: var(--blue-100);
-      &:focus,
-      &:hover {
-        fill: var(--blue-300);
-      }
-      &[aria-checked=true] {
-        fill: var(--blue-500);
-      }
-    }
-
   }
 
+  .svg-blue[id] {
+    stroke: var(--blue-900);
+    fill: var(--blue-100);
 
+    &:focus,
+    &:hover {
+      fill: var(--blue-300);
+    }
+
+    &[aria-checked=true] {
+      fill: var(--blue-500);
+    }
+  }
 }
+
+
+
+
 

@@ -5,13 +5,13 @@
   stroke: var(--text-color);
   fill: none;
 
+  :focus,
+  :hover {
+    outline: 0;
+  }
+
   [id] {
     cursor: pointer;
-
-    &:focus,
-    &:hover {
-      outline: 0;
-    }
   }
 
   .svg-blue[id] {

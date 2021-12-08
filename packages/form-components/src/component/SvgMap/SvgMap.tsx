@@ -55,10 +55,10 @@ const Svg: FunctionComponent<SvgNodeProps> = (props: SvgNodeProps) => {
 const Group: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) => {
     const { node, key } = props;
     const { attributes } = node;
-    const { id } = attributes;
+    const { id, 'stroke-width': strokeWidth } = attributes;
     const className = `svg-group svg-${props.colorScheme || 'blue'}`;
     return (
-        <g id={id} key={key} className={className}>
+        <g id={id} key={key} className={className} strokeWidth={strokeWidth}>
             {node.children.map((childNode, index) => renderChildNode(props, childNode, index))}
         </g>
     );
@@ -67,7 +67,7 @@ const Group: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) =
 const Path: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) => {
     const { node, index, key } = props;
     const { attributes } = node;
-    const { id, d, stroke, 'stroke-width': strokeWidth, transform } = attributes;
+    const { id, d, 'stroke-width': strokeWidth, transform } = attributes;
     const className = `svg-path svg-${props.colorScheme || 'blue'}`;
     const tabIndex =
         typeof props.locationTabIndex === 'function'
@@ -86,7 +86,6 @@ const Path: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) =>
             key={key}
             d={d}
             transform={transform}
-            stroke={stroke}
             strokeWidth={strokeWidth}
             className={className}
             tabIndex={tabIndex}

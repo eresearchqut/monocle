@@ -1,7 +1,7 @@
 const maps = require('./svgs.json');
 
 export type NodeType = 'svg' | 'path' | 'g';
-export type AttributeName = 'id' | 'viewBox' | 'd' | 'stroke' | 'stroke-width' | 'fill' | 'transform';
+export type AttributeName = 'id' | 'viewBox' | 'd' | 'stroke-width' | 'fill' | 'transform';
 export interface SvgNode {
     name: NodeType;
     type: string;

@@ -1,27 +1,37 @@
 .svg-map {
-  widtH: 100%;
-  stroke: var(--blue-900);
-  stroke-width: 1;
+  width: 100%;
   stroke-linecap: round;
   stroke-linejoin: round;
 
-  &__location {
-    fill: var(--blue-100);
-    cursor: pointer;
 
+
+  .svg-path {
+
+    &[id] {
+      cursor: pointer;
+    }
+
+    stroke: var(--text-color);
+    fill: none;
     &:focus,
     &:hover {
-      fill: var(--blue-300);
       outline: 0;
     }
 
-    &[aria-checked=true] {
-      fill: var(--blue-500);
+    &.svg-path-blue[id] {
+      stroke: var(--blue-900);
+      fill: var(--blue-100);
+      &:focus,
+      &:hover {
+        fill: var(--blue-300);
+      }
+      &[aria-checked=true] {
+        fill: var(--blue-500);
+      }
     }
-  }
-}
 
-.svg-map-container {
-  flex: 1 1 auto;
+  }
+
+
 }
 

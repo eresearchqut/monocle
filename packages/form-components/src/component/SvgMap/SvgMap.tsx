@@ -14,12 +14,11 @@ export interface HandlerPropsOfSvgMap {
 
 export interface StatePropsOfSvgMapProps {
     map: string;
+    colorScheme?: string;
     label?: string;
     role?: string;
-    className?: string;
     locationRole?: string;
     isSelected?: (id: string, index: number) => boolean;
-    locationClassName?: (id: string, index: number) => string | string;
     locationTabIndex?: (id: string, index: number) => number | number;
     locationAriaLabel?: (id: string, index: number) => string | string;
 }
@@ -39,15 +38,12 @@ const Svg: FunctionComponent<SvgNodeProps> = (props: SvgNodeProps) => {
     const { node } = props;
     const { attributes } = node;
     const { viewBox } = attributes;
-    const viewPort = (index: number): string => viewBox.split(' ')[index];
+    const className = `svg-map svg-map-${props.colorScheme || 'blue'}`;
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox={viewBox}
-            width={viewPort(2)}
-            height={viewPort(3)}
-            preserveAspectRatio="xMidYMid"
-            className={props.className || 'svg-map'}
+            className={className}
             role={props.role || 'none'}
             aria-label={props.label}
         >
@@ -71,7 +67,18 @@ const Group: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) =
 const Path: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) => {
     const { node, index, key } = props;
     const { attributes } = node;
-    const { id, d, name, stroke, strokeWidth, fill, transform } = attributes;
+    const { id, d, name, stroke, 'stroke-width': strokeWidth, transform } = attributes;
+    const className = `svg-path svg-path-${props.colorScheme || 'blue'}`;
+    const tabIndex =
+        typeof props.locationTabIndex === 'function'
+            ? props.locationTabIndex(node.attributes.id, index)
+            : props.locationTabIndex || 0;
+    const role = props.locationRole || 'none';
+    const ariaLabel =
+        typeof props.locationAriaLabel === 'function'
+            ? props.locationAriaLabel(node.attributes.id, index)
+            : node.attributes.name;
+    const ariaChecked = props.isSelected && props.isSelected(node.attributes.id, index);
 
     return (
         <path
@@ -80,23 +87,14 @@ const Path: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) =>
             name={name}
             d={d}
             transform={transform}
-            className={
-                typeof props.locationClassName === 'function'
-                    ? props.locationClassName(node.attributes.id, index)
-                    : props.locationClassName || 'svg-map__location'
-            }
-            tabIndex={
-                typeof props.locationTabIndex === 'function'
-                    ? props.locationTabIndex(node.attributes.id, index)
-                    : props.locationTabIndex || 0
-            }
-            role={props.locationRole || 'none'}
-            aria-label={
-                typeof props.locationAriaLabel === 'function'
-                    ? props.locationAriaLabel(node.attributes.id, index)
-                    : node.attributes.name
-            }
-            aria-checked={props.isSelected && props.isSelected(node.attributes.id, index)}
+            stroke={stroke}
+            strokeWidth={strokeWidth}
+            className={className}
+            tabIndex={tabIndex}
+            role={role}
+            aria-label={ariaLabel}
+            aria-checked={ariaChecked}
+            shape-rendering={'optimiseQuality'}
             onMouseOver={props.onLocationMouseOver}
             onMouseOut={props.onLocationMouseOut}
             onMouseMove={props.onLocationMouseMove}

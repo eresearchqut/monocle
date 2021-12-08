@@ -18,6 +18,7 @@ Body.args = {
 export const Emotion = Template.bind({});
 Emotion.args = {
     map: 'Emotion',
+    colorScheme: 'orange',
 };
 
 export const PainScale = Template.bind({});

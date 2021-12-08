@@ -27,6 +27,133 @@
       fill: var(--blue-500);
     }
   }
+
+  .svg-green[id] {
+    stroke: var(--green-900);
+    fill: var(--green-100);
+
+    &:focus,
+    &:hover {
+      fill: var(--green-300);
+    }
+
+    &[aria-checked=true] {
+      fill: var(--green-500);
+    }
+  }
+
+  .svg-yellow[id] {
+    stroke: var(--yellow-900);
+    fill: var(--yellow-100);
+
+    &:focus,
+    &:hover {
+      fill: var(--yellow-300);
+    }
+
+    &[aria-checked=true] {
+      fill: var(--yellow-500);
+    }
+  }
+
+  .svg-cyan[id] {
+    stroke: var(--cyan-900);
+    fill: var(--cyan-100);
+
+    &:focus,
+    &:hover {
+      fill: var(--cyan-300);
+    }
+
+    &[aria-checked=true] {
+      fill: var(--cyan-500);
+    }
+  }
+
+  .svg-pink[id] {
+    stroke: var(--pink-900);
+    fill: var(--pink-100);
+
+    &:focus,
+    &:hover {
+      fill: var(--pink-300);
+    }
+
+    &[aria-checked=true] {
+      fill: var(--pink-500);
+    }
+  }
+
+  .svg-indigo[id] {
+    stroke: var(--indigo-900);
+    fill: var(--indigo-100);
+
+    &:focus,
+    &:hover {
+      fill: var(--indigo-300);
+    }
+
+    &[aria-checked=true] {
+      fill: var(--indigo-500);
+    }
+  }
+
+  .svg-teal[id] {
+    stroke: var(--teal-900);
+    fill: var(--teal-100);
+
+    &:focus,
+    &:hover {
+      fill: var(--teal-300);
+    }
+
+    &[aria-checked=true] {
+      fill: var(--teal-500);
+    }
+  }
+
+  .svg-orange[id] {
+    stroke: var(--orange-900);
+    fill: var(--orange-100);
+
+    &:focus,
+    &:hover {
+      fill: var(--orange-300);
+    }
+
+    &[aria-checked=true] {
+      fill: var(--orange-500);
+    }
+  }
+
+  .svg-blue-gray[id] {
+    stroke: var(--bluegray-900);
+    fill: var(--bluegray-100);
+
+    &:focus,
+    &:hover {
+      fill: var(--bluegray-300);
+    }
+
+    &[aria-checked=true] {
+      fill: var(--bluegray-500);
+    }
+  }
+
+  .svg-purple[id] {
+    stroke: var(--purple-900);
+    fill: var(--purple-100);
+
+    &:focus,
+    &:hover {
+      fill: var(--purple-300);
+    }
+
+    &[aria-checked=true] {
+      fill: var(--purple-500);
+    }
+  }
+
 }
 
 

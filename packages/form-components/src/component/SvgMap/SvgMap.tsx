@@ -14,7 +14,7 @@ export interface HandlerPropsOfSvgMap {
 
 export interface StatePropsOfSvgMapProps {
     map: string;
-    colorScheme?: string;
+    colorScheme?: 'blue' | 'green' | 'yellow' | 'cyan' | 'pink' | 'indigo' | 'teal' | 'orange' | 'blue-gray' | 'purple';
     label?: string;
     role?: string;
     locationRole?: string;

@@ -5,9 +5,15 @@ export interface SingleSelectSvgMapProps {
     map: string;
     value: string;
     handleChange: (selectedLocationId: string | undefined) => void;
+    colorScheme?: 'blue' | 'green' | 'yellow' | 'cyan' | 'pink' | 'indigo' | 'teal' | 'orange' | 'blue-gray' | 'purple';
 }
 
-export const SingleSelectSvgMap: FunctionComponent<SingleSelectSvgMapProps> = ({ map, value, handleChange }) => {
+export const SingleSelectSvgMap: FunctionComponent<SingleSelectSvgMapProps> = ({
+    map,
+    value,
+    handleChange,
+    colorScheme,
+}) => {
     const [selected, setSelected] = useState<string | undefined>(value);
 
     useEffect(() => {
@@ -27,7 +33,7 @@ export const SingleSelectSvgMap: FunctionComponent<SingleSelectSvgMapProps> = ({
         setSelected((current) => (id === current ? undefined : id));
     };
 
-    return <SvgMap map={map} isSelected={isSelected} onLocationClick={handleLocationClick} />;
+    return <SvgMap map={map} isSelected={isSelected} onLocationClick={handleLocationClick} colorScheme={colorScheme} />;
 };
 
 export default SingleSelectSvgMap;

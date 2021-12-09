@@ -38,13 +38,17 @@ const Svg: FunctionComponent<SvgNodeProps> = (props: SvgNodeProps) => {
     const { node } = props;
     const { attributes } = node;
     const { viewBox } = attributes;
-    const className = `svg-map svg-map-${props.colorScheme || 'blue'}`;
+    const inlineStyled = node.children.some(
+        (childNode) =>
+            childNode.name === 'defs' && childNode.children.filter((defNodeChild) => defNodeChild.name === 'style')
+    );
+    const className = inlineStyled ? 'svg-map-inline-styles' : `svg-map svg-map-${props.colorScheme || 'blue'}`;
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox={viewBox}
             className={className}
-            role={props.role || 'none'}
+            role={props.role}
             aria-label={props.label}
         >
             {node.children.map((childNode, index) => renderChildNode(props, childNode, index))}
@@ -52,23 +56,51 @@ const Svg: FunctionComponent<SvgNodeProps> = (props: SvgNodeProps) => {
     );
 };
 
-const Group: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) => {
-    const { node, key } = props;
+const Polygon: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) => {
+    const { node } = props;
     const { attributes } = node;
-    const { id, 'stroke-width': strokeWidth } = attributes;
-    const className = `svg-group svg-${props.colorScheme || 'blue'}`;
+    const { points, class: elementClass, id } = attributes;
+    const className = `svg-polygon svg-${props.colorScheme || 'blue'} ${elementClass}`;
+    return <polygon id={id} points={points} className={className} />;
+};
+
+const Defs: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) => {
+    const { node } = props;
+    return <defs>{node.children.map((childNode, index) => renderChildNode(props, childNode, index))}</defs>;
+};
+
+const Style: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) => {
+    const { node } = props;
+    const styles = node.children.map((childNode, index) => childNode.value).join('');
+
+    return <style>{styles}</style>;
+};
+
+const Rect: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) => {
+    const { node } = props;
+    const { attributes } = node;
+    const { id, 'stroke-width': strokeWidth, x, y, width, height, class: elementClass } = attributes;
+    const className = `svg-rectangle svg-${props.colorScheme || 'blue'} ${elementClass}`;
+    return <rect id={id} x={x} y={y} width={width} height={height} className={className} />;
+};
+
+const Group: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) => {
+    const { node } = props;
+    const { attributes } = node;
+    const { id, 'stroke-width': strokeWidth, class: elementClass } = attributes;
+    const className = `svg-group svg-${props.colorScheme || 'blue'} ${elementClass}`;
     return (
-        <g id={id} key={key} className={className} strokeWidth={strokeWidth}>
+        <g id={id} className={className} strokeWidth={strokeWidth}>
             {node.children.map((childNode, index) => renderChildNode(props, childNode, index))}
         </g>
     );
 };
 
 const Path: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) => {
-    const { node, index, key } = props;
+    const { node, index } = props;
     const { attributes } = node;
-    const { id, d, 'stroke-width': strokeWidth, transform } = attributes;
-    const className = `svg-path svg-${props.colorScheme || 'blue'}`;
+    const { id, d, 'stroke-width': strokeWidth, transform, class: elementClass } = attributes;
+    const className = `svg-path svg-${props.colorScheme || 'blue'} ${elementClass}`;
     const tabIndex =
         typeof props.locationTabIndex === 'function'
             ? props.locationTabIndex(node.attributes.id, index)
@@ -83,7 +115,6 @@ const Path: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) =>
     return (
         <path
             id={id}
-            key={key}
             d={d}
             transform={transform}
             strokeWidth={strokeWidth}
@@ -103,14 +134,28 @@ const Path: FunctionComponent<SvgChildNodeProps> = (props: SvgChildNodeProps) =>
 };
 
 export const renderChildNode = (props: SvgMapProps, node: SvgNode, index: number) => {
-    const { attributes } = node;
-    const { id } = attributes;
-    const key = id || uuidv4();
-    const childProps = { ...props, node, index, key };
+    const { name, type } = node;
+    const key = uuidv4();
+    const childProps = { ...props, node, index };
 
-    if (node.name === 'path') return <Path {...childProps} />;
-
-    if (node.name === 'g') return <Group {...childProps} />;
+    if (type === 'element') {
+        switch (name) {
+            case 'defs':
+                return <Defs {...childProps} key={key} />;
+            case 'style':
+                return <Style {...childProps} key={key} />;
+            case 'g':
+                return <Group {...childProps} key={key} />;
+            case 'path':
+                return <Path {...childProps} key={key} />;
+            case 'rect':
+                return <Rect {...childProps} key={key} />;
+            case 'polygon':
+                return <Polygon {...childProps} key={key} />;
+            default:
+                return <text>Unmapped: {name}</text>;
+        }
+    }
 
     return null;
 };

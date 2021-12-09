@@ -1,3 +1,28 @@
+.svg-map-inline-styles {
+  width: 100%;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  :focus,
+  :hover {
+    outline: 0;
+  }
+
+
+  [id] {
+    cursor: pointer;
+    &:focus,
+    &:hover {
+      filter: drop-shadow(2px 4px 2px rgb(0 0 0 / 0.2));
+    }
+  }
+
+
+
+
+
+}
+
+
 .svg-map {
   width: 100%;
   stroke-linecap: round;

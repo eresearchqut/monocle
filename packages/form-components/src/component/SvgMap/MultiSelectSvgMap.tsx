@@ -21,9 +21,9 @@ export const MultiSelectSvgMap: FunctionComponent<MultiSelectSvgMapProps> = ({ m
 
     const isSelected = (id: string) => selected && selected.some((selectedId) => selectedId === id);
 
-    const handleLocationClick = (event: MouseEvent<SVGPathElement>) => {
+    const handleLocationClick = (event: MouseEvent<SVGElement>) => {
         event.preventDefault();
-        const { id } = event.target as SVGPathElement;
+        const { id } = event.target as SVGElement;
         setSelected((current) => {
             const updated = current ? [...current] : [];
             if (updated.indexOf(id) >= 0) {

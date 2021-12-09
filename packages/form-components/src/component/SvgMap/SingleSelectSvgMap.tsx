@@ -21,9 +21,9 @@ export const SingleSelectSvgMap: FunctionComponent<SingleSelectSvgMapProps> = ({
 
     const isSelected = (id: string, index: number) => (selected ? selected === id : false);
 
-    const handleLocationClick = (event: MouseEvent<SVGPathElement>) => {
+    const handleLocationClick = (event: MouseEvent<SVGElement>) => {
         event.preventDefault();
-        const { id } = event.target as SVGPathElement;
+        const { id } = event.target as SVGElement;
         setSelected((current) => (id === current ? undefined : id));
     };
 

@@ -25,7 +25,7 @@ Template.bind({});
 
 export const Default = Template.bind({});
 Default.args = {
-    value: undefined,
+    value: [],
 };
 
 export const Body = Template.bind({});

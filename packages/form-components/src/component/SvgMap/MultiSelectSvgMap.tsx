@@ -33,7 +33,7 @@ export const MultiSelectSvgMap: FunctionComponent<MultiSelectSvgMapProps> = ({ m
 
     const isSelected = (node: SvgNode) =>
         selected && node.attributes['aria-label']
-            ? selected.some((selected) => selected === node.attributes['aria-label'])
+            ? selected.some((value) => value === node.attributes['aria-label'])
             : undefined;
 
     const handleLocationClick = (event: MouseEvent<SVGElement>) => {

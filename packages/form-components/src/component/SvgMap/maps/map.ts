@@ -3,7 +3,8 @@ const maps = require('./svgs.json');
 export type NodeName = 'svg' | 'path' | 'g' | 'rect' | 'defs' | 'style' | 'polygon';
 export type NodeType = 'element' | 'text';
 export type AttributeName =
-    | 'id'
+    | 'aria-label'
+    | 'aria-details'
     | 'viewBox'
     | 'd'
     | 'stroke-width'
@@ -23,6 +24,7 @@ export interface SvgNode {
     value: 'text';
 }
 
-export const getMap = (id: string): SvgNode | undefined => (maps as SvgNode[]).find((map) => map.attributes.id === id);
+export const getMap = (mapName: string): SvgNode | undefined =>
+    (maps as SvgNode[]).find((map) => map.attributes['aria-label'] === mapName);
 
 export default maps as SvgNode[];

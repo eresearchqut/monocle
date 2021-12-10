@@ -1,23 +1,25 @@
 import * as React from 'react';
 import { useCallback } from 'react';
 import { Meta, Story } from '@storybook/react';
-import SingleSelectSvgMap, { SingleSelectSvgMapProps } from './SingleSelectSvgMap';
+import SingleSelectSvgMap from './SingleSelectSvgMap';
 import { useArgs } from '@storybook/client-api';
 import { action } from '@storybook/addon-actions';
 
+import MultiSelectSvgMap, { MultiSelectSvgMapProps } from './MultiSelectSvgMap';
+
 export default {
-    title: 'Components/SingleSelectSvgMap',
-    component: SingleSelectSvgMap,
+    title: 'Components/MultiSelectSvgMap',
+    component: MultiSelectSvgMap,
 } as Meta;
 
-const Template: Story<SingleSelectSvgMapProps> = (props) => {
+const Template: Story<MultiSelectSvgMapProps> = (props) => {
     const [, updateArgs] = useArgs();
     const logAction = useCallback(action('handleChange'), []); // eslint-disable-line react-hooks/exhaustive-deps
-    const handleChange = (value: string | undefined) => {
+    const handleChange = (value: string[] | undefined) => {
         updateArgs({ value });
         logAction(value);
     };
-    return <SingleSelectSvgMap {...props} handleChange={handleChange} />;
+    return <MultiSelectSvgMap {...props} handleChange={handleChange} />;
 };
 Template.bind({});
 
@@ -30,19 +32,16 @@ export const Body = Template.bind({});
 Body.args = {
     ...Default.args,
     map: 'Body',
-    colorScheme: 'pink',
 };
 
 export const Emotion = Template.bind({});
 Emotion.args = {
     ...Default.args,
     map: 'Emotion',
-    colorScheme: 'orange',
 };
 
 export const PainScale = Template.bind({});
 PainScale.args = {
     ...Default.args,
     map: 'PainScale',
-    colorScheme: 'purple',
 };

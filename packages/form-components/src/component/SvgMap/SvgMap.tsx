@@ -18,9 +18,9 @@ export interface StatePropsOfSvgMapProps {
     label?: string;
     role?: string;
     locationRole?: string;
-    isSelected?: (id: string, index: number) => boolean;
-    locationTabIndex?: (id: string, index: number) => number | number;
-    locationAriaLabel?: (id: string, index: number) => string | string;
+    isSelected?: (node: SvgNode) => boolean | undefined;
+    locationTabIndex?: (node: SvgNode, index: number) => number | number;
+    locationAriaLabel?: (node: SvgNode, index: number) => string | string;
 }
 
 export interface SvgMapProps extends HandlerPropsOfSvgMap, StatePropsOfSvgMapProps {}
@@ -32,9 +32,6 @@ export interface SvgNodeProps extends SvgMapProps {
 export interface SvgElementNodeProps extends SvgNodeProps {
     index: number;
     key: string;
-    tabIndex: number | undefined;
-    role: string | undefined;
-    ariaLabel: string | undefined;
     ariaChecked: boolean | undefined;
     onClick?: (event: MouseEvent<SVGElement>) => void;
     onMouseOver?: (event: MouseEvent<SVGElement>) => void;
@@ -47,51 +44,21 @@ export interface SvgElementNodeProps extends SvgNodeProps {
 const Svg: FunctionComponent<SvgNodeProps> = (props: SvgNodeProps) => {
     const { node } = props;
     const { attributes } = node;
-    const { viewBox } = attributes;
-    const inlineStyled = node.children.some(
-        (childNode) =>
-            childNode.name === 'defs' && childNode.children.filter((defNodeChild) => defNodeChild.name === 'style')
-    );
-    const className = inlineStyled ? 'svg-map-inline-styles' : `svg-map svg-map-${props.colorScheme || 'blue'}`;
     return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox={viewBox}
-            className={className}
-            role={props.role}
-            aria-label={props.label}
-        >
-            {node.children.map((childNode, index) => renderChildNode(props, childNode, index))}
+        <svg xmlns="http://www.w3.org/2000/svg" {...attributes}>
+            {node.children.map((childNode, childIndex) => renderChildNode(props, childNode, childIndex))}
         </svg>
     );
 };
 
 const Polygon: FunctionComponent<SvgElementNodeProps> = (props: SvgElementNodeProps) => {
-    const {
-        node,
-        tabIndex,
-        role,
-        ariaLabel,
-        ariaChecked,
-        onMouseOver,
-        onMouseOut,
-        onMouseMove,
-        onClick,
-        onFocus,
-        onBlur,
-    } = props;
+    const { node, ariaChecked, onMouseOver, onMouseOut, onMouseMove, onClick, onFocus, onBlur } = props;
     const { attributes } = node;
-    const { points, class: elementClass, id } = attributes;
-    const className = `svg-polygon svg-${props.colorScheme || 'blue'} ${elementClass}`;
+
     return (
         <polygon
-            id={id}
-            points={points}
-            className={className}
-            aria-label={ariaLabel}
+            {...attributes}
             aria-checked={ariaChecked}
-            tabIndex={tabIndex}
-            role={role}
             onMouseOver={onMouseOver}
             onMouseOut={onMouseOut}
             onMouseMove={onMouseMove}
@@ -104,45 +71,21 @@ const Polygon: FunctionComponent<SvgElementNodeProps> = (props: SvgElementNodePr
 
 const Defs: FunctionComponent<SvgElementNodeProps> = (props: SvgElementNodeProps) => {
     const { node } = props;
-    return <defs>{node.children.map((childNode, index) => renderChildNode(props, childNode, index))}</defs>;
+    return <defs>{node.children.map((childNode, childIndex) => renderChildNode(props, childNode, childIndex))}</defs>;
 };
 
 const Style: FunctionComponent<SvgElementNodeProps> = (props: SvgElementNodeProps) => {
     const { node } = props;
     const styles = node.children.map((childNode, index) => childNode.value).join('');
-
     return <style>{styles}</style>;
 };
 
 const Rect: FunctionComponent<SvgElementNodeProps> = (props: SvgElementNodeProps) => {
-    const {
-        node,
-        tabIndex,
-        role,
-        ariaLabel,
-        ariaChecked,
-        onMouseOver,
-        onMouseOut,
-        onMouseMove,
-        onClick,
-        onFocus,
-        onBlur,
-    } = props;
+    const { node, ariaChecked, onMouseOver, onMouseOut, onMouseMove, onClick, onFocus, onBlur } = props;
     const { attributes } = node;
-    const { id, 'stroke-width': strokeWidth, x, y, width, height, class: elementClass } = attributes;
-    const className = `svg-rectangle svg-${props.colorScheme || 'blue'} ${elementClass}`;
-
     return (
         <rect
-            id={id}
-            x={x}
-            y={y}
-            width={width}
-            height={height}
-            className={className}
-            tabIndex={tabIndex}
-            role={role}
-            aria-label={ariaLabel}
+            {...attributes}
             aria-checked={ariaChecked}
             onMouseOver={onMouseOver}
             onMouseOut={onMouseOut}
@@ -155,71 +98,22 @@ const Rect: FunctionComponent<SvgElementNodeProps> = (props: SvgElementNodeProps
 };
 
 const Group: FunctionComponent<SvgElementNodeProps> = (props: SvgElementNodeProps) => {
-    const {
-        node,
-        tabIndex,
-        role,
-        ariaLabel,
-        ariaChecked,
-        onMouseOver,
-        onMouseOut,
-        onMouseMove,
-        onClick,
-        onFocus,
-        onBlur,
-    } = props;
+    const { node, ariaChecked } = props;
     const { attributes } = node;
-    const { id, 'stroke-width': strokeWidth, class: elementClass } = attributes;
-    const className = `svg-group svg-${props.colorScheme || 'blue'} ${elementClass}`;
+
     return (
-        <g
-            id={id}
-            className={className}
-            strokeWidth={strokeWidth}
-            tabIndex={tabIndex}
-            role={role}
-            aria-label={ariaLabel}
-            aria-checked={ariaChecked}
-            onMouseOver={onMouseOver}
-            onMouseOut={onMouseOut}
-            onMouseMove={onMouseMove}
-            onClick={onClick}
-            onFocus={onFocus}
-            onBlur={onBlur}
-        >
-            {node.children.map((childNode, index) => renderChildNode(props, childNode, index))}
+        <g {...attributes} aria-checked={ariaChecked}>
+            {node.children.map((childNode, childIndex) => renderChildNode(props, childNode, childIndex))}
         </g>
     );
 };
 
 const Path: FunctionComponent<SvgElementNodeProps> = (props: SvgElementNodeProps) => {
-    const {
-        node,
-        tabIndex,
-        role,
-        ariaLabel,
-        ariaChecked,
-        onMouseOver,
-        onMouseOut,
-        onMouseMove,
-        onClick,
-        onFocus,
-        onBlur,
-    } = props;
+    const { node, ariaChecked, onMouseOver, onMouseOut, onMouseMove, onClick, onFocus, onBlur } = props;
     const { attributes } = node;
-    const { id, d, 'stroke-width': strokeWidth, transform, class: elementClass } = attributes;
-    const className = `svg-path svg-${props.colorScheme || 'blue'} ${elementClass}`;
-
     return (
         <path
-            id={id}
-            d={d}
-            transform={transform}
-            strokeWidth={strokeWidth}
-            className={className}
-            tabIndex={tabIndex}
-            role={role}
-            aria-label={ariaLabel}
+            {...attributes}
             aria-checked={ariaChecked}
             onMouseOver={onMouseOver}
             onMouseOut={onMouseOut}
@@ -232,32 +126,22 @@ const Path: FunctionComponent<SvgElementNodeProps> = (props: SvgElementNodeProps
 };
 
 export const renderChildNode = (props: SvgMapProps, node: SvgNode, index: number) => {
-    const { name, type, attributes } = node;
-    const { id } = attributes;
+    const { name, type } = node;
     const key = uuidv4();
 
     if (type === 'element') {
-        const onMouseOver = id ? props.onLocationMouseOver : undefined;
-        const onMouseOut = id ? props.onLocationMouseOut : undefined;
-        const onMouseMove = id ? props.onLocationMouseMove : undefined;
-        const onClick = id ? props.onLocationClick : undefined;
-        const onFocus = id ? props.onLocationFocus : undefined;
-        const onBlur = id ? props.onLocationBlur : undefined;
-        const tabIndex =
-            typeof props.locationTabIndex === 'function'
-                ? props.locationTabIndex(id, index)
-                : props.locationTabIndex || 0;
-        const role = props.locationRole || 'none';
-        const ariaLabel =
-            typeof props.locationAriaLabel === 'function' ? props.locationAriaLabel(id, index) : node.attributes.id;
-        const ariaChecked = props.isSelected && props.isSelected(id, index);
+        const onMouseOver = props.onLocationMouseOver;
+        const onMouseOut = props.onLocationMouseOut;
+        const onMouseMove = props.onLocationMouseMove;
+        const onClick = props.onLocationClick;
+        const onFocus = props.onLocationFocus;
+        const onBlur = props.onLocationBlur;
+
+        const ariaChecked = props.isSelected && props.isSelected(node);
         const childProps = {
             ...props,
             node,
             index,
-            tabIndex,
-            role,
-            ariaLabel,
             ariaChecked,
             onMouseOver,
             onMouseOut,
@@ -302,7 +186,7 @@ export const SvgMap: FunctionComponent<SvgMapProps> = (props) => {
     const svgProps = { ...props, node };
 
     return (
-        <div className={'svg-map-container'}>
+        <div className={'svg-map'}>
             <Svg {...svgProps} />
         </div>
     );

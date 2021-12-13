@@ -105,7 +105,6 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
                     <ComponentSelector componentTypes={Object.values(InputType)} />
                     {/*</Sticky>*/}
                 </div>
-                `
                 <div className="p-mr-4">
                     <FormDesignerCanvas definition={formDefinition} onChange={handleDefinitionChange} locale={locale} />
                 </div>

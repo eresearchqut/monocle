@@ -1,76 +1,108 @@
-$background-color: #fff;
-$cell-color: #555;
-$border-color: #ddd;
-$highlight-color: #f5f5f5;
-$grid-border-radius: 2em;
+$primary-color: var(--primary-color);
+$background-color: var(--surface-card);
+$border-color: var(--surface-border);
+$highlight-color: var(--surface-hover);
+$hover-color: var(--surface-hover);
+
+// Default border-radius (4px) too small for our purposes, using percentage instead
+// $grid-border-radius: var(--border-radius);
+$grid-border-radius: 20%;
+
+// Content-padding is 1rem by default, becomes very large on small devices, so
+// we're using percentage instead
+// $circle-padding: var(--content-padding);
+$circle-padding: 12.5%;
 
 div.container-grid {
     position: relative;
     width: 100%;
-    padding-bottom: 100%;
+    // max-width: 600px;
     margin-top: 20px;
     margin-bottom: 20px;
 
     > .container-grid-inside {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
+        width: 100%;
+        margin-left: 2em; // space for row coordinates
 
         > .container-grid-row {
             // Round the first and last items
             &:first-child {
-                border-top-left-radius: $grid-border-radius;
-                border-top-right-radius: $grid-border-radius;
+                > .container-grid-cell {
+                    &:first-child {
+                        border-top-left-radius: $grid-border-radius;
+                    }
+                    &:last-child {
+                        border-top-right-radius: $grid-border-radius;
+                    }
+                }
             }
             &:last-child {
-                margin-bottom: 0;
-                border-bottom-left-radius: $grid-border-radius;
-                border-bottom-right-radius: $grid-border-radius;
+                > .container-grid-cell {
+                    &:first-child {
+                        border-bottom-left-radius: $grid-border-radius;
+                    }
+                    &:last-child {
+                        border-bottom-right-radius: $grid-border-radius;
+                    }
+                }
             }
 
-            box-sizing: border-box;
             position: relative;
+            box-sizing: border-box;
             display: block;
-            width: 100%;
             background-color: $background-color;
-            border: 1px solid $border-color;
-            margin-bottom: -1px;
 
             > .container-grid-cell {
-                color: $cell-color;
                 display: inline-block;
                 position: relative;
-                height: 100%;
-                border-right: 1px solid $border-color;
-                text-align: center;
-                line-height: 100%;
+                border: 1px solid $border-color;
                 vertical-align: middle;
-                font-size: 200%;
-
-                &:last-child {
-                    border-right-width: 0px;
-                }
 
                 &.full {
-                    background-image: url('./img/solid-circle.svg');
-                    background-size: 75%;
-                    background-repeat: no-repeat;
-                    background-position: 50%;
+                    cursor: pointer;
+                    > .cell-content {
+                        opacity: 0.4;
+                    }
                 }
 
-                // Hover state
+                &.highlight {
+                    background-color: $highlight-color;
+                }
+
+                > .cell-content.highlight {
+                    opacity: 1;
+                }
+
+                // CSS trick to make the cells squares
+                &:after {
+                    content: '';
+                    display: block;
+                    padding-top: 100%;
+                }
+
                 &:hover {
                     text-decoration: none;
-                    background-color: $highlight-color;
+                    background-color: $hover-color;
+                }
+
+                > .cell-content {
+                    position: absolute;
+                    display: flex;
+                    width: 100%;
+                    justify-content: center;
+                    align-items: center;
+
+                    > svg {
+                        padding: $circle-padding;
+
+                        > path {
+                            fill: $primary-color;
+                        }
+                    }
                 }
 
                 > .cell-coord {
                     position: absolute;
-                    font-size: 50%;
-                    line-height: 100%;
-                    // color: #000;
 
                     &.cell-coord-x {
                         // bust out into the row above, so not obscured by samples
@@ -80,26 +112,12 @@ div.container-grid {
 
                     &.cell-coord-y {
                         // bust out into the column left
-                        left: -1.2em;
+                        left: -2em;
                         bottom: 0.5em;
+                        text-align: right;
                     }
                 }
             }
         }
-    }
-}
-
-div.container-grid.highlight {
-    .container-grid-row.highlight .container-grid-cell,
-    .container-grid-cell.highlight {
-        background-color: $highlight-color;
-    }
-
-    a.container-grid-cell {
-        opacity: 0.4;
-    }
-
-    .container-grid-row.highlight .container-grid-cell.highlight {
-        opacity: 1;
     }
 }

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Meta, Story } from '@storybook/react';
 import SvgMap, { SvgMapProps } from './SvgMap';
-import maps from './maps';
 
 export default {
     title: 'Components/SvgMap',
@@ -11,7 +10,17 @@ export default {
 const Template: Story<SvgMapProps> = (props) => <SvgMap {...props} />;
 Template.bind({});
 
-export const Default = Template.bind({});
-Default.args = {
-    map: maps.body,
+export const MuscleGroupsV1 = Template.bind({});
+MuscleGroupsV1.args = {
+    map: 'MuscleGroupsV1',
+};
+
+export const EmotionV1 = Template.bind({});
+EmotionV1.args = {
+    map: 'EmotionV1',
+};
+
+export const PainScaleV1 = Template.bind({});
+PainScaleV1.args = {
+    map: 'PainScaleV1',
 };

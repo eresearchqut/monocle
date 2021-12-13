@@ -1,27 +1,41 @@
 .svg-map {
-  widtH: 100%;
-  stroke: #666;
-  stroke-width: 1;
+  width: 100%;
   stroke-linecap: round;
   stroke-linejoin: round;
 
-  &__location {
-    fill: #a1d99b;
-    cursor: pointer;
+  :focus,
+  :hover {
+    outline: 0;
+  }
 
+  g[aria-label], rect[aria-label], path[aria-label], circle[aria-lable] {
+    cursor: pointer;
+    pointer-events: bounding-box;
     &:focus,
     &:hover {
-      fill: #b8e2b3;
-      outline: 0;
-    }
-
-    &[aria-checked=true] {
-      fill: #f4bc44;
+      filter: drop-shadow(2px 4px 2px rgb(0 0 0 / 0.2)) hue-rotate(90deg);
     }
   }
+
+  g[aria-label], rect[aria-label], path[aria-label], circle[aria-lable] {
+    cursor: pointer;
+    pointer-events: bounding-box;
+    &[aria-checked=true] {
+      filter: drop-shadow(2px 4px 2px rgb(0 0 0 / 0.2)) hue-rotate(200deg);
+    }
+  }
+
+  [aria-checked=true] {
+
+
+  }
+
+
 }
 
-.svg-map-container {
-  flex: 1 1 auto;
-}
+
+
+
+
+
 

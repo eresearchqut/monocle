@@ -4,19 +4,20 @@ import { catchError } from "rxjs/operators";
 import { TransactionCanceledException } from "@aws-sdk/client-dynamodb";
 
 @Injectable()
-export abstract class VersionErrorInterceptor implements NestInterceptor {
-  abstract conditionFailureMessage: string;
-  otherFailureMessage = "Failed saving data";
+export abstract class VersionedErrorInterceptor implements NestInterceptor {
+  addFailureMessage = "Item already exists";
+  updateFailureMessage = "Failed updating latest item";
+  otherFailureMessage = "Request failed";
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError((error: Error) => {
-        if (
-          isCancelled(error) &&
-          error.CancellationReasons?.length === 1 &&
-          error.CancellationReasons[0].Code === "ConditionalCheckFailed"
-        ) {
-          throw new ConditionException(this.conditionFailureMessage);
+        if (isCancelled(error) && error.CancellationReasons?.length === 2) {
+          if (error.CancellationReasons[0].Code === "ConditionalCheckFailed") {
+            throw new ConditionException(this.updateFailureMessage);
+          } else if (error.CancellationReasons[1].Code === "ConditionalCheckFailed") {
+            throw new ConditionException(this.addFailureMessage);
+          }
         }
         throw new HttpException(this.otherFailureMessage, HttpStatus.INTERNAL_SERVER_ERROR);
       })

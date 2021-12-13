@@ -18,18 +18,20 @@ abstract class OptionallyVersionedResourceParams extends ResourceParams {
 
 export class PutResourceParams extends OptionallyVersionedResourceParams {}
 
-export class PutResourceData extends DataResourceParams {
+export class PutResourceQuery {
   @IsObject()
   @IsOptional()
   options: any;
 }
+
+export class PutResourceBody extends DataResourceParams {}
 
 export class GetResourceParams extends ResourceParams {
   @IsString()
   id: string;
 }
 
-export class GetResourceData {
+export class GetResourceQuery {
   @IsObject()
   @IsOptional()
   options: any;
@@ -40,18 +42,20 @@ export class PostResourceParams extends OptionallyVersionedResourceParams {
   id: string;
 }
 
-export class PostResourceData extends DataResourceParams {
+export class PostResourceQuery {
   @IsObject()
   @IsOptional()
   options: any;
 }
+
+export class PostResourceBody extends DataResourceParams {}
 
 export class DeleteResourceParams extends ResourceParams {
   @IsString()
   id: string;
 }
 
-export class DeleteResourceData {
+export class DeleteResourceQuery {
   @IsObject()
   @IsOptional()
   options: any;

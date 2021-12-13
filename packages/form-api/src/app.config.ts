@@ -34,6 +34,13 @@ export class AppConfig {
   LOCAL_DATABASE: boolean = false;
 
   /**
+   * Log requests to DynamoDB API.
+   */
+  @Transform(strToBool)
+  @IsBoolean()
+  LOG_DYNAMODB_REQUESTS: boolean = false;
+
+  /**
    * AWS Region
    */
   @IsString()
@@ -76,6 +83,18 @@ export class AppConfig {
 /* eslint-enable @typescript-eslint/no-inferrable-types */
 
 export type AppConfigService = ConfigService<AppConfig, true>;
+
+/**
+ * Override env config with specific values during testing
+ */
+export function validateConfigOverride(override: Partial<AppConfig>): (config: Record<string, unknown>) => AppConfig {
+  return (config: Record<string, unknown>) => {
+    return validateConfig({
+      ...config,
+      ...Object.fromEntries(Object.entries(override).map(([k, v]) => [k, v.toString()])),
+    });
+  };
+}
 
 export function validateConfig(config: Record<string, unknown>): AppConfig {
   const validated = plainToClass(AppConfig, config, {

@@ -1,39 +1,48 @@
-import { IsAlphanumeric, IsUUID, ValidateNested } from "class-validator";
+import {
+  Equals,
+  IsAlphanumeric,
+  IsISO8601,
+  IsObject,
+  IsSemVer,
+  IsString,
+  IsUUID,
+  ValidateNested,
+} from "class-validator";
 import { Type } from "class-transformer";
 import { v4 } from "uuid";
 import { MetadataException } from "./metadata.exception";
 import Ajv from "ajv";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
 
-const DEFAULT_GROUP_NAME = "default";
+export const DEFAULT_GROUP_NAME = "Default";
 
-export class Metadata extends ItemEntity {
-  @IsAlphanumeric()
-  resource: string;
+export type MetadataEntityType = ItemEntity<
+  {
+    Resource: string;
+    Version: string;
+    Groups: {
+      [groupName: string]: {
+        formVersion: string;
+        authorizationVersion: string;
+      };
+    };
+  },
+  "Metadata"
+>;
+
+export class MetadataData {
+  @IsString()
+  Resource: string;
+
+  @IsSemVer()
+  Version: string;
 
   @ValidateNested({ each: true })
   @Type(() => GroupMetadata)
-  groups: Map<string, GroupMetadata>;
-
-  public getDataKey(id: string): [string, string] {
-    const key = `Resource:${this.resource}#data:${id}`;
-    return [key, key];
-  }
-
-  public createDataKey(): [string, string] {
-    return this.getDataKey(v4());
-  }
-
-  public getGroupMetadata(group?: string): GroupMetadata {
-    const groupMetadata = this.groups.get(group || DEFAULT_GROUP_NAME);
-    if (groupMetadata === undefined) {
-      throw new MetadataException(`Metadata group ${group} not found`);
-    }
-    return groupMetadata;
-  }
+  Groups: { [key: string]: GroupMetadata };
 }
 
-export class GroupMetadata {
+class GroupMetadata {
   @IsUUID()
   formVersion: string;
 
@@ -41,17 +50,46 @@ export class GroupMetadata {
   authorizationVersion: string;
 }
 
-export class MetadataForm extends ItemEntity {
-  schema: any;
+export class Metadata implements MetadataEntityType {
+  @IsString()
+  Id: string;
 
-  public validate(data: any) {
-    const ajv = new Ajv();
-    const validate = ajv.compile(this.schema);
-    validate(data);
-    return validate.errors;
-  }
+  @IsString()
+  PK: string;
+
+  @IsString()
+  SK?: string;
+
+  @Equals("Metadata")
+  ItemType: "Metadata" = "Metadata";
+
+  @IsISO8601()
+  CreatedAt: string;
+
+  @IsString()
+  CreatedBy: string;
+
+  @ValidateNested()
+  Data: MetadataData;
+
+  getDataKey = (id: string) => {
+    const key = `Resource:${this.Data.Resource}#data:${id}`;
+    return { PK: key, SK: key };
+  };
+
+  createDataKey = () => {
+    const id = v4();
+    const key = this.getDataKey(id);
+    return { id, key };
+  };
+
+  getGroupMetadata = (group?: string): GroupMetadata => {
+    const groupMetadata = this.Data.Groups[group || DEFAULT_GROUP_NAME];
+    if (groupMetadata === undefined) {
+      throw new MetadataException(`Metadata group ${group} not found`);
+    }
+    return groupMetadata;
+  };
 }
 
-export class MetadataAuthorization extends ItemEntity {
-  policy: any;
-}
+export class MetadataQuery extends Array<Metadata> {}

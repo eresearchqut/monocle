@@ -3,6 +3,8 @@ import { AppConfig } from "../../app.config";
 import { ConfigService } from "@nestjs/config";
 import { MetadataService } from "../metadata/metadata.service";
 import { DynamodbService } from "../dynamodb/dynamodb.service";
+import { ValidationException } from "../metadata/metadata.exception";
+import { ItemEntity } from "../dynamodb/dynamodb.entity";
 
 interface GetResourceInput {
   resource: string;
@@ -32,17 +34,19 @@ export class ResourceService {
     private dynamodbService: DynamodbService
   ) {}
 
-  public async getResource(input: GetResourceInput): Promise<any> {
+  public async getResource(input: GetResourceInput): Promise<ItemEntity | null> {
     const { getDataKey, getGroupMetadata } = await this.metadataService.getMetadata(input.resource);
     const key = getDataKey(input.id);
 
-    const item = await this.dynamodbService.getItem({ table: this.configService.get("RESOURCE_TABLE"), key });
+    const item = await this.dynamodbService.getItem({ table: this.configService.get("RESOURCE_TABLE"), ...key });
 
     if (this.configService.get("VALIDATE_RESOURCE_ON_READ")) {
       const { formVersion } = getGroupMetadata();
       const { validate } = await this.metadataService.getForm(formVersion);
       validate(item);
     }
+
+    // TODO: run authorization policy check
 
     return item;
   }
@@ -52,28 +56,42 @@ export class ResourceService {
       input.resource,
       input.version
     );
-    const resourceKey = input.id ? getDataKey(input.id) : createDataKey();
-
-    const data = {
-      ...input.data,
-      PK: resourceKey[0],
-      SK: resourceKey[1],
-      ResourceType: input.resource,
-    };
+    const { id, key } = input.id ? { id: input.id, key: getDataKey(input.id) } : createDataKey();
 
     if (this.configService.get("VALIDATE_RESOURCE_ON_WRITE")) {
       const { formVersion } = getGroupMetadata();
       const { validate } = await this.metadataService.getForm(formVersion);
-      validate(data);
+      const errors = validate(input.data);
+      if (errors) {
+        throw new ValidationException(errors);
+      }
     }
 
-    return await this.dynamodbService.putItem({ table: this.configService.get("RESOURCE_TABLE"), data });
+    const data = {
+      ...key,
+      Id: id,
+      ItemType: input.resource,
+      CreatedAt: new Date().toISOString(),
+      CreatedBy: "admin",
+      Data: input.data,
+    };
+
+    // TODO: run authorization policy check
+
+    await this.dynamodbService.putItem({
+      table: this.configService.get("RESOURCE_TABLE"),
+      item: data,
+    });
+
+    return data;
   }
 
   public async deleteResource(input: DeleteResourceInput): Promise<any> {
     const { getDataKey } = await this.metadataService.getMetadata(input.resource);
     const key = getDataKey(input.id);
 
-    return await this.dynamodbService.deleteItem({ table: this.configService.get("RESOURCE_TABLE"), key });
+    // TODO: run authorization policy check
+
+    return await this.dynamodbService.deleteItem({ table: this.configService.get("RESOURCE_TABLE"), ...key });
   }
 }

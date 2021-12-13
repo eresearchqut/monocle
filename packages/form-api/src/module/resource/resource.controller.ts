@@ -1,13 +1,15 @@
-import { Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, Param, Post, Put, Query } from "@nestjs/common";
 import {
-  DeleteResourceData,
+  DeleteResourceQuery,
   DeleteResourceParams,
-  GetResourceData,
+  GetResourceQuery,
   GetResourceParams,
-  PostResourceData,
+  PostResourceQuery,
   PostResourceParams,
-  PutResourceData,
+  PutResourceQuery,
   PutResourceParams,
+  PutResourceBody,
+  PostResourceBody,
 } from "./resource.dto";
 import { ResourceService } from "./resource.service";
 
@@ -16,41 +18,53 @@ export class ResourceController {
   public constructor(private resourceService: ResourceService) {}
 
   @Get(":resource/:id")
-  public async getResource(@Param() params: GetResourceParams, @Query() data: GetResourceData) {
-    return await this.resourceService.getResource({
+  public async getResource(@Param() params: GetResourceParams, @Query() query: GetResourceQuery) {
+    const resource = await this.resourceService.getResource({
       resource: params.resource,
       id: params.id,
-      options: data.options,
+      options: query.options,
     });
+    if (resource === null) {
+      throw new HttpException("Resource not found", 404);
+    }
+    return resource;
   }
 
   @Put(":resource")
-  public async putResource(@Param() params: PutResourceParams, @Query() data: PutResourceData) {
-    await this.resourceService.putResource({
+  public async putResource(
+    @Param() params: PutResourceParams,
+    @Query() query: PutResourceQuery,
+    @Body() body: PutResourceBody
+  ) {
+    return await this.resourceService.putResource({
       resource: params.resource,
       version: params.version,
-      data: data.data,
-      options: data.options,
+      options: query.options,
+      data: body.data,
     });
   }
 
   @Post(":resource/:id")
-  public async postResource(@Param() params: PostResourceParams, @Query() data: PostResourceData) {
-    await this.resourceService.putResource({
+  public async postResource(
+    @Param() params: PostResourceParams,
+    @Query() query: PostResourceQuery,
+    @Body() body: PostResourceBody
+  ) {
+    return await this.resourceService.putResource({
       resource: params.resource,
       id: params.id,
       version: params.version,
-      data: data.data,
-      options: data.options,
+      options: query.options,
+      data: body.data,
     });
   }
 
   @Delete(":resource/:id")
-  public async deleteResource(@Param() params: DeleteResourceParams, @Query() data: DeleteResourceData) {
+  public async deleteResource(@Param() params: DeleteResourceParams, @Query() query: DeleteResourceQuery) {
     return await this.resourceService.deleteResource({
       resource: params.resource,
       id: params.id,
-      options: data.options,
+      options: query.options,
     });
   }
 }

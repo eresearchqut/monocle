@@ -20,10 +20,10 @@ describe("DynamodbService", () => {
   });
 
   describe("putItem", () => {
-    it("should return the input data", async () => {
+    it("should return the old input data", async () => {
       const item: ItemEntity = {
         Id: "1",
-        ResourceType: "MockItem",
+        ItemType: "MockItem",
         CreatedAt: new Date().toISOString(),
         CreatedBy: "test",
         Data: {
@@ -32,12 +32,22 @@ describe("DynamodbService", () => {
         PK: "MockItem:1",
         SK: "MockItem:1",
       };
+
+      ddbMock.on(PutItemCommand).resolves({ Attributes: undefined });
+
+      expect(
+        await dynamodbService.putItem({
+          table: "MockItem",
+          item: item,
+        })
+      ).toEqual(null);
+
       ddbMock.on(PutItemCommand).resolves({ Attributes: marshall(item) });
 
       expect(
         await dynamodbService.putItem({
           table: "MockItem",
-          data: item,
+          item: item,
         })
       ).toEqual(item);
     });

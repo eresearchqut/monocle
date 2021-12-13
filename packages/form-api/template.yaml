@@ -7,9 +7,34 @@ Parameters:
     Type: String
     Description: "Project slug"
     AllowedPattern: "[a-z0-9]{2,}"
+  CognitoUserPool:
+    Type: String
+    Description: "Cognito User Pool ARN"
 
 Resources:
-  RootTable:
+  ResourceAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Cors: "'*'"
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !Ref CognitoUserPool
+  ResourceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: './packages/form-api/src'
+      Handler: 'lambda.handler'
+      Runtime: 'nodejs14.x'
+      Events:
+        Root:
+          Type: Api
+          Properties:
+            Path: '/'
+            Method: 'ANY'
+            RestApiId: !Ref ResourceAPI
+  ResourceTable:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Sub "${Project}_resources"

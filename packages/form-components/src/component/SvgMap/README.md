@@ -1,20 +1,16 @@
 # SVG Maps
 
-## Rules
+The SVG Map component renders a clickable SVG in either Single or Multi select mode. To add a new SVG
+
+1. Place the SVG into the svgs folder.
+2. To mark an element as selectable add an aria-label and aria-details attribute. 
+3. To mark a group of elements as selectable, surround it in a g element that has an aria-label and aria-details attribute
+4. Add stories for the MultiSelectSvgMap, SingleSelectSvgMap and SvgMap components 
+
+Rules
+
+1. Do not remove SVG from the folder once they have been released
+2. Do not rename the aria-label element once the map has been released
 
 
-## Optimising your svg
-
-1. Open the [SVGO](https://github.com/svg/svgo) [GUI](https://jakearchibald.github.io/svgomg/)
-2. Open the SVG file
-3. Select the following settings as enabled
-   1. Merge paths
-   2. Collapse useless groups
-   3. Remove <title>
-   4. Remove <desc>
-   5. Prefer viewBox to width/height
-   6. Remove script elements
-   7. Remove unused namespaces
-   8. Minify colours
-4. Copy the output into src/component/SvgMap/svg/<file_name>.svg
 

@@ -10,20 +10,17 @@ export default {
 const Template: Story<SvgMapProps> = (props) => <SvgMap {...props} />;
 Template.bind({});
 
-export const Body = Template.bind({});
-Body.args = {
-    map: 'Body',
-    colorScheme: 'pink',
+export const MuscleGroupsV1 = Template.bind({});
+MuscleGroupsV1.args = {
+    map: 'MuscleGroupsV1',
 };
 
-export const Emotion = Template.bind({});
-Emotion.args = {
-    map: 'Emotion',
-    colorScheme: 'orange',
+export const EmotionV1 = Template.bind({});
+EmotionV1.args = {
+    map: 'EmotionV1',
 };
 
-export const PainScale = Template.bind({});
-PainScale.args = {
-    map: 'PainScale',
-    colorScheme: 'purple',
+export const PainScaleV1 = Template.bind({});
+PainScaleV1.args = {
+    map: 'PainScaleV1',
 };

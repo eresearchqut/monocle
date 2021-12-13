@@ -2,19 +2,26 @@
   width: 100%;
   stroke-linecap: round;
   stroke-linejoin: round;
+
   :focus,
   :hover {
     outline: 0;
   }
 
-
-  g[aria-label], rect[aria-label], path[aria-label] {
+  g[aria-label], rect[aria-label], path[aria-label], circle[aria-lable] {
     cursor: pointer;
     pointer-events: bounding-box;
-    &[aria-checked=true],
     &:focus,
     &:hover {
-      filter: drop-shadow(2px 4px 2px rgb(0 0 0 / 0.2));
+      filter: drop-shadow(2px 4px 2px rgb(0 0 0 / 0.2)) hue-rotate(90deg);
+    }
+  }
+
+  g[aria-label], rect[aria-label], path[aria-label], circle[aria-lable] {
+    cursor: pointer;
+    pointer-events: bounding-box;
+    &[aria-checked=true] {
+      filter: drop-shadow(2px 4px 2px rgb(0 0 0 / 0.2)) hue-rotate(200deg);
     }
   }
 

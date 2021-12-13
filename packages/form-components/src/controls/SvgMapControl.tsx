@@ -4,9 +4,8 @@ import { Control, withJsonFormsControlProps } from '@jsonforms/react';
 
 import merge from 'lodash/merge';
 import { AutoComplete } from 'primereact/autocomplete';
-import { startCase } from 'lodash';
 
-import { MultiSelectSvgMap, SingleSelectSvgMap } from '../component/SvgMap';
+import { MultiSelectSvgMap, SingleSelectSvgMap, SvgMapSelection } from '../component/SvgMap';
 
 export class SvgMapControl extends Control<ControlProps, ControlState> {
     render() {
@@ -14,9 +13,7 @@ export class SvgMapControl extends Control<ControlProps, ControlState> {
 
         const appliedUiSchemaOptions = merge({}, config, uischema.options);
         const { map, hint, multiselect } = appliedUiSchemaOptions;
-        const itemTemplate = (item: string) => startCase(item);
-
-        const selectedItemTemplate = (item: string) => startCase(item);
+        const itemTemplate = (item: SvgMapSelection) => item.label;
 
         return (
             <React.Fragment>
@@ -32,7 +29,7 @@ export class SvgMapControl extends Control<ControlProps, ControlState> {
                             value={data || []}
                             multiple
                             itemTemplate={itemTemplate}
-                            selectedItemTemplate={selectedItemTemplate}
+                            selectedItemTemplate={itemTemplate}
                             onChange={(e) => handleChange(path, e.value)}
                         />
                     )}
@@ -42,28 +39,20 @@ export class SvgMapControl extends Control<ControlProps, ControlState> {
                     <MultiSelectSvgMap
                         map={map}
                         value={data}
-                        handleChange={(locationIds: string[]) => handleChange(path, locationIds)}
+                        handleChange={(selections: SvgMapSelection[]) => handleChange(path, selections)}
                     />
                 )}
                 {!multiselect && (
                     <SingleSelectSvgMap
                         map={map}
                         value={data}
-                        handleChange={(locationId: string | boolean | undefined) => handleChange(path, locationId)}
+                        handleChange={(selection: SvgMapSelection | undefined) => handleChange(path, selection)}
                     />
                 )}
             </React.Fragment>
         );
     }
 }
-
-// export interface SvgMapControlElement extends UISchemaElement, Scopable {
-//     type: 'SvgMapControl';
-//     label?: string | boolean | LabelDescription;
-// }
-//
-// export const isSvgMapControl = (uischema: any): uischema is SvgMapControlElement =>
-//     !isEmpty(uischema) && uischema.scope !== undefined;
 
 export const isSvgMapControl = and(uiTypeIs('Control'), optionIs('type', 'svg-map'));
 

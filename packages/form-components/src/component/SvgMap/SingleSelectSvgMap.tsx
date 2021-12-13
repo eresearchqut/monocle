@@ -1,22 +1,15 @@
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
-import SvgMap from './SvgMap';
+import SvgMap, { getSelection, SvgMapSelection } from './SvgMap';
 import { SvgNode } from './maps';
-import { getAriaLabel } from './MultiSelectSvgMap';
 
 export interface SingleSelectSvgMapProps {
     map: string;
-    value: string;
-    handleChange: (selectedLocationId: string | undefined) => void;
-    colorScheme?: 'blue' | 'green' | 'yellow' | 'cyan' | 'pink' | 'indigo' | 'teal' | 'orange' | 'blue-gray' | 'purple';
+    value: SvgMapSelection;
+    handleChange: (selectedLocationId: SvgMapSelection | undefined) => void;
 }
 
-export const SingleSelectSvgMap: FunctionComponent<SingleSelectSvgMapProps> = ({
-    map,
-    value,
-    handleChange,
-    colorScheme,
-}) => {
-    const [selected, setSelected] = useState<string | undefined>(value);
+export const SingleSelectSvgMap: FunctionComponent<SingleSelectSvgMapProps> = ({ map, value, handleChange }) => {
+    const [selected, setSelected] = useState<SvgMapSelection | undefined>(value);
 
     useEffect(() => {
         handleChange(selected);
@@ -28,18 +21,18 @@ export const SingleSelectSvgMap: FunctionComponent<SingleSelectSvgMapProps> = ({
     }, [value]);
 
     const isSelected = (node: SvgNode) =>
-        selected && node.attributes['aria-label'] ? selected === node.attributes['aria-label'] : undefined;
+        selected && node.attributes['aria-label'] ? selected.value === node.attributes['aria-label'] : undefined;
 
     const handleLocationClick = (event: MouseEvent<SVGElement>) => {
         event.preventDefault();
         const element = event.target as SVGElement;
-        const ariaLabel = getAriaLabel(element);
-        if (ariaLabel) {
-            setSelected((current) => (ariaLabel === current ? undefined : ariaLabel));
+        const selection = getSelection(element);
+        if (selection) {
+            setSelected((current) => (selection === current ? undefined : selection));
         }
     };
 
-    return <SvgMap map={map} isSelected={isSelected} onLocationClick={handleLocationClick} colorScheme={colorScheme} />;
+    return <SvgMap map={map} isSelected={isSelected} onLocationClick={handleLocationClick} />;
 };
 
 export default SingleSelectSvgMap;

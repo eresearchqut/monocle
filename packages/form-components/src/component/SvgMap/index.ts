@@ -1,5 +1,5 @@
 import MultiSelectSvgMap from './MultiSelectSvgMap';
 import SingleSelectSvgMap from './SingleSelectSvgMap';
-import SvgMap from './SvgMap';
+import SvgMap, { SvgMapSelection } from './SvgMap';
 
-export { MultiSelectSvgMap, SingleSelectSvgMap, SvgMap };
+export { MultiSelectSvgMap, SingleSelectSvgMap, SvgMap, SvgMapSelection };

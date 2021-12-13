@@ -1,26 +1,15 @@
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
-import SvgMap from './SvgMap';
+import SvgMap, { SvgMapSelection, getSelection } from './SvgMap';
 import { SvgNode } from './maps';
 
 export interface MultiSelectSvgMapProps {
     map: string;
-    value: string[];
-    handleChange: (selectedLocationIds: string[]) => void;
+    value: SvgMapSelection[];
+    handleChange: (selections: SvgMapSelection[]) => void;
 }
 
-export const getAriaLabel = (element: SVGElement): string | undefined => {
-    if (element.nodeName === 'svg') {
-        return undefined;
-    }
-    const ariaLabel = element.getAttribute('aria-label');
-    if (!ariaLabel) {
-        return getAriaLabel(element.parentNode as SVGElement);
-    }
-    return ariaLabel;
-};
-
 export const MultiSelectSvgMap: FunctionComponent<MultiSelectSvgMapProps> = ({ map, value, handleChange }) => {
-    const [selected, setSelected] = useState<string[]>(value);
+    const [selected, setSelected] = useState<SvgMapSelection[]>(value);
 
     useEffect(() => {
         handleChange(selected);
@@ -33,21 +22,27 @@ export const MultiSelectSvgMap: FunctionComponent<MultiSelectSvgMapProps> = ({ m
 
     const isSelected = (node: SvgNode) =>
         selected && node.attributes['aria-label']
-            ? selected.some((value) => value === node.attributes['aria-label'])
+            ? selected.some((svgMapSelection) => svgMapSelection.value === node.attributes['aria-label'])
             : undefined;
 
     const handleLocationClick = (event: MouseEvent<SVGElement>) => {
         event.preventDefault();
         const element = event.target as SVGElement;
-        const ariaLabel = getAriaLabel(element);
-        if (ariaLabel) {
+        const selection = getSelection(element);
+        if (selection) {
             setSelected((current) => {
                 const updated = current ? [...current] : [];
-                if (updated.indexOf(ariaLabel) >= 0) {
-                    updated.splice(updated.indexOf(ariaLabel), 1);
+                if (updated.find((selected) => selected.value === selection.value)) {
+                    updated.splice(
+                        updated.findIndex((selected) => selected.value === selection.value),
+                        1
+                    );
                 } else {
-                    updated.push(ariaLabel);
+                    updated.push(selection);
                 }
+
+                //  console.log(selection, current, updated);
+
                 return updated;
             });
         }

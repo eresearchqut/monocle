@@ -112,7 +112,7 @@
           "id": "1337be1d-36e2-408b-8ebf-82320cf2f38a",
           "type": "svg-map",
           "multiselect": true,
-          "map": "body",
+          "map": "MuscleGroupsV1",
           "name": "Muscles showing marked weakness",
           "description": "Multiple can be picked",
           "required": false

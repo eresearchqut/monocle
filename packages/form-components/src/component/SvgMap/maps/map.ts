@@ -1,6 +1,6 @@
 const maps = require('./svgs.json');
 
-export type NodeName = 'svg' | 'path' | 'g' | 'rect' | 'defs' | 'style' | 'polygon';
+export type NodeName = 'svg' | 'path' | 'g' | 'rect' | 'defs' | 'style' | 'polygon' | 'polyline' | 'circle';
 export type NodeType = 'element' | 'text';
 export type AttributeName =
     | 'aria-label'

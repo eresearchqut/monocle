@@ -9,13 +9,6 @@ export default {
 
 const Template: Story<SampleContainerProps> = (props) => <SampleContainer {...props} />;
 
-function dimensions(width: number, length: number): SampleContainerProps {
-    return {
-        dimensions: { width: width, length: length },
-        samples: [],
-    };
-}
-
 export const FewSamples5By5 = Template.bind({});
 FewSamples5By5.args = {
     dimensions: {

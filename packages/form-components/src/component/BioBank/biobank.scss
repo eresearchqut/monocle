@@ -13,21 +13,21 @@ $grid-border-radius: 20%;
 // $circle-padding: var(--content-padding);
 $circle-padding: 12.5%;
 
-div.container-grid {
+div.biobank-sample-container-grid {
     position: relative;
     width: 100%;
     // max-width: 600px;
     margin-top: 20px;
     margin-bottom: 20px;
 
-    > .container-grid-inside {
+    > .biobank-sample-container-grid-inside {
         width: 100%;
         margin-left: 2em; // space for row coordinates
 
-        > .container-grid-row {
+        > .biobank-sample-container-grid-row {
             // Round the first and last items
             &:first-child {
-                > .container-grid-cell {
+                > .biobank-sample-container-grid-cell {
                     &:first-child {
                         border-top-left-radius: $grid-border-radius;
                     }
@@ -37,7 +37,7 @@ div.container-grid {
                 }
             }
             &:last-child {
-                > .container-grid-cell {
+                > .biobank-sample-container-grid-cell {
                     &:first-child {
                         border-bottom-left-radius: $grid-border-radius;
                     }
@@ -52,7 +52,7 @@ div.container-grid {
             display: block;
             background-color: $background-color;
 
-            > .container-grid-cell {
+            > .biobank-sample-container-grid-cell {
                 display: inline-block;
                 position: relative;
                 border: 1px solid $border-color;
@@ -69,7 +69,7 @@ div.container-grid {
                     background-color: $highlight-color;
                 }
 
-                > .cell-content.highlight {
+                > .biobank-sample-cell-content.highlight {
                     opacity: 1;
                 }
 
@@ -85,7 +85,7 @@ div.container-grid {
                     background-color: $hover-color;
                 }
 
-                > .cell-content {
+                > .biobank-sample-cell-content {
                     position: absolute;
                     display: flex;
                     width: 100%;
@@ -101,16 +101,16 @@ div.container-grid {
                     }
                 }
 
-                > .cell-coord {
+                > .biobank-sample-cell-coord {
                     position: absolute;
 
-                    &.cell-coord-x {
+                    &.biobank-sample-cell-coord-x {
                         // bust out into the row above, so not obscured by samples
                         top: -1.2em;
                         right: 0.5em;
                     }
 
-                    &.cell-coord-y {
+                    &.biobank-sample-cell-coord-y {
                         // bust out into the column left
                         left: -2em;
                         bottom: 0.5em;

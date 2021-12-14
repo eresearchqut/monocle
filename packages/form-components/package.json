@@ -1,6 +1,6 @@
 {
   "name": "@eresearchqut/form-components",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -54,7 +54,6 @@
     "@storybook/storybook-deployer": "^2.8.10",
     "@svgr/cli": "^6.1.1",
     "@svgr/plugin-jsx": "^6.1.0",
-    "svgson-cli": "^1.1.1",
     "@types/enzyme": "^3.10.3",
     "@types/lodash": "4.14.171",
     "@types/react": "17.0.16",
@@ -72,6 +71,7 @@
     "react-redux": "^7.2.4",
     "sass-loader": "^10.2.0",
     "storybook-stylesheet-toggle": "^0.1.3",
+    "svgson-cli": "^1.1.1",
     "typescript-plugin-css-modules": "3.4.0"
   },
   "jest": {

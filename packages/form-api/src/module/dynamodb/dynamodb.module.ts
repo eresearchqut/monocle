@@ -1,8 +1,9 @@
 import { Module } from "@nestjs/common";
-import { DynamodbService } from "./dynamodb.service";
+import { DynamodbRepository } from "./dynamodb.repository";
+import { DynamoDbClientProvider } from "./dynamodb.client";
 
 @Module({
-  providers: [DynamodbService],
-  exports: [DynamodbService],
+  providers: [DynamodbRepository, DynamoDbClientProvider],
+  exports: [DynamodbRepository, DynamoDbClientProvider],
 })
 export class DynamodbModule {}

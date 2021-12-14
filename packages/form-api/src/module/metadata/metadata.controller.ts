@@ -12,6 +12,10 @@ import {
 } from "@nestjs/common";
 import { MetadataService } from "./metadata.service";
 import {
+  GetAuthorizationParams,
+  GetAuthorizationResponse,
+  GetFormParams,
+  GetFormResponse,
   GetMetadataParams,
   GetMetadataQuery,
   GetMetadataResponse,
@@ -37,24 +41,9 @@ export class MetadataController {
     @Query() query: GetMetadataQuery
   ): Promise<GetMetadataResponse> {
     const metadata = await this.metadataService.getMetadata(params.resource, query.version);
-    const groupData = await Promise.all(
-      Object.entries(metadata.Data.Groups).map(async ([key, value]) => {
-        const [form, authorization] = await Promise.all([
-          this.metadataService.getForm(value.formVersion).then(({ Data }) => JSON.parse(Data.Schema)),
-          this.metadataService.getAuthorization(value.authorizationVersion).then(({ Data }) => Data.Policy),
-        ]);
-        return [
-          key,
-          {
-            form,
-            authorization,
-          },
-        ];
-      })
-    );
     return {
       version: metadata.Data.Version,
-      groups: Object.fromEntries(groupData),
+      groups: metadata.Data.Groups,
     };
   }
 
@@ -83,14 +72,32 @@ export class MetadataController {
     }
   }
 
+  @Get("/form/:formId")
+  async getForm(@Param() params: GetFormParams): Promise<GetFormResponse> {
+    const form = await this.metadataService.getForm(params.formId);
+    const schema = await form.getSchema();
+    return {
+      form: JSON.parse(form.Data.Definition),
+      schema: schema,
+    };
+  }
+
   @Put("/form")
   async putForm(@Body() body: PutFormBody) {
-    const result = await this.metadataService.putForm(body.schema);
+    const result = await this.metadataService.putForm(body.definition);
     if (result.created) {
       return result;
     } else {
       throw new HttpException("Fail to create form", HttpStatus.BAD_REQUEST);
     }
+  }
+
+  @Get("/form/:authorizationId")
+  async getAuthorization(@Param() params: GetAuthorizationParams): Promise<GetAuthorizationResponse> {
+    const authorization = await this.metadataService.getAuthorization(params.authorizationId);
+    return {
+      policy: authorization.Data.Policy,
+    };
   }
 
   @Put("/authorization")

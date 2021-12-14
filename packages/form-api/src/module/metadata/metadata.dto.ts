@@ -26,11 +26,11 @@ export class GetMetadataParams extends ResourceParams {}
 export class GetMetadataQuery extends OptionalSemverQuery {}
 
 class GetMetadataResponseGroup {
-  @IsObject()
-  form: any;
+  @IsUUID()
+  formVersion: string;
 
-  @IsObject()
-  authorization: any;
+  @IsUUID()
+  authorizationVersion: string;
 }
 
 export class GetMetadataResponse {
@@ -77,9 +77,32 @@ export class PutMetadataResponse {
   created: boolean;
 }
 
+export class GetFormParams {
+  @IsUUID()
+  formId: string;
+}
+
+export class GetFormResponse {
+  @IsObject()
+  form: any;
+
+  @IsObject()
+  schema: any;
+}
+
 export class PutFormBody {
   @IsString()
-  schema: string;
+  definition: string;
+}
+
+export class GetAuthorizationParams {
+  @IsUUID()
+  authorizationId: string;
+}
+
+export class GetAuthorizationResponse {
+  @IsString()
+  policy: string;
 }
 
 export class PutAuthorizationBody {

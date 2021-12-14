@@ -7,7 +7,7 @@ import {
   ConditionallyValidateClassAsync,
   ConditionallyValidateClassAsyncGenerator,
 } from "src/decorator/validate.decorator";
-import { DynamodbService } from "../dynamodb/dynamodb.service";
+import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
 import { DEFAULT_GROUP_NAME, Metadata, MetadataEntityType } from "./metadata.entity";
 import { v4 as uuidV4, NIL as NIL_UUID } from "uuid";
 import { MetadataForm, MetaDataFormType } from "./form.entity";
@@ -19,18 +19,25 @@ import "ix/add/asynciterable-operators/find";
 import "ix/add/asynciterable-operators/map";
 import { match } from "ts-pattern";
 import { TransformAsyncGeneratorPlainToClass } from "../../decorator/transform.decorator";
-import Ajv from "ajv";
+import Ajv, { ValidateFunction } from "ajv";
+import addFormats from "ajv-formats";
+import { form } from "@eresearchqut/form-definition";
 
 const INITIAL_SEMVER = "0.0.0";
+
+const SYSTEM_USER = "system";
 
 const EMPTY_FORM: MetaDataFormType = {
   ...buildFormItemKey(NIL_UUID),
   Id: NIL_UUID,
   ItemType: "Form",
   CreatedAt: new Date().toISOString(),
-  CreatedBy: "system",
+  CreatedBy: SYSTEM_USER,
   Data: {
-    Schema: "{}",
+    Definition: JSON.stringify({
+      name: "",
+      sections: [],
+    }),
   },
 };
 
@@ -39,7 +46,7 @@ const EMPTY_AUTHORIZATION: MetadataAuthorizationType = {
   Id: NIL_UUID + "a",
   ItemType: "Authorization",
   CreatedAt: new Date().toISOString(),
-  CreatedBy: "system",
+  CreatedBy: SYSTEM_USER,
   Data: {
     Policy: "",
   },
@@ -92,12 +99,14 @@ interface ValidationResult {
 
 @Injectable()
 export class MetadataService {
-  private validateOnRead: boolean;
-  private validateOnWrite: boolean;
+  formValidator: ValidateFunction;
 
-  constructor(public configService: ConfigService<AppConfig, true>, private dynamodbService: DynamodbService) {
-    this.validateOnRead = configService.get("VALIDATE_METADATA_ON_READ");
-    this.validateOnWrite = configService.get("VALIDATE_METADATA_ON_WRITE");
+  constructor(public configService: ConfigService<AppConfig, true>, private dynamodbService: DynamodbRepository) {
+    const ajv = new Ajv({
+      allowUnionTypes: true,
+    });
+    addFormats(ajv);
+    this.formValidator = ajv.compile(form);
   }
 
   async addMetadata(resource: string): Promise<boolean> {
@@ -112,7 +121,7 @@ export class MetadataService {
           Id: resource,
           ItemType: "Metadata",
           CreatedAt: new Date().toISOString(),
-          CreatedBy: "system",
+          CreatedBy: SYSTEM_USER,
           Data: {
             Resource: resource,
             Version: INITIAL_SEMVER,
@@ -158,7 +167,7 @@ export class MetadataService {
           Id: data.resource,
           ItemType: "Metadata",
           CreatedAt: new Date().toISOString(),
-          CreatedBy: "system",
+          CreatedBy: SYSTEM_USER,
           Data: {
             Resource: data.resource,
             Version: data.version,
@@ -334,34 +343,30 @@ export class MetadataService {
     return item;
   }
 
-  public async putForm(schema: string): Promise<{ created: false }>;
-  public async putForm(schema: string): Promise<{ created: true; id: string }>;
-  public async putForm(schema: string): Promise<{ created: boolean; id?: string }> {
-    try {
-      const ajv = new Ajv();
-      ajv.compile(JSON.parse(schema));
-    } catch (e) {
+  public async putForm(definition: string): Promise<{ created: false }>;
+  public async putForm(definition: string): Promise<{ created: true; id: string }>;
+  public async putForm(definition: string): Promise<{ created: boolean; id?: string }> {
+    if (!this.formValidator(JSON.parse(definition))) {
       return { created: false };
     }
+
     const id = uuidV4();
     const key = buildFormItemKey(id);
     return this.dynamodbService
-      .putItem<MetaDataFormType>({
+      .createItem<MetaDataFormType>({
         table: this.configService.get("RESOURCE_TABLE"),
-        overwrite: false,
         item: {
           ...key,
           Id: id,
           ItemType: "Form",
           CreatedAt: new Date().toISOString(),
-          CreatedBy: "system",
+          CreatedBy: SYSTEM_USER,
           Data: {
-            Schema: schema,
+            Definition: definition,
           },
         },
       })
-      .then(() => ({ created: true, id: id }))
-      .catch((err) => (err.code === "ConditionalCheckFailed" ? { created: false } : Promise.reject(err)));
+      .then(() => ({ created: true, id: id }));
   }
 
   @ConditionallyValidateClassAsync("VALIDATE_METADATA_ON_READ")
@@ -388,15 +393,14 @@ export class MetadataService {
     const id = uuidV4();
     const key = buildAuthorizationItemKey(id);
     return this.dynamodbService
-      .putItem<MetadataAuthorizationType>({
+      .createItem<MetadataAuthorizationType>({
         table: this.configService.get("RESOURCE_TABLE"),
-        overwrite: false,
         item: {
           ...key,
           Id: id,
           ItemType: "Authorization",
           CreatedAt: new Date().toISOString(),
-          CreatedBy: "system",
+          CreatedBy: SYSTEM_USER,
           Data: {
             Policy: policy,
           },

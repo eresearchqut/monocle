@@ -1,4 +1,4 @@
-import { INestApplication } from "@nestjs/common";
+import { INestApplication, Injectable } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import * as request from "supertest";
 import { ConfigModule } from "@nestjs/config";
@@ -6,12 +6,14 @@ import { validateConfigOverride } from "../src/app.config";
 import * as yaml from "js-yaml";
 import * as fs from "fs";
 import { CLOUDFORMATION_SCHEMA } from "cloudformation-js-yaml-schema";
-import { DynamodbService } from "../src/module/dynamodb/dynamodb.service";
-import { JSONSchemaType } from "ajv";
-import { v4 } from "uuid";
+import { DynamodbLogger, DynamodbRepository } from "../src/module/dynamodb/dynamodb.repository";
+import { NIL as NIL_UUID, v4 } from "uuid";
 import { DynamodbModule } from "../src/module/dynamodb/dynamodb.module";
 import { MetadataModule } from "../src/module/metadata/metadata.module";
 import { ResourceModule } from "../src/module/resource/resource.module";
+import { Form, InputType, SectionType } from "@eresearchqut/form-definition";
+import { CreateTableCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDbClientProvider } from "../src/module/dynamodb/dynamodb.client";
 
 const getTableInput = (name: string) => {
   const template = yaml.load(fs.readFileSync("template.yaml", "utf8"), {
@@ -28,7 +30,26 @@ const getTableInput = (name: string) => {
 const generateResourceName = () => `TestResource_${v4()}`;
 
 const initApp = async (modules: any[]): Promise<INestApplication> => {
-  const tableName = `E2E_Metadata_${Date.now()}`;
+  const tableName = `E2E_Metadata_${Date.now()}`; // TODO: pass table name in context. Tables need org uuid, environment, audit, search etc. in suffix
+
+  const dynamodbClient = new DynamoDBClient({
+    region: "local",
+    logger: new DynamodbLogger(DynamodbRepository.name),
+    credentials: {
+      accessKeyId: "fake",
+      secretAccessKey: "fake",
+    },
+    endpoint: "http://localhost:8000",
+  });
+
+  await dynamodbClient.send(new CreateTableCommand(getTableInput(tableName)));
+
+  @Injectable()
+  class TestDynamodbClientProvider {
+    getClient(): DynamoDBClient {
+      return dynamodbClient;
+    }
+  }
 
   const moduleRef = await Test.createTestingModule({
     imports: [
@@ -39,9 +60,7 @@ const initApp = async (modules: any[]): Promise<INestApplication> => {
         ignoreEnvFile: true,
         isGlobal: true,
         validate: validateConfigOverride({
-          LOCAL_DATABASE: true,
-          RESOURCE_TABLE: tableName,
-          LOG_DYNAMODB_REQUESTS: true,
+          RESOURCE_TABLE: tableName, // TODO: suffix with org and project from claims context
           VALIDATE_METADATA_ON_READ: true,
           VALIDATE_METADATA_ON_WRITE: true,
           VALIDATE_RESOURCE_ON_READ: true,
@@ -49,9 +68,10 @@ const initApp = async (modules: any[]): Promise<INestApplication> => {
         }),
       }),
     ],
-  }).compile();
-
-  await moduleRef.get(DynamodbService).createTable(getTableInput(tableName));
+  })
+    .overrideProvider(DynamoDbClientProvider)
+    .useClass(TestDynamodbClientProvider)
+    .compile();
 
   const app = moduleRef.createNestApplication();
   await app.init();
@@ -79,8 +99,8 @@ describe("Metadata module", () => {
         version: "0.0.0",
         groups: {
           Default: {
-            form: {},
-            authorization: "",
+            formVersion: NIL_UUID,
+            authorizationVersion: NIL_UUID,
           },
         },
       });
@@ -92,29 +112,34 @@ describe("Metadata module", () => {
       .expect((r) => r.body.message === "Item already exists");
   });
 
-  it("Can add a new form", async () =>
-    await request(app.getHttpServer())
+  it("Can add a new form", async () => {
+    const formData = {
+      name: "TestForm",
+      description: "Test Form Description",
+      sections: [],
+    };
+
+    const formId = await request(app.getHttpServer())
       .put(`/metadata/form`)
       .send({
-        schema: JSON.stringify({
-          type: "object",
-          properties: {
-            key: {
-              type: "string",
-            },
-          },
-          required: ["key"],
-        }),
+        definition: JSON.stringify(formData),
       })
       .expect(200)
       .expect((r) => expect(r.body).toHaveProperty("id"))
-      .expect((r) => expect(r.body.created).toBe(true)));
+      .expect((r) => expect(r.body.created).toBe(true))
+      .then((r) => r.body.id);
 
-  it("Can't add a form with an invalid schema", () =>
+    await request(app.getHttpServer())
+      .get(`/metadata/form/${formId}`)
+      .expect(200)
+      .expect((r) => expect(r.body.form).toMatchObject(formData));
+  });
+
+  it("Can't add a form with an invalid definition", () =>
     request(app.getHttpServer())
       .put(`/metadata/form`)
       .send({
-        schema: JSON.stringify(11),
+        definition: JSON.stringify(11),
       })
       .expect(400));
 
@@ -125,23 +150,41 @@ describe("Metadata module", () => {
     await request(app.getHttpServer()).put(`/metadata/resource/${resourceName}`).expect(200).expect({ created: true });
 
     // Add a form
-    type TestFormType = { stringKey: string; numberKey: number };
-    const formSchema: JSONSchemaType<TestFormType> = {
-      type: "object",
-      properties: {
-        stringKey: {
-          type: "string",
+    const formDefinition: Form = {
+      name: "TestForm",
+      description: "Test Form Description",
+      sections: [
+        {
+          name: "TestSection",
+          label: "Test Section",
+          description: "Test Section Description",
+          id: v4(),
+          type: SectionType.DEFAULT,
+          inputs: [
+            {
+              name: "stringKey",
+              label: "String Key",
+              description: "String Key Description",
+              type: InputType.TEXT,
+              id: v4(),
+              required: true,
+            },
+            {
+              name: "numberKey",
+              label: "Number Key",
+              description: "Number Key Description",
+              type: InputType.NUMERIC,
+              id: v4(),
+              required: true,
+            },
+          ],
         },
-        numberKey: {
-          type: "number",
-        },
-      },
-      required: ["stringKey", "numberKey"],
+      ],
     };
     const formId = await request(app.getHttpServer())
       .put(`/metadata/form`)
       .send({
-        schema: JSON.stringify(formSchema),
+        definition: JSON.stringify(formDefinition),
       })
       .expect(200)
       .then((res) => res.body.id);
@@ -154,12 +197,27 @@ describe("Metadata module", () => {
         groups: {
           Default: {
             formVersion: formId,
+            authorizationVersion: NIL_UUID,
           },
         },
       })
       .expect(201)
       .expect((r) => expect(r.body.pushed).toBe(true))
       .expect((r) => expect(r.body.validation.lastVersion).toBe("0.0.0"));
+
+    // Get latest metadata
+    await request(app.getHttpServer())
+      .get(`/metadata/resource/${resourceName}`)
+      .expect(200)
+      .expect({
+        version: "1.0.0",
+        groups: {
+          Default: {
+            formVersion: formId,
+            authorizationVersion: NIL_UUID,
+          },
+        },
+      });
   });
 });
 

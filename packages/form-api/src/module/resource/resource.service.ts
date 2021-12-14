@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { AppConfig } from "../../app.config";
 import { ConfigService } from "@nestjs/config";
 import { MetadataService } from "../metadata/metadata.service";
-import { DynamodbService } from "../dynamodb/dynamodb.service";
+import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
 import { ValidationException } from "../metadata/metadata.exception";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
 
@@ -31,7 +31,7 @@ export class ResourceService {
   constructor(
     private configService: ConfigService<AppConfig, true>,
     private metadataService: MetadataService,
-    private dynamodbService: DynamodbService
+    private dynamodbService: DynamodbRepository
   ) {}
 
   public async getResource(input: GetResourceInput): Promise<ItemEntity | null> {

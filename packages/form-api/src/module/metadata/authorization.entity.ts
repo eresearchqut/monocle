@@ -21,7 +21,7 @@ export class MetadataAuthorization implements MetadataAuthorizationType {
   PK: string;
 
   @IsString()
-  SK?: string;
+  SK: string;
 
   @Equals("Authorization")
   ItemType: "Authorization" = "Authorization";

@@ -1,28 +1,29 @@
-import { Equals, IsBoolean, IsISO8601, IsObject, IsString, ValidateNested } from "class-validator";
+import { Equals, IsISO8601, IsString, IsUUID, ValidateNested } from "class-validator";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
 import Ajv from "ajv";
+import { findFormCompiler } from "@eresearchqut/form-compiler";
 
 export type MetaDataFormType = ItemEntity<
   {
-    Schema: string;
+    Definition: string;
   },
   "Form"
 >;
 
 class MetadataFormData {
   @IsString()
-  Schema: string;
+  Definition: string;
 }
 
 export class MetadataForm implements MetaDataFormType {
-  @IsString()
+  @IsUUID()
   Id: string;
 
   @IsString()
   PK: string;
 
   @IsString()
-  SK?: string;
+  SK: string;
 
   @Equals("Form")
   ItemType: "Form" = "Form";
@@ -38,16 +39,22 @@ export class MetadataForm implements MetaDataFormType {
 
   validate = (data: any) => {
     const ajv = new Ajv();
-    const schema = JSON.parse(this.Data.Schema);
+    const schema = this.getSchema();
+    if (!schema) throw new Error("Schema not compiled");
+
     const validate = ajv.compile(schema);
     validate(data);
     return validate.errors;
   };
 
   getSchema = () => {
-    return JSON.parse(this.Data.Schema);
-  };
+    const definition = JSON.parse(this.Data.Definition);
+    const compiler = findFormCompiler(definition);
+    if (compiler === undefined) throw new Error("No compiler found");
 
-  // TODO: Add form compiler output
-  compiled = () => ({});
+    const schema = compiler.schema(definition);
+    if (schema === undefined) throw new Error("Schema not compiled");
+
+    return schema;
+  };
 }

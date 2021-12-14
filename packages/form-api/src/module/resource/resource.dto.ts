@@ -1,4 +1,4 @@
-import { IsAlphanumeric, IsObject, IsOptional, IsSemVer, IsString, IsUUID } from "class-validator";
+import { IsAlphanumeric, IsObject, IsOptional, IsSemVer, IsString } from "class-validator";
 
 abstract class ResourceParams {
   @IsAlphanumeric()

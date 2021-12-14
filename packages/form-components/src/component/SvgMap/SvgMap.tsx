@@ -2,7 +2,10 @@ import React, { FocusEvent, FunctionComponent, MouseEvent } from 'react';
 import { getMap, SvgNode } from './maps';
 import './svg-map.scss';
 import { v4 as uuidv4 } from 'uuid';
-import { startCase } from 'lodash';
+import startCase from 'lodash/startCase';
+import includes from 'lodash/includes';
+import keys from 'lodash/keys';
+import clone from 'lodash/clone';
 
 export interface HandlerPropsOfSvgMap {
     onLocationClick?: (event: MouseEvent<SVGElement>) => void;
@@ -45,6 +48,15 @@ export interface SvgMapSelection {
     value: string;
     label: string;
 }
+
+export const rename = (obj: any, key: string, newKey: string) => {
+    const newObj = { ...obj };
+    if (includes(keys(newObj), key)) {
+        newObj[newKey] = clone(newObj[key]);
+        delete newObj[key];
+    }
+    return newObj;
+};
 
 export const getSelection = (element: SVGElement): SvgMapSelection | undefined => {
     if (element.nodeName === 'svg') {
@@ -179,7 +191,7 @@ const Path: FunctionComponent<SvgElementNodeProps> = (props: SvgElementNodeProps
 };
 
 export const renderChildNode = (props: SvgMapProps, node: SvgNode, index: number) => {
-    const { name, type } = node;
+    const { name, type, attributes } = node;
     const key = uuidv4();
 
     if (type === 'element') {
@@ -191,6 +203,8 @@ export const renderChildNode = (props: SvgMapProps, node: SvgNode, index: number
         const onBlur = props.onLocationBlur;
 
         const ariaChecked = props.isSelected && props.isSelected(node);
+        node.attributes = rename(attributes, 'class', 'className'); // react compliant attribute
+
         const childProps = {
             ...props,
             node,

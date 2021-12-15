@@ -60,17 +60,19 @@ div.biobank-sample-container-grid {
 
                 &.full {
                     cursor: pointer;
-                    > .cell-content {
+                    > .biobank-sample-cell-content {
                         opacity: 0.4;
                     }
                 }
 
-                &.highlight {
+                &.highlight-cell {
                     background-color: $highlight-color;
                 }
 
-                > .biobank-sample-cell-content.highlight {
-                    opacity: 1;
+                &.full.highlight-sample {
+                    > .biobank-sample-cell-content {
+                        opacity: 1;
+                    }
                 }
 
                 // CSS trick to make the cells squares

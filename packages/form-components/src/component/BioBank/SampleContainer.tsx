@@ -85,10 +85,12 @@ interface CellProps {
 }
 
 const Cell: FunctionComponent<CellProps> = (props) => {
-    const extraCellContentClasses = props.sample && props.sample.highlighted ? 'highlight' : '';
     let extraCellClasses = props.sample ? 'full' : 'empty';
     if (props.highlight) {
-        extraCellClasses += ' highlight';
+        extraCellClasses += ' highlight-cell';
+    }
+    if (props.sample && props.sample.highlighted) {
+        extraCellClasses += ' highlight-sample';
     }
     const numberIdx = (idx: number): string => (idx + 1).toString();
     const colLabelNames = props.colLabelNames || numberIdx;
@@ -122,7 +124,7 @@ const Cell: FunctionComponent<CellProps> = (props) => {
         >
             {isFirstColumn && <RowLabel />}
             {isFirstRow && <ColumnLabel />}
-            <div className={`biobank-sample-cell-content ${extraCellContentClasses}`} onClick={handleClick}>
+            <div className={`biobank-sample-cell-content`} onClick={handleClick}>
                 {props.sample && <SolidCircle />}
             </div>
         </div>

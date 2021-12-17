@@ -30,6 +30,7 @@ export class UserPoolStack extends cdk.Stack {
         new cdk.CfnOutput(this, 'user-pool-id', {
             description: 'UserPoolId',
             value: userPool.userPoolId,
+            exportName: 'user-pool-id',
         });
     }
 }

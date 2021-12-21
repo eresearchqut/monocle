@@ -3,7 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { CognitoIdentityProviderClient } from '@aws-sdk/client-cognito-identity-provider';
 import { ConfigService } from '@nestjs/config';
 
-const defaultRegion = 'ap-southeast-2';
+const AWS_REGION_ENV = 'AWS_REGION';
+const AWS_REGION_DEFAULT = 'ap-southeast-2';
+
 
 @Injectable()
 export class CognitoClientProvider {
@@ -11,7 +13,7 @@ export class CognitoClientProvider {
 
   constructor(private configService: ConfigService) {
     this.cognitoIdentityProviderClient = new CognitoIdentityProviderClient({
-      region: this.configService.get<string>('AWS_REGION', defaultRegion),
+      region: this.configService.get<string>(AWS_REGION_ENV, AWS_REGION_DEFAULT),
     });
   }
 

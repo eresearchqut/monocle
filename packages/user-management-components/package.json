@@ -1,12 +1,12 @@
 {
-  "name": "@eresearchqut/user-managment",
+  "name": "@eresearchqut/user-management-components",
   "version": "0.19.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "directory": "packages/user-managment",
+    "directory": "packages/user-management-components",
     "url": "ssh://git@github.com:eresearchqut/future-state-mono-repo.git"
   },
   "publishConfig": {

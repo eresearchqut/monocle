@@ -46,7 +46,10 @@
       "path": "packages/form-designer"
     },
     {
-      "path": "packages/user-management"
+      "path": "packages/user-management-api"
+    },
+    {
+      "path": "packages/user-management-components"
     }
   ]
 }

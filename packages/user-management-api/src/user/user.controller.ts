@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserType } from '@aws-sdk/client-cognito-identity-provider';
+import { User } from './user.interface';
 
 @Controller('user')
 export class UserController {
@@ -9,7 +9,7 @@ export class UserController {
   @Get(':userPoolId')
   public list(
     @Param('userPoolId') userPoolId: string,
-  ): Promise<Array<UserType>> {
+  ): Promise<Array<User>> {
     return this.userService.list(userPoolId);
   }
 }

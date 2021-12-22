@@ -1,14 +1,15 @@
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
-import SvgMap, { Location, Map } from './SvgMap';
+import SvgMap, { getSelection, SvgMapSelection } from './SvgMap';
+import { SvgNode } from './maps';
 
 export interface SingleSelectSvgMapProps {
-    map: Map;
-    value: string;
-    handleChange: (selectedLocationId: string | undefined) => void;
+    map: string;
+    value: SvgMapSelection;
+    handleChange: (selectedLocationId: SvgMapSelection | undefined) => void;
 }
 
 export const SingleSelectSvgMap: FunctionComponent<SingleSelectSvgMapProps> = ({ map, value, handleChange }) => {
-    const [selected, setSelected] = useState<string | undefined>(value);
+    const [selected, setSelected] = useState<SvgMapSelection | undefined>(value);
 
     useEffect(() => {
         handleChange(selected);
@@ -19,12 +20,16 @@ export const SingleSelectSvgMap: FunctionComponent<SingleSelectSvgMapProps> = ({
         setSelected(() => value);
     }, [value]);
 
-    const isSelected = (location: Location) => location.id === selected;
+    const isSelected = (node: SvgNode) =>
+        selected && node.attributes['aria-label'] ? selected.value === node.attributes['aria-label'] : undefined;
 
-    const handleLocationClick = (event: MouseEvent<SVGPathElement>) => {
+    const handleLocationClick = (event: MouseEvent<SVGElement>) => {
         event.preventDefault();
-        const { id } = event.target as SVGPathElement;
-        setSelected((current) => (id === current ? undefined : id));
+        const element = event.target as SVGElement;
+        const selection = getSelection(element);
+        if (selection) {
+            setSelected((current) => (selection === current ? undefined : selection));
+        }
     };
 
     return <SvgMap map={map} isSelected={isSelected} onLocationClick={handleLocationClick} />;

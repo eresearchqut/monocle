@@ -14,13 +14,29 @@ export class SvgMapInputCompiler extends AbstractInputCompiler implements InputC
             return {
                 type: 'array',
                 items: {
-                    type: 'string',
+                    type: 'object',
+                    properties: {
+                        value: {
+                            type: 'string',
+                        },
+                        label: {
+                            type: 'string',
+                        },
+                    },
                 },
                 description,
             } as JsonSchema;
         }
         return {
-            type: 'string',
+            type: 'object',
+            properties: {
+                value: {
+                    type: 'string',
+                },
+                label: {
+                    type: 'string',
+                },
+            },
             description,
         } as JsonSchema;
     }

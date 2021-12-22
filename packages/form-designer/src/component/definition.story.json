@@ -1,133 +1,129 @@
 {
-    "name": "Muscular Atrophy",
-    "sections": [
+  "name": "Muscular Atrophy",
+  "sections": [
+    {
+      "id": "eefaf721-dacd-407d-8a06-2efc1dcd3ed7",
+      "name": "Patient Details",
+      "type": "default",
+      "inputs": [
         {
-            "id": "eefaf721-dacd-407d-8a06-2efc1dcd3ed7",
-            "name": "Patient Details",
-            "type": "default",
-            "inputs": [
-                {
-                    "id": "fba2b164-1a8d-4fa2-9483-6e062eb71d64",
-                    "type": "text",
-                    "minLength": 3,
-                    "maxLength": 30,
-                    "name": "Patient name",
-                    "description": "First, Middle, Last",
-                    "required": true
-                },
-                {
-                    "id": "18bd329e-2ad5-47f5-8695-5fb9ebcc7c08",
-                    "type": "email",
-                    "minLength": 3,
-                    "maxLength": 30,
-                    "name": "Email Address",
-                    "required": true
-                },
-                {
-                    "id": "6579e1c6-7d36-421d-aadd-316e35e88c7a",
-                    "type": "address",
-                    "name": "Home Address",
-                    "countryCodes": ["AU"]
-                },
-                {
-                    "id": "7df198be-f9c6-4ad1-bf40-98c06d1df550",
-                    "type": "range",
-                    "minimum": 35,
-                    "maximum": 125,
-                    "name": "Age"
-                },
-                {
-                    "id": "5b701630-62e7-4b97-8b99-cb5e4143393a",
-                    "type": "date",
-                    "required": true,
-                    "name": "Visit date"
-                },
-                {
-                    "id": "dcedb616-a3f9-4f71-b5c5-8d8b784ba8ff",
-                    "type": "signature",
-                    "name": "Sign Here",
-                    "required": true
-                }
-            ]
+          "id": "fba2b164-1a8d-4fa2-9483-6e062eb71d64",
+          "type": "text",
+          "minLength": 3,
+          "maxLength": 30,
+          "name": "Patient name",
+          "description": "First, Middle, Last",
+          "required": true
         },
         {
-            "id": "29a54c4c-c860-45d8-ab45-039cd27d49a0",
-            "name": "Assessment",
-            "type": "default",
-            "inputs": [
-                {
-                    "id": "e1a3e824-122c-4e28-9afa-94a9f302db43",
-                    "type": "multiline-text",
-                    "name": "Notes",
-                    "description": "Clinician notes",
-                    "required": false
-                },
-                {
-                    "id": "0c1c1dd0-a48d-4a73-8399-0124f054f2ee",
-                    "type": "currency",
-                    "name": "Pathology charges",
-                    "description": "Pathology charges associated with this visit",
-                    "currencyCode": "AUD",
-                    "currencyDisplay": "symbol",
-                    "required": false
-                },
-                {
-                    "id": "17a08acb-9291-48f5-96d3-eda2689ecf8e",
-                    "type": "options",
-                    "name": "Is the patient experiencing marked weakness in one or more limb?",
-                    "required": true,
-                    "optionValueType": "number",
-                    "options": [
-                        {
-                            "id": "28c62ae5-b768-4f24-b0bb-5b4b4935755b",
-                            "label": "All of the time",
-                            "value": 0
-                        },
-                        {
-                            "id": "1dcbf042-5ed7-4d6d-ab5d-9369b59fa396",
-                            "label": "Some of the time",
-                            "value": 1
-                        },
-                        {
-                            "id": "0f00832e-15e6-4a18-8fb9-45a85cbdfba7",
-                            "label": "First thing in the morning",
-                            "value": 2
-                        },
-                        {
-                            "id": "c2bfe0ea-ecfd-4115-8b37-5dfed66de57b",
-                            "label": "Late at night",
-                            "value": 3
-                        }
-                    ]
-                },
-                {
-                    "id": "77f37476-5619-44a3-9bc5-ab7e83f4180e",
-                    "type": "boolean",
-                    "required": true,
-                    "name": "Has there been degradation since last visit?"
-                },
-                {
-                    "id": "1337be1d-36e2-408b-8ebf-82320cf2f38a",
-                    "type": "svg-map",
-                    "multiselect": true,
-                    "map": "body",
-                    "name": "Muscles showing marked weakness",
-                    "description": "Multiple can be picked",
-                    "required": false
-                }
-            ]
+          "id": "6579e1c6-7d36-421d-aadd-316e35e88c7a",
+          "type": "address",
+          "name": "Home Address",
+          "countryCodes": [
+            "AU"
+          ]
         },
         {
-            "id": "069c7b00-b808-4674-9e5c-55841732b5ab",
-            "name": "Biobank",
-            "type": "default",
-            "inputs": [
-                {
-                    "id": "f1374368-044f-467c-b8b2-47e05d129ab1",
-                    "type": "biobank-sample-container",
-                    "name": "A Tray"
-                }
-            ]
+          "id": "7df198be-f9c6-4ad1-bf40-98c06d1df550",
+          "type": "range",
+          "minimum": 35,
+          "maximum": 125,
+          "name": "Age"
+        },
+        {
+          "id": "5b701630-62e7-4b97-8b99-cb5e4143393a",
+          "type": "date",
+          "required": true,
+          "name": "Visit date"
+        },
+        {
+          "id": "dcedb616-a3f9-4f71-b5c5-8d8b784ba8ff",
+          "type": "signature",
+          "name": "Sign Here",
+          "required": true
         }
-    ]
+      ]
+    },
+    {
+      "id": "29a54c4c-c860-45d8-ab45-039cd27d49a0",
+      "name": "Assessment",
+      "type": "default",
+      "inputs": [
+        {
+          "id": "e1a3e824-122c-4e28-9afa-94a9f302db43",
+          "type": "multiline-text",
+          "name": "Notes",
+          "description": "Clinician notes",
+          "required": false
+        },
+        {
+          "id": "0c1c1dd0-a48d-4a73-8399-0124f054f2ee",
+          "type": "currency",
+          "name": "Pathology charges",
+          "description": "Pathology charges associated with this visit",
+          "currencyCode": "AUD",
+          "currencyDisplay": "symbol",
+          "required": false
+        },
+        {
+          "id": "17a08acb-9291-48f5-96d3-eda2689ecf8e",
+          "type": "options",
+          "name": "Is the patient experiencing marked weakness in one or more limb?",
+          "required": true,
+          "optionValueType": "number",
+          "options": [
+            {
+              "id": "28c62ae5-b768-4f24-b0bb-5b4b4935755b",
+              "label": "All of the time",
+              "value": 0
+            },
+            {
+              "id": "1dcbf042-5ed7-4d6d-ab5d-9369b59fa396",
+              "label": "Some of the time",
+              "value": 1
+            },
+            {
+              "id": "0f00832e-15e6-4a18-8fb9-45a85cbdfba7",
+              "label": "First thing in the morning",
+              "value": 2
+            },
+            {
+              "id": "c2bfe0ea-ecfd-4115-8b37-5dfed66de57b",
+              "label": "Late at night",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "id": "77f37476-5619-44a3-9bc5-ab7e83f4180e",
+          "type": "boolean",
+          "required": true,
+          "name": "Has there been degradation since last visit?"
+        },
+        {
+          "id": "1337be1d-36e2-408b-8ebf-82320cf2f38a",
+          "type": "svg-map",
+          "multiselect": true,
+          "map": "body",
+          "name": "Muscles showing marked weakness",
+          "description": "Multiple can be picked",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "069c7b00-b808-4674-9e5c-55841732b5ab",
+      "name": "Biobank",
+      "type": "default",
+      "inputs": [
+        {
+            "id": "f1374368-044f-467c-b8b2-47e05d129ab1",
+            "type": "biobank-sample-container",
+            "name": "A Tray"
+        }
+      ]
+    }
+  ]
 }
+
+

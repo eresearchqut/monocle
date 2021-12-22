@@ -304,7 +304,7 @@ export interface SampleContainerInput extends AbstractInput {
  */
 export interface SvgMapInput extends AbstractInput {
     type: InputType.SVG_MAP;
-    map: 'body' | 'painScale';
+    map: 'MuscleGroupsV1' | 'PainScaleV1' | 'EmotionV1';
     multiselect?: boolean;
 }
 

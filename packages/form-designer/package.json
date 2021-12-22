@@ -1,6 +1,6 @@
 {
   "name": "@eresearchqut/form-designer",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -24,9 +24,9 @@
     "build-storybook": "rimraf storybook-static && build-storybook -o ../../storybooks/form-designer"
   },
   "dependencies": {
-    "@eresearchqut/form-compiler": "^0.18.0",
-    "@eresearchqut/form-components": "^0.18.0",
-    "@eresearchqut/form-definition": "^0.18.0",
+    "@eresearchqut/form-compiler": "^0.19.0",
+    "@eresearchqut/form-components": "^0.19.0",
+    "@eresearchqut/form-definition": "^0.19.0",
     "@fortawesome/fontawesome-svg-core": "1.2.36",
     "@fortawesome/free-brands-svg-icons": "5.15.4",
     "@fortawesome/free-regular-svg-icons": "5.15.4",
@@ -40,11 +40,11 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
-    "@storybook/addon-actions": "^6.3.10",
-    "@storybook/addon-essentials": "^6.3.10",
-    "@storybook/addon-links": "^6.3.10",
+    "@storybook/addon-actions": "^6.4.9",
+    "@storybook/addon-essentials": "^6.4.9",
+    "@storybook/addon-links": "^6.4.9",
     "@storybook/preset-scss": "^1.0.3",
-    "@storybook/react": "^6.3.10",
+    "@storybook/react": "^6.4.9",
     "@storybook/storybook-deployer": "^2.8.10",
     "@svg-maps/cli": "^1.0.0-beta.5",
     "@types/enzyme": "^3.10.3",

@@ -722,8 +722,9 @@
                 },
                 "map": {
                     "enum": [
-                        "body",
-                        "painScale"
+                        "EmotionV1",
+                        "MuscleGroupsV1",
+                        "PainScaleV1"
                     ],
                     "type": "string"
                 },

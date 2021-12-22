@@ -1,7 +1,14 @@
 import {Injectable} from '@nestjs/common';
-import {User} from './user.interface';
+import {Page, User} from './user.interface';
+import {ConfigService} from '@nestjs/config';
 
-import {CognitoIdentityProviderClient, ListUsersCommand, UserType,} from '@aws-sdk/client-cognito-identity-provider';
+import {
+    CognitoIdentityProviderClient,
+    ListUsersCommand,
+    ListUsersCommandInput,
+    ListUsersCommandOutput,
+    UserType
+} from '@aws-sdk/client-cognito-identity-provider';
 import {CognitoClientProvider} from '../cognito/cognito.client';
 
 const serialiseUser = (cognitoUser: UserType): User => {
@@ -23,19 +30,27 @@ const serialiseUser = (cognitoUser: UserType): User => {
     }
 }
 
+const USER_POOL_ID_ENV = "USER_POOL_ID"
+
 @Injectable()
 export class UserService {
     private readonly cognitoIdentityProviderClient: CognitoIdentityProviderClient;
+    private readonly userPoolId: string;
 
-    constructor(private readonly cognitoClientProvider: CognitoClientProvider) {
+    constructor(private readonly configService: ConfigService,
+                private readonly cognitoClientProvider: CognitoClientProvider) {
+        this.userPoolId = configService.get(USER_POOL_ID_ENV)
         this.cognitoIdentityProviderClient =
             cognitoClientProvider.getCognitoIdentityProviderClient();
     }
 
-    public list(UserPoolId: string): Promise<Array<User>> {
-        const command = new ListUsersCommand({UserPoolId});
+    public list(limit: number): Promise<Page<User>> {
+        const command = new ListUsersCommand({UserPoolId: this.userPoolId, Limit: limit} as ListUsersCommandInput);
         return this.cognitoIdentityProviderClient
             .send(command)
-            .then((result) => result.Users.map(serialiseUser));
+            .then((result: ListUsersCommandOutput) => ({
+                results: result.Users.map(serialiseUser),
+                nextPageToken: result.PaginationToken
+            }));
     }
 }

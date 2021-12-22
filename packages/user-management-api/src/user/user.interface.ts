@@ -6,3 +6,8 @@ export interface User {
     username: string;
     attributes: Record<string, any>;
 }
+
+export interface Page<T> {
+    results: Array<T>;
+    nextPageToken?: string;
+}

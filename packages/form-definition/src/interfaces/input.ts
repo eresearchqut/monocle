@@ -20,6 +20,7 @@ export enum InputType {
     NUMERIC = 'numeric',
     OPTIONS = 'options',
     RANGE = 'range',
+    SAMPLE_CONTAINER = 'biobank-sample-container',
     SIGNATURE = 'signature',
     SVG_MAP = 'svg-map',
     TEXT = 'text',
@@ -290,6 +291,14 @@ export interface CurrencyInput extends AbstractInput {
 }
 
 /**
+ * @title Sample Container
+ *
+ */
+export interface SampleContainerInput extends AbstractInput {
+    type: InputType.SAMPLE_CONTAINER;
+}
+
+/**
  * @title Svg Map
  *
  */
@@ -325,6 +334,7 @@ export type Input =
     | OptionsInput
     | RangeInput
     | Signature
+    | SampleContainerInput
     | SvgMapInput
     | TextInput
     | TimeInput;

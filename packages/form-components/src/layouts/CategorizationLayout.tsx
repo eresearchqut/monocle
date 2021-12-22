@@ -45,7 +45,15 @@ const CategorizationLayoutRenderer: FunctionComponent<LayoutProps> = ({
         return null;
     }
     return (
-        <div className="p-grid p-dir-col p-fluid">{renderChildren(categorization, schema, path, renderers, cells)}</div>
+        /* 
+        <div className="p-grid p-dir-col p-fluid">{renderChildren(categorization, schema, path, renderers, cells)}</div> 
+        
+        Notes - TS: removed the p-grid class from the div as the Biobank SampleContainer control was flowing out of the parent
+        control with it.
+        TODO: The change doesn't seem to have any other adverse effect, but this needs to be investigated later.
+        */
+        // <div className="p-dir-col p-fluid">{renderChildren(categorization, schema, path, renderers, cells)}</div>
+        <div className="p-dir-col p-fluid">{renderChildren(categorization, schema, path, renderers, cells)}</div>
     );
 };
 

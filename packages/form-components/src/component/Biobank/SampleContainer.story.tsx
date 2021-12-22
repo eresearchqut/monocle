@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Meta, Story } from '@storybook/react';
-import SampleContainer, { ContainerDimensions, SampleContainerProps } from './SampleContainer';
+import SampleContainer, { SampleContainerProps } from './SampleContainer';
 
 export default {
     title: 'Components/Sample Container',

@@ -44,8 +44,13 @@ export class UserService {
             cognitoClientProvider.getCognitoIdentityProviderClient();
     }
 
-    public list(limit: number): Promise<Page<User>> {
-        const command = new ListUsersCommand({UserPoolId: this.userPoolId, Limit: limit} as ListUsersCommandInput);
+    public list(limit?: number, filter?: string, startPageToken?: string): Promise<Page<User>> {
+        const command = new ListUsersCommand({
+            UserPoolId: this.userPoolId,
+            Limit: limit,
+            Filter: filter,
+            PaginationToken: startPageToken
+        } as ListUsersCommandInput);
         return this.cognitoIdentityProviderClient
             .send(command)
             .then((result: ListUsersCommandOutput) => ({

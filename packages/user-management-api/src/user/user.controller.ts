@@ -9,8 +9,10 @@ export class UserController {
 
     @Get("/")
     public list(
-        @Query('limit') limit: number = 10,
+        @Query('limit') limit: string,
+        @Query('filter') filter: string,
+        @Query('startPageToken') startPageToken: string,
     ): Promise<Page<User>> {
-        return this.userService.list(limit);
+        return this.userService.list(Number.parseInt(limit), filter, startPageToken);
     }
 }

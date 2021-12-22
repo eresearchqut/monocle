@@ -53,7 +53,7 @@ export enum ValidationStrategy {
 export class PostMetadataQuery {
   @IsOptional()
   @IsEnum(ValidationStrategy)
-  validation: ValidationStrategy;
+  validation?: ValidationStrategy;
 }
 
 export class PostMetadataBody {

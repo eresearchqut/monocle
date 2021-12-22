@@ -7,6 +7,9 @@ import {
     ListUsersCommand,
     ListUsersCommandInput,
     ListUsersCommandOutput,
+    DescribeUserPoolCommand,
+    DescribeUserPoolCommandInput,
+    DescribeUserPoolCommandOutput,
     UserType
 } from '@aws-sdk/client-cognito-identity-provider';
 import {CognitoClientProvider} from '../cognito/cognito.client';
@@ -42,6 +45,15 @@ export class UserService {
         this.userPoolId = configService.get(USER_POOL_ID_ENV)
         this.cognitoIdentityProviderClient =
             cognitoClientProvider.getCognitoIdentityProviderClient();
+    }
+
+    public estimatedNumberOfUsers(): Promise<number> {
+        const command = new DescribeUserPoolCommand({
+            UserPoolId: this.userPoolId,
+        } as DescribeUserPoolCommandInput);
+        return this.cognitoIdentityProviderClient
+            .send(command)
+            .then((result: DescribeUserPoolCommandOutput) => result.UserPool.EstimatedNumberOfUsers);
     }
 
     public list(limit?: number, filter?: string, startPageToken?: string): Promise<Page<User>> {

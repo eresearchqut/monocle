@@ -18,4 +18,10 @@ export class UserController {
     ): Promise<Page<User>> {
         return this.userService.list(Number.parseInt(limit), filter, startPageToken);
     }
+
+    @Get("/estimatedNumberOfUsers")
+    public estimatedUserCount(
+    ): Promise<number> {
+        return this.userService.estimatedNumberOfUsers();
+    }
 }

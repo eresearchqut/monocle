@@ -1,4 +1,4 @@
-import {BadGatewayException, BadRequestException, CallHandler, ExecutionContext, Injectable, NestInterceptor} from '@nestjs/common';
+import {BadGatewayException, BadRequestException, CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor} from '@nestjs/common';
 import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {SdkError} from "@aws-sdk/types";
@@ -16,15 +16,20 @@ const isBadRequestException = (err: any): err is SdkError => {
 
 @Injectable()
 export class CognitoErrorInterceptor implements NestInterceptor {
+
+    private readonly logger = new Logger(CognitoErrorInterceptor.name);
+
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         return next
             .handle()
             .pipe(
                 catchError(err => {
                     if (isBadGatewayException(err)) {
+                        this.logger.error(err);
                         return throwError(new BadGatewayException(err.message));
                     }
                     if (isBadRequestException(err)) {
+                        this.logger.warn(err);
                         return throwError(new BadRequestException(err.message));
                     }
                     return throwError(err);

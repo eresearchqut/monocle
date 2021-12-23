@@ -4836,14 +4836,6 @@
     hoist-non-react-statics "^3.3.0"
     redux "^4.0.0"
 
-"@types/react-signature-canvas@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@types/react-signature-canvas/-/react-signature-canvas-1.0.2.tgz#c27bae1b3452c779315cc0ef6e9a2907116ce1bb"
-  integrity sha512-uDHDoo2JM/9qYS+U7PRKDLBgOnQOOUEkDdXjCxBvI19fWtOLqXisrjiquPu+enu5iu2oWIfU7cVhn1QJZPkLTg==
-  dependencies:
-    "@types/react" "*"
-    "@types/signature_pad" "*"
-
 "@types/react-stickynode@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/react-stickynode/-/react-stickynode-4.0.0.tgz#54ba7ceab9bd563bccdcae72c7486a626e870ecb"
@@ -4901,11 +4893,6 @@
   dependencies:
     "@types/mime" "^1"
     "@types/node" "*"
-
-"@types/signature_pad@*":
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/@types/signature_pad/-/signature_pad-2.3.2.tgz#97121116570b945b7b8d70525ee5428b6ae17569"
-  integrity sha512-dDfWIgRcdzAaeVOpLRmLHIumGwc5inSD4Dj2Duis3yUEoSADZECLJHKkUQphbaANQ7kSC2bkf1JzyBPSmTlrPQ==
 
 "@types/source-list-map@*":
   version "0.1.2"
@@ -16233,10 +16220,10 @@ signal-exit@^3.0.0, signal-exit@^3.0.2, signal-exit@^3.0.3:
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.6.tgz#24e630c4b0f03fea446a2bd299e62b4a6ca8d0af"
   integrity sha512-sDl4qMFpijcGw22U5w63KmD3cZJfBuFlVNbVMKje2keoKML7X2UzWbc4XrmEbDwg0NXJc3yv4/ox7b+JWb57kQ==
 
-signature_pad@^3.0.0-beta.4:
-  version "3.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/signature_pad/-/signature_pad-3.0.0-beta.4.tgz#2a8441559e9f439e7f2f525da3ee630ef973ecf6"
-  integrity sha512-cOf2NhVuTiuNqe2X/ycEmizvCDXk0DoemhsEpnkcGnA4kS5iJYTCqZ9As7tFBbsch45Q1EdX61833+6sjJ8rrw==
+signature_pad@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/signature_pad/-/signature_pad-4.0.0.tgz#4fc9a94e7744b34256dcb8b472c8ea3f28f12c82"
+  integrity sha512-47I2MULJIHaUAFuVbqMVWwZR+GEl2wH4QKg16OwpQg82GzVUL3Z405Um6sLgVB0xbP5rwqiNzfLTbJwipXvaWA==
 
 sisteransi@^1.0.5:
   version "1.0.5"

@@ -233,6 +233,9 @@ describe("Resource module", () => {
     const resourceData = {
       key: "test",
     };
+    const updatedResourceData = {
+      key: "updated",
+    };
 
     // Create empty metadata
     await request(app.getHttpServer()).put(`/metadata/resource/${resourceName}`).expect(200).expect({ created: true });
@@ -254,9 +257,6 @@ describe("Resource module", () => {
       .expect((r) => expect(r.body.Data).toEqual(resourceData));
 
     // Update resource
-    const updatedResourceData = {
-      key: "updated",
-    };
     await request(app.getHttpServer())
       .post(`/resource/${resourceName}/${resourceId}`)
       .send({

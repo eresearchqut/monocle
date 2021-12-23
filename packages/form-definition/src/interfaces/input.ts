@@ -102,16 +102,15 @@ export interface OptionsInput extends AbstractInput {
     /**
      * Option values and labels
      */
-    options: [
-        {
-            /**
-             * @format uuid
-             */
-            id: string;
-            label: string;
-            value: number | string;
-        }
-    ];
+    options:
+      {
+          /**
+           * @format uuid
+           */
+          id: string;
+          label: string;
+          value: number | string;
+      }[];
 }
 
 /**

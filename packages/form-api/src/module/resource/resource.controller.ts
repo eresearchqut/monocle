@@ -13,6 +13,8 @@ import {
 } from "./resource.dto";
 import { ResourceService } from "./resource.service";
 
+// TODO: Consider stripping non-Data keys from responses for security reasons
+
 @Controller("/resource")
 export class ResourceController {
   public constructor(private resourceService: ResourceService) {}

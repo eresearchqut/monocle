@@ -7,11 +7,10 @@ import * as yaml from "js-yaml";
 import * as fs from "fs";
 import { CLOUDFORMATION_SCHEMA } from "cloudformation-js-yaml-schema";
 import { DynamodbLogger, DynamodbRepository } from "../src/module/dynamodb/dynamodb.repository";
-import { NIL as NIL_UUID, v4 } from "uuid";
+import { NIL as NIL_UUID, v4 as uuid } from "uuid";
 import { DynamodbModule } from "../src/module/dynamodb/dynamodb.module";
 import { MetadataModule } from "../src/module/metadata/metadata.module";
 import { ResourceModule } from "../src/module/resource/resource.module";
-import { Form, InputType, SectionType } from "@eresearchqut/form-definition";
 import {
   AddressInput,
   BooleanInput,
@@ -51,7 +50,7 @@ const getTableInput = (name: string) => {
   };
 };
 
-const generateResourceName = () => `TestResource_${v4()}`;
+const generateResourceName = () => `TestResource_${uuid()}`;
 
 const initApp = async (modules: any[]): Promise<INestApplication> => {
   const tableName = `E2E_Metadata_${Date.now()}`; // TODO: pass table name in context. Tables need org uuid, environment, audit, search etc. in suffix
@@ -185,7 +184,7 @@ describe("Metadata module", () => {
           name: "TestSection",
           label: "Test Section",
           description: "Test Section Description",
-          id: v4(),
+          id: uuid(),
           type: SectionType.DEFAULT,
           inputs: [
             {
@@ -193,7 +192,7 @@ describe("Metadata module", () => {
               label: "String Key",
               description: "String Key Description",
               type: InputType.TEXT,
-              id: v4(),
+              id: uuid(),
               required: true,
             },
             {
@@ -201,7 +200,7 @@ describe("Metadata module", () => {
               label: "Number Key",
               description: "Number Key Description",
               type: InputType.NUMERIC,
-              id: v4(),
+              id: uuid(),
               required: true,
             },
           ],
@@ -316,7 +315,7 @@ describe("Resource module", () => {
     const getInput = (inputType: InputType): { input: Input; values: unknown[] } =>
       match(inputType as InputType)
         .with(InputType.ADDRESS, (t): { input: AddressInput; values: any[] } => ({
-          input: { name: "address", label: "ADDRESS", id: v4(), required: true, type: t },
+          input: { name: "address", label: "ADDRESS", id: uuid(), required: true, type: t },
           values: [
             {
               streetNumber: "",
@@ -339,14 +338,14 @@ describe("Resource module", () => {
           ],
         }))
         .with(InputType.BOOLEAN, (t): { input: BooleanInput; values: any[] } => ({
-          input: { name: "boolean", label: "BOOLEAN", id: v4(), required: true, type: t },
+          input: { name: "boolean", label: "BOOLEAN", id: uuid(), required: true, type: t },
           values: [false, true],
         }))
         .with(InputType.CAPTCHA, (t): { input: CaptchaInput; values: any[] } => ({
           input: {
             name: "captcha",
             label: "CAPTCHA",
-            id: v4(),
+            id: uuid(),
             required: true,
             type: t,
             siteKey: "",
@@ -358,7 +357,7 @@ describe("Resource module", () => {
           input: {
             name: "currency",
             label: "CURRENCY",
-            id: v4(),
+            id: uuid(),
             required: true,
             type: t,
             currencyCode: "AUD",
@@ -369,7 +368,7 @@ describe("Resource module", () => {
           input: {
             name: "country",
             label: "COUNTRY",
-            id: v4(),
+            id: uuid(),
             required: true,
             type: t,
             multiselect: false,
@@ -377,46 +376,46 @@ describe("Resource module", () => {
           values: ["", "AU"],
         }))
         .with(InputType.EMAIL, (t): { input: EmailInput; values: any[] } => ({
-          input: { name: "email", label: "EMAIL", id: v4(), required: true, type: t },
+          input: { name: "email", label: "EMAIL", id: uuid(), required: true, type: t },
           values: ["example1@example.com", "example2@example.com"],
         }))
         .with(InputType.DATE, (t): { input: DateInput; values: any[] } => ({
           input: {
             name: "date",
             label: "DATE",
-            id: v4(),
+            id: uuid(),
             required: true,
             type: t,
           },
           values: ["2000-01-01", "2022-01-01"],
         }))
         .with(InputType.DATE_TIME, (t): { input: DateTimeInput; values: any[] } => ({
-          input: { name: "dateTime", label: "DATE_TIME", id: v4(), required: true, type: t },
+          input: { name: "dateTime", label: "DATE_TIME", id: uuid(), required: true, type: t },
           values: ["2000-01-01T00:00:00.000Z", "2022-01-01T00:00:00.000Z"],
         }))
         .with(InputType.MARKDOWN, (t): { input: MarkdownInput; values: any[] } => ({
-          input: { name: "markdown", label: "MARKDOWN", id: v4(), required: true, type: t },
+          input: { name: "markdown", label: "MARKDOWN", id: uuid(), required: true, type: t },
           values: ["", "# Heading\n\nText"],
         }))
         .with(InputType.MULTILINE_TEXT, (t): { input: MultilineTextInput; values: any[] } => ({
           input: {
             name: "multilineText",
             label: "MULTILINE_TEXT",
-            id: v4(),
+            id: uuid(),
             required: true,
             type: t,
           },
           values: ["", "Line 1\nLine 2"],
         }))
         .with(InputType.NUMERIC, (t): { input: NumericInput; values: any[] } => ({
-          input: { name: "numeric", label: "NUMERIC", id: v4(), required: true, type: t },
+          input: { name: "numeric", label: "NUMERIC", id: uuid(), required: true, type: t },
           values: [0, 11],
         }))
         .with(InputType.OPTIONS, (t): { input: OptionsInput; values: any[] } => ({
           input: {
             name: "options",
             label: "OPTIONS",
-            id: v4(),
+            id: uuid(),
             required: true,
             type: t,
             multiselect: false,
@@ -424,12 +423,12 @@ describe("Resource module", () => {
             optionValueType: "string",
             options: [
               {
-                id: v4(),
+                id: uuid(),
                 label: "Red",
                 value: "red",
               },
               {
-                id: v4(),
+                id: uuid(),
                 label: "Yellow",
                 value: "yellow",
               },
@@ -438,11 +437,11 @@ describe("Resource module", () => {
           values: ["red", "yellow"],
         }))
         .with(InputType.RANGE, (t): { input: RangeInput; values: any[] } => ({
-          input: { name: "range", label: "RANGE", id: v4(), required: true, type: t },
+          input: { name: "range", label: "RANGE", id: uuid(), required: true, type: t },
           values: [0, 11],
         }))
         .with(InputType.SIGNATURE, (t): { input: Signature; values: any[] } => ({
-          input: { name: "signature", label: "SIGNATURE", id: v4(), required: true, type: t },
+          input: { name: "signature", label: "SIGNATURE", id: uuid(), required: true, type: t },
           values: [
             "",
             "data:image/png;base64,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",
@@ -452,7 +451,7 @@ describe("Resource module", () => {
           input: {
             name: "svgMap",
             label: "SVG_MAP",
-            id: v4(),
+            id: uuid(),
             required: true,
             type: t,
             map: "MuscleGroupsV1",
@@ -472,7 +471,7 @@ describe("Resource module", () => {
           input: {
             name: "text",
             label: "TEXT",
-            id: v4(),
+            id: uuid(),
             required: true,
             type: t,
           },
@@ -482,7 +481,7 @@ describe("Resource module", () => {
           input: {
             name: "time",
             label: "TIME",
-            id: v4(),
+            id: uuid(),
             required: true,
             type: t,
           },
@@ -498,7 +497,7 @@ describe("Resource module", () => {
           name: "resourceSection",
           label: "Resource Section",
           description: "Resource Section Description",
-          id: v4(),
+          id: uuid(),
           type: SectionType.DEFAULT,
           inputs: Object.keys(InputType).map((input: InputType) => getInput(InputType[input]).input),
         },
@@ -552,7 +551,7 @@ describe("Resource module", () => {
 
   it("Can't CRUD a non-existing resource type", async () => {
     const resourceName = generateResourceName();
-    const resourceId = v4();
+    const resourceId = uuid();
 
     // Create resource
     await request(app.getHttpServer())

@@ -2,6 +2,12 @@ import { Equals, IsISO8601, IsString, IsUUID, ValidateNested } from "class-valid
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
 import Ajv from "ajv";
 import { findFormCompiler } from "@eresearchqut/form-compiler";
+import addFormats from "ajv-formats";
+
+const ajv = new Ajv({
+  allErrors: true,
+});
+addFormats(ajv);
 
 export type MetaDataFormType = ItemEntity<
   {
@@ -38,7 +44,6 @@ export class MetadataForm implements MetaDataFormType {
   Data: MetadataFormData;
 
   validate = (data: any) => {
-    const ajv = new Ajv();
     const schema = this.getSchema();
     if (!schema) throw new Error("Schema not compiled");
 
@@ -47,7 +52,7 @@ export class MetadataForm implements MetaDataFormType {
     return validate.errors;
   };
 
-  getSchema = () => {
+  getSchema = (): any => {
     const definition = JSON.parse(this.Data.Definition);
     const compiler = findFormCompiler(definition);
     if (compiler === undefined) throw new Error("No compiler found");

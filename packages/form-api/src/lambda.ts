@@ -3,6 +3,7 @@ import serverlessExpress from "@vendia/serverless-express";
 
 let server;
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 async function bootstrap(): Promise<void> {
   if (!server) {
     const nestApp = await getApp();

@@ -66,7 +66,10 @@ const initApp = async (modules: any[]): Promise<INestApplication> => {
     endpoint: "http://localhost:8000",
   });
 
-  await dynamodbClient.send(new CreateTableCommand(getTableInput(tableName)));
+  await dynamodbClient.send(new CreateTableCommand(getTableInput(tableName))).catch((e) => {
+    console.error(e);
+    throw new Error("Failed to create table for tests. Is dynamodb-local running?");
+  });
 
   @Injectable()
   class TestDynamodbClientProvider {

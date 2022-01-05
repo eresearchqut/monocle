@@ -1,4 +1,4 @@
-import { Equals, IsISO8601, IsSemVer, IsString, IsUUID, ValidateNested } from "class-validator";
+import { Equals, IsISO8601, IsSemVer, IsString, IsUUID, Matches, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 import { v4 } from "uuid";
 import { MetadataException } from "./metadata.exception";
@@ -21,7 +21,7 @@ export type MetadataEntityType = ItemEntity<
 >;
 
 export class MetadataData {
-  @IsString()
+  @Matches(/[a-zA-Z0-9_]+/)
   Resource: string;
 
   @IsSemVer()

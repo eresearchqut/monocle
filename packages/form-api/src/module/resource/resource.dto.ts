@@ -1,7 +1,7 @@
-import { IsAlphanumeric, IsObject, IsOptional, IsSemVer, IsString } from "class-validator";
+import { IsObject, IsOptional, IsSemVer, IsString, Matches } from "class-validator";
 
 abstract class ResourceParams {
-  @IsAlphanumeric()
+  @Matches(/[a-zA-Z0-9_]+/)
   resource: string;
 }
 

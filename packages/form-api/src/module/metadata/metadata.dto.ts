@@ -7,11 +7,12 @@ import {
   IsSemVer,
   IsString,
   IsUUID,
+  Matches,
   ValidateNested,
 } from "class-validator";
 
 abstract class ResourceParams {
-  @IsAlphanumeric()
+  @Matches(/[a-zA-Z0-9_]+/)
   resource: string;
 }
 

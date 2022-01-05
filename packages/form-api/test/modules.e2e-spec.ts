@@ -51,7 +51,7 @@ const getTableInput = (name: string) => {
   };
 };
 
-const generateResourceName = () => `TestResource_${uuid()}`;
+const generateResourceName = () => `TestResource_${Date.now()}`;
 
 const initApp = async (modules: any[]): Promise<INestApplication> => {
   const tableName = `E2E_Metadata_${Date.now()}`; // TODO: pass table name in context. Tables need org uuid, environment, audit, search etc. in suffix

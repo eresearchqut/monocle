@@ -3,6 +3,7 @@ import { ItemEntity } from "../dynamodb/dynamodb.entity";
 import Ajv from "ajv";
 import { findFormCompiler } from "@eresearchqut/form-compiler";
 import addFormats from "ajv-formats";
+import { Form } from "@eresearchqut/form-definition";
 
 const ajv = new Ajv({
   allErrors: true,
@@ -11,14 +12,14 @@ addFormats(ajv);
 
 export type MetaDataFormType = ItemEntity<
   {
-    Definition: string;
+    Definition: Form;
   },
   "Form"
 >;
 
 class MetadataFormData {
   @IsString()
-  Definition: string;
+  Definition: Form;
 }
 
 export class MetadataForm implements MetaDataFormType {
@@ -53,7 +54,7 @@ export class MetadataForm implements MetaDataFormType {
   };
 
   getSchema = (): any => {
-    const definition = JSON.parse(this.Data.Definition);
+    const definition = this.Data.Definition;
     const compiler = findFormCompiler(definition);
     if (compiler === undefined) throw new Error("No compiler found");
 

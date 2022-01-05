@@ -1,5 +1,7 @@
 import { AppConfig, AppConfigService } from "../app.config";
-import { validateOrReject } from "class-validator";
+import { registerDecorator, validateOrReject, ValidationOptions } from "class-validator";
+import Ajv, { JSONSchemaType, Options as AjvOptions } from "ajv";
+import addFormats from "ajv-formats";
 
 // https://stackoverflow.com/a/50851710
 type BooleanKeys<T> = { [k in keyof T]: T[k] extends boolean ? k : never }[keyof T];
@@ -45,3 +47,27 @@ export const ConditionallyValidateClassAsyncGenerator = (setting: BooleanKeys<Ap
     };
   };
 };
+
+export function IsJsonSchema(
+  schema: JSONSchemaType<unknown>,
+  ajvOptions?: AjvOptions,
+  validationOptions?: ValidationOptions
+) {
+  // https://github.com/typestack/class-validator#custom-validation-decorators
+  return function (object: any, propertyName: string) {
+    const ajv = new Ajv(ajvOptions);
+    addFormats(ajv);
+    const validator = ajv.compile(schema);
+
+    registerDecorator({
+      target: object.constructor,
+      propertyName: propertyName,
+      options: validationOptions,
+      validator: {
+        validate(value: Record<string, any>) {
+          return validator(value);
+        },
+      },
+    });
+  };
+}

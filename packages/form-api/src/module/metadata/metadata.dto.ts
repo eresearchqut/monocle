@@ -9,6 +9,8 @@ import {
   Matches,
   ValidateNested,
 } from "class-validator";
+import { form as FormSchema, Form } from "@eresearchqut/form-definition";
+import { IsJsonSchema } from "src/decorator/validate.decorator";
 import { Type } from "class-transformer";
 
 abstract class ResourceParams {
@@ -93,8 +95,10 @@ export class GetFormResponse {
 }
 
 export class PutFormBody {
-  @IsString()
-  definition: string;
+  @IsJsonSchema(FormSchema, {
+    allowUnionTypes: true,
+  })
+  definition: Form;
 }
 
 export class GetAuthorizationParams {

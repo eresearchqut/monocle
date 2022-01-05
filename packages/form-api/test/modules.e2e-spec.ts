@@ -150,7 +150,7 @@ describe("Metadata module", () => {
     const formId = await request(app.getHttpServer())
       .put(`/metadata/form`)
       .send({
-        definition: JSON.stringify(formData),
+        definition: formData,
       })
       .expect(200)
       .expect((r) => expect(r.body).toHaveProperty("id"))
@@ -167,7 +167,7 @@ describe("Metadata module", () => {
     request(app.getHttpServer())
       .put(`/metadata/form`)
       .send({
-        definition: JSON.stringify(11),
+        definition: 11,
       })
       .expect(400));
 
@@ -212,7 +212,7 @@ describe("Metadata module", () => {
     const formId = await request(app.getHttpServer())
       .put(`/metadata/form`)
       .send({
-        definition: JSON.stringify(formDefinition),
+        definition: formDefinition,
       })
       .expect(200)
       .then((res) => res.body.id);
@@ -529,7 +529,7 @@ describe("Resource module", () => {
     const formId = await request(app.getHttpServer())
       .put(`/metadata/form`)
       .send({
-        definition: JSON.stringify(formDefinition),
+        definition: formDefinition,
       })
       .expect(200)
       .then((res) => res.body.id);

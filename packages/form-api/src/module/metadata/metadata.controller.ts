@@ -77,7 +77,7 @@ export class MetadataController {
     const form = await this.metadataService.getForm(params.formId);
     const schema = await form.getSchema();
     return {
-      form: JSON.parse(form.Data.Definition),
+      form: form.Data.Definition,
       schema: schema,
     };
   }

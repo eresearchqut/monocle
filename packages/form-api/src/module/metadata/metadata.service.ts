@@ -21,7 +21,7 @@ import { match } from "ts-pattern";
 import { TransformAsyncGeneratorPlainToClass } from "../../decorator/transform.decorator";
 import Ajv, { ValidateFunction } from "ajv";
 import addFormats from "ajv-formats";
-import { form } from "@eresearchqut/form-definition";
+import { Form, form } from "@eresearchqut/form-definition";
 
 const INITIAL_SEMVER = "0.0.0";
 
@@ -346,13 +346,9 @@ export class MetadataService {
     return item;
   }
 
-  public async putForm(definition: string): Promise<{ created: false }>;
-  public async putForm(definition: string): Promise<{ created: true; id: string }>;
-  public async putForm(definition: string): Promise<{ created: boolean; id?: string }> {
-    if (!this.formValidator(JSON.parse(definition))) {
-      return { created: false };
-    }
-
+  public async putForm(definition: Form): Promise<{ created: false }>;
+  public async putForm(definition: Form): Promise<{ created: true; id: string }>;
+  public async putForm(definition: Form): Promise<{ created: boolean; id?: string }> {
     const id = uuidV4();
     const key = buildFormItemKey(id);
     return this.dynamodbService

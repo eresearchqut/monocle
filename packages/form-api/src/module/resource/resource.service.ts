@@ -52,10 +52,12 @@ export class ResourceService {
   }
 
   public async putResource(input: PutResourceInput): Promise<any> {
-    const { createDataKey, getDataKey, getGroupMetadata } = await this.metadataService.getMetadata(
-      input.resource,
-      input.version
-    );
+    const {
+      createDataKey,
+      getDataKey,
+      getGroupMetadata,
+      Data: { Version },
+    } = await this.metadataService.getMetadata(input.resource, input.version);
     const { id, key } = input.id ? { id: input.id, key: getDataKey(input.id) } : createDataKey();
 
     if (this.configService.get("VALIDATE_RESOURCE_ON_WRITE")) {
@@ -73,6 +75,7 @@ export class ResourceService {
       ItemType: input.resource,
       CreatedAt: new Date().toISOString(),
       CreatedBy: "admin",
+      ResourceVersion: Version,
       Data: input.data,
     };
 

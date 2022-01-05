@@ -1,18 +1,6 @@
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
-import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { AppConfigService } from "./app.config";
-
-export async function getApp(): Promise<INestApplication> {
-  const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-    })
-  );
-  return app;
-}
+import { getApp } from "./app.build";
 
 async function bootstrap() {
   const app = await getApp();

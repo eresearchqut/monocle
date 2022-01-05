@@ -37,6 +37,7 @@ import {
 import { CreateTableCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDbClientProvider } from "../src/module/dynamodb/dynamodb.client";
 import { match } from "ts-pattern";
+import { buildApp } from "../src/app.build";
 
 const getTableInput = (name: string) => {
   const template = yaml.load(fs.readFileSync("template.yaml", "utf8"), {
@@ -100,6 +101,7 @@ const initApp = async (modules: any[]): Promise<INestApplication> => {
     .compile();
 
   const app = moduleRef.createNestApplication();
+  buildApp(app);
   await app.init();
   return app;
 };

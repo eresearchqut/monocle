@@ -1,5 +1,5 @@
-import { getApp } from "./main";
 import serverlessExpress from "@vendia/serverless-express";
+import { getApp } from "./app.build";
 
 let server;
 

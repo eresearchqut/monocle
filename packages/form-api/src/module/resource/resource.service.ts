@@ -56,7 +56,7 @@ export class ResourceService {
       createDataKey,
       getDataKey,
       getGroupMetadata,
-      Data: { Version },
+      Data: { Resource, Version },
     } = await this.metadataService.getMetadata(input.resource, input.version);
     const { id, key } = input.id ? { id: input.id, key: getDataKey(input.id) } : createDataKey();
 
@@ -72,9 +72,10 @@ export class ResourceService {
     const data = {
       ...key,
       Id: id,
-      ItemType: input.resource,
+      ItemType: "Resource",
       CreatedAt: new Date().toISOString(),
       CreatedBy: "admin",
+      ResourceName: Resource,
       ResourceVersion: Version,
       Data: input.data,
     };

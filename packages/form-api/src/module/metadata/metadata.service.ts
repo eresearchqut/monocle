@@ -34,10 +34,10 @@ const EMPTY_FORM: MetaDataFormType = {
   CreatedAt: new Date().toISOString(),
   CreatedBy: SYSTEM_USER,
   Data: {
-    Definition: JSON.stringify({
+    Definition: {
       name: "",
       sections: [],
-    }),
+    },
   },
 };
 
@@ -75,7 +75,7 @@ interface PutMetadataInput {
 type MetadataProperties = {
   resource: string;
   version: string;
-  groups: { [groupName: string]: { formVersion: string; authorizationVersion: string } };
+  groups: Map<string, { formVersion: string; authorizationVersion: string }>;
 };
 
 type SchemaDiffResult =
@@ -125,12 +125,15 @@ export class MetadataService {
           Data: {
             Resource: resource,
             Version: INITIAL_SEMVER,
-            Groups: {
-              [DEFAULT_GROUP_NAME]: {
-                formVersion: NIL_UUID,
-                authorizationVersion: NIL_UUID,
-              },
-            },
+            Groups: new Map([
+              [
+                DEFAULT_GROUP_NAME,
+                {
+                  formVersion: NIL_UUID,
+                  authorizationVersion: NIL_UUID,
+                },
+              ],
+            ]),
           },
         },
       })

@@ -10,12 +10,13 @@ export type MetadataEntityType = ItemEntity<
   {
     Resource: string;
     Version: string;
-    Groups: {
-      [groupName: string]: {
+    Groups: Map<
+      string,
+      {
         formVersion: string;
         authorizationVersion: string;
-      };
-    };
+      }
+    >;
   },
   "Metadata"
 >;
@@ -27,9 +28,9 @@ export class MetadataData {
   @IsSemVer()
   Version: string;
 
-  @ValidateNested({ each: true })
   @Type(() => GroupMetadata)
-  Groups: { [key: string]: GroupMetadata };
+  @ValidateNested({ each: true })
+  Groups: Map<string, GroupMetadata>;
 }
 
 class GroupMetadata {
@@ -81,5 +82,3 @@ export class Metadata implements MetadataEntityType {
     return groupMetadata;
   };
 }
-
-export class MetadataQuery extends Array<Metadata> {}

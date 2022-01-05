@@ -1,5 +1,4 @@
 import {
-  IsAlphanumeric,
   IsBoolean,
   IsEnum,
   IsObject,
@@ -10,6 +9,7 @@ import {
   Matches,
   ValidateNested,
 } from "class-validator";
+import { Type } from "class-transformer";
 
 abstract class ResourceParams {
   @Matches(/[a-zA-Z0-9_]+/)
@@ -39,7 +39,7 @@ export class GetMetadataResponse {
   version: string;
 
   @ValidateNested({ each: true })
-  groups: { [groupName: string]: GetMetadataResponseGroup };
+  groups: Map<string, GetMetadataResponseGroup>;
 }
 
 export class PutMetadataParams extends ResourceParams {}
@@ -61,8 +61,9 @@ export class PostMetadataBody {
   @IsSemVer()
   version: string;
 
+  @Type(() => PostMetadataBodyGroup)
   @ValidateNested({ each: true })
-  groups: { [groupName: string]: PostMetadataBodyGroup };
+  groups: Map<string, PostMetadataBodyGroup>;
 }
 
 class PostMetadataBodyGroup {

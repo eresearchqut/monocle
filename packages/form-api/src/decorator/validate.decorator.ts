@@ -48,6 +48,9 @@ export const ConditionallyValidateClassAsyncGenerator = (setting: BooleanKeys<Ap
   };
 };
 
+/**
+ * class-validator decorator that validates according to JSON schema
+ */
 export function IsJsonSchema(
   schema: JSONSchemaType<unknown>,
   ajvOptions?: AjvOptions,

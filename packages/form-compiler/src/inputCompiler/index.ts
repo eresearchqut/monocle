@@ -16,6 +16,7 @@ import { MultilineTextInputCompiler } from './multilineTextInputCompiler';
 import { MarkdownInputCompiler } from './markdownInputCompiler';
 import { OptionsInputCompiler } from './optionsInputCompiler';
 import { SignatureInputCompiler } from './signatureInputCompiler';
+import { SampleContainerInputCompiler } from './sampleContainerInputCompiler';
 
 export {
     AbstractInputCompiler,
@@ -48,6 +49,7 @@ export const inputCompilers: InputCompiler[] = [
     new CountryInputCompiler(),
     new BooleanInputCompiler(),
     new DateTimeInputCompiler(),
+    new SampleContainerInputCompiler(),
     new SvgMapInputCompiler(),
     new SignatureInputCompiler(),
 ];

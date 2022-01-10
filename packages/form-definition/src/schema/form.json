@@ -443,6 +443,9 @@
                                 "$ref": "#/definitions/CurrencyInput"
                             },
                             {
+                                "$ref": "#/definitions/SampleContainerInput"
+                            },
+                            {
                                 "$ref": "#/definitions/SvgMapInput"
                             },
                             {
@@ -802,6 +805,32 @@
                 "type"
             ],
             "title": "Range",
+            "type": "object"
+        },
+        "SampleContainerInput": {
+            "properties": {
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "type": {
+                    "enum": ["biobank-sample-container"],
+                    "type": "string"
+                }
+            },
+            "title": "Sample Container",
             "type": "object"
         },
         "Signature": {

@@ -7,6 +7,9 @@ import {
     ListUsersCommand,
     ListUsersCommandInput,
     ListUsersCommandOutput,
+    AdminGetUserCommand,
+    AdminGetUserCommandInput,
+    AdminGetUserCommandOutput,
     DescribeUserPoolCommand,
     DescribeUserPoolCommandInput,
     DescribeUserPoolCommandOutput,
@@ -14,12 +17,13 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider';
 import {CognitoClientProvider} from '../cognito/cognito.client';
 
-const serialiseUser = (cognitoUser: UserType): User => {
+const serialiseUser = (cognitoUser: UserType | AdminGetUserCommandOutput): User => {
     const {
         Enabled: enabled, UserCreateDate: created, UserLastModifiedDate: lastModified,
-        UserStatus: status, Username: username, Attributes
+        UserStatus: status, Username: username
     } = cognitoUser;
-    const attributes = Attributes.reduce((mappedValues, attribute) => {
+    const cognitoAttribues = "Atributes" in cognitoUser ? cognitoUser['Attributes'] : cognitoUser['UserAttributes'];
+    const attributes = cognitoAttribues.reduce((mappedValues, attribute) => {
         try {
             mappedValues[attribute.Name] = JSON.parse(attribute.Value);
         } catch {
@@ -56,7 +60,7 @@ export class UserService {
             .then((result: DescribeUserPoolCommandOutput) => result.UserPool.EstimatedNumberOfUsers);
     }
 
-    public list(limit?: number, filter?: string, startPageToken?: string): Promise<Page<User>> {
+    public listUsers(limit?: number, filter?: string, startPageToken?: string): Promise<Page<User>> {
         const command = new ListUsersCommand({
             UserPoolId: this.userPoolId,
             Limit: limit,
@@ -69,5 +73,15 @@ export class UserService {
                 results: result.Users.map(serialiseUser),
                 nextPageToken: result.PaginationToken
             }));
+    }
+
+    public getUser(username): Promise<User> {
+        const command = new AdminGetUserCommand({
+            UserPoolId: this.userPoolId,
+            Username: username,
+        } as AdminGetUserCommandInput);
+        return this.cognitoIdentityProviderClient
+            .send(command)
+            .then(serialiseUser);
     }
 }

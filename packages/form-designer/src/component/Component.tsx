@@ -19,6 +19,7 @@ import {
     faSortNumericUp,
     faTextHeight,
     faTextWidth,
+    faVial,
     faVectorSquare,
     IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
@@ -147,6 +148,14 @@ const componentDefaults: Map<InputType | SectionType, ComponentMetadata> = new M
             icon: faSlidersH,
             label: 'Range',
             description: 'Numeric range selection',
+        },
+    ],
+    [
+        InputType.SAMPLE_CONTAINER,
+        {
+            icon: faVial,
+            label: 'Biobank Sample Container',
+            description: 'Display Samples in a Container',
         },
     ],
     [

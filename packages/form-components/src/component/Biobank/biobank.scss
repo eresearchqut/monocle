@@ -1,0 +1,125 @@
+$primary-color: var(--primary-color);
+$background-color: var(--surface-card);
+$border-color: var(--surface-border);
+$highlight-color: var(--surface-hover);
+$hover-color: var(--surface-hover);
+
+// Default border-radius (4px) too small for our purposes, using percentage instead
+// $grid-border-radius: var(--border-radius);
+$grid-border-radius: 20%;
+
+// Content-padding is 1rem by default, becomes very large on small devices, so
+// we're using percentage instead
+// $circle-padding: var(--content-padding);
+$circle-padding: 12.5%;
+
+div.biobank-sample-container-grid {
+    position: relative;
+    width: 100%;
+    // max-width: 600px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+    > .biobank-sample-container-grid-inside {
+        width: 100%;
+        margin-left: 2em; // space for row coordinates
+
+        > .biobank-sample-container-grid-row {
+            // Round the first and last items
+            &:first-child {
+                > .biobank-sample-container-grid-cell {
+                    &:first-child {
+                        border-top-left-radius: $grid-border-radius;
+                    }
+                    &:last-child {
+                        border-top-right-radius: $grid-border-radius;
+                    }
+                }
+            }
+            &:last-child {
+                > .biobank-sample-container-grid-cell {
+                    &:first-child {
+                        border-bottom-left-radius: $grid-border-radius;
+                    }
+                    &:last-child {
+                        border-bottom-right-radius: $grid-border-radius;
+                    }
+                }
+            }
+
+            position: relative;
+            box-sizing: border-box;
+            display: block;
+            background-color: $background-color;
+
+            > .biobank-sample-container-grid-cell {
+                display: inline-block;
+                position: relative;
+                border: 1px solid $border-color;
+                vertical-align: middle;
+
+                &.full {
+                    cursor: pointer;
+                    > .biobank-sample-cell-content {
+                        opacity: 0.4;
+                    }
+                }
+
+                &.highlight-cell {
+                    background-color: $highlight-color;
+                }
+
+                &.full.highlight-sample {
+                    > .biobank-sample-cell-content {
+                        opacity: 1;
+                    }
+                }
+
+                // CSS trick to make the cells squares
+                &:after {
+                    content: '';
+                    display: block;
+                    padding-top: 100%;
+                }
+
+                &:hover {
+                    text-decoration: none;
+                    background-color: $hover-color;
+                }
+
+                > .biobank-sample-cell-content {
+                    position: absolute;
+                    display: flex;
+                    width: 100%;
+                    justify-content: center;
+                    align-items: center;
+
+                    > svg {
+                        padding: $circle-padding;
+
+                        > path {
+                            fill: $primary-color;
+                        }
+                    }
+                }
+
+                > .biobank-sample-cell-coord {
+                    position: absolute;
+
+                    &.biobank-sample-cell-coord-x {
+                        // bust out into the row above, so not obscured by samples
+                        top: -1.2em;
+                        right: 0.5em;
+                    }
+
+                    &.biobank-sample-cell-coord-y {
+                        // bust out into the column left
+                        left: -2em;
+                        bottom: 0.5em;
+                        text-align: right;
+                    }
+                }
+            }
+        }
+    }
+}

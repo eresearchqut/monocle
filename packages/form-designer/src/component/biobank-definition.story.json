@@ -1,0 +1,17 @@
+{
+    "name": "Biobank",
+    "sections": [
+        {
+            "id": "fc1f7f15-fe21-4ec2-8f7d-ebaa2d0b7b5f",
+            "name": "Biobank",
+            "type": "default",
+            "inputs": [
+                {
+                    "id": "6b0b5622-72cc-443c-b2d1-eead5272e451",
+                    "type": "biobank-sample-container",
+                    "name": "Example Tray"
+                }
+            ]
+        }
+    ]
+}

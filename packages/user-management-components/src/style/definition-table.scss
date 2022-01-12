@@ -1,0 +1,71 @@
+.definition-table {
+
+  dl {
+    display: flex;
+    flex-flow: row wrap;
+  }
+  dt {
+    flex-basis: 20%;
+    padding: 0.5em;
+    background: var(--surface-0);
+    text-align: right;
+    font-weight: bold;
+    color: var(--surface-800);
+    border-width: 0 1px 1px 1px;
+    border-color: var(--surface-border);
+    border-style: solid;
+  }
+
+  dt:first-child {
+    border-width: 1px;
+  }
+
+  dd {
+    flex-basis: 70%;
+    flex-grow: 1;
+    margin: 0;
+    padding: 0.5em;
+    border-width: 0 1px 1px 0;
+    border-color: var(--surface-border);
+    border-style: solid;
+
+
+    dl {
+      margin: -0.5em;
+      dt:first-child {
+        border-width: 0 1px 0 0;
+      }
+      dt {
+        border-width: 1px 1px 0 0;
+      }
+      dd {
+        border-width: 0 0 1px 0;
+      }
+      dd:last-child {
+        border-width: 0;
+      }
+      dt:first-child + dd {
+        border-top-width: 0;
+      }
+
+    }
+
+  }
+
+  dd:last-child {
+    border-width: 0px 1px 1px 0;
+  }
+
+  dt:first-child + dd {
+    border-top-width: 1px;
+  }
+
+
+}
+
+
+
+
+
+
+

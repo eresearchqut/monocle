@@ -47,6 +47,9 @@
             "$ref": "#/definitions/CurrencyInput"
         },
         {
+            "$ref": "#/definitions/SampleContainerInput"
+        },
+        {
             "$ref": "#/definitions/SvgMapInput"
         },
         {
@@ -94,6 +97,11 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
             "title": "Address",
             "type": "object"
         },
@@ -130,6 +138,11 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
             "title": "Boolean",
             "type": "object"
         },
@@ -173,6 +186,13 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "name",
+                "secretKey",
+                "siteKey",
+                "type"
+            ],
             "title": "Captcha",
             "type": "object"
         },
@@ -220,6 +240,12 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "multiselect",
+                "name",
+                "type"
+            ],
             "title": "Country",
             "type": "object"
         },
@@ -275,6 +301,12 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "currencyCode",
+                "id",
+                "name",
+                "type"
+            ],
             "title": "Currency",
             "type": "object"
         },
@@ -319,6 +351,11 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
             "title": "Date",
             "type": "object"
         },
@@ -395,6 +432,11 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
             "title": "Date Time",
             "type": "object"
         },
@@ -432,6 +474,11 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
             "title": "Email",
             "type": "object"
         },
@@ -468,6 +515,11 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
             "title": "Markdown",
             "type": "object"
         },
@@ -510,6 +562,11 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
             "title": "Multiline Text",
             "type": "object"
         },
@@ -566,6 +623,11 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
             "title": "Numeric",
             "type": "object"
         },
@@ -608,28 +670,29 @@
                 },
                 "options": {
                     "description": "Option values and labels",
-                    "items": [
-                        {
-                            "properties": {
-                                "id": {
-                                    "format": "uuid",
-                                    "type": "string"
-                                },
-                                "label": {
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "type": [
-                                        "string",
-                                        "number"
-                                    ]
-                                }
+                    "items": {
+                        "properties": {
+                            "id": {
+                                "format": "uuid",
+                                "type": "string"
                             },
-                            "type": "object"
-                        }
-                    ],
-                    "maxItems": 1,
-                    "minItems": 1,
+                            "label": {
+                                "type": "string"
+                            },
+                            "value": {
+                                "type": [
+                                    "string",
+                                    "number"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "label",
+                            "value"
+                        ],
+                        "type": "object"
+                    },
                     "type": "array"
                 },
                 "required": {
@@ -643,6 +706,15 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "displayOptions",
+                "id",
+                "multiselect",
+                "name",
+                "optionValueType",
+                "options",
+                "type"
+            ],
             "title": "Options",
             "type": "object"
         },
@@ -688,7 +760,53 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
             "title": "Range",
+            "type": "object"
+        },
+        "SampleContainerInput": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "biobank-sample-container"
+                    ],
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
+            "title": "Sample Container",
             "type": "object"
         },
         "Signature": {
@@ -724,6 +842,11 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
             "title": "Signature",
             "type": "object"
         },
@@ -771,6 +894,12 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "map",
+                "name",
+                "type"
+            ],
             "title": "Svg Map",
             "type": "object"
         },
@@ -816,6 +945,11 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
             "title": "Text",
             "type": "object"
         },
@@ -884,6 +1018,11 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
             "title": "Time",
             "type": "object"
         }

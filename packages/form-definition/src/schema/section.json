@@ -714,6 +714,10 @@
         },
         "SampleContainerInput": {
             "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
                 "description": {
                     "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
                     "type": "string"
@@ -730,6 +734,10 @@
                     "description": "The name of the element",
                     "type": "string"
                 },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
                 "type": {
                     "enum": [
                         "biobank-sample-container"
@@ -737,6 +745,11 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
             "title": "Sample Container",
             "type": "object"
         },

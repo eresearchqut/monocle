@@ -12,6 +12,7 @@ Template.bind({});
 
 export const Default = Template.bind({});
 Default.args = {
+    estimatedCountOfUsers: 10,
     users: [
         {
             "enabled": true,
@@ -99,29 +100,6 @@ Default.args = {
                 ],
                 "custom:qutIdentityId": "41dcb900-1524-48b3-8845-cf771b2b40bd",
                 "custom:uid": "dare-devil"
-            }
-        },
-        {
-            "enabled": true,
-            "created": "2021-03-30T03:32:52.978Z",
-            "lastModified": "2021-10-06T03:21:46.847Z",
-            "status": "EXTERNAL_PROVIDER",
-            "username": "gretta-garbo",
-            "attributes": {
-                "sub": "1cf9ae5f-fa9c-4109-a17c-85937305e3a5",
-                "custom:eResearchGroups": "gretta-garbo",
-                "identities": [
-                    {
-                        "userId": "gretta-garbo",
-                        "providerName": "QUT-Test",
-                        "providerType": "SAML",
-                        "issuer": "https://auth-test-idp.qut.edu.au/idp/shibboleth",
-                        "primary": true,
-                        "dateCreated": 1617075172974
-                    }
-                ],
-                "custom:qutIdentityId": "c35a6754-465a-42cf-8666-b762b88f48e4",
-                "custom:uid": "gretta-garbo"
             }
         }
     ],

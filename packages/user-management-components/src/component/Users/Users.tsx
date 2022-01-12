@@ -2,12 +2,13 @@ import React, {FunctionComponent} from 'react';
 import {DataTable} from 'primereact/datatable';
 import {Column} from 'primereact/column';
 import {classNames} from 'primereact/utils';
+import {User} from '../User/User';
 
 export interface StatePropsOfUsers {
     estimatedCountOfUsers: number;
     hasNext: boolean;
     hasPrevious: boolean;
-    users: Array<Record<string, any>>;
+    users: Array<User>;
 }
 
 export interface HandlerPropsOfUsers {
@@ -16,8 +17,8 @@ export interface HandlerPropsOfUsers {
 }
 
 export interface UsersProps extends StatePropsOfUsers, HandlerPropsOfUsers {
-}
 
+}
 
 export const Users: FunctionComponent<UsersProps> = (props) => {
     const {users} = props;

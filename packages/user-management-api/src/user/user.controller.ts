@@ -1,4 +1,4 @@
-import {Controller, Get, Query, UseFilters, UseInterceptors} from '@nestjs/common';
+import {Controller, Get, Query, Param, UseFilters, UseInterceptors} from '@nestjs/common';
 import {UserService} from './user.service';
 import {Page, User} from './user.interface';
 import {CognitoErrorInterceptor} from '../cognito/cognito.interceptor'
@@ -16,7 +16,14 @@ export class UserController {
         @Query('filter') filter: string,
         @Query('startPageToken') startPageToken: string,
     ): Promise<Page<User>> {
-        return this.userService.list(Number.parseInt(limit), filter, startPageToken);
+        return this.userService.listUsers(Number.parseInt(limit), filter, startPageToken);
+    }
+
+    @Get("/:username")
+    public get(
+        @Param('username') username: string,
+    ): Promise<User> {
+        return this.userService.getUser(username);
     }
 
     @Get("/estimatedNumberOfUsers")

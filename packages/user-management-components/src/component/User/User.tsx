@@ -50,8 +50,20 @@ export const User: FunctionComponent<UserProps> = (props) => {
                     'false-icon pi-times-circle': !value
                 })}/>;
             default:
-                return value;
+                return renderDate(value);
         }
+    }
+
+    const isValidDate = (date: Date) =>
+        date instanceof Date && date.toString() !== 'Invalid Date';
+
+
+    const renderDate = (value: string | number) => {
+        if (isValidDate(new Date(value))) {
+            return new Date(value).toLocaleString();
+        }
+        return value;
+
     }
 
 

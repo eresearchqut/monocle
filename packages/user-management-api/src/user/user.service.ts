@@ -22,7 +22,7 @@ const serialiseUser = (cognitoUser: UserType | AdminGetUserCommandOutput): User 
         Enabled: enabled, UserCreateDate: created, UserLastModifiedDate: lastModified,
         UserStatus: status, Username: username
     } = cognitoUser;
-    const cognitoAttribues = "Atributes" in cognitoUser ? cognitoUser['Attributes'] : cognitoUser['UserAttributes'];
+    const cognitoAttribues = cognitoUser['Attributes'] ? cognitoUser['Attributes'] : cognitoUser['UserAttributes'];
     const attributes = cognitoAttribues.reduce((mappedValues, attribute) => {
         try {
             mappedValues[attribute.Name] = JSON.parse(attribute.Value);

@@ -27,7 +27,6 @@ import {
   PutMetadataParams,
   PutMetadataResponse,
 } from "./metadata.dto";
-import { TransformPlainToClass } from "class-transformer";
 import { VersionedErrorInterceptor } from "../../interceptor/dynamodb.interceptor";
 
 @Controller("/metadata")
@@ -35,7 +34,6 @@ export class MetadataController {
   public constructor(private metadataService: MetadataService) {}
 
   @Get("/resource/:resource")
-  @TransformPlainToClass(GetMetadataResponse)
   async getMetadata(
     @Param() params: GetMetadataParams,
     @Query() query: GetMetadataQuery
@@ -43,7 +41,8 @@ export class MetadataController {
     const metadata = await this.metadataService.getMetadata(params.resource, query.version);
     return {
       version: metadata.Data.Version,
-      groups: metadata.Data.Groups,
+      groups: Object.fromEntries(metadata.Data.Groups),
+      relationships: Object.fromEntries(metadata.Data.Relationships),
     };
   }
 
@@ -63,6 +62,7 @@ export class MetadataController {
       resource: params.resource,
       version: body.version,
       groups: body.groups,
+      relationships: body.relationships,
     };
 
     if (query?.validation === "validate") {

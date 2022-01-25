@@ -8,7 +8,7 @@ import {
   ConditionallyValidateClassAsyncGenerator,
 } from "src/decorator/validate.decorator";
 import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
-import { DEFAULT_GROUP_NAME, Metadata, MetadataEntityType } from "./metadata.entity";
+import { DEFAULT_GROUP_NAME, Metadata, MetadataEntityType, RELATIONSHIP_TYPES } from "./metadata.entity";
 import { v4 as uuidV4, NIL as NIL_UUID } from "uuid";
 import { MetadataForm, MetaDataFormType } from "./form.entity";
 import { MetadataAuthorization, MetadataAuthorizationType } from "./authorization.entity";
@@ -76,6 +76,7 @@ type MetadataProperties = {
   resource: string;
   version: string;
   groups: Map<string, { formVersion: string; authorizationVersion: string }>;
+  relationships: Map<string, { type: RELATIONSHIP_TYPES; key: string[] }>;
 };
 
 type SchemaDiffResult =
@@ -134,6 +135,7 @@ export class MetadataService {
                 },
               ],
             ]),
+            Relationships: new Map(),
           },
         },
       })
@@ -175,6 +177,7 @@ export class MetadataService {
             Resource: data.resource,
             Version: data.version,
             Groups: data.groups,
+            Relationships: data.relationships,
           },
         },
       })

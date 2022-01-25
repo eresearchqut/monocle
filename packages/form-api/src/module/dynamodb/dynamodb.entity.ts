@@ -1,4 +1,4 @@
-import { IsString, ValidateNested } from "class-validator";
+import { IsISO8601, IsString, ValidateNested } from "class-validator";
 
 export class ItemEntity<T = any, U = string> {
   @IsString()
@@ -7,7 +7,7 @@ export class ItemEntity<T = any, U = string> {
   @IsString()
   ItemType: U;
 
-  @IsString()
+  @IsISO8601()
   CreatedAt: string;
 
   @IsString()

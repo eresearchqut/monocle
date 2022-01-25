@@ -1,4 +1,4 @@
-import { Equals, IsISO8601, IsString, IsUUID, ValidateNested } from "class-validator";
+import { Equals, IsString, ValidateNested } from "class-validator";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
 import Ajv from "ajv";
 import { findFormCompiler } from "@eresearchqut/form-compiler";
@@ -10,36 +10,20 @@ const ajv = new Ajv({
 });
 addFormats(ajv);
 
-export type MetaDataFormType = ItemEntity<
-  {
-    Definition: Form;
-  },
-  "Form"
->;
+interface DataType {
+  Definition: Form;
+}
+
+export type MetaDataFormType = ItemEntity<DataType, "Form">;
 
 class MetadataFormData {
   @IsString()
   Definition: Form;
 }
 
-export class MetadataForm implements MetaDataFormType {
-  @IsUUID()
-  Id: string;
-
-  @IsString()
-  PK: string;
-
-  @IsString()
-  SK: string;
-
+export class MetadataForm extends ItemEntity<DataType, "Form"> implements MetaDataFormType {
   @Equals("Form")
   ItemType: "Form" = "Form";
-
-  @IsISO8601()
-  CreatedAt: string;
-
-  @IsString()
-  CreatedBy: string;
 
   @ValidateNested()
   Data: MetadataFormData;

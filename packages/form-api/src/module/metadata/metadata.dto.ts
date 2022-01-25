@@ -12,6 +12,7 @@ import {
 import { form as FormSchema, Form } from "@eresearchqut/form-definition";
 import { IsJsonSchema } from "src/decorator/validate.decorator";
 import { Type } from "class-transformer";
+import { RELATIONSHIP_TYPES } from "./metadata.entity";
 
 abstract class ResourceParams {
   @Matches(/[a-zA-Z0-9_]+/)
@@ -36,12 +37,24 @@ class GetMetadataResponseGroup {
   authorizationVersion: string;
 }
 
+class GetMetadataResponseRelationship {
+  @IsEnum(RELATIONSHIP_TYPES)
+  type: RELATIONSHIP_TYPES;
+
+  @IsString()
+  @ValidateNested({ each: true })
+  key: string[];
+}
+
 export class GetMetadataResponse {
   @IsSemVer()
   version: string;
 
   @ValidateNested({ each: true })
-  groups: Map<string, GetMetadataResponseGroup>;
+  groups: Record<string, GetMetadataResponseGroup>;
+
+  @ValidateNested({ each: true })
+  relationships: Record<string, GetMetadataResponseRelationship>;
 }
 
 export class PutMetadataParams extends ResourceParams {}
@@ -66,6 +79,10 @@ export class PostMetadataBody {
   @Type(() => PostMetadataBodyGroup)
   @ValidateNested({ each: true })
   groups: Map<string, PostMetadataBodyGroup>;
+
+  @Type(() => PostMetadataBodyGroup)
+  @ValidateNested({ each: true })
+  relationships: Map<string, PostMetadataBodyRelationship>;
 }
 
 class PostMetadataBodyGroup {
@@ -74,6 +91,15 @@ class PostMetadataBodyGroup {
 
   @IsUUID()
   authorizationVersion: string;
+}
+
+class PostMetadataBodyRelationship {
+  @IsEnum(RELATIONSHIP_TYPES)
+  type: RELATIONSHIP_TYPES;
+
+  @IsString()
+  @ValidateNested({ each: true })
+  key: string[];
 }
 
 export class PutMetadataResponse {

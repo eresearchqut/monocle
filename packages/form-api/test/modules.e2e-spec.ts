@@ -131,6 +131,7 @@ describe("Metadata module", () => {
             authorizationVersion: NIL_UUID,
           },
         },
+        relationships: {},
       });
 
     // Attempt re-creating metadata with the same name
@@ -228,6 +229,7 @@ describe("Metadata module", () => {
             authorizationVersion: NIL_UUID,
           },
         },
+        relationships: {},
       })
       .expect(201)
       .expect((r) => expect(r.body.pushed).toBe(true))
@@ -245,6 +247,7 @@ describe("Metadata module", () => {
             authorizationVersion: NIL_UUID,
           },
         },
+        relationships: {},
       });
   });
 });
@@ -545,6 +548,7 @@ describe("Resource module", () => {
             authorizationVersion: NIL_UUID,
           },
         },
+        relationships: {},
       })
       .expect(201);
 

@@ -1,4 +1,4 @@
-import { Equals, IsISO8601, IsSemVer, IsString, IsUUID, Matches, ValidateNested } from "class-validator";
+import { Equals, IsEnum, IsSemVer, IsString, IsUUID, Matches, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 import { v4 } from "uuid";
 import { MetadataException } from "./metadata.exception";
@@ -6,20 +6,32 @@ import { ItemEntity } from "../dynamodb/dynamodb.entity";
 
 export const DEFAULT_GROUP_NAME = "Default";
 
-export type MetadataEntityType = ItemEntity<
-  {
-    Resource: string;
-    Version: string;
-    Groups: Map<
-      string,
-      {
-        formVersion: string;
-        authorizationVersion: string;
-      }
-    >;
-  },
-  "Metadata"
->;
+export enum RELATIONSHIP_TYPES {
+  ONE_TO_ONE = "ONE_TO_ONE",
+  ONE_TO_MANY = "ONE_TO_MANY",
+  MANY_TO_MANY = "MANY_TO_MANY",
+}
+
+interface DataType {
+  Resource: string;
+  Version: string;
+  Groups: Map<
+    string,
+    {
+      formVersion: string;
+      authorizationVersion: string;
+    }
+  >;
+  Relationships: Map<
+    string,
+    {
+      type: RELATIONSHIP_TYPES;
+      key: string[];
+    }
+  >;
+}
+
+export type MetadataEntityType = ItemEntity<DataType, "Metadata">;
 
 export class MetadataData {
   @Matches(/[a-zA-Z0-9_]+/)
@@ -28,9 +40,13 @@ export class MetadataData {
   @IsSemVer()
   Version: string;
 
-  @Type(() => GroupMetadata)
   @ValidateNested({ each: true })
+  @Type(() => GroupMetadata)
   Groups: Map<string, GroupMetadata>;
+
+  @ValidateNested({ each: true })
+  @Type(() => RelationshipMetadata)
+  Relationships: Map<string, RelationshipMetadata>;
 }
 
 class GroupMetadata {
@@ -41,26 +57,21 @@ class GroupMetadata {
   authorizationVersion: string;
 }
 
-export class Metadata implements MetadataEntityType {
-  @IsString()
-  Id: string;
+class RelationshipMetadata {
+  @IsEnum(RELATIONSHIP_TYPES)
+  type: RELATIONSHIP_TYPES;
 
   @IsString()
-  PK: string;
+  @ValidateNested({ each: true })
+  key: string[];
+}
 
-  @IsString()
-  SK: string;
-
+export class Metadata extends ItemEntity<DataType, "Metadata"> implements MetadataEntityType {
   @Equals("Metadata")
   ItemType: "Metadata" = "Metadata";
 
-  @IsISO8601()
-  CreatedAt: string;
-
-  @IsString()
-  CreatedBy: string;
-
   @ValidateNested()
+  @Type(() => MetadataData)
   Data: MetadataData;
 
   getDataKey = (id: string) => {
@@ -75,7 +86,7 @@ export class Metadata implements MetadataEntityType {
   };
 
   getGroupMetadata = (group?: string): GroupMetadata => {
-    const groupMetadata = this.Data.Groups[group || DEFAULT_GROUP_NAME];
+    const groupMetadata = this.Data.Groups.get(group || DEFAULT_GROUP_NAME);
     if (groupMetadata === undefined) {
       throw new MetadataException(`Metadata group ${group} not found`);
     }

@@ -213,6 +213,6 @@ export class DynamodbRepository {
 
 export class DynamodbLogger extends Logger {
   public info(message: any, context?: string): void {
-    super.log(message, context);
+    super.debug(message, context);
   }
 }

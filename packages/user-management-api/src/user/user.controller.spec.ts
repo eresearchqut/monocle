@@ -1,18 +1,29 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from './user.controller';
+import {Test, TestingModule} from '@nestjs/testing';
+import {UserController} from './user.controller';
+import {UserService} from './user.service';
+
+class UserServiceMock {
+
+}
 
 describe('UserController', () => {
-  let controller: UserController;
+    let controller: UserController;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserController],
-    }).compile();
+    const UserServiceProvider = {
+        provide: UserService,
+        useClass: UserServiceMock,
+    };
 
-    controller = module.get<UserController>(UserController);
-  });
+    beforeEach(async () => {
+        const module: TestingModule = await Test.createTestingModule({
+            providers: [UserServiceProvider],
+            controllers: [UserController],
+        }).compile();
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+        controller = module.get<UserController>(UserController);
+    });
+
+    it('should be defined', () => {
+        expect(controller).toBeDefined();
+    });
 });

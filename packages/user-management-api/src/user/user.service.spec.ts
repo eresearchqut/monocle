@@ -3,6 +3,9 @@ import {UserService} from './user.service';
 import {CognitoClientProvider} from '../cognito/cognito.client'
 
 import {
+    AdminCreateUserCommand,
+    AdminCreateUserCommandInput,
+    AdminCreateUserCommandOutput,
     CognitoIdentityProviderClient,
     CreateUserPoolCommand,
     CreateUserPoolCommandInput
@@ -45,6 +48,7 @@ describe('UserService', () => {
 
     let userService: UserService;
     let cognitoClient: CognitoIdentityProviderClient;
+    let configService: ConfigService;
 
     const ConfigServiceProvider = {
         provide: ConfigService,
@@ -70,10 +74,28 @@ describe('UserService', () => {
         }).compile();
 
         userService = moduleRef.get<UserService>(UserService);
+        configService = moduleRef.get<ConfigService>(ConfigService);
+
+
     });
 
     it('user service should be defined', () => {
         expect(userService).toBeDefined();
+    });
+
+    it('added uesr should be listed', async () => {
+
+        await cognitoIdentityProviderClient.send(new AdminCreateUserCommand({
+            UserPoolId: configService.get('USER_POOL_ID'),
+            Username: 'aloha@example.com',
+            UserAttributes: [{Name: 'email', Value: 'aloha@example.com'}],
+            DesiredDeliveryMediums: ['EMAIL']
+        }));
+
+        const userListing = await userService.listUsers();
+        expect(userListing.nextPageToken).toBeUndefined();
+        expect(userListing.results.length).toEqual(1);
+        expect(userListing.results[0].username).toEqual('aloha@example.com');
     });
 
 });

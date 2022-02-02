@@ -35,8 +35,8 @@ export class ResourceService {
   ) {}
 
   public async getResource(input: GetResourceInput): Promise<ItemEntity | null> {
-    const { getDataKey, getGroupMetadata } = await this.metadataService.getMetadata(input.resource);
-    const key = getDataKey(input.id);
+    const { buildGetAttributes, getGroupMetadata } = await this.metadataService.getMetadata(input.resource);
+    const key = buildGetAttributes(input.id);
 
     const item = await this.dynamodbService.getItem({ table: this.configService.get("RESOURCE_TABLE"), ...key });
 
@@ -53,12 +53,19 @@ export class ResourceService {
 
   public async putResource(input: PutResourceInput): Promise<any> {
     const {
-      createDataKey,
-      getDataKey,
+      buildPutAttributes,
       getGroupMetadata,
       Data: { Resource, Version },
     } = await this.metadataService.getMetadata(input.resource, input.version);
-    const { id, key } = input.id ? { id: input.id, key: getDataKey(input.id) } : createDataKey();
+
+    const attrs = buildPutAttributes({
+      id: input.id,
+      user: "username", // TODO: insert user id
+      resource: {
+        name: Resource,
+        version: Version,
+      },
+    });
 
     if (this.configService.get("VALIDATE_RESOURCE_ON_WRITE")) {
       const { formVersion } = getGroupMetadata();
@@ -70,13 +77,7 @@ export class ResourceService {
     }
 
     const data = {
-      ...key,
-      Id: id,
-      ItemType: "Resource",
-      CreatedAt: new Date().toISOString(),
-      CreatedBy: "admin",
-      ResourceName: Resource,
-      ResourceVersion: Version,
+      ...attrs,
       Data: input.data,
     };
 
@@ -91,8 +92,8 @@ export class ResourceService {
   }
 
   public async deleteResource(input: DeleteResourceInput): Promise<any> {
-    const { getDataKey } = await this.metadataService.getMetadata(input.resource);
-    const key = getDataKey(input.id);
+    const { buildGetAttributes } = await this.metadataService.getMetadata(input.resource);
+    const key = buildGetAttributes(input.id);
 
     // TODO: run authorization policy check
 

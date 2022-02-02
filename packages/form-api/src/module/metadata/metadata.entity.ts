@@ -74,15 +74,24 @@ export class Metadata extends ItemEntity<DataType, "Metadata"> implements Metada
   @Type(() => MetadataData)
   Data: MetadataData;
 
-  getDataKey = (id: string) => {
+  buildGetAttributes = (id: string) => {
     const key = `Resource:${this.Data.Resource}#data:${id}`;
     return { PK: key, SK: key };
   };
 
-  createDataKey = () => {
-    const id = v4();
-    const key = this.getDataKey(id);
-    return { id, key };
+  buildPutAttributes = (input: { id?: string; user: string; resource: { name: string; version: string } }) => {
+    const id = input.id ?? v4();
+    const { PK, SK } = this.buildGetAttributes(id);
+    return {
+      Id: id,
+      PK,
+      SK,
+      ItemType: "Resource",
+      CreatedAt: new Date().toISOString(),
+      CreatedBy: input.user,
+      ResourceName: input.resource.name,
+      ResourceVersion: input.resource.version,
+    };
   };
 
   getGroupMetadata = (group?: string): GroupMetadata => {

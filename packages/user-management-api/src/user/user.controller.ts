@@ -1,11 +1,11 @@
 import {Controller, Get, Query, Param, UseFilters, UseInterceptors} from '@nestjs/common';
 import {UserService} from './user.service';
 import {Page, User} from './user.interface';
-import {CognitoErrorInterceptor} from '../cognito/cognito.interceptor'
+import {ClientInterceptor} from '../client/client.interceptor'
 
 
 @Controller('user')
-@UseInterceptors(new CognitoErrorInterceptor())
+@UseInterceptors(new ClientInterceptor())
 export class UserController {
     constructor(private readonly userService: UserService) {
     }

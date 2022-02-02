@@ -15,7 +15,7 @@ import {
     DescribeUserPoolCommandOutput,
     UserType
 } from '@aws-sdk/client-cognito-identity-provider';
-import {CognitoClientProvider} from '../cognito/cognito.client';
+import {CognitoClientProvider} from '../client/cognito.client';
 
 const serialiseUser = (cognitoUser: UserType | AdminGetUserCommandOutput): User => {
     const {
@@ -84,4 +84,6 @@ export class UserService {
             .send(command)
             .then(serialiseUser);
     }
+
+
 }

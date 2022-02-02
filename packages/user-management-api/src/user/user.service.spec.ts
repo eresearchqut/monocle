@@ -10,35 +10,47 @@ import {
     CreateUserPoolCommand,
     CreateUserPoolCommandInput,
 } from '@aws-sdk/client-cognito-identity-provider';
+import { CreateTableCommand, CreateTableCommandInput, DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { ConfigService } from '@nestjs/config';
+import { DynamoDBClientProvider } from '../client/dynamodb.client';
+import { v4 as uuidv4 } from 'uuid';
 
 const cognitoIdentityProviderClient = new CognitoIdentityProviderClient({
     endpoint: `http://${global.__TESTCONTAINERS_COGNITO_IP__}:${global.__TESTCONTAINERS_COGNITO_PORT_9229__}`,
 });
 
+const dynamoDBClient = new DynamoDBClient({
+    endpoint: `http://${global.__TESTCONTAINERS_DYNAMODB_IP__}:${global.__TESTCONTAINERS_DYNAMODB_PORT_8000__}`,
+});
+
 class LocalCognitoProvider {
-
-    private readonly cognitoIdentityProviderClient: CognitoIdentityProviderClient = cognitoIdentityProviderClient;
-
     public getCognitoIdentityProviderClient(): CognitoIdentityProviderClient {
-        return this.cognitoIdentityProviderClient;
+        return cognitoIdentityProviderClient;
     }
-
 }
 
-class TestConfigService {
-
-    private userPoolId: string;
-
-    constructor(userPoolId: string) {
-        this.userPoolId = userPoolId;
+class LocalDynamoDBProvider {
+    public getDynamoDBClient(): DynamoDBClient {
+        return dynamoDBClient;
     }
+}
 
+class TestConfigServiceProvider {
+
+    private readonly userPoolId: string;
+    private readonly rbacTableName: string;
+
+    constructor(userPoolId: string, rbacTableName: string) {
+        this.userPoolId = userPoolId;
+        this.rbacTableName = rbacTableName;
+    }
 
     public get(key: string): string {
         switch (key) {
             case 'USER_POOL_ID':
                 return this.userPoolId;
+            case 'RBAC_TABLE_NAME':
+                return this.rbacTableName;
         }
     }
 }
@@ -61,7 +73,24 @@ describe('UserService', () => {
                 UserPoolId: userPoolId,
             } as CreateUserPoolClientCommandInput))
                 .then((output) => output.UserPoolClient.ClientId);
-            return new TestConfigService(userPoolId);
+
+            const rbacTableName: string = await dynamoDBClient.send(new CreateTableCommand(
+                {
+                    TableName: `RBAC_${uuidv4()}`,
+                    KeySchema: [{ AttributeName: 'pk', KeyType: 'HASH' }, { AttributeName: 'sk', KeyType: 'RANGE' }],
+                    AttributeDefinitions: [
+                        { AttributeName: 'pk', AttributeType: 'S' },
+                        { AttributeName: 'sk', AttributeType: 'S' },
+                    ],
+                    BillingMode: 'PAY_PER_REQUEST'
+                } as CreateTableCommandInput,
+            )).then((output) => output.TableDescription.TableName)
+                .catch((error) =>{
+                    console.log(error);
+                    return "error"
+                } )
+
+            return new TestConfigServiceProvider(userPoolId, rbacTableName);
         },
     };
 
@@ -70,11 +99,16 @@ describe('UserService', () => {
         useClass: LocalCognitoProvider,
     };
 
+    const LocalDynamoDBClientProvider = {
+        provide: DynamoDBClientProvider,
+        useClass: LocalDynamoDBProvider,
+    };
+
 
     beforeEach(async () => {
 
         const moduleRef = await Test.createTestingModule({
-            providers: [LocalCognitoClientProvider, ConfigServiceProvider, UserService],
+            providers: [LocalCognitoClientProvider, LocalDynamoDBClientProvider, ConfigServiceProvider, UserService],
         }).compile();
 
         userService = moduleRef.get<UserService>(UserService);

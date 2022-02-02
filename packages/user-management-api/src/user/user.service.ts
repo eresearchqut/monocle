@@ -1,26 +1,26 @@
-import {Injectable} from '@nestjs/common';
-import {Page, User} from './user.interface';
-import {ConfigService} from '@nestjs/config';
+import { Injectable } from '@nestjs/common';
+import { Page, User } from './user.interface';
+import { ConfigService } from '@nestjs/config';
 
 import {
-    CognitoIdentityProviderClient,
-    ListUsersCommand,
-    ListUsersCommandInput,
-    ListUsersCommandOutput,
     AdminGetUserCommand,
     AdminGetUserCommandInput,
     AdminGetUserCommandOutput,
+    CognitoIdentityProviderClient,
     DescribeUserPoolCommand,
     DescribeUserPoolCommandInput,
     DescribeUserPoolCommandOutput,
-    UserType
+    ListUsersCommand,
+    ListUsersCommandInput,
+    ListUsersCommandOutput,
+    UserType,
 } from '@aws-sdk/client-cognito-identity-provider';
-import {CognitoClientProvider} from '../client/cognito.client';
+import { CognitoClientProvider } from '../client/cognito.client';
 
 const serialiseUser = (cognitoUser: UserType | AdminGetUserCommandOutput): User => {
     const {
         Enabled: enabled, UserCreateDate: created, UserLastModifiedDate: lastModified,
-        UserStatus: status, Username: username
+        UserStatus: status, Username: username,
     } = cognitoUser;
     const cognitoAttribues = cognitoUser['Attributes'] ? cognitoUser['Attributes'] : cognitoUser['UserAttributes'];
     const attributes = cognitoAttribues.reduce((mappedValues, attribute) => {
@@ -30,23 +30,26 @@ const serialiseUser = (cognitoUser: UserType | AdminGetUserCommandOutput): User 
             mappedValues[attribute.Name] = attribute.Value;
         }
         return mappedValues;
-    }, {})
+    }, {});
 
     return {
-        enabled, created, lastModified, status, username, attributes
-    }
-}
+        enabled, created, lastModified, status, username, attributes,
+    };
+};
 
-const USER_POOL_ID_ENV = "USER_POOL_ID"
+const USER_POOL_ID_ENV = 'USER_POOL_ID';
+const RBAC_TABLE_NAME_ENV = 'RBAC_TABLE_NAME';
 
 @Injectable()
 export class UserService {
     private readonly cognitoIdentityProviderClient: CognitoIdentityProviderClient;
     private readonly userPoolId: string;
+    private readonly rbacTableName: string;
 
     constructor(private readonly configService: ConfigService,
                 private readonly cognitoClientProvider: CognitoClientProvider) {
-        this.userPoolId = configService.get(USER_POOL_ID_ENV)
+        this.userPoolId = configService.get(USER_POOL_ID_ENV);
+        this.rbacTableName = configService.get(RBAC_TABLE_NAME_ENV);
         this.cognitoIdentityProviderClient =
             cognitoClientProvider.getCognitoIdentityProviderClient();
     }
@@ -65,13 +68,13 @@ export class UserService {
             UserPoolId: this.userPoolId,
             Limit: limit,
             Filter: filter,
-            PaginationToken: startPageToken
+            PaginationToken: startPageToken,
         } as ListUsersCommandInput);
         return this.cognitoIdentityProviderClient
             .send(command)
             .then((result: ListUsersCommandOutput) => ({
                 results: result.Users.map(serialiseUser),
-                nextPageToken: result.PaginationToken
+                nextPageToken: result.PaginationToken,
             }));
     }
 

@@ -41,8 +41,11 @@ export class MetadataController {
     const metadata = await this.metadataService.getMetadata(params.resource, query.version);
     return {
       version: metadata.Data.Version,
-      groups: Object.fromEntries(metadata.Data.Groups),
-      relationships: Object.fromEntries(metadata.Data.Relationships),
+      schemas: {
+        formVersion: metadata.Data.Schemas.FormVersion,
+        authorizationVersion: metadata.Data.Schemas.AuthorizationVersion,
+        relationshipsVersion: metadata.Data.Schemas.RelationshipsVersion,
+      },
     };
   }
 
@@ -61,8 +64,7 @@ export class MetadataController {
     const data = {
       resource: params.resource,
       version: body.version,
-      groups: body.groups,
-      relationships: body.relationships,
+      schemas: body.schemas,
     };
 
     if (query?.validation === "validate") {

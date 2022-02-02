@@ -29,12 +29,15 @@ export class GetMetadataParams extends ResourceParams {}
 
 export class GetMetadataQuery extends OptionalSemverQuery {}
 
-class GetMetadataResponseGroup {
+class GetMetadataResponseSchemas {
   @IsUUID()
   formVersion: string;
 
   @IsUUID()
   authorizationVersion: string;
+
+  @IsUUID()
+  relationshipsVersion: string;
 }
 
 class GetMetadataResponseRelationship {
@@ -50,11 +53,8 @@ export class GetMetadataResponse {
   @IsSemVer()
   version: string;
 
-  @ValidateNested({ each: true })
-  groups: Record<string, GetMetadataResponseGroup>;
-
-  @ValidateNested({ each: true })
-  relationships: Record<string, GetMetadataResponseRelationship>;
+  @ValidateNested()
+  schemas: GetMetadataResponseSchemas;
 }
 
 export class PutMetadataParams extends ResourceParams {}
@@ -72,25 +72,24 @@ export class PostMetadataQuery {
   validation?: ValidationStrategy;
 }
 
-export class PostMetadataBody {
-  @IsSemVer()
-  version: string;
-
-  @Type(() => PostMetadataBodyGroup)
-  @ValidateNested({ each: true })
-  groups: Map<string, PostMetadataBodyGroup>;
-
-  @Type(() => PostMetadataBodyGroup)
-  @ValidateNested({ each: true })
-  relationships: Map<string, PostMetadataBodyRelationship>;
-}
-
 class PostMetadataBodyGroup {
   @IsUUID()
   formVersion: string;
 
   @IsUUID()
   authorizationVersion: string;
+
+  @IsUUID()
+  relationshipsVersion: string;
+}
+
+export class PostMetadataBody {
+  @IsSemVer()
+  version: string;
+
+  @Type(() => PostMetadataBodyGroup)
+  @ValidateNested()
+  schemas: PostMetadataBodyGroup;
 }
 
 class PostMetadataBodyRelationship {

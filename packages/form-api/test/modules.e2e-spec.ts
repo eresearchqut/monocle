@@ -125,13 +125,11 @@ describe("Metadata module", () => {
       .expect(200)
       .expect({
         version: "0.0.0",
-        groups: {
-          Default: {
-            formVersion: NIL_UUID,
-            authorizationVersion: NIL_UUID,
-          },
+        schemas: {
+          formVersion: NIL_UUID,
+          authorizationVersion: NIL_UUID,
+          relationshipsVersion: NIL_UUID,
         },
-        relationships: {},
       });
 
     // Attempt re-creating metadata with the same name
@@ -223,13 +221,11 @@ describe("Metadata module", () => {
       .post(`/metadata/resource/${resourceName}?validation=validate`)
       .send({
         version: "1.0.0",
-        groups: {
-          Default: {
-            formVersion: formId,
-            authorizationVersion: NIL_UUID,
-          },
+        schemas: {
+          formVersion: formId,
+          authorizationVersion: NIL_UUID,
+          relationshipsVersion: NIL_UUID,
         },
-        relationships: {},
       })
       .expect(201)
       .expect((r) => expect(r.body.pushed).toBe(true))
@@ -241,13 +237,11 @@ describe("Metadata module", () => {
       .expect(200)
       .expect({
         version: "1.0.0",
-        groups: {
-          Default: {
-            formVersion: formId,
-            authorizationVersion: NIL_UUID,
-          },
+        schemas: {
+          formVersion: formId,
+          authorizationVersion: NIL_UUID,
+          relationshipsVersion: NIL_UUID,
         },
-        relationships: {},
       });
   });
 });
@@ -542,13 +536,11 @@ describe("Resource module", () => {
       .post(`/metadata/resource/${resourceName}?validation=validate`)
       .send({
         version: "1.0.0",
-        groups: {
-          Default: {
-            formVersion: formId,
-            authorizationVersion: NIL_UUID,
-          },
+        schemas: {
+          formVersion: formId,
+          authorizationVersion: NIL_UUID,
+          relationshipsVersion: NIL_UUID,
         },
-        relationships: {},
       })
       .expect(201);
 

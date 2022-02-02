@@ -35,14 +35,16 @@ export class ResourceService {
   ) {}
 
   public async getResource(input: GetResourceInput): Promise<ItemEntity | null> {
-    const { buildGetAttributes, getGroupMetadata } = await this.metadataService.getMetadata(input.resource);
+    const {
+      buildGetAttributes,
+      Data: { Schemas },
+    } = await this.metadataService.getMetadata(input.resource);
     const key = buildGetAttributes(input.id);
 
     const item = await this.dynamodbService.getItem({ table: this.configService.get("RESOURCE_TABLE"), ...key });
 
     if (this.configService.get("VALIDATE_RESOURCE_ON_READ")) {
-      const { formVersion } = getGroupMetadata();
-      const { validate } = await this.metadataService.getForm(formVersion);
+      const { validate } = await this.metadataService.getForm(Schemas.FormVersion);
       validate(item);
     }
 
@@ -54,8 +56,7 @@ export class ResourceService {
   public async putResource(input: PutResourceInput): Promise<any> {
     const {
       buildPutAttributes,
-      getGroupMetadata,
-      Data: { Resource, Version },
+      Data: { Resource, Version, Schemas },
     } = await this.metadataService.getMetadata(input.resource, input.version);
 
     const attrs = buildPutAttributes({
@@ -68,8 +69,7 @@ export class ResourceService {
     });
 
     if (this.configService.get("VALIDATE_RESOURCE_ON_WRITE")) {
-      const { formVersion } = getGroupMetadata();
-      const { validate } = await this.metadataService.getForm(formVersion);
+      const { validate } = await this.metadataService.getForm(Schemas.FormVersion);
       const errors = validate(input.data);
       if (errors) {
         throw new ValidationException(errors);

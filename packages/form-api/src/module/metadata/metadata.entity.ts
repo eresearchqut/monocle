@@ -1,10 +1,7 @@
 import { Equals, IsEnum, IsSemVer, IsString, IsUUID, Matches, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 import { v4 } from "uuid";
-import { MetadataException } from "./metadata.exception";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
-
-export const DEFAULT_GROUP_NAME = "Default";
 
 export enum RELATIONSHIP_TYPES {
   ONE_TO_ONE = "ONE_TO_ONE",
@@ -15,23 +12,25 @@ export enum RELATIONSHIP_TYPES {
 interface DataType {
   Resource: string;
   Version: string;
-  Groups: Map<
-    string,
-    {
-      formVersion: string;
-      authorizationVersion: string;
-    }
-  >;
-  Relationships: Map<
-    string,
-    {
-      type: RELATIONSHIP_TYPES;
-      key: string[];
-    }
-  >;
+  Schemas: {
+    FormVersion: string;
+    AuthorizationVersion: string;
+    RelationshipsVersion: string;
+  };
 }
 
 export type MetadataEntityType = ItemEntity<DataType, "Metadata">;
+
+class SchemaData {
+  @IsUUID()
+  FormVersion: string;
+
+  @IsUUID()
+  AuthorizationVersion: string;
+
+  @IsUUID()
+  RelationshipsVersion: string;
+}
 
 export class MetadataData {
   @Matches(/[a-zA-Z0-9_]+/)
@@ -40,30 +39,9 @@ export class MetadataData {
   @IsSemVer()
   Version: string;
 
-  @ValidateNested({ each: true })
-  @Type(() => GroupMetadata)
-  Groups: Map<string, GroupMetadata>;
-
-  @ValidateNested({ each: true })
-  @Type(() => RelationshipMetadata)
-  Relationships: Map<string, RelationshipMetadata>;
-}
-
-class GroupMetadata {
-  @IsUUID()
-  formVersion: string;
-
-  @IsUUID()
-  authorizationVersion: string;
-}
-
-class RelationshipMetadata {
-  @IsEnum(RELATIONSHIP_TYPES)
-  type: RELATIONSHIP_TYPES;
-
-  @IsString()
-  @ValidateNested({ each: true })
-  key: string[];
+  @ValidateNested()
+  @Type(() => SchemaData)
+  Schemas: SchemaData;
 }
 
 export class Metadata extends ItemEntity<DataType, "Metadata"> implements MetadataEntityType {
@@ -92,13 +70,5 @@ export class Metadata extends ItemEntity<DataType, "Metadata"> implements Metada
       ResourceName: input.resource.name,
       ResourceVersion: input.resource.version,
     };
-  };
-
-  getGroupMetadata = (group?: string): GroupMetadata => {
-    const groupMetadata = this.Data.Groups.get(group || DEFAULT_GROUP_NAME);
-    if (groupMetadata === undefined) {
-      throw new MetadataException(`Metadata group ${group} not found`);
-    }
-    return groupMetadata;
   };
 }

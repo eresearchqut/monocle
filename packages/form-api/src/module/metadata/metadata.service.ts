@@ -8,7 +8,7 @@ import {
   ConditionallyValidateClassAsyncGenerator,
 } from "src/decorator/validate.decorator";
 import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
-import { DEFAULT_GROUP_NAME, Metadata, MetadataEntityType, RELATIONSHIP_TYPES } from "./metadata.entity";
+import { Metadata, MetadataEntityType } from "./metadata.entity";
 import { v4 as uuidV4, NIL as NIL_UUID } from "uuid";
 import { MetadataForm, MetaDataFormType } from "./form.entity";
 import { MetadataAuthorization, MetadataAuthorizationType } from "./authorization.entity";
@@ -75,8 +75,7 @@ interface PutMetadataInput {
 type MetadataProperties = {
   resource: string;
   version: string;
-  groups: Map<string, { formVersion: string; authorizationVersion: string }>;
-  relationships: Map<string, { type: RELATIONSHIP_TYPES; key: string[] }>;
+  schemas: { formVersion: string; authorizationVersion: string; relationshipsVersion: string };
 };
 
 type SchemaDiffResult =
@@ -95,7 +94,11 @@ interface ValidationResult {
   valid: boolean;
   message?: string;
   lastVersion?: string;
-  results?: { [groupName: string]: SchemaDiffResult };
+  results?: {
+    message: string;
+    addedSchema?: any;
+    removedSchema?: any;
+  };
 }
 
 @Injectable()
@@ -126,16 +129,11 @@ export class MetadataService {
           Data: {
             Resource: resource,
             Version: INITIAL_SEMVER,
-            Groups: new Map([
-              [
-                DEFAULT_GROUP_NAME,
-                {
-                  formVersion: NIL_UUID,
-                  authorizationVersion: NIL_UUID,
-                },
-              ],
-            ]),
-            Relationships: new Map(),
+            Schemas: {
+              FormVersion: NIL_UUID,
+              AuthorizationVersion: NIL_UUID,
+              RelationshipsVersion: NIL_UUID,
+            },
           },
         },
       })
@@ -147,7 +145,7 @@ export class MetadataService {
   async pushMetadataVersion(
     data: MetadataProperties,
     validation: "validate"
-  ): Promise<{ pushed: boolean; validation: SchemaDiffResult }>;
+  ): Promise<{ pushed: boolean; validation: ValidationResult }>;
   async pushMetadataVersion(
     data: MetadataProperties,
     validation: "none" | "validate"
@@ -176,8 +174,11 @@ export class MetadataService {
           Data: {
             Resource: data.resource,
             Version: data.version,
-            Groups: data.groups,
-            Relationships: data.relationships,
+            Schemas: {
+              FormVersion: data.schemas.formVersion,
+              AuthorizationVersion: data.schemas.authorizationVersion,
+              RelationshipsVersion: data.schemas.relationshipsVersion,
+            },
           },
         },
       })
@@ -230,6 +231,7 @@ export class MetadataService {
         predicate: (oldVersion) => semverGte(newMetadata.version, oldVersion.Data.Version),
       })
       .then((oldVersion) => oldVersion?.Data.Version);
+
     if (lastVersion === undefined) {
       return {
         valid: false,
@@ -244,38 +246,21 @@ export class MetadataService {
     } else {
       const [oldSemver, newSemver] = [lastVersion, newMetadata.version].map((version) => new SemVer(version));
       const oldMetadata = await this.getMetadata(newMetadata.resource, oldSemver.raw);
-      const oldGroups = oldMetadata.Data.Groups;
-      const newGroups = newMetadata.groups;
+
+      const [oldForm, newForm] = await Promise.all([
+        this.getForm(oldMetadata.Data.Schemas.FormVersion),
+        this.getForm(newMetadata.schemas.formVersion),
+      ]);
+
       const majorBump = oldSemver.major < newSemver.major;
-
-      if (!majorBump && Object.keys(oldGroups).some((group) => newGroups[group] === undefined)) {
-        return {
-          valid: majorBump,
-          message: "Groups found in previous version that have been removed",
-          lastVersion,
-        };
-      }
-
       const expected = majorBump ? "incompatible" : "compatible";
-      const diffs = await Promise.all(
-        Object.entries(oldGroups).map(async ([oldGroup, oldGroupData]) => {
-          const [oldForm, newForm] = await Promise.all([
-            this.getForm(oldGroupData.formVersion),
-            this.getForm(newGroups[oldGroup].formVersion),
-          ]);
-          return {
-            group: oldGroup,
-            diff: await this.diffSchemas(oldForm.getSchema(), newForm.getSchema(), expected),
-          };
-        })
-      );
+      const diff = await this.diffSchemas(oldForm.getSchema(), newForm.getSchema(), expected);
 
-      const invalid = diffs.filter(({ diff }) => !diff.valid);
       return {
-        valid: invalid.length === 0,
-        message: `${invalid.length} invalid schemas found`,
+        valid: diff.valid,
+        message: `Invalid schema difference found`,
         lastVersion,
-        results: Object.fromEntries(diffs.map(({ group, diff }) => [group, diff])),
+        results: diff,
       };
     }
   }

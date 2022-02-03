@@ -139,6 +139,8 @@ describe("Metadata module", () => {
       .expect((r) => r.body.message === "Item already exists");
   });
 
+  it("Can retrieve the empty form", () => request(app.getHttpServer()).get(`/metadata/form/${NIL_UUID}`).expect(200));
+
   it("Can add a new form", async () => {
     const formData = {
       name: "TestForm",

@@ -8,7 +8,7 @@ import {
   ConditionallyValidateClassAsyncGenerator,
 } from "src/decorator/validate.decorator";
 import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
-import { Metadata, MetadataEntityType } from "./metadata.entity";
+import { Metadata, MetadataEntityType, RELATIONSHIP_TYPES } from "./metadata.entity";
 import { v4 as uuidV4, NIL as NIL_UUID } from "uuid";
 import { MetadataForm, MetaDataFormType } from "./form.entity";
 import { MetadataAuthorization, MetadataAuthorizationType } from "./authorization.entity";
@@ -22,6 +22,7 @@ import { TransformAsyncGeneratorPlainToClass } from "../../decorator/transform.d
 import Ajv, { ValidateFunction } from "ajv";
 import addFormats from "ajv-formats";
 import { Form, form } from "@eresearchqut/form-definition";
+import { MetadataRelationships, MetadataRelationshipsType } from "./relationships.entity";
 
 const INITIAL_SEMVER = "0.0.0";
 
@@ -43,12 +44,23 @@ const EMPTY_FORM: MetaDataFormType = {
 
 const EMPTY_AUTHORIZATION: MetadataAuthorizationType = {
   ...buildFormItemKey(NIL_UUID),
-  Id: NIL_UUID + "a",
+  Id: NIL_UUID,
   ItemType: "Authorization",
   CreatedAt: new Date().toISOString(),
   CreatedBy: SYSTEM_USER,
   Data: {
     Policy: "",
+  },
+};
+
+const EMPTY_RELATIONSHIPS: MetadataRelationshipsType = {
+  ...buildRelationshipsItemKey(NIL_UUID),
+  Id: NIL_UUID,
+  ItemType: "Relationships",
+  CreatedAt: new Date().toISOString(),
+  CreatedBy: SYSTEM_USER,
+  Data: {
+    Relationships: [],
   },
 };
 
@@ -67,10 +79,20 @@ function buildAuthorizationItemKey(authorization: string) {
   return { PK: key, SK: key };
 }
 
+function buildRelationshipsItemKey(authorization: string) {
+  const key = `Relationships:${authorization}`;
+  return { PK: key, SK: key };
+}
+
 interface PutMetadataInput {
   version: string;
   metadata: Metadata;
 }
+
+type PutRelationshipsInput = {
+  key: string[];
+  type: RELATIONSHIP_TYPES;
+}[];
 
 type MetadataProperties = {
   resource: string;
@@ -353,7 +375,8 @@ export class MetadataService {
           },
         },
       })
-      .then(() => ({ created: true, id: id }));
+      .then(() => ({ created: true, id }))
+      .catch((err) => (err.code === "ConditionalCheckFailed" ? { created: false } : Promise.reject(err)));
   }
 
   @ConditionallyValidateClassAsync("VALIDATE_METADATA_ON_READ")
@@ -376,7 +399,9 @@ export class MetadataService {
     return item;
   }
 
-  public async putAuthorization(policy: string): Promise<boolean> {
+  public async putAuthorization(policy: string): Promise<{ created: false }>;
+  public async putAuthorization(policy: string): Promise<{ created: true; id: string }>;
+  public async putAuthorization(policy: string): Promise<{ created: boolean; id?: string }> {
     const id = uuidV4();
     const key = buildAuthorizationItemKey(id);
     return this.dynamodbService
@@ -393,7 +418,50 @@ export class MetadataService {
           },
         },
       })
-      .then(() => true)
-      .catch((err) => (err.code === "ConditionalCheckFailed" ? false : Promise.reject(err)));
+      .then(() => ({ created: true, id }))
+      .catch((err) => (err.code === "ConditionalCheckFailed" ? { created: false } : Promise.reject(err)));
+  }
+
+  @ConditionallyValidateClassAsync("VALIDATE_METADATA_ON_READ")
+  @TransformPlainToClass(MetadataAuthorization)
+  public async getRelationships(policy: string): Promise<MetadataRelationships> {
+    if (policy === NIL_UUID) {
+      // Must cast to MetadataRelationships because transform decorator cannot change method signature
+      return EMPTY_RELATIONSHIPS as MetadataRelationships;
+    }
+
+    const key = buildRelationshipsItemKey(policy);
+
+    const item = await this.dynamodbService.getItem<MetadataRelationships>({
+      table: this.configService.get("RESOURCE_TABLE"),
+      ...key,
+    });
+    if (item === null) {
+      throw new MetadataException(`Failed to retrieve authorization policy for resource ${policy}`);
+    }
+    return item;
+  }
+
+  public async putRelationships(relationships: PutRelationshipsInput): Promise<{ created: false }>;
+  public async putRelationships(relationships: PutRelationshipsInput): Promise<{ created: true; id: string }>;
+  public async putRelationships(relationships: PutRelationshipsInput): Promise<{ created: boolean; id?: string }> {
+    const id = uuidV4();
+    const key = buildRelationshipsItemKey(id);
+    return this.dynamodbService
+      .createItem<MetadataRelationshipsType>({
+        table: this.configService.get("RESOURCE_TABLE"),
+        item: {
+          ...key,
+          Id: id,
+          ItemType: "Relationships",
+          CreatedAt: new Date().toISOString(),
+          CreatedBy: SYSTEM_USER,
+          Data: {
+            Relationships: relationships.map((r) => ({ Key: r.key, Type: r.type })),
+          },
+        },
+      })
+      .then(() => ({ created: true, id }))
+      .catch((err) => (err.code === "ConditionalCheckFailed" ? { created: false } : Promise.reject(err)));
   }
 }

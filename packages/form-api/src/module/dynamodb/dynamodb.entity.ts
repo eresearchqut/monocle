@@ -1,6 +1,6 @@
 import { IsISO8601, IsString, ValidateNested } from "class-validator";
 
-export class ItemEntity<T = any, U = string> {
+export abstract class ItemEntity<T = any, U = string> {
   @IsString()
   Id: string;
 

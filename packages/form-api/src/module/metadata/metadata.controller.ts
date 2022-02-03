@@ -19,6 +19,8 @@ import {
   GetMetadataParams,
   GetMetadataQuery,
   GetMetadataResponse,
+  GetRelationshipsParams,
+  GetRelationshipsResponse,
   PostMetadataBody,
   PostMetadataParams,
   PostMetadataQuery,
@@ -26,6 +28,7 @@ import {
   PutFormBody,
   PutMetadataParams,
   PutMetadataResponse,
+  PutRelationshipsBody,
 } from "./metadata.dto";
 import { VersionedErrorInterceptor } from "../../interceptor/dynamodb.interceptor";
 
@@ -94,7 +97,7 @@ export class MetadataController {
     }
   }
 
-  @Get("/form/:authorizationId")
+  @Get("/authorization/:authorizationId")
   async getAuthorization(@Param() params: GetAuthorizationParams): Promise<GetAuthorizationResponse> {
     const authorization = await this.metadataService.getAuthorization(params.authorizationId);
     return {
@@ -104,6 +107,29 @@ export class MetadataController {
 
   @Put("/authorization")
   async putAuthorization(@Body() body: PutAuthorizationBody) {
-    return { created: await this.metadataService.putAuthorization(body.policy) };
+    const result = await this.metadataService.putAuthorization(body.policy);
+    if (result.created) {
+      return result;
+    } else {
+      throw new HttpException("Fail to create authorization policy", HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Get("/relationships/:relationshipsId")
+  async getRelationships(@Param() params: GetRelationshipsParams): Promise<GetRelationshipsResponse> {
+    const relationships = await this.metadataService.getRelationships(params.relationshipsId);
+    return {
+      relationships: relationships.Data.Relationships.map((r) => ({ key: r.Key, type: r.Type })),
+    };
+  }
+
+  @Put("/relationships")
+  async putRelationships(@Body() body: PutRelationshipsBody) {
+    const result = await this.metadataService.putRelationships(body.relationships);
+    if (result.created) {
+      return result;
+    } else {
+      throw new HttpException("Fail to create relationships", HttpStatus.BAD_REQUEST);
+    }
   }
 }

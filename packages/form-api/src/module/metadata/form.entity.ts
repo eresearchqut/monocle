@@ -4,6 +4,8 @@ import Ajv from "ajv";
 import { findFormCompiler } from "@eresearchqut/form-compiler";
 import addFormats from "ajv-formats";
 import { Form } from "@eresearchqut/form-definition";
+import { IsJsonSchema } from "../../decorator/validate.decorator";
+import { form as FormSchema } from "@eresearchqut/form-definition/dist/schema";
 
 const ajv = new Ajv({
   allErrors: true,
@@ -17,7 +19,9 @@ interface DataType {
 export type MetaDataFormType = ItemEntity<DataType, "Form">;
 
 class MetadataFormData {
-  @IsString()
+  @IsJsonSchema(FormSchema, {
+    allowUnionTypes: true,
+  })
   Definition: Form;
 }
 

@@ -140,3 +140,26 @@ export class PutAuthorizationBody {
   @IsString()
   policy: string;
 }
+
+export class GetRelationshipsParams {
+  @IsUUID()
+  relationshipsId: string;
+}
+
+class Relationship {
+  @IsString({ each: true })
+  key: string[];
+
+  @IsEnum(RELATIONSHIP_TYPES)
+  type: RELATIONSHIP_TYPES;
+}
+
+export class GetRelationshipsResponse {
+  @ValidateNested({ each: true })
+  relationships: Relationship[];
+}
+
+export class PutRelationshipsBody {
+  @ValidateNested({ each: true })
+  relationships: Relationship[];
+}

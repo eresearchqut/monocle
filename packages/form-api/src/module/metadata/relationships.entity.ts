@@ -3,14 +3,14 @@ import { ItemEntity } from "../dynamodb/dynamodb.entity";
 import { RELATIONSHIP_TYPES } from "./metadata.entity";
 
 interface DataType {
-  Relationships: Map<string, Relationship>;
+  Relationships: Relationship[];
 }
 
 export type MetadataRelationshipsType = ItemEntity<DataType, "Relationships">;
 
 class MetadataRelationshipData {
   @ValidateNested({ each: true })
-  Relationships: Map<string, Relationship>;
+  Relationships: Relationship[];
 }
 
 class Relationship {

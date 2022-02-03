@@ -77,18 +77,21 @@ describe('UserService', () => {
             const rbacTableName: string = await dynamoDBClient.send(new CreateTableCommand(
                 {
                     TableName: `RBAC_${uuidv4()}`,
-                    KeySchema: [{ AttributeName: 'pk', KeyType: 'HASH' }, { AttributeName: 'sk', KeyType: 'RANGE' }],
-                    AttributeDefinitions: [
-                        { AttributeName: 'pk', AttributeType: 'S' },
-                        { AttributeName: 'sk', AttributeType: 'S' },
+                    KeySchema: [
+                        { AttributeName: 'PK', KeyType: 'HASH' },
+                        { AttributeName: 'SK', KeyType: 'RANGE' },
                     ],
-                    BillingMode: 'PAY_PER_REQUEST'
+                    AttributeDefinitions: [
+                        { AttributeName: 'PK', AttributeType: 'S' },
+                        { AttributeName: 'SK', AttributeType: 'S' },
+                    ],
+                    BillingMode: 'PAY_PER_REQUEST',
                 } as CreateTableCommandInput,
             )).then((output) => output.TableDescription.TableName)
-                .catch((error) =>{
+                .catch((error) => {
                     console.log(error);
-                    return "error"
-                } )
+                    return 'error';
+                });
 
             return new TestConfigServiceProvider(userPoolId, rbacTableName);
         },
@@ -121,7 +124,7 @@ describe('UserService', () => {
         expect(userService).toBeDefined();
     });
 
-    it('added uesr should be listed', async () => {
+    it('added user should be listed', async () => {
 
         await cognitoIdentityProviderClient.send(new AdminCreateUserCommand({
             UserPoolId: configService.get('USER_POOL_ID'),
@@ -135,6 +138,25 @@ describe('UserService', () => {
         expect(userListing.nextPageToken).toBeUndefined();
         expect(userListing.results.length).toEqual(1);
         expect(userListing.results[0].username).toEqual('aloha@example.com');
+    });
+
+
+    it('added user to group and check group membership', async () => {
+        await userService
+            .addUserToGroup('tenant_a', 'application_a', 'user_a', 'group_a');
+        const userGroups = await userService
+            .getUserGroups('tenant_a', 'application_a', 'user_a');
+        expect(userGroups).toContain('group_a');
+        expect(userGroups).not.toContain('group_b');
+    });
+
+    it('added user to role and check role membership', async () => {
+        await userService
+            .addUserToRole('tenant_a', 'application_a', 'user_a', 'role_a')
+        const userRoles = await userService
+            .getUserRoles('tenant_a', 'application_a', 'user_a')
+        expect(userRoles).toContain('role_a');
+        expect(userRoles).not.toContain('role_b');
     });
 
 });

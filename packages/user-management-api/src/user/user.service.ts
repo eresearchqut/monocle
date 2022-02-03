@@ -17,6 +17,7 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider';
 
 import {
+    DeleteItemCommand, DeleteItemCommandInput,
     DynamoDBClient,
     PutItemCommand,
     PutItemCommandInput,
@@ -142,6 +143,40 @@ export class UserService {
         return this.addAssociation(tenant_id, application_id, group_id, RBAC_GROUP_PREFIX, role_id, RBAC_ROLE_PREFIX);
     }
 
+    /**
+     * Remove a user from a role for the given application and tenant
+     * @param tenant_id
+     * @param application_id
+     * @param user_id
+     * @param role_id
+     */
+    public removeUserFromRole(tenant_id: string, application_id: string, user_id: string, role_id: string) {
+        return this.removeAssociation(tenant_id, application_id, user_id, RBAC_USER_PREFIX, role_id, RBAC_ROLE_PREFIX);
+    }
+
+
+    /**
+     * Remove user from a group for the given application and tenant
+     * @param tenant_id
+     * @param application_id
+     * @param user_id
+     * @param group_id
+     */
+    public removeUserFromGroup(tenant_id: string, application_id: string, user_id: string, group_id: string) {
+        return this.removeAssociation(tenant_id, application_id, user_id, RBAC_USER_PREFIX, group_id, RBAC_GROUP_PREFIX);
+    }
+
+    /**
+     * Remove a role from a group for the given application and tenant.
+     * @param tenant_id
+     * @param application_id
+     * @param role_id
+     * @param group_id
+     */
+    public removeRoleFromGroup(tenant_id: string, application_id: string, role_id: string, group_id: string) {
+        return this.removeAssociation(tenant_id, application_id, group_id, RBAC_GROUP_PREFIX, role_id, RBAC_ROLE_PREFIX);
+    }
+
 
     private addAssociation(tenant_id: string, application_id: string, id: string, id_prefix: string, association_id: string, association_prefix: string) {
         const command = new PutItemCommand({
@@ -151,6 +186,17 @@ export class UserService {
                 [RBAC_SK_ATTRIBUTE_NAME]: `${association_prefix}:${association_id}`,
             }),
         } as PutItemCommandInput);
+        return this.dynamoDBClient.send(command);
+    }
+
+    private removeAssociation(tenant_id: string, application_id: string, id: string, id_prefix: string, association_id: string, association_prefix: string) {
+        const command = new DeleteItemCommand({
+            TableName: this.rbacTableName,
+            Key: marshall({
+                [RBAC_PK_ATTRIBUTE_NAME]: `${tenant_id}:${application_id}:${id_prefix}:${id}`,
+                [RBAC_SK_ATTRIBUTE_NAME]: `${association_prefix}:${association_id}`,
+            }),
+        } as DeleteItemCommandInput);
         return this.dynamoDBClient.send(command);
     }
 

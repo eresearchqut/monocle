@@ -141,46 +141,73 @@ describe('UserService', () => {
     });
 
 
-    it('added user to group and check group membership', async () => {
+    it('add and remove user from group and check group membership', async () => {
         await userService
             .addUserToGroup('tenant_a', 'application_a', 'user_a', 'group_a');
-        const userGroups = await userService
+        let userGroups = await userService
             .getUserGroups('tenant_a', 'application_a', 'user_a');
         expect(userGroups).toContain('group_a');
         expect(userGroups).not.toContain('group_b');
+
+        await userService
+            .removeUserFromGroup('tenant_a', 'application_a', 'user_a', 'group_a');
+        userGroups = await userService
+            .getUserGroups('tenant_a', 'application_a', 'user_a');
+        expect(userGroups).toEqual([]);
     });
 
-    it('added user to role and check role membership', async () => {
+    it('add and remove user from role and check role membership', async () => {
         await userService
-            .addUserToRole('tenant_a', 'application_a', 'user_a', 'role_a')
-        const userRoles = await userService
-            .getUserRoles('tenant_a', 'application_a', 'user_a')
+            .addUserToRole('tenant_a', 'application_a', 'user_a', 'role_a');
+        let userRoles = await userService
+            .getUserRoles('tenant_a', 'application_a', 'user_a');
         expect(userRoles).toContain('role_a');
         expect(userRoles).not.toContain('role_b');
+
+        await userService
+            .removeUserFromRole('tenant_a', 'application_a', 'user_a', 'role_a');
+        userRoles = await userService
+            .getUserRoles('tenant_a', 'application_a', 'user_a');
+        expect(userRoles).toEqual([]);
     });
 
-    it('added role to group and check group roles', async () => {
+    it('add and remove role from group and check group roles', async () => {
         await userService
             .addRoleToGroup('tenant_a', 'application_a', 'role_a', 'group_a');
-        const groupRoles = await userService
+        let groupRoles = await userService
             .getGroupRoles('tenant_a', 'application_a', 'group_a');
         expect(groupRoles).toContain('role_a');
         expect(groupRoles).not.toContain('role_b');
+
+        await userService
+            .removeRoleFromGroup('tenant_a', 'application_a', 'role_a', 'group_a');
+        groupRoles = await userService
+            .getGroupRoles('tenant_a', 'application_a', 'group_a');
+        expect(groupRoles).toEqual([]);
     });
 
-    it('added user to group and role to group and check user role membership', async () => {
+    it('add and remove transitive group roles and check user role membership', async () => {
         await userService
             .addUserToGroup('tenant_a', 'application_a', 'user_b', 'group_b');
         await userService
             .addUserToRole('tenant_a', 'application_a', 'user_b', 'role_c');
         await userService
             .addRoleToGroup('tenant_a', 'application_a', 'role_b', 'group_b');
-        const userRoles = await userService
-            .getUserRoles('tenant_a', 'application_a', 'user_b')
+        let userRoles = await userService
+            .getUserRoles('tenant_a', 'application_a', 'user_b');
 
         expect(userRoles).toContain('role_b');
         expect(userRoles).toContain('role_c');
         expect(userRoles).not.toContain('role_a');
+
+        await userService
+            .removeRoleFromGroup('tenant_a', 'application_a', 'role_b', 'group_b');
+        userRoles = await userService
+            .getUserRoles('tenant_a', 'application_a', 'user_b');
+
+        expect(userRoles).toContain('role_c');
+        expect(userRoles).not.toContain('role_a');
+        expect(userRoles).not.toContain('role_b');
     });
 
 });

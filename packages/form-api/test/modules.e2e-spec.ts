@@ -507,26 +507,19 @@ describe("Resource module", () => {
           description: "Resource Section Description",
           id: uuid(),
           type: SectionType.DEFAULT,
-          // inputs: (Object.keys(InputType) as (keyof typeof InputType)[]).map(
-          //   (input: keyof typeof InputType) => getInput(InputType[input]).input
-          // ),
           inputs: inputEnumMap((value) => getInput(value).input),
         },
       ],
     };
 
-    const resourceData = {
-      resourceSection: inputEnumMap((value) => getInput(value)).reduce((section, input) => {
-        section[input.input.name] = input.values[0];
-        return section;
-      }, {} as Record<string, unknown>),
-    };
-    const updatedResourceData = {
-      resourceSection: inputEnumMap((value) => getInput(value)).reduce((section, input) => {
-        section[input.input.name] = input.values[1];
-        return section;
-      }, {} as Record<string, unknown>),
-    };
+    const [resourceData, updatedResourceData] = inputEnumMap((value) => getInput(value)).reduce(
+      ([initialSection, updatedSection], input) => {
+        initialSection[input.input.name] = input.values[0];
+        updatedSection[input.input.name] = input.values[1];
+        return [initialSection, updatedSection];
+      },
+      [{}, {}] as [Record<string, unknown>, Record<string, unknown>]
+    );
 
     // Create empty metadata
     await request(app.getHttpServer()).put(`/metadata/resource/${resourceName}`).expect(200).expect({ created: true });
@@ -552,7 +545,7 @@ describe("Resource module", () => {
       })
       .expect(201);
 
-    await crud(resourceName, resourceData, updatedResourceData);
+    await crud(resourceName, { resourceSection: resourceData }, { resourceSection: updatedResourceData });
   });
 
   it("Can't CRUD a non-existing resource type", async () => {

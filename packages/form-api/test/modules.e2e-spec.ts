@@ -255,7 +255,7 @@ describe("Resource module", () => {
     app = await initApp([DynamodbModule, MetadataModule, ResourceModule]);
   });
 
-  const crud = async (name, putData, updateData) => {
+  const crud = async (name: string, putData: unknown, updateData: unknown) => {
     // Create resource
     const resourceId = await request(app.getHttpServer())
       .put(`/resource/${name}`)
@@ -311,6 +311,13 @@ describe("Resource module", () => {
 
   it("Can CRUD a resource with all inputs", async () => {
     const resourceName = generateResourceName();
+
+    // Map over InputType enum
+    // TS enums are weird https://stackoverflow.com/q/50376977
+    const inputEnumMap = <T>(callbackFn: (value: InputType) => T) =>
+      (Object.keys(InputType) as (keyof typeof InputType)[]).map((input: keyof typeof InputType) =>
+        callbackFn(InputType[input])
+      );
 
     // Form input and data generator
     const getInput = (inputType: InputType): { input: Input; values: unknown[] } =>
@@ -500,26 +507,25 @@ describe("Resource module", () => {
           description: "Resource Section Description",
           id: uuid(),
           type: SectionType.DEFAULT,
-          inputs: Object.keys(InputType).map((input: InputType) => getInput(InputType[input]).input),
+          // inputs: (Object.keys(InputType) as (keyof typeof InputType)[]).map(
+          //   (input: keyof typeof InputType) => getInput(InputType[input]).input
+          // ),
+          inputs: inputEnumMap((value) => getInput(value).input),
         },
       ],
     };
 
     const resourceData = {
-      resourceSection: Object.keys(InputType)
-        .map((input: InputType) => getInput(InputType[input]))
-        .reduce((section, input) => {
-          section[input.input.name] = input.values[0];
-          return section;
-        }, {}),
+      resourceSection: inputEnumMap((value) => getInput(value)).reduce((section, input) => {
+        section[input.input.name] = input.values[0];
+        return section;
+      }, {} as Record<string, unknown>),
     };
     const updatedResourceData = {
-      resourceSection: Object.keys(InputType)
-        .map((input: InputType) => getInput(InputType[input]))
-        .reduce((section, input) => {
-          section[input.input.name] = input.values[1];
-          return section;
-        }, {}),
+      resourceSection: inputEnumMap((value) => getInput(value)).reduce((section, input) => {
+        section[input.input.name] = input.values[1];
+        return section;
+      }, {} as Record<string, unknown>),
     };
 
     // Create empty metadata

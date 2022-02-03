@@ -7,7 +7,7 @@ export function TransformAsyncGeneratorPlainToClass(
   classType: ClassConstructor<any>,
   params?: ClassTransformOptions
 ): MethodDecorator {
-  return function (target: Record<string, any>, propertyKey: string, descriptor: PropertyDescriptor): void {
+  return function (target: Record<string, any>, propertyKey, descriptor: PropertyDescriptor): void {
     const classTransformer: ClassTransformer = new ClassTransformer();
     const originalMethod = descriptor.value;
 

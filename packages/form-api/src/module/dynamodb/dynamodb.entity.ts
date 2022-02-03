@@ -2,22 +2,22 @@ import { IsISO8601, IsString, ValidateNested } from "class-validator";
 
 export abstract class ItemEntity<T = any, U = string> {
   @IsString()
-  Id: string;
+  Id!: string;
 
   @IsString()
-  ItemType: U;
+  ItemType!: U;
 
   @IsISO8601()
-  CreatedAt: string;
+  CreatedAt!: string;
 
   @IsString()
-  CreatedBy: string;
+  CreatedBy!: string;
 
   @ValidateNested()
-  Data: T;
+  Data!: T;
 
   @IsString()
-  PK: string;
+  PK!: string;
 
   @IsString()
   SK?: string;

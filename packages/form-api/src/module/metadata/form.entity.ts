@@ -22,7 +22,7 @@ class MetadataFormData {
   @IsJsonSchema(FormSchema, {
     allowUnionTypes: true,
   })
-  Definition: Form;
+  Definition!: Form;
 }
 
 export class MetadataForm extends ItemEntity<DataType, "Form"> implements MetaDataFormType {
@@ -30,7 +30,7 @@ export class MetadataForm extends ItemEntity<DataType, "Form"> implements MetaDa
   ItemType: "Form" = "Form";
 
   @ValidateNested()
-  Data: MetadataFormData;
+  Data!: MetadataFormData;
 
   validate = (data: any) => {
     const schema = this.getSchema();

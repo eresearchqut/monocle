@@ -1,4 +1,4 @@
-import { Equals, IsEnum, IsSemVer, IsString, IsUUID, Matches, ValidateNested } from "class-validator";
+import { Equals, IsSemVer, IsUUID, Matches, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 import { v4 } from "uuid";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
@@ -23,25 +23,25 @@ export type MetadataEntityType = ItemEntity<DataType, "Metadata">;
 
 class SchemaData {
   @IsUUID()
-  FormVersion: string;
+  FormVersion!: string;
 
   @IsUUID()
-  AuthorizationVersion: string;
+  AuthorizationVersion!: string;
 
   @IsUUID()
-  RelationshipsVersion: string;
+  RelationshipsVersion!: string;
 }
 
 export class MetadataData {
   @Matches(/[a-zA-Z0-9_]+/)
-  Resource: string;
+  Resource!: string;
 
   @IsSemVer()
-  Version: string;
+  Version!: string;
 
   @ValidateNested()
   @Type(() => SchemaData)
-  Schemas: SchemaData;
+  Schemas!: SchemaData;
 }
 
 export class Metadata extends ItemEntity<DataType, "Metadata"> implements MetadataEntityType {
@@ -50,7 +50,7 @@ export class Metadata extends ItemEntity<DataType, "Metadata"> implements Metada
 
   @ValidateNested()
   @Type(() => MetadataData)
-  Data: MetadataData;
+  Data!: MetadataData;
 
   buildGetAttributes = (id: string) => {
     const key = `Resource:${this.Data.Resource}#data:${id}`;

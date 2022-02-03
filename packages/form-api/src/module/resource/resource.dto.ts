@@ -2,7 +2,7 @@ import { IsObject, IsOptional, IsSemVer, IsString, Matches } from "class-validat
 
 abstract class ResourceParams {
   @Matches(/[a-zA-Z0-9_]+/)
-  resource: string;
+  resource!: string;
 }
 
 abstract class DataResourceParams {
@@ -13,7 +13,7 @@ abstract class DataResourceParams {
 abstract class OptionallyVersionedResourceParams extends ResourceParams {
   @IsSemVer()
   @IsOptional()
-  version: string;
+  version!: string;
 }
 
 export class PutResourceParams extends OptionallyVersionedResourceParams {}
@@ -21,14 +21,14 @@ export class PutResourceParams extends OptionallyVersionedResourceParams {}
 export class PutResourceQuery {
   @IsObject()
   @IsOptional()
-  options: any;
+  options!: any;
 }
 
 export class PutResourceBody extends DataResourceParams {}
 
 export class GetResourceParams extends ResourceParams {
   @IsString()
-  id: string;
+  id!: string;
 }
 
 export class GetResourceQuery {
@@ -39,7 +39,7 @@ export class GetResourceQuery {
 
 export class PostResourceParams extends OptionallyVersionedResourceParams {
   @IsString()
-  id: string;
+  id!: string;
 }
 
 export class PostResourceQuery {
@@ -52,7 +52,7 @@ export class PostResourceBody extends DataResourceParams {}
 
 export class DeleteResourceParams extends ResourceParams {
   @IsString()
-  id: string;
+  id!: string;
 }
 
 export class DeleteResourceQuery {

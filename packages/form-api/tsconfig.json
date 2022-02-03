@@ -6,7 +6,7 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
-        "strictNullChecks": true,
+        "strict": true,
         "target": "es2021",
         "sourceMap": true,
         "outDir": "./dist",

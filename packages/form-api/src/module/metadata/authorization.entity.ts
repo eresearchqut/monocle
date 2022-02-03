@@ -9,7 +9,7 @@ export type MetadataAuthorizationType = ItemEntity<DataType, "Authorization">;
 
 class MetadataAuthorizationData {
   @IsString()
-  Policy: string;
+  Policy!: string;
 }
 
 export class MetadataAuthorization extends ItemEntity<DataType, "Authorization"> implements MetadataAuthorizationType {
@@ -17,5 +17,5 @@ export class MetadataAuthorization extends ItemEntity<DataType, "Authorization">
   ItemType: "Authorization" = "Authorization";
 
   @ValidateNested()
-  Data: MetadataAuthorizationData;
+  Data!: MetadataAuthorizationData;
 }

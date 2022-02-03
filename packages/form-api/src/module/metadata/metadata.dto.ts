@@ -16,7 +16,7 @@ import { RELATIONSHIP_TYPES } from "./metadata.entity";
 
 abstract class ResourceParams {
   @Matches(/[a-zA-Z0-9_]+/)
-  resource: string;
+  resource!: string;
 }
 
 abstract class OptionalSemverQuery {
@@ -31,30 +31,30 @@ export class GetMetadataQuery extends OptionalSemverQuery {}
 
 class GetMetadataResponseSchemas {
   @IsUUID()
-  formVersion: string;
+  formVersion!: string;
 
   @IsUUID()
-  authorizationVersion: string;
+  authorizationVersion!: string;
 
   @IsUUID()
-  relationshipsVersion: string;
+  relationshipsVersion!: string;
 }
 
 class GetMetadataResponseRelationship {
   @IsEnum(RELATIONSHIP_TYPES)
-  type: RELATIONSHIP_TYPES;
+  type!: RELATIONSHIP_TYPES;
 
   @IsString()
   @ValidateNested({ each: true })
-  key: string[];
+  key!: string[];
 }
 
 export class GetMetadataResponse {
   @IsSemVer()
-  version: string;
+  version!: string;
 
   @ValidateNested()
-  schemas: GetMetadataResponseSchemas;
+  schemas!: GetMetadataResponseSchemas;
 }
 
 export class PutMetadataParams extends ResourceParams {}
@@ -74,41 +74,41 @@ export class PostMetadataQuery {
 
 class PostMetadataBodyGroup {
   @IsUUID()
-  formVersion: string;
+  formVersion!: string;
 
   @IsUUID()
-  authorizationVersion: string;
+  authorizationVersion!: string;
 
   @IsUUID()
-  relationshipsVersion: string;
+  relationshipsVersion!: string;
 }
 
 export class PostMetadataBody {
   @IsSemVer()
-  version: string;
+  version!: string;
 
   @Type(() => PostMetadataBodyGroup)
   @ValidateNested()
-  schemas: PostMetadataBodyGroup;
+  schemas!: PostMetadataBodyGroup;
 }
 
 class PostMetadataBodyRelationship {
   @IsEnum(RELATIONSHIP_TYPES)
-  type: RELATIONSHIP_TYPES;
+  type!: RELATIONSHIP_TYPES;
 
   @IsString()
   @ValidateNested({ each: true })
-  key: string[];
+  key!: string[];
 }
 
 export class PutMetadataResponse {
   @IsBoolean()
-  created: boolean;
+  created!: boolean;
 }
 
 export class GetFormParams {
   @IsUUID()
-  formId: string;
+  formId!: string;
 }
 
 export class GetFormResponse {
@@ -123,43 +123,43 @@ export class PutFormBody {
   @IsJsonSchema(FormSchema, {
     allowUnionTypes: true,
   })
-  definition: Form;
+  definition!: Form;
 }
 
 export class GetAuthorizationParams {
   @IsUUID()
-  authorizationId: string;
+  authorizationId!: string;
 }
 
 export class GetAuthorizationResponse {
   @IsString()
-  policy: string;
+  policy!: string;
 }
 
 export class PutAuthorizationBody {
   @IsString()
-  policy: string;
+  policy!: string;
 }
 
 export class GetRelationshipsParams {
   @IsUUID()
-  relationshipsId: string;
+  relationshipsId!: string;
 }
 
 class Relationship {
   @IsString({ each: true })
-  key: string[];
+  key!: string[];
 
   @IsEnum(RELATIONSHIP_TYPES)
-  type: RELATIONSHIP_TYPES;
+  type!: RELATIONSHIP_TYPES;
 }
 
 export class GetRelationshipsResponse {
   @ValidateNested({ each: true })
-  relationships: Relationship[];
+  relationships!: Relationship[];
 }
 
 export class PutRelationshipsBody {
   @ValidateNested({ each: true })
-  relationships: Relationship[];
+  relationships!: Relationship[];
 }

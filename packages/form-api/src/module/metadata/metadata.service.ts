@@ -21,7 +21,7 @@ import { match } from "ts-pattern";
 import { TransformAsyncGeneratorPlainToClass } from "../../decorator/transform.decorator";
 import Ajv, { ValidateFunction } from "ajv";
 import addFormats from "ajv-formats";
-import { Form, form } from "@eresearchqut/form-definition";
+import { Form, form, Section } from "@eresearchqut/form-definition";
 import { MetadataRelationships, MetadataRelationshipsType } from "./relationships.entity";
 
 const INITIAL_SEMVER = "0.0.0";
@@ -37,10 +37,10 @@ const EMPTY_FORM: MetaDataFormType = {
   Data: {
     Definition: {
       name: "",
-      sections: [],
+      sections: [] as Section[],
     },
   },
-};
+} as const;
 
 const EMPTY_AUTHORIZATION: MetadataAuthorizationType = {
   ...buildFormItemKey(NIL_UUID),
@@ -51,7 +51,7 @@ const EMPTY_AUTHORIZATION: MetadataAuthorizationType = {
   Data: {
     Policy: "",
   },
-};
+} as const;
 
 const EMPTY_RELATIONSHIPS: MetadataRelationshipsType = {
   ...buildRelationshipsItemKey(NIL_UUID),
@@ -60,9 +60,9 @@ const EMPTY_RELATIONSHIPS: MetadataRelationshipsType = {
   CreatedAt: new Date().toISOString(),
   CreatedBy: SYSTEM_USER,
   Data: {
-    Relationships: [],
+    Relationships: [] as { Key: string[]; Type: RELATIONSHIP_TYPES }[],
   },
-};
+} as const;
 
 function buildMetadataItemKey(resource: string, version?: string) {
   const key = `Resource:${resource}#data:${resource}`;

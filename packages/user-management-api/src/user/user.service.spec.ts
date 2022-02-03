@@ -159,4 +159,28 @@ describe('UserService', () => {
         expect(userRoles).not.toContain('role_b');
     });
 
+    it('added role to group and check group roles', async () => {
+        await userService
+            .addRoleToGroup('tenant_a', 'application_a', 'role_a', 'group_a');
+        const groupRoles = await userService
+            .getGroupRoles('tenant_a', 'application_a', 'group_a');
+        expect(groupRoles).toContain('role_a');
+        expect(groupRoles).not.toContain('role_b');
+    });
+
+    it('added user to group and role to group and check user role membership', async () => {
+        await userService
+            .addUserToGroup('tenant_a', 'application_a', 'user_b', 'group_b');
+        await userService
+            .addUserToRole('tenant_a', 'application_a', 'user_b', 'role_c');
+        await userService
+            .addRoleToGroup('tenant_a', 'application_a', 'role_b', 'group_b');
+        const userRoles = await userService
+            .getUserRoles('tenant_a', 'application_a', 'user_b')
+
+        expect(userRoles).toContain('role_b');
+        expect(userRoles).toContain('role_c');
+        expect(userRoles).not.toContain('role_a');
+    });
+
 });

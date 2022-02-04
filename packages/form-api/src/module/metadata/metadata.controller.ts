@@ -127,7 +127,7 @@ export class MetadataController {
   async getRelationships(@Param() params: GetRelationshipsParams): Promise<GetRelationshipsResponse> {
     const relationships = await this.relationshipsService.getRelationships(params.relationshipsId);
     return {
-      relationships: relationships.Data.Relationships.map((r) => ({ key: r.Key, type: r.Type })),
+      relationships: relationships.Data.Relationships.map((r) => ({ key: r.Key, type: r.Type, resource: r.Resource })),
     };
   }
 

@@ -8,7 +8,7 @@ import { RelationshipsService } from "./relationships.service";
 
 @Module({
   providers: [MetadataService, FormService, AuthorizationService, RelationshipsService],
-  exports: [MetadataService, FormService],
+  exports: [MetadataService, FormService, RelationshipsService],
   imports: [DynamodbModule],
   controllers: [MetadataController],
 })

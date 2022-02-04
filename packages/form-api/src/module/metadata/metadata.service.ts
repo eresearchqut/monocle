@@ -19,9 +19,10 @@ import { match } from "ts-pattern";
 import { TransformAsyncGeneratorPlainToClass } from "../../decorator/transform.decorator";
 import { INITIAL_SEMVER, SYSTEM_USER } from "./constants";
 import { FormService } from "./form.service";
+import { buildResourceIdentifier } from "./utils";
 
 function buildMetadataItemKey(resource: string, version?: string) {
-  const key = `Resource:${resource}#data:${resource}`;
+  const key = `Resource:${resource}#metadata:${resource}`; // TODO: ban 'metadata' as a resource type
   return { PK: key, SK: `${key}${version !== undefined ? `:${version}` : ""}` };
 }
 
@@ -66,6 +67,8 @@ export class MetadataService {
     private dynamodbService: DynamodbRepository,
     private formService: FormService
   ) {}
+
+  buildResourceIdentifier = (resource: string, id: string) => buildResourceIdentifier(resource, id);
 
   async addMetadata(resource: string): Promise<boolean> {
     const key = buildMetadataItemKey(resource);

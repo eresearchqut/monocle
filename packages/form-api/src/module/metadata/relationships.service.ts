@@ -7,11 +7,12 @@ import { SYSTEM_USER } from "./constants";
 import { MetadataRelationships, MetadataRelationshipsType, RELATIONSHIP_TYPES } from "./relationships.entity";
 import { ConditionallyValidateClassAsync } from "../../decorator/validate.decorator";
 import { TransformPlainToClass } from "class-transformer";
-import { MetadataAuthorization } from "./authorization.entity";
 import { MetadataException } from "./metadata.exception";
+import { buildResourcePrefix } from "./utils";
 
 type PutRelationshipsInput = {
-  key: string[];
+  key: string;
+  resource: string;
   type: RELATIONSHIP_TYPES;
 }[];
 
@@ -27,7 +28,7 @@ export const EMPTY_RELATIONSHIPS: MetadataRelationshipsType = {
   CreatedAt: new Date().toISOString(),
   CreatedBy: SYSTEM_USER,
   Data: {
-    Relationships: [] as { Key: string[]; Type: RELATIONSHIP_TYPES }[],
+    Relationships: [] as { Key: string; Type: RELATIONSHIP_TYPES; Resource: string }[],
   },
 } as const;
 
@@ -35,8 +36,10 @@ export const EMPTY_RELATIONSHIPS: MetadataRelationshipsType = {
 export class RelationshipsService {
   constructor(public configService: ConfigService<AppConfig, true>, private dynamodbService: DynamodbRepository) {}
 
+  buildResourcePrefix = (resource: string) => buildResourcePrefix(resource);
+
   @ConditionallyValidateClassAsync("VALIDATE_METADATA_ON_READ")
-  @TransformPlainToClass(MetadataAuthorization)
+  @TransformPlainToClass(MetadataRelationships)
   public async getRelationships(id: string): Promise<MetadataRelationships> {
     if (id === NIL_UUID) {
       // Must cast to MetadataRelationships because transform decorator cannot change method signature
@@ -50,7 +53,7 @@ export class RelationshipsService {
       ...key,
     });
     if (item === null) {
-      throw new MetadataException(`Failed to retrieve authorization policy for resource ${id}`);
+      throw new MetadataException(`Failed to retrieve relationships for resource ${id}`);
     }
     return item;
   }
@@ -70,7 +73,7 @@ export class RelationshipsService {
           CreatedAt: new Date().toISOString(),
           CreatedBy: SYSTEM_USER,
           Data: {
-            Relationships: relationships.map((r) => ({ Key: r.key, Type: r.type })),
+            Relationships: relationships.map((r) => ({ Key: r.key, Type: r.type, Resource: r.resource })),
           },
         },
       })

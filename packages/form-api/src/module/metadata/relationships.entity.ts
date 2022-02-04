@@ -1,5 +1,8 @@
-import { Equals, IsEnum, IsString, ValidateNested } from "class-validator";
+import { Equals, IsEnum, IsString, Matches, ValidateNested } from "class-validator";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
+import { Form } from "@eresearchqut/form-definition";
+import { get } from "lodash";
+import { buildResourceIdentifier } from "./utils";
 
 export enum RELATIONSHIP_TYPES {
   COMPOSITE = "COMPOSITE",
@@ -30,8 +33,11 @@ class MetadataRelationshipData {
 }
 
 class Relationship {
+  @Matches(/[a-zA-Z0-9_]+/)
+  Resource!: string;
+
   @IsString({ each: true })
-  Key!: string[];
+  Key!: string;
 
   @IsEnum(RELATIONSHIP_TYPES)
   Type!: RELATIONSHIP_TYPES;
@@ -44,10 +50,19 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
   @ValidateNested()
   Data!: MetadataRelationshipData;
 
-  buildRelationshipKeys = (data: Record<string, unknown>) =>
-    this.Data.Relationships.reduce((keys, relationship, index) => {
-      const identifier: string = descendData(data, relationship.Key);
+  buildRelationshipIndexKeys = async (sourceKey: string, data: Form): Promise<Record<string, string>> =>
+    this.Data.Relationships.filter((r) => r.Type === RELATIONSHIP_TYPES.INDEX).reduce((keys, relationship, index) => {
+      const identifier = get(data, relationship.Key);
+      if (identifier === undefined || identifier === null) {
+        throw new Error(`Failed retrieving relationship key ${relationship.Key}`);
+      }
+      if (typeof identifier !== "string") {
+        throw new Error(`Invalid relationship key value ${identifier} for key ${relationship.Key}`);
+      }
 
-      return {};
-    }, {});
+      keys[`GSI-${index}-PK`] = sourceKey;
+      keys[`GSI-${index}-SK`] = buildResourceIdentifier(relationship.Resource, identifier);
+
+      return keys;
+    }, {} as Record<string, string>);
 }

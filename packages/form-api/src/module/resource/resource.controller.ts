@@ -10,6 +10,7 @@ import {
   PutResourceParams,
   PutResourceBody,
   PostResourceBody,
+  QueryResourceParams,
 } from "./resource.dto";
 import { ResourceService } from "./resource.service";
 
@@ -68,5 +69,21 @@ export class ResourceController {
       id: params.id,
       options: query.options,
     });
+  }
+
+  @Get(":resource/:id/:targetResource")
+  public async queryRelated(@Param() params: QueryResourceParams) {
+    const query = this.resourceService.queryRelatedResources({
+      resource: params.resource,
+      id: params.id,
+      targetResource: params.targetResource,
+    });
+
+    const resources = [];
+    for await (const resource of query) {
+      resources.push(resource);
+    }
+
+    return resources;
   }
 }

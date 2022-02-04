@@ -19,11 +19,9 @@ type GetItemArgs = {
   consistent?: boolean;
 };
 
-type GSI = "GSI-1" | "GSI-2";
-
 type QueryItemArgs = {
   table: string;
-  index?: GSI;
+  index?: `GSI-${number}`;
   reverse?: boolean;
   keyCondition: string;
   filterExpression?: string;

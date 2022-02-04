@@ -147,8 +147,11 @@ export class GetRelationshipsParams {
 }
 
 class Relationship {
-  @IsString({ each: true })
-  key!: string[];
+  @IsString()
+  resource!: string;
+
+  @IsString()
+  key!: string;
 
   @IsEnum(RELATIONSHIP_TYPES)
   type!: RELATIONSHIP_TYPES;

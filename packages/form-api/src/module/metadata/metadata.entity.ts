@@ -2,6 +2,7 @@ import { Equals, IsSemVer, IsUUID, Matches, ValidateNested } from "class-validat
 import { Type } from "class-transformer";
 import { v4 } from "uuid";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
+import { buildResourceIdentifier } from "./utils";
 
 interface DataType {
   Resource: string;
@@ -47,7 +48,7 @@ export class Metadata extends ItemEntity<DataType, "Metadata"> implements Metada
   Data!: MetadataData;
 
   buildGetAttributes = (id: string) => {
-    const key = `Resource:${this.Data.Resource}#data:${id}`;
+    const key = buildResourceIdentifier(this.Data.Resource, id);
     return { PK: key, SK: key };
   };
 

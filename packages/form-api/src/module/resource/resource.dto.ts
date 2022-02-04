@@ -60,3 +60,11 @@ export class DeleteResourceQuery {
   @IsOptional()
   options: any;
 }
+
+export class QueryResourceParams extends ResourceParams {
+  @IsString()
+  id!: string;
+
+  @IsString()
+  targetResource!: string;
+}

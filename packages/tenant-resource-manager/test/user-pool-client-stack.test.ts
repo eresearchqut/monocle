@@ -3,7 +3,11 @@ import { Template } from 'aws-cdk-lib/assertions';
 import * as UserPoolClient from '../lib/user-pool-client-stack';
 
 test('User Pool Client Stack', () => {
-    const app = new App();
+    const app = new App({
+        context: {
+           tenant_id: 'Tenant-A'
+        },
+    });
     // WHEN
     const userPoolClientStack = new UserPoolClient.UserPoolClientStack(app, 'UserPoolClientTestStack');
     const template = Template.fromStack(userPoolClientStack);
@@ -17,4 +21,6 @@ test('User Pool Client Stack', () => {
         CallbackURLs: ['https://example.com'],
         SupportedIdentityProviders: ['COGNITO'],
     });
-});
+})
+;
+;

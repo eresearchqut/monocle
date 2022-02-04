@@ -5,10 +5,12 @@ export class UserPoolClientStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);
 
-        const userPool = cognito.UserPool.fromUserPoolId(this, 'userPoolId', Fn.importValue('userPoolId'));
+        const tenantId = this.node.tryGetContext('tenant_id');
+        const userPool = cognito.UserPool.fromUserPoolId(this, 'userPoolId',
+            Fn.importValue('userPoolId'));
 
         // Define the cognito user pool.
-        const userPoolClient = userPool.addClient('user-pool-client');
+        const userPoolClient = userPool.addClient(`tenant-user-pool-client-${tenantId}`);
 
         new CfnOutput(this, 'region', {
             description: 'Cognito Region',

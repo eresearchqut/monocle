@@ -1,6 +1,6 @@
 {
   "name": "@eresearchqut/tenant-resource-manager",
-  "version": "0.1.0",
+  "version": "0.24.0",
   "bin": {
     "tenant-resource-manager": "bin/tenant-resource-manager.js"
   },
@@ -20,7 +20,6 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-
     "aws-cdk-lib": "2.10.0",
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.16"

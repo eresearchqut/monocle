@@ -6,6 +6,10 @@ export function buildApp(app: INestApplication) {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
+      skipMissingProperties: false,
+      forbidUnknownValues: true,
+      transform: true,
+      skipNullProperties: false,
     })
   );
 }

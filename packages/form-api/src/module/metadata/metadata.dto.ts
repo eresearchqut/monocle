@@ -1,6 +1,7 @@
 import {
   IsBoolean,
   IsEnum,
+  IsNotEmpty,
   IsObject,
   IsOptional,
   IsSemVer,
@@ -53,6 +54,7 @@ export class GetMetadataResponse {
   @IsSemVer()
   version!: string;
 
+  @IsNotEmpty()
   @ValidateNested()
   schemas!: GetMetadataResponseSchemas;
 }
@@ -87,6 +89,7 @@ export class PostMetadataBody {
   @IsSemVer()
   version!: string;
 
+  @IsNotEmpty()
   @Type(() => PostMetadataBodyGroup)
   @ValidateNested()
   schemas!: PostMetadataBodyGroup;
@@ -158,11 +161,15 @@ class Relationship {
 }
 
 export class GetRelationshipsResponse {
-  @ValidateNested({ each: true })
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => Relationship)
   relationships!: Relationship[];
 }
 
 export class PutRelationshipsBody {
-  @ValidateNested({ each: true })
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => Relationship)
   relationships!: Relationship[];
 }

@@ -9,8 +9,8 @@ import { ConditionallyValidateClassAsync } from "../../decorator/validate.decora
 import { TransformPlainToClass } from "class-transformer";
 import { MetadataException } from "./metadata.exception";
 
-export function buildAuthorizationItemKey(authorization: string) {
-  const key = `Authorization:${authorization}`;
+export function buildAuthorizationItemKey(id: string) {
+  const key = `Authorization:${id}`;
   return { PK: key, SK: key };
 }
 
@@ -31,20 +31,20 @@ export class AuthorizationService {
 
   @ConditionallyValidateClassAsync("VALIDATE_METADATA_ON_READ")
   @TransformPlainToClass(MetadataAuthorization)
-  public async getAuthorization(policy: string): Promise<MetadataAuthorization> {
-    if (policy === NIL_UUID) {
+  public async getAuthorization(id: string): Promise<MetadataAuthorization> {
+    if (id === NIL_UUID) {
       // Must cast to MetadataAuthorization because transform decorator cannot change method signature
       return EMPTY_AUTHORIZATION as MetadataAuthorization;
     }
 
-    const key = buildAuthorizationItemKey(policy);
+    const key = buildAuthorizationItemKey(id);
 
     const item = await this.dynamodbService.getItem<MetadataAuthorization>({
       table: this.configService.get("RESOURCE_TABLE"),
       ...key,
     });
     if (item === null) {
-      throw new MetadataException(`Failed to retrieve authorization policy for resource ${policy}`);
+      throw new MetadataException(`Failed to retrieve authorization policy for resource ${id}`);
     }
     return item;
   }

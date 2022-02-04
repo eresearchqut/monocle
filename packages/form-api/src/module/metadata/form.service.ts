@@ -10,8 +10,8 @@ import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
 import { ConfigService } from "@nestjs/config";
 import { AppConfig } from "../../app.config";
 
-function buildFormItemKey(form: string) {
-  const key = `Form:${form}`;
+function buildFormItemKey(id: string) {
+  const key = `Form:${id}`;
   return { PK: key, SK: key };
 }
 
@@ -35,20 +35,20 @@ export class FormService {
 
   @ConditionallyValidateClassAsync("VALIDATE_METADATA_ON_READ")
   @TransformPlainToClass(MetadataForm)
-  public async getForm(form: string): Promise<MetadataForm> {
-    if (form === NIL_UUID) {
+  public async getForm(id: string): Promise<MetadataForm> {
+    if (id === NIL_UUID) {
       // Must cast to MetadataForm because transform decorator cannot change method signature
       return EMPTY_FORM as MetadataForm;
     }
 
-    const key = buildFormItemKey(form);
+    const key = buildFormItemKey(id);
 
     const item = await this.dynamodbService.getItem<MetadataForm>({
       table: this.configService.get("RESOURCE_TABLE"),
       ...key,
     });
     if (item === null) {
-      throw new MetadataException(`Failed to retrieve form ${form}`);
+      throw new MetadataException(`Failed to retrieve form ${id}`);
     }
     return item;
   }

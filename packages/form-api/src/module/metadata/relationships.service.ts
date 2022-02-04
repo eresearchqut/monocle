@@ -15,8 +15,8 @@ type PutRelationshipsInput = {
   type: RELATIONSHIP_TYPES;
 }[];
 
-export function buildRelationshipsItemKey(authorization: string) {
-  const key = `Relationships:${authorization}`;
+export function buildRelationshipsItemKey(id: string) {
+  const key = `Relationships:${id}`;
   return { PK: key, SK: key };
 }
 
@@ -37,20 +37,20 @@ export class RelationshipsService {
 
   @ConditionallyValidateClassAsync("VALIDATE_METADATA_ON_READ")
   @TransformPlainToClass(MetadataAuthorization)
-  public async getRelationships(policy: string): Promise<MetadataRelationships> {
-    if (policy === NIL_UUID) {
+  public async getRelationships(id: string): Promise<MetadataRelationships> {
+    if (id === NIL_UUID) {
       // Must cast to MetadataRelationships because transform decorator cannot change method signature
       return EMPTY_RELATIONSHIPS as MetadataRelationships;
     }
 
-    const key = buildRelationshipsItemKey(policy);
+    const key = buildRelationshipsItemKey(id);
 
     const item = await this.dynamodbService.getItem<MetadataRelationships>({
       table: this.configService.get("RESOURCE_TABLE"),
       ...key,
     });
     if (item === null) {
-      throw new MetadataException(`Failed to retrieve authorization policy for resource ${policy}`);
+      throw new MetadataException(`Failed to retrieve authorization policy for resource ${id}`);
     }
     return item;
   }

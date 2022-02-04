@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { CognitoModule } from '../cognito/cognito.module';
+import { ClientModule } from '../client/client.module';
 
 @Module({
-  imports: [CognitoModule],
-  providers: [UserService],
-  controllers: [UserController],
-  exports: [UserService],
+    imports: [ClientModule],
+    providers: [UserService],
+    controllers: [UserController],
+    exports: [UserService],
 })
-export class UserModule {}
+export class UserModule {
+}

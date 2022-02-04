@@ -12,7 +12,7 @@ import {
 import { form as FormSchema, Form } from "@eresearchqut/form-definition";
 import { IsJsonSchema } from "src/decorator/validate.decorator";
 import { Type } from "class-transformer";
-import { RELATIONSHIP_TYPES } from "./metadata.entity";
+import { RELATIONSHIP_TYPES } from "./relationships.entity";
 
 abstract class ResourceParams {
   @Matches(/[a-zA-Z0-9_]+/)

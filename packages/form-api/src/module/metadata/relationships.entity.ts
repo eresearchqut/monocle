@@ -1,6 +1,10 @@
 import { Equals, IsEnum, IsString, ValidateNested } from "class-validator";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
-import { RELATIONSHIP_TYPES } from "./metadata.entity";
+
+export enum RELATIONSHIP_TYPES {
+  COMPOSITE = "COMPOSITE",
+  INDEX = "INDEX",
+}
 
 interface DataType {
   Relationships: Relationship[];

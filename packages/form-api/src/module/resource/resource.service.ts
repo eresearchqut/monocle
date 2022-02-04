@@ -5,6 +5,7 @@ import { MetadataService } from "../metadata/metadata.service";
 import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
 import { ValidationException } from "../metadata/metadata.exception";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
+import { FormService } from "../metadata/form.service";
 
 interface GetResourceInput {
   resource: string;
@@ -31,6 +32,7 @@ export class ResourceService {
   constructor(
     private configService: ConfigService<AppConfig, true>,
     private metadataService: MetadataService,
+    private formService: FormService,
     private dynamodbService: DynamodbRepository
   ) {}
 
@@ -44,7 +46,7 @@ export class ResourceService {
     const item = await this.dynamodbService.getItem({ table: this.configService.get("RESOURCE_TABLE"), ...key });
 
     if (this.configService.get("VALIDATE_RESOURCE_ON_READ")) {
-      const { validate } = await this.metadataService.getForm(Schemas.FormVersion);
+      const { validate } = await this.formService.getForm(Schemas.FormVersion);
       validate(item);
     }
 
@@ -69,7 +71,7 @@ export class ResourceService {
     });
 
     if (this.configService.get("VALIDATE_RESOURCE_ON_WRITE")) {
-      const { validate } = await this.metadataService.getForm(Schemas.FormVersion);
+      const { validate } = await this.formService.getForm(Schemas.FormVersion);
       const errors = validate(input.data);
       if (errors) {
         throw new ValidationException(errors);

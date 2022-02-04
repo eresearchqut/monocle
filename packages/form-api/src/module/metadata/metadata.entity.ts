@@ -3,12 +3,6 @@ import { Type } from "class-transformer";
 import { v4 } from "uuid";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
 
-export enum RELATIONSHIP_TYPES {
-  ONE_TO_ONE = "ONE_TO_ONE",
-  ONE_TO_MANY = "ONE_TO_MANY",
-  MANY_TO_MANY = "MANY_TO_MANY",
-}
-
 interface DataType {
   Resource: string;
   Version: string;

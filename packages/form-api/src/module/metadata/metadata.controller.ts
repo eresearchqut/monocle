@@ -31,10 +31,18 @@ import {
   PutRelationshipsBody,
 } from "./metadata.dto";
 import { VersionedErrorInterceptor } from "../../interceptor/dynamodb.interceptor";
+import { FormService } from "./form.service";
+import { AuthorizationService } from "./authorization.service";
+import { RelationshipsService } from "./relationships.service";
 
 @Controller("/metadata")
 export class MetadataController {
-  public constructor(private metadataService: MetadataService) {}
+  public constructor(
+    private metadataService: MetadataService,
+    private formService: FormService,
+    private authorizationService: AuthorizationService,
+    private relationshipsService: RelationshipsService
+  ) {}
 
   @Get("/resource/:resource")
   async getMetadata(
@@ -79,7 +87,7 @@ export class MetadataController {
 
   @Get("/form/:formId")
   async getForm(@Param() params: GetFormParams): Promise<GetFormResponse> {
-    const form = await this.metadataService.getForm(params.formId);
+    const form = await this.formService.getForm(params.formId);
     const schema = await form.getSchema();
     return {
       form: form.Data.Definition,
@@ -89,7 +97,7 @@ export class MetadataController {
 
   @Put("/form")
   async putForm(@Body() body: PutFormBody) {
-    const result = await this.metadataService.putForm(body.definition);
+    const result = await this.formService.putForm(body.definition);
     if (result.created) {
       return result;
     } else {
@@ -99,7 +107,7 @@ export class MetadataController {
 
   @Get("/authorization/:authorizationId")
   async getAuthorization(@Param() params: GetAuthorizationParams): Promise<GetAuthorizationResponse> {
-    const authorization = await this.metadataService.getAuthorization(params.authorizationId);
+    const authorization = await this.authorizationService.getAuthorization(params.authorizationId);
     return {
       policy: authorization.Data.Policy,
     };
@@ -107,7 +115,7 @@ export class MetadataController {
 
   @Put("/authorization")
   async putAuthorization(@Body() body: PutAuthorizationBody) {
-    const result = await this.metadataService.putAuthorization(body.policy);
+    const result = await this.authorizationService.putAuthorization(body.policy);
     if (result.created) {
       return result;
     } else {
@@ -117,7 +125,7 @@ export class MetadataController {
 
   @Get("/relationships/:relationshipsId")
   async getRelationships(@Param() params: GetRelationshipsParams): Promise<GetRelationshipsResponse> {
-    const relationships = await this.metadataService.getRelationships(params.relationshipsId);
+    const relationships = await this.relationshipsService.getRelationships(params.relationshipsId);
     return {
       relationships: relationships.Data.Relationships.map((r) => ({ key: r.Key, type: r.Type })),
     };
@@ -125,7 +133,7 @@ export class MetadataController {
 
   @Put("/relationships")
   async putRelationships(@Body() body: PutRelationshipsBody) {
-    const result = await this.metadataService.putRelationships(body.relationships);
+    const result = await this.relationshipsService.putRelationships(body.relationships);
     if (result.created) {
       return result;
     } else {

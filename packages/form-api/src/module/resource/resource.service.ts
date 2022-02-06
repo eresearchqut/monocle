@@ -137,25 +137,28 @@ export class ResourceService {
     // TODO: make relationships bi-directional
     // TODO: support querying composite relationships
     // TODO: allow resources to have multiple relationships between each other
-    const index = Relationships.filter((relationship) => relationship.Type === RELATIONSHIP_TYPES.INDEX).findIndex(
-      (relationship) => relationship.Resource === Resource
+    let index = Relationships.filter((relationship) => relationship.Type === RELATIONSHIP_TYPES.INDEX).findIndex(
+      (relationship) => relationship.Resource === input.resource
     );
 
-    if (index === undefined) {
+    if (index === -1) {
       throw new RelationshipException("Invalid relationship"); // TODO: consider removing message to not leak relationships
     }
 
+    // TODO: use object rather than array to collect relationships
+    index++;
+
     yield* this.dynamodbService.queryItems({
       table: this.configService.get("RESOURCE_TABLE"),
-      index: `GSI-${index}`,
+      index: `GSI${index}`,
       keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
       expressionNames: {
-        "#PK": "PK",
-        "#SK": "SK",
+        "#PK": `GSI${index}-PK`,
+        "#SK": `GSI${index}-SK`,
       },
       expressionValues: {
-        ":PK": this.metadataService.buildResourceIdentifier(Resource, input.id),
-        ":SKPrefix": this.relationshipsService.buildResourcePrefix(input.targetResource), // TODO: use validated target
+        ":PK": this.metadataService.buildResourceIdentifier(input.resource, input.id),
+        ":SKPrefix": this.relationshipsService.buildResourcePrefix(Resource),
       },
     });
   }

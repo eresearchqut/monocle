@@ -38,6 +38,7 @@ import { CreateTableCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDbClientProvider } from "../src/module/dynamodb/dynamodb.client";
 import { match } from "ts-pattern";
 import { buildApp } from "../src/app.build";
+import { isEqual, range } from "lodash";
 
 const getTableInput = (name: string) => {
   const template = yaml.load(fs.readFileSync("template.yaml", "utf8"), {
@@ -577,5 +578,175 @@ describe("Resource module", () => {
 
     // Delete resource
     await request(app.getHttpServer()).delete(`/resource/${resourceName}/${resourceId}`).expect(404);
+  });
+
+  it("Creates resources with relationships", async () => {
+    // Create empty metadata
+    const sourceResource = generateResourceName();
+    await request(app.getHttpServer())
+      .put(`/metadata/resource/${sourceResource}`)
+      .expect(200)
+      .expect({ created: true });
+
+    const targetResource = generateResourceName();
+    await request(app.getHttpServer())
+      .put(`/metadata/resource/${targetResource}`)
+      .expect(200)
+      .expect({ created: true });
+
+    // Add forms
+    const sourceFormDefinition: Form = {
+      name: "TestForm",
+      description: "Test Form Description",
+      sections: [
+        {
+          name: "testSection",
+          label: "Test Section",
+          description: "Test Section Description",
+          id: NIL_UUID,
+          type: SectionType.DEFAULT,
+          inputs: [
+            {
+              name: "targetKey",
+              label: "Target resource Key",
+              description: "Target resource",
+              type: InputType.TEXT,
+              id: uuid(),
+              required: true,
+            },
+          ],
+        },
+      ],
+    };
+    const sourceFormId = await request(app.getHttpServer())
+      .put(`/metadata/form`)
+      .send({
+        definition: sourceFormDefinition,
+      })
+      .expect(200)
+      .then((res) => res.body.id);
+
+    const targetFormDefinition: Form = {
+      name: "TestForm",
+      description: "Test Form Description",
+      sections: [
+        {
+          name: "testSection",
+          label: "Test Section",
+          description: "Test Section Description",
+          id: uuid(),
+          type: SectionType.DEFAULT,
+          inputs: [
+            {
+              name: "targetValue",
+              label: "Target Value",
+              description: "Target resource",
+              type: InputType.TEXT,
+              id: uuid(),
+              required: true,
+            },
+          ],
+        },
+      ],
+    };
+    const targetFormId = await request(app.getHttpServer())
+      .put(`/metadata/form`)
+      .send({
+        definition: targetFormDefinition,
+      })
+      .expect(200)
+      .then((res) => res.body.id);
+
+    // Add relationship
+    const sourceRelationshipsId = await request(app.getHttpServer())
+      .put(`/metadata/relationships`)
+      .send({
+        relationships: [
+          {
+            type: "INDEX",
+            resource: targetResource,
+            key: "testSection.targetKey",
+          },
+        ],
+      })
+      .expect(200)
+      .then((res) => res.body.id);
+
+    // Create metadata v1.0.0
+    await request(app.getHttpServer())
+      .post(`/metadata/resource/${sourceResource}?validation=validate`)
+      .send({
+        version: "1.0.0",
+        schemas: {
+          formVersion: sourceFormId,
+          authorizationVersion: NIL_UUID,
+          relationshipsVersion: sourceRelationshipsId,
+        },
+      })
+      .expect(201)
+      .expect((r) => expect(r.body.pushed).toBe(true))
+      .expect((r) => expect(r.body.validation.lastVersion).toBe("0.0.0"));
+    await request(app.getHttpServer())
+      .post(`/metadata/resource/${targetResource}?validation=validate`)
+      .send({
+        version: "1.0.0",
+        schemas: {
+          formVersion: targetFormId,
+          authorizationVersion: NIL_UUID,
+          relationshipsVersion: NIL_UUID,
+        },
+      })
+      .expect(201)
+      .expect((r) => expect(r.body.pushed).toBe(true))
+      .expect((r) => expect(r.body.validation.lastVersion).toBe("0.0.0"));
+
+    // Create target resource id
+    const targetResourceId = await request(app.getHttpServer())
+      .put(`/resource/${targetResource}`)
+      .send({
+        data: {
+          testSection: {
+            targetValue: "Target",
+          },
+        },
+      })
+      .expect(200)
+      .then((r) => r.body.Id);
+
+    // DELETE ME
+    await request(app.getHttpServer())
+      .get(`/resource/${targetResource}/${targetResourceId}`)
+      .expect(200)
+      .then((r) => r.body.Id);
+
+    // Create source resources
+    const sourceResourceIds = await Promise.all(
+      range(5).map(async () =>
+        request(app.getHttpServer())
+          .put(`/resource/${sourceResource}`)
+          .send({
+            data: {
+              testSection: {
+                targetKey: targetResourceId,
+              },
+            },
+          })
+          .expect(200)
+          .then((r) => r.body.Id)
+      )
+    );
+
+    // Query target relationships
+    await request(app.getHttpServer())
+      .get(`/resource/${targetResource}/${targetResourceId}/${sourceResource}`)
+      .expect(200)
+      .then((r) =>
+        expect(
+          isEqual(
+            r.body.map((resource: { Id: string }) => resource.Id),
+            sourceResourceIds
+          )
+        )
+      );
   });
 });

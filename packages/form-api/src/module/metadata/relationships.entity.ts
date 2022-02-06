@@ -50,7 +50,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
   @ValidateNested()
   Data!: MetadataRelationshipData;
 
-  buildRelationshipIndexKeys = async (sourceKey: string, data: Form): Promise<Record<string, string>> =>
+  buildRelationshipIndexKeys = (sourceKey: string, data: Form): Record<string, string> =>
     this.Data.Relationships.filter((r) => r.Type === RELATIONSHIP_TYPES.INDEX).reduce((keys, relationship, index) => {
       const identifier = get(data, relationship.Key);
       if (identifier === undefined || identifier === null) {
@@ -60,8 +60,9 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
         throw new Error(`Invalid relationship key value ${identifier} for key ${relationship.Key}`);
       }
 
-      keys[`GSI-${index}-PK`] = sourceKey;
-      keys[`GSI-${index}-SK`] = buildResourceIdentifier(relationship.Resource, identifier);
+      index++;
+      keys[`GSI${index}-PK`] = buildResourceIdentifier(relationship.Resource, identifier);
+      keys[`GSI${index}-SK`] = sourceKey;
 
       return keys;
     }, {} as Record<string, string>);

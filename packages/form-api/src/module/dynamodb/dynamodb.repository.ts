@@ -21,7 +21,7 @@ type GetItemArgs = {
 
 type QueryItemArgs = {
   table: string;
-  index?: `GSI-${number}`;
+  index?: `GSI${number}`;
   reverse?: boolean;
   keyCondition: string;
   filterExpression?: string;

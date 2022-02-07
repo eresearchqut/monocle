@@ -19,7 +19,7 @@ import { withJsonFormsCellProps } from '@jsonforms/react';
 export const InputCheckboxGroupCell = (props: CellProps) => {
     const { id, data, enabled = true, visible = true, path, handleChange, schema } = props;
     const [values, setValues] = useState<string[]>(data || []);
-    const options: EnumOption[] = ((schema.items as JsonSchema)?.oneOf as JsonSchema[]).map(oneOfToEnumOptionMapper);
+    const options: EnumOption[] = ((schema.items as JsonSchema)?.oneOf as JsonSchema[]).map(schema => oneOfToEnumOptionMapper(schema));
 
     const onChange = (e: CheckboxChangeParams) => {
         setValues((currentlySelected) => {

@@ -16,7 +16,7 @@ import { withJsonFormsCellProps } from '@jsonforms/react';
 
 export const InputMultiselectCell = (props: CellProps) => {
     const { id, data, enabled = true, visible = true, path, handleChange, schema, isValid = true } = props;
-    const options: EnumOption[] = ((schema.items as JsonSchema)?.oneOf as JsonSchema[]).map(oneOfToEnumOptionMapper);
+    const options: EnumOption[] = ((schema.items as JsonSchema)?.oneOf as JsonSchema[]).map(schema => oneOfToEnumOptionMapper(schema));
 
     if (!visible || !options) {
         return null;

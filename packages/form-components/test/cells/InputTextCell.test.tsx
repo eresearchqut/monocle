@@ -309,15 +309,10 @@ describe('Text cell', () => {
             type: 'Control',
             scope: '#/properties/name',
         };
-        const config = {
-            restrict: true,
-            trim: true,
-        };
         const store = initTestStore({
             data: fixture.data,
             schema: fixture.maxLengthSchema,
-            uischema,
-            config,
+            uischema
         });
 
         wrapper = mount(

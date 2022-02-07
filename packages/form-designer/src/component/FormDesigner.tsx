@@ -1,10 +1,11 @@
 import React, { FunctionComponent, useState } from 'react';
 import { FormDesignerCanvas } from './FormDesignerCanvas';
 import { FormPreview } from './FormPreview';
+import { JsonFormsCore } from '@jsonforms/core';
 import ComponentSelector from './ComponentSelector';
 
 import { Form, Input, InputType, Section, SectionType } from '@eresearchqut/form-definition';
-import { ErrorObject } from 'ajv';
+
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -13,23 +14,23 @@ export interface FormDesignerProps {
     data?: any;
     locale?: string;
 
-    onDefinitionChange?(state: { errors?: ErrorObject[]; data: any }): void;
+    onDefinitionChange?(state: Pick<JsonFormsCore, 'data' | 'errors'>): void;
 
-    onDataChange?(state: { errors?: ErrorObject[]; data: any }): void;
+    onDataChange?(state: Pick<JsonFormsCore, 'data' | 'errors'>): void;
 }
 
 export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
-    definition,
-    data,
-    onDefinitionChange,
-    onDataChange,
-    locale,
-}) => {
+                                                                       definition,
+                                                                       data,
+                                                                       onDefinitionChange,
+                                                                       onDataChange,
+                                                                       locale,
+                                                                   }) => {
     const [formDefinition, setFormDefinition] = useState<Form>(definition);
 
     const [formData, setFormData] = useState<any>(data);
 
-    const handleDefinitionChange = (state: { errors?: ErrorObject[]; data: any }) => {
+    const handleDefinitionChange = (state: Pick<JsonFormsCore, 'data' | 'errors'>) => {
         const definition = state.data as Form;
         setFormDefinition(() => definition);
         if (onDefinitionChange) {
@@ -37,7 +38,7 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
         }
     };
 
-    const handleDataChange = (state: { errors?: ErrorObject[]; data: any }) => {
+    const handleDataChange = (state: Pick<JsonFormsCore, 'data' | 'errors'>) => {
         const { data } = state;
         setFormData(() => data);
         if (onDataChange) {
@@ -56,7 +57,7 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
                         definition.sections.splice(destination.index || 0, 0, section);
                     } else if (destination) {
                         const index = definition.sections.findIndex(
-                            (section: Section) => section.id === result.draggableId
+                            (section: Section) => section.id === result.draggableId,
                         );
                         const moving = definition.sections[index];
                         definition.sections.splice(index, 1);
@@ -71,21 +72,23 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
                         const input =
                             type === InputType.OPTIONS
                                 ? {
-                                      type,
-                                      id: uuidv4(),
-                                      optionValueType: 'string',
-                                      options: [],
-                                  }
+                                    type,
+                                    name: '',
+                                    id: uuidv4(),
+                                    optionValueType: 'string',
+                                    options: [],
+                                }
                                 : {
-                                      type,
-                                      id: uuidv4(),
-                                  };
+                                    type,
+                                    name: '',
+                                    id: uuidv4(),
+                                };
                         destinationSection.inputs.splice(destination.index || 0, 0, input);
                     } else if (destination) {
                         const sourceSectionIndex = parseInt(source?.droppableId.split('.')[1] || '0');
                         const sourceSection = definition.sections[sourceSectionIndex];
                         const [moving] = definition.sections[sourceSectionIndex].inputs.filter(
-                            (input: Input) => input.id === draggableId
+                            (input: Input) => input.id === draggableId,
                         );
 
                         sourceSection.inputs.splice(source.index, 1);
@@ -99,13 +102,13 @@ export const FormDesigner: FunctionComponent<FormDesignerProps> = ({
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
-            <div className="p-d-flex form-designer" id="form-designer">
-                <div className="p-mr-4">
+            <div className='p-d-flex form-designer' id='form-designer'>
+                <div className='p-mr-4'>
                     {/*<Sticky enableTransforms={false}>*/}
                     <ComponentSelector componentTypes={Object.values(InputType)} />
                     {/*</Sticky>*/}
                 </div>
-                <div className="p-mr-4">
+                <div className='p-mr-4'>
                     <FormDesignerCanvas definition={formDefinition} onChange={handleDefinitionChange} locale={locale} />
                 </div>
                 <div>

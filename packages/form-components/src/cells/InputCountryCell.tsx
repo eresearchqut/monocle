@@ -41,13 +41,12 @@ export const InputCountryCell = (props: Partial<CellProps>) => {
         disabled: !enabled,
         optionLabel: 'countryName',
         optionValue: 'countryShortCode',
-        display: 'chip',
         options: filterCountries({ whitelist: countryCodes }),
         onChange: (e: DropdownChangeParams | MultiSelectChangeParams) => handleChange?.(path || '', e.value),
     };
 
     if (isMultiSelect) {
-        return <MultiSelect {...countryProps} />;
+        return <MultiSelect {...countryProps} display={'chip'} />;
     }
 
     return <Dropdown {...countryProps} />;

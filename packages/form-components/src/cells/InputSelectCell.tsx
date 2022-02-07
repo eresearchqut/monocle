@@ -17,8 +17,8 @@ import { Dropdown } from 'primereact/dropdown';
 export const InputSelectCell = (props: CellProps) => {
     const { data, id, schema, enabled = true, visible = true, isValid = true, path, handleChange } = props;
     const options: EnumOption[] = schema.enum
-        ? schema.enum.map(enumToEnumOptionMapper)
-        : (schema.oneOf as JsonSchema[]).map(oneOfToEnumOptionMapper);
+        ? schema.enum.map(value => enumToEnumOptionMapper(value))
+        : (schema.oneOf as JsonSchema[]).map(schema => oneOfToEnumOptionMapper(schema));
 
     if (!visible) {
         return null;

@@ -580,7 +580,7 @@ describe("Resource module", () => {
     await request(app.getHttpServer()).delete(`/resource/${resourceName}/${resourceId}`).expect(404);
   });
 
-  it.only("Creates resources with relationships", async () => {
+  it("Creates resources with relationships", async () => {
     // Create empty metadata
     const sourceResource = generateResourceName();
     await request(app.getHttpServer())

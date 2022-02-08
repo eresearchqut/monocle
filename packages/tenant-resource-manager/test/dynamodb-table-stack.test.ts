@@ -16,6 +16,7 @@ test('DynamodbTableStack Test', () => {
     const template = Template.fromStack(dynamodbTableStack);
 
     // THEN
+    template.resourceCountIs("AWS::DynamoDB::Table", 2);
     template.hasResourceProperties('AWS::DynamoDB::Table', {
         KeySchema: [
             {
@@ -93,5 +94,31 @@ test('DynamodbTableStack Test', () => {
         },
         TableName: 'Tenant-A-Table-A',
     });
-})
-;
+
+    template.hasResourceProperties('AWS::DynamoDB::Table', {
+        KeySchema: [
+            {
+                AttributeName: 'PK',
+                KeyType: 'HASH',
+            },
+            {
+                AttributeName: 'SK',
+                KeyType: 'RANGE',
+            },
+        ],
+        AttributeDefinitions: [
+            {
+                AttributeName: 'PK',
+                AttributeType: 'S',
+            },
+            {
+                AttributeName: 'SK',
+                AttributeType: 'S',
+            }
+        ],
+        BillingMode: 'PAY_PER_REQUEST',
+        TableName: 'Tenant-A-Table-A-AUDIT',
+    });
+
+
+});

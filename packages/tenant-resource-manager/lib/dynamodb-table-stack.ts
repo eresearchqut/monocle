@@ -7,7 +7,7 @@ import {
     CONTEXT_PROVISION_GSI_COUNT,
     CONTEXT_TABLE_NAME,
     CONTEXT_TENANT_ID,
-    ENVIRONMENTS,
+    ENVIRONMENTS, TABLE_AUDIT_SUFFIX,
     TABLE_GSI,
     TABLE_PARTITION_KEY_ATTRIBUTE,
     TABLE_SORT_KEY_ATTRIBUTE,
@@ -33,6 +33,20 @@ export class DynamodbTableStack extends Stack {
             },
             billingMode: BillingMode.PAY_PER_REQUEST,
             stream: StreamViewType.NEW_AND_OLD_IMAGES,
+            removalPolicy: ENVIRONMENTS.PROD === environment ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
+        });
+
+        new Table(this, `${tableName}-${TABLE_AUDIT_SUFFIX}`, {
+            tableName: `${tenantId}-${tableName}-${TABLE_AUDIT_SUFFIX}`,
+            partitionKey: {
+                name: TABLE_PARTITION_KEY_ATTRIBUTE,
+                type: AttributeType.STRING,
+            },
+            sortKey: {
+                name: TABLE_SORT_KEY_ATTRIBUTE,
+                type: AttributeType.STRING,
+            },
+            billingMode: BillingMode.PAY_PER_REQUEST,
             removalPolicy: ENVIRONMENTS.PROD === environment ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
         });
 

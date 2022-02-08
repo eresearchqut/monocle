@@ -12,4 +12,5 @@ export enum ENVIRONMENTS {
 export const TABLE_PARTITION_KEY_ATTRIBUTE = 'PK';
 export const TABLE_SORT_KEY_ATTRIBUTE = 'SK';
 export const TABLE_GSI = 'GSI';
+export const TABLE_AUDIT_SUFFIX = 'AUDIT';
 

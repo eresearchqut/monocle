@@ -16,7 +16,8 @@ test('DynamodbTableStack Test', () => {
     const template = Template.fromStack(dynamodbTableStack);
 
     // THEN
-    template.resourceCountIs("AWS::DynamoDB::Table", 2);
+    template.resourceCountIs('AWS::DynamoDB::Table', 2);
+    template.resourceCountIs('AWS::Lambda::Function', 1);
     template.hasResourceProperties('AWS::DynamoDB::Table', {
         KeySchema: [
             {
@@ -114,11 +115,21 @@ test('DynamodbTableStack Test', () => {
             {
                 AttributeName: 'SK',
                 AttributeType: 'S',
-            }
+            },
         ],
         BillingMode: 'PAY_PER_REQUEST',
         TableName: 'Tenant-A-Table-A-AUDIT',
     });
+
+    template.hasResourceProperties('AWS::Lambda::Function',
+        {
+            'Description': 'Invoked on changes to Tenant-A-Table-A to audit changes into Tenant-A-Table-A-AUDIT',
+            'Handler': 'index.handler',
+            'Runtime': 'nodejs14.x',
+            'Timeout': 60,
+        },
+    );
+
 
 
 });

@@ -158,9 +158,6 @@ class Relationship {
   @IsString()
   key!: string;
 
-  @IsPositive()
-  index?: number;
-
   @IsEnum(RELATIONSHIP_TYPES)
   type!: RELATIONSHIP_TYPES;
 }

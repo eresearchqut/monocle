@@ -5,7 +5,7 @@ import { AppModule } from "./app.module";
 export function buildApp(app: INestApplication) {
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
+      whitelist: false,
       skipMissingProperties: false,
       forbidUnknownValues: true,
       transform: true,

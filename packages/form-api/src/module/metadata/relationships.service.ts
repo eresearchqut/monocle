@@ -3,18 +3,28 @@ import { ConfigService } from "@nestjs/config";
 import { AppConfig } from "../../app.config";
 import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
 import { NIL as NIL_UUID, v4 as uuidV4 } from "uuid";
-import { SYSTEM_USER } from "./constants";
-import { MetadataRelationships, MetadataRelationshipsType, RELATIONSHIP_TYPES } from "./relationships.entity";
+import { RELATIONSHIP_TYPES, SYSTEM_USER } from "./constants";
+import { ConcreteRelationships, MetadataRelationships, MetadataRelationshipsType } from "./relationships.entity";
 import { ConditionallyValidateClassAsync } from "../../decorator/validate.decorator";
 import { TransformPlainToClass } from "class-transformer";
 import { MetadataException } from "./metadata.exception";
 import { buildResourcePrefix } from "./utils";
+import { match } from "ts-pattern";
 
-type PutRelationshipsInput = {
-  key: string;
-  resource: string;
-  type: RELATIONSHIP_TYPES;
-}[];
+type PutRelationshipsInput = Map<
+  string,
+  | {
+      key: string;
+      resource: string;
+      type: RELATIONSHIP_TYPES.INDEX;
+      index: number;
+    }
+  | {
+      key: string;
+      resource: string;
+      type: RELATIONSHIP_TYPES.COMPOSITE;
+    }
+>;
 
 export function buildRelationshipsItemKey(id: string) {
   const key = `Relationships:${id}`;
@@ -28,7 +38,7 @@ export const EMPTY_RELATIONSHIPS: MetadataRelationshipsType = {
   CreatedAt: new Date().toISOString(),
   CreatedBy: SYSTEM_USER,
   Data: {
-    Relationships: [] as { Key: string; Type: RELATIONSHIP_TYPES; Resource: string }[],
+    Relationships: new Map<string, ConcreteRelationships>(),
   },
 } as const;
 
@@ -73,7 +83,24 @@ export class RelationshipsService {
           CreatedAt: new Date().toISOString(),
           CreatedBy: SYSTEM_USER,
           Data: {
-            Relationships: relationships.map((r) => ({ Key: r.key, Type: r.type, Resource: r.resource })),
+            Relationships: new Map(
+              Array.from(relationships).map(([name, relationship]) => [
+                name,
+                match(relationship)
+                  .with({ type: RELATIONSHIP_TYPES.INDEX }, (r) => ({
+                    Key: r.key,
+                    Resource: r.resource,
+                    Type: r.type,
+                    Index: r.index,
+                  }))
+                  .with({ type: RELATIONSHIP_TYPES.COMPOSITE }, (r) => ({
+                    Key: r.key,
+                    Resource: r.resource,
+                    Type: r.type,
+                  }))
+                  .exhaustive(),
+              ])
+            ),
           },
         },
       })

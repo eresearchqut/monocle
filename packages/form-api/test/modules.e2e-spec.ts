@@ -59,7 +59,7 @@ const initApp = async (modules: any[]): Promise<INestApplication> => {
 
   const dynamodbClient = new DynamoDBClient({
     region: "local",
-    logger: new DynamodbLogger(DynamodbRepository.name),
+    // logger: new DynamodbLogger(DynamodbRepository.name),
     credentials: {
       accessKeyId: "fake",
       secretAccessKey: "fake",
@@ -580,7 +580,7 @@ describe("Resource module", () => {
     await request(app.getHttpServer()).delete(`/resource/${resourceName}/${resourceId}`).expect(404);
   });
 
-  it("Creates resources with relationships", async () => {
+  it.only("Creates resources with relationships", async () => {
     // Create empty metadata
     const sourceResource = generateResourceName();
     await request(app.getHttpServer())
@@ -661,13 +661,14 @@ describe("Resource module", () => {
     const sourceRelationshipsId = await request(app.getHttpServer())
       .put(`/metadata/relationships`)
       .send({
-        relationships: [
-          {
+        relationships: {
+          relationship1: {
             type: "INDEX",
             resource: targetResource,
             key: "testSection.targetKey",
+            index: 1,
           },
-        ],
+        },
       })
       .expect(200)
       .then((res) => res.body.id);
@@ -738,7 +739,7 @@ describe("Resource module", () => {
 
     // Query target relationships
     await request(app.getHttpServer())
-      .get(`/resource/${targetResource}/${targetResourceId}/${sourceResource}`)
+      .get(`/resource/${targetResource}/${targetResourceId}/relationship1/${sourceResource}`)
       .expect(200)
       .then((r) =>
         expect(

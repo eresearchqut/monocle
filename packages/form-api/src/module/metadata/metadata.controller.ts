@@ -34,6 +34,8 @@ import { VersionedErrorInterceptor } from "../../interceptor/dynamodb.intercepto
 import { FormService } from "./form.service";
 import { AuthorizationService } from "./authorization.service";
 import { RelationshipsService } from "./relationships.service";
+import { match } from "ts-pattern";
+import { RELATIONSHIP_TYPES } from "./constants";
 
 @Controller("/metadata")
 export class MetadataController {
@@ -127,7 +129,24 @@ export class MetadataController {
   async getRelationships(@Param() params: GetRelationshipsParams): Promise<GetRelationshipsResponse> {
     const relationships = await this.relationshipsService.getRelationships(params.relationshipsId);
     return {
-      relationships: relationships.Data.Relationships.map((r) => ({ key: r.Key, type: r.Type, resource: r.Resource })),
+      relationships: new Map(
+        Array.from(relationships.Data.Relationships).map(([key, value]) => [
+          key,
+          match(value)
+            .with({ Type: RELATIONSHIP_TYPES.INDEX }, (r) => ({
+              type: r.Type,
+              key: r.Key,
+              index: r.Index,
+              resource: r.Resource,
+            }))
+            .with({ Type: RELATIONSHIP_TYPES.COMPOSITE }, (r) => ({
+              type: r.Type,
+              key: r.Key,
+              resource: r.Resource,
+            }))
+            .exhaustive(),
+        ])
+      ),
     };
   }
 

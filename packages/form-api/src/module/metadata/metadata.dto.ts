@@ -1,9 +1,11 @@
 import {
+  Equals,
   IsBoolean,
   IsEnum,
   IsNotEmpty,
   IsObject,
   IsOptional,
+  IsPositive,
   IsSemVer,
   IsString,
   IsUUID,
@@ -13,7 +15,7 @@ import {
 import { form as FormSchema, Form } from "@eresearchqut/form-definition";
 import { IsJsonSchema } from "src/decorator/validate.decorator";
 import { Type } from "class-transformer";
-import { RELATIONSHIP_TYPES } from "./relationships.entity";
+import { RELATIONSHIP_TYPES } from "./constants";
 
 abstract class ResourceParams {
   @Matches(/[a-zA-Z0-9_]+/)
@@ -156,20 +158,46 @@ class Relationship {
   @IsString()
   key!: string;
 
+  @IsPositive()
+  index?: number;
+
   @IsEnum(RELATIONSHIP_TYPES)
   type!: RELATIONSHIP_TYPES;
 }
+
+export class IndexRelationship extends Relationship {
+  @IsPositive()
+  index!: number;
+
+  @Equals(RELATIONSHIP_TYPES.INDEX)
+  type!: RELATIONSHIP_TYPES.INDEX;
+}
+
+export class CompositeRelationship extends Relationship {
+  @Equals(RELATIONSHIP_TYPES.COMPOSITE)
+  type!: RELATIONSHIP_TYPES.COMPOSITE;
+}
+
+export type ConcreteRelationships = IndexRelationship | CompositeRelationship;
 
 export class GetRelationshipsResponse {
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => Relationship)
-  relationships!: Relationship[];
+  relationships!: Map<string, ConcreteRelationships>;
 }
 
 export class PutRelationshipsBody {
   @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => Relationship)
-  relationships!: Relationship[];
+  @ValidateNested({ each: true })
+  @Type(() => Relationship, {
+    discriminator: {
+      property: "type",
+      subTypes: [
+        { value: IndexRelationship, name: RELATIONSHIP_TYPES.INDEX },
+        { value: CompositeRelationship, name: RELATIONSHIP_TYPES.COMPOSITE },
+      ],
+    },
+  })
+  relationships!: Map<string, ConcreteRelationships>;
 }

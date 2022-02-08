@@ -6,9 +6,8 @@ import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
 import { FormService } from "../metadata/form.service";
 import { RelationshipsService } from "../metadata/relationships.service";
-import { RELATIONSHIP_TYPES } from "../metadata/relationships.entity";
 import { RelationshipException, ValidationException } from "./resource.exception";
-import { Metadata } from "../metadata/metadata.entity";
+import { RELATIONSHIP_TYPES } from "../metadata/constants";
 
 interface GetResourceInput {
   resource: string;
@@ -35,6 +34,7 @@ interface QueryResourceInput {
   id: string;
   version?: string;
   targetResource: string;
+  relationshipName: string;
 }
 
 @Injectable()
@@ -134,27 +134,24 @@ export class ResourceService {
       Data: { Relationships },
     } = await this.relationshipsService.getRelationships(RelationshipsVersion);
 
-    // TODO: make relationships bi-directional
     // TODO: support querying composite relationships
-    // TODO: allow resources to have multiple relationships between each other
-    let index = Relationships.filter((relationship) => relationship.Type === RELATIONSHIP_TYPES.INDEX).findIndex(
-      (relationship) => relationship.Resource === input.resource
-    );
+    const relationship = Relationships.get(input.relationshipName);
 
-    if (index === -1) {
+    if (
+      relationship === undefined ||
+      relationship.Type !== RELATIONSHIP_TYPES.INDEX ||
+      relationship.Resource !== input.resource
+    ) {
       throw new RelationshipException("Invalid relationship"); // TODO: consider removing message to not leak relationships
     }
 
-    // TODO: use object rather than array to collect relationships
-    index++;
-
     yield* this.dynamodbService.queryItems({
       table: this.configService.get("RESOURCE_TABLE"),
-      index: `GSI${index}`,
+      index: `GSI${relationship.Index}`,
       keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
       expressionNames: {
-        "#PK": `GSI${index}-PK`,
-        "#SK": `GSI${index}-SK`,
+        "#PK": `GSI${relationship.Index}-PK`,
+        "#SK": `GSI${relationship.Index}-SK`,
       },
       expressionValues: {
         ":PK": this.metadataService.buildResourceIdentifier(input.resource, input.id),

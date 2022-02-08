@@ -67,4 +67,7 @@ export class QueryResourceParams extends ResourceParams {
 
   @IsString()
   targetResource!: string;
+
+  @IsString()
+  relationshipName!: string;
 }

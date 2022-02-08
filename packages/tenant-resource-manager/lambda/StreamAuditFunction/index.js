@@ -11,14 +11,13 @@ exports.handler = async ({ Records }) => {
         const { eventName, dynamodb } = record;
         const { OldImage, NewImage } = dynamodb;
         const document = eventName === 'REMOVE' ? unmarshall(OldImage) : unmarshall(NewImage);
-        const { PK, SK } = document;
+        const { SK } = document;
         const command = new PutItemCommand({
             TableName,
             Item: marshall({
                 eventName,
                 ...document,
-                PK: `${PK}:${SK}`,
-                SK: new Date().toISOString(),
+                SK: `${SK}:${new Date().toISOString()}`,
             }),
         });
         return dynamoDBClient.send(command);

@@ -5,10 +5,6 @@ import { Code, Function, Runtime, StartingPosition } from 'aws-cdk-lib/aws-lambd
 import { DynamoEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 
 import {
-    CONTEXT_ENVIRONMENT,
-    CONTEXT_PROVISION_GSI_COUNT,
-    CONTEXT_TABLE_NAME,
-    CONTEXT_TENANT_ID,
     ENVIRONMENTS,
     TABLE_AUDIT,
     TABLE_GSI,
@@ -17,16 +13,23 @@ import {
     TABLE_STREAM_FUNCTION,
 } from './const';
 
-export class DynamodbTableStack extends Stack {
-    constructor(scope: Construct, id: string, props?: StackProps) {
-        super(scope, id, props);
+export interface AuditedTableProps {
+    tableName: string;
+    tenantId?: string;
+    environment?: string;
+    provisionGsi?: number;
+}
 
-        const tenantId = this.node.tryGetContext(CONTEXT_TENANT_ID);
-        const tableName = this.node.tryGetContext(CONTEXT_TABLE_NAME);
-        const environment = this.node.tryGetContext(CONTEXT_ENVIRONMENT);
+export class AuditedTable extends Construct {
+    constructor(scope: Construct, id: string, props: AuditedTableProps) {
 
-        const table = new Table(this, tableName, {
-            tableName: `${tenantId}-${tableName}`,
+        super(scope, id);
+
+        const {tableName, tenantId, environment, provisionGsi = 20} = props;
+        const tenantPrefix = props.tenantId ? `${tenantId}-` : '';
+
+        const table = new Table(this, props.tableName, {
+            tableName: `${tenantPrefix}${tableName}`,
             partitionKey: {
                 name: TABLE_PARTITION_KEY_ATTRIBUTE,
                 type: AttributeType.STRING,
@@ -40,11 +43,11 @@ export class DynamodbTableStack extends Stack {
             removalPolicy: ENVIRONMENTS.PROD === environment ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
         });
 
-        const provisionGsiCount = this.node.tryGetContext(CONTEXT_PROVISION_GSI_COUNT) || 20;
-        for (let gsiIndex = 1; gsiIndex <= provisionGsiCount; gsiIndex += 1) {
+
+        for (let gsiIndex = 1; gsiIndex <= provisionGsi; gsiIndex += 1) {
             table
                 .addGlobalSecondaryIndex({
-                    indexName: `${tenantId}-${tableName}-${TABLE_GSI}-${gsiIndex}`,
+                    indexName: `${tenantPrefix}${tableName}-${TABLE_GSI}-${gsiIndex}`,
                     partitionKey: {
                         name: `${TABLE_GSI}-${TABLE_PARTITION_KEY_ATTRIBUTE}-${gsiIndex}`,
                         type: AttributeType.STRING,
@@ -58,7 +61,7 @@ export class DynamodbTableStack extends Stack {
         }
 
         const auditTable = new Table(this, `${tableName}-${TABLE_AUDIT}`, {
-            tableName: `${tenantId}-${tableName}-${TABLE_AUDIT}`,
+            tableName: `${tenantPrefix}${tableName}-${TABLE_AUDIT}`,
             partitionKey: {
                 name: TABLE_PARTITION_KEY_ATTRIBUTE,
                 type: AttributeType.STRING,
@@ -72,7 +75,7 @@ export class DynamodbTableStack extends Stack {
         });
 
         const tableAuditFunction = new Function(this, `${tableName}-${TABLE_AUDIT}-${TABLE_STREAM_FUNCTION}`, {
-            description: `Invoked on changes to ${tenantId}-${tableName} to audit changes into ${tenantId}-${tableName}-${TABLE_AUDIT}`,
+            description: `Invoked on changes to ${tenantPrefix}${tableName} to audit changes into ${tenantPrefix}${tableName}-${TABLE_AUDIT}`,
             code: Code.fromAsset('lambda/StreamAuditFunction'),
             handler: 'index.handler',
             runtime: Runtime.NODEJS_14_X,

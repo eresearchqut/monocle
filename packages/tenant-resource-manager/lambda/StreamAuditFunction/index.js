@@ -15,7 +15,7 @@ exports.handler = async ({ Records }) => {
         const command = new PutItemCommand({
             TableName,
             Item: marshall({
-                eventName,
+                EVENT_NAME: eventName,
                 ...document,
                 SK: `${SK}:${new Date().toISOString()}`,
             }),

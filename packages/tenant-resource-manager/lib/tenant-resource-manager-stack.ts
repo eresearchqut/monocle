@@ -7,14 +7,22 @@ export class TenantResourceManagerStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);
 
+
+
         const userPool = new UserPool.UserPool(this, 'user-pool');
         const userPoolClient = new UserPoolClient.UserPoolClient(this, 'user-pool-client', {
             userPool: userPool.userPool,
             customAttributes: [],
         });
 
-        new CfnOutput(this, 'Tenant User Pool', { value: userPool.userPool.userPoolId });
-        new CfnOutput(this, 'TENANT_USER_POOL_CLIENT', { value: userPoolClient.userPoolClient.userPoolClientId });
+        new CfnOutput(this, 'TenantUserPool', {
+            value: userPool.userPool.userPoolId,
+            exportName: this.node.tryGetContext('userPoolExportName')
+        });
+        new CfnOutput(this, 'TenantUserPoolClient', {
+            value: userPoolClient.userPoolClient.userPoolClientId,
+            exportName: this.node.tryGetContext('userPoolClientExportName')
+        });
 
     }
 }

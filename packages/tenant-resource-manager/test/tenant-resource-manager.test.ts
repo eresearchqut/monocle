@@ -4,7 +4,12 @@ import { Template } from 'aws-cdk-lib/assertions';
 
 test('Tenant Resource Manager Test', () => {
 
-    const app = new App();
+    const app = new App({
+        context: {
+            userPoolExportName: 'Tenant-User-Pool',
+            userPoolClientExportName: 'Tenant-User-Pool-Admin-Client',
+        },
+    });
     // WHEN
 
     const stack = new TenantResourceManager.TenantResourceManagerStack(app, 'TenantResourceManager');
@@ -15,7 +20,7 @@ test('Tenant Resource Manager Test', () => {
     template.resourceCountIs('AWS::Cognito::UserPool', 1);
     template.resourceCountIs('AWS::Cognito::UserPoolClient', 1);
 
-    template.hasOutput('TenantUserPool', {});
-    template.hasOutput('TenantUserPoolClient', {});
+    template.hasOutput('TenantUserPool', { Export: { Name: 'Tenant-User-Pool' } });
+    template.hasOutput('TenantUserPoolClient', { Export: { Name: 'Tenant-User-Pool-Admin-Client' } });
 
 });

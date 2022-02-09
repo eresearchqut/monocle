@@ -1,4 +1,4 @@
-import { Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
+import { Duration, RemovalPolicy } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { AttributeType, BillingMode, ProjectionType, StreamViewType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Code, Function, Runtime, StartingPosition } from 'aws-cdk-lib/aws-lambda';
@@ -15,7 +15,6 @@ import {
 
 export interface AuditedTableProps {
     tableName: string;
-    tenantId?: string;
     environment?: string;
     provisionGsi?: number;
 }
@@ -25,11 +24,10 @@ export class AuditedTable extends Construct {
 
         super(scope, id);
 
-        const {tableName, tenantId, environment, provisionGsi = 20} = props;
-        const tenantPrefix = props.tenantId ? `${tenantId}-` : '';
+        const { tableName, environment, provisionGsi = 20 } = props;
 
         const table = new Table(this, props.tableName, {
-            tableName: `${tenantPrefix}${tableName}`,
+            tableName: `${tableName}`,
             partitionKey: {
                 name: TABLE_PARTITION_KEY_ATTRIBUTE,
                 type: AttributeType.STRING,
@@ -47,7 +45,7 @@ export class AuditedTable extends Construct {
         for (let gsiIndex = 1; gsiIndex <= provisionGsi; gsiIndex += 1) {
             table
                 .addGlobalSecondaryIndex({
-                    indexName: `${tenantPrefix}${tableName}-${TABLE_GSI}-${gsiIndex}`,
+                    indexName: `${tableName}-${TABLE_GSI}-${gsiIndex}`,
                     partitionKey: {
                         name: `${TABLE_GSI}-${TABLE_PARTITION_KEY_ATTRIBUTE}-${gsiIndex}`,
                         type: AttributeType.STRING,
@@ -61,7 +59,7 @@ export class AuditedTable extends Construct {
         }
 
         const auditTable = new Table(this, `${tableName}-${TABLE_AUDIT}`, {
-            tableName: `${tenantPrefix}${tableName}-${TABLE_AUDIT}`,
+            tableName: `${tableName}-${TABLE_AUDIT}`,
             partitionKey: {
                 name: TABLE_PARTITION_KEY_ATTRIBUTE,
                 type: AttributeType.STRING,
@@ -75,7 +73,7 @@ export class AuditedTable extends Construct {
         });
 
         const tableAuditFunction = new Function(this, `${tableName}-${TABLE_AUDIT}-${TABLE_STREAM_FUNCTION}`, {
-            description: `Invoked on changes to ${tenantPrefix}${tableName} to audit changes into ${tenantPrefix}${tableName}-${TABLE_AUDIT}`,
+            description: `Invoked on changes to ${tableName} to audit changes into ${tableName}-${TABLE_AUDIT}`,
             code: Code.fromAsset('lambda/StreamAuditFunction'),
             handler: 'index.handler',
             runtime: Runtime.NODEJS_14_X,

@@ -1,16 +1,20 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { CfnOutput, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import * as UserPool from '../lib/user-pool';
+import * as UserPoolClient from '../lib/user-pool-client';
 
 export class TenantResourceManagerStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
-    super(scope, id, props);
+    constructor(scope: Construct, id: string, props?: StackProps) {
+        super(scope, id, props);
 
-    // The code that defines your stack goes here
+        const userPool = new UserPool.UserPool(this, 'user-pool');
+        const userPoolClient = new UserPoolClient.UserPoolClient(this, 'user-pool-client', {
+            userPool: userPool.userPool,
+            customAttributes: [],
+        });
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'TenantResourceManagerQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
-  }
+        new CfnOutput(this, 'Tenant User Pool', { value: userPool.userPool.userPoolId });
+        new CfnOutput(this, 'TENANT_USER_POOL_CLIENT', { value: userPoolClient.userPoolClient.userPoolClientId });
+
+    }
 }

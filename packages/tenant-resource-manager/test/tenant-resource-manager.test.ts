@@ -19,6 +19,7 @@ test('Tenant Resource Manager Test', () => {
 
     template.resourceCountIs('AWS::Cognito::UserPool', 1);
     template.resourceCountIs('AWS::Cognito::UserPoolClient', 1);
+    template.resourceCountIs('AWS::DynamoDB::Table', 2);
 
     template.hasOutput('TenantUserPool', { Export: { Name: 'Tenant-User-Pool' } });
     template.hasOutput('TenantUserPoolClient', { Export: { Name: 'Tenant-User-Pool-Admin-Client' } });

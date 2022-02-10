@@ -6,8 +6,8 @@ test('Tenant Resource Manager Test', () => {
 
     const app = new App({
         context: {
-            userPoolExportName: 'Tenant-User-Pool',
-            userPoolClientExportName: 'Tenant-User-Pool-Admin-Client',
+            userPoolExportName: 'TenantUserPool',
+            userPoolClientExportName: 'TenantUserPoolAdminClient',
         },
     });
     // WHEN
@@ -21,7 +21,8 @@ test('Tenant Resource Manager Test', () => {
     template.resourceCountIs('AWS::Cognito::UserPoolClient', 1);
     template.resourceCountIs('AWS::DynamoDB::Table', 2);
 
-    template.hasOutput('TenantUserPool', { Export: { Name: 'Tenant-User-Pool' } });
-    template.hasOutput('TenantUserPoolClient', { Export: { Name: 'Tenant-User-Pool-Admin-Client' } });
-
+    template.hasOutput('UserPoolOutput', { Export: { Name: 'TenantResourceManagerUserPool' } });
+    template.hasOutput('AdminClientOutput', { Export: { Name: 'TenantResourceManagerAdminClient' } });
+    template.hasOutput('RbacTableOutput', { Export: { Name: 'TenantResourceManagerRbacTable' } });
+    template.hasOutput('RbacAuditTableOutput', { Export: { Name: 'TenantResourceManagerRbacAuditTable' } });
 });

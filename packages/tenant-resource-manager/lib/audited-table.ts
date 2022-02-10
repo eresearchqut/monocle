@@ -20,13 +20,18 @@ export interface AuditedTableProps {
 }
 
 export class AuditedTable extends Construct {
+
+    public readonly table: Table;
+    public readonly auditTable: Table;
+    public readonly auditFunction: Function;
+
     constructor(scope: Construct, id: string, props: AuditedTableProps) {
 
         super(scope, id);
 
         const { tableName, environment, provisionGsi = 20 } = props;
 
-        const table = new Table(this, props.tableName, {
+        this.table =  new Table(this, props.tableName, {
             tableName: `${tableName}`,
             partitionKey: {
                 name: TABLE_PARTITION_KEY_ATTRIBUTE,
@@ -43,7 +48,7 @@ export class AuditedTable extends Construct {
 
 
         for (let gsiIndex = 1; gsiIndex <= provisionGsi; gsiIndex += 1) {
-            table
+            this.table
                 .addGlobalSecondaryIndex({
                     indexName: `${tableName}-${TABLE_GSI}-${gsiIndex}`,
                     partitionKey: {
@@ -58,7 +63,7 @@ export class AuditedTable extends Construct {
                 });
         }
 
-        const auditTable = new Table(this, `${tableName}-${TABLE_AUDIT}`, {
+        this.auditTable = new Table(this, `${tableName}-${TABLE_AUDIT}`, {
             tableName: `${tableName}-${TABLE_AUDIT}`,
             partitionKey: {
                 name: TABLE_PARTITION_KEY_ATTRIBUTE,
@@ -72,25 +77,25 @@ export class AuditedTable extends Construct {
             removalPolicy: ENVIRONMENTS.PROD === environment ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
         });
 
-        const tableAuditFunction = new Function(this, `${tableName}-${TABLE_AUDIT}-${TABLE_STREAM_FUNCTION}`, {
+        this.auditFunction =  new Function(this, `${tableName}-${TABLE_AUDIT}-${TABLE_STREAM_FUNCTION}`, {
             description: `Invoked on changes to ${tableName} to audit changes into ${tableName}-${TABLE_AUDIT}`,
             code: Code.fromAsset('lambda/StreamAuditFunction'),
             handler: 'index.handler',
             runtime: Runtime.NODEJS_14_X,
             environment: {
-                AUDIT_TABLE_NAME: auditTable.tableName,
+                AUDIT_TABLE_NAME: this.auditTable.tableName,
             },
             timeout: Duration.minutes(1),
         });
 
-        tableAuditFunction.addEventSource(new DynamoEventSource(table, {
+        this.auditFunction.addEventSource(new DynamoEventSource(this.table, {
             startingPosition: StartingPosition.TRIM_HORIZON,
             batchSize: 5,
             bisectBatchOnError: true,
             retryAttempts: 10,
         }));
 
-        auditTable.grantReadWriteData(tableAuditFunction);
+        this.auditTable.grantReadWriteData(this.auditFunction);
 
     }
 }

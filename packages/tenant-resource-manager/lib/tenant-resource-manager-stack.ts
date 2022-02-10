@@ -9,25 +9,36 @@ export class TenantResourceManagerStack extends Stack {
         super(scope, id, props);
 
 
-        const userPool = new UserPool(this, 'user-pool');
-        const userPoolClient = new UserPoolClient(this, 'user-pool-client', {
+        const userPool = new UserPool(this, 'UserPool');
+        const adminClient = new UserPoolClient(this, 'AdminClient', {
             userPool: userPool.userPool,
             customAttributes: [],
         });
-
-        const rbacStore = new AuditedTable(this, 'rbac-store', {
-            tableName: 'RBAC_STORE',
+        const rbacTable = new AuditedTable(this, 'RbacTable', {
+            tableName: `${this.stackName}-Rbac`,
             environment: this.node.tryGetContext('environment'),
         });
 
-        new CfnOutput(this, 'TenantUserPool', {
+        new CfnOutput(this, 'UserPoolOutput', {
             value: userPool.userPool.userPoolId,
-            exportName: this.node.tryGetContext('userPoolExportName'),
+            exportName: `${this.stackName}UserPool` ,
         });
-        new CfnOutput(this, 'TenantUserPoolClient', {
-            value: userPoolClient.userPoolClient.userPoolClientId,
-            exportName: this.node.tryGetContext('userPoolClientExportName'),
+
+        new CfnOutput(this, 'AdminClientOutput', {
+            value: adminClient.userPoolClient.userPoolClientId,
+            exportName: `${this.stackName}AdminClient`,
         });
+
+        new CfnOutput(this, 'RbacTableOutput', {
+            value: rbacTable.table.tableName,
+            exportName: `${this.stackName}RbacTable`,
+        });
+
+        new CfnOutput(this, 'RbacAuditTableOutput', {
+            value: rbacTable.auditTable.tableName,
+            exportName: `${this.stackName}RbacAuditTable`,
+        });
+
 
     }
 }

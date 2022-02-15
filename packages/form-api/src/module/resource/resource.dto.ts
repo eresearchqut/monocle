@@ -61,7 +61,9 @@ export class DeleteResourceQuery {
   options: any;
 }
 
-export class QueryResourceParams extends ResourceParams {
+export class QueryResourceParams extends OptionallyVersionedResourceParams {}
+
+export class QueryRelatedResourceParams extends ResourceParams {
   @IsString()
   id!: string;
 

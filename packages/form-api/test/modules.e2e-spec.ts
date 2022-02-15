@@ -6,7 +6,6 @@ import { validateConfigOverride } from "../src/app.config";
 import * as yaml from "js-yaml";
 import * as fs from "fs";
 import { CLOUDFORMATION_SCHEMA } from "cloudformation-js-yaml-schema";
-import { DynamodbLogger, DynamodbRepository } from "../src/module/dynamodb/dynamodb.repository";
 import { NIL as NIL_UUID, v4 as uuid } from "uuid";
 import { DynamodbModule } from "../src/module/dynamodb/dynamodb.module";
 import { MetadataModule } from "../src/module/metadata/metadata.module";
@@ -38,7 +37,7 @@ import { CreateTableCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDbClientProvider } from "../src/module/dynamodb/dynamodb.client";
 import { match } from "ts-pattern";
 import { buildApp } from "../src/app.build";
-import { isEqual, range } from "lodash";
+import { range } from "lodash";
 
 const getTableInput = (name: string) => {
   const template = yaml.load(fs.readFileSync("template.yaml", "utf8"), {
@@ -580,6 +579,93 @@ describe("Resource module", () => {
     await request(app.getHttpServer()).delete(`/resource/${resourceName}/${resourceId}`).expect(404);
   });
 
+  it("Queries created resources", async () => {
+    // Create empty metadata
+    const testResource = generateResourceName();
+    await request(app.getHttpServer()).put(`/metadata/resource/${testResource}`).expect(200).expect({ created: true });
+
+    const targetResource = generateResourceName();
+    await request(app.getHttpServer())
+      .put(`/metadata/resource/${targetResource}`)
+      .expect(200)
+      .expect({ created: true });
+
+    // Add forms
+    const formDefinition: Form = {
+      name: "TestForm",
+      description: "Test Form Description",
+      sections: [
+        {
+          name: "testSection",
+          label: "Test Section",
+          description: "Test Section Description",
+          id: NIL_UUID,
+          type: SectionType.DEFAULT,
+          inputs: [
+            {
+              name: "numeric",
+              label: "Numeric",
+              description: "Numeric",
+              type: InputType.NUMERIC,
+              id: uuid(),
+              required: true,
+            },
+          ],
+        },
+      ],
+    };
+    const formId = await request(app.getHttpServer())
+      .put(`/metadata/form`)
+      .send({
+        definition: formDefinition,
+      })
+      .expect(200)
+      .then((res) => res.body.id);
+
+    // Create metadata v1.0.0
+    await request(app.getHttpServer())
+      .post(`/metadata/resource/${testResource}?validation=validate`)
+      .send({
+        version: "1.0.0",
+        schemas: {
+          formVersion: formId,
+          authorizationVersion: NIL_UUID,
+          relationshipsVersion: NIL_UUID,
+        },
+      })
+      .expect(201)
+      .expect((r) => expect(r.body.pushed).toBe(true))
+      .expect((r) => expect(r.body.validation.lastVersion).toBe("0.0.0"));
+
+    // Create resources
+    const resourceIds = new Set(
+      await Promise.all(
+        range(5).map(async (index) =>
+          request(app.getHttpServer())
+            .put(`/resource/${testResource}`)
+            .send({
+              data: {
+                testSection: {
+                  numeric: index,
+                },
+              },
+            })
+            .expect(200)
+            .then((r) => r.body.Id)
+        )
+      )
+    );
+
+    // Query resource
+    await request(app.getHttpServer())
+      .get(`/resource/${testResource}`)
+      .expect(200)
+      .then((r) => {
+        expect(r.body.length).toEqual(5);
+        expect(new Set(r.body.map((resource: { Id: string }) => resource.Id))).toEqual(resourceIds);
+      });
+  });
+
   it("Creates resources with relationships", async () => {
     // Create empty metadata
     const sourceResource = generateResourceName();
@@ -744,8 +830,6 @@ describe("Resource module", () => {
         )
       )
     );
-
-    // Query target relationships
 
     // Query target relationships
     await Promise.all(

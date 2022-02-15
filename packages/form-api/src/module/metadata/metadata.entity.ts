@@ -3,6 +3,8 @@ import { Type } from "class-transformer";
 import { v4 } from "uuid";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
 import { buildResourceIdentifier } from "./utils";
+import { RESOURCE_GSI_INDEX } from "./constants";
+import { QueryItemArgs } from "../dynamodb/dynamodb.repository";
 
 interface DataType {
   Resource: string;
@@ -51,6 +53,17 @@ export class Metadata extends ItemEntity<DataType, "Metadata"> implements Metada
     const key = buildResourceIdentifier(this.Data.Resource, id);
     return { PK: key, SK: key };
   };
+
+  buildQuery = (): Omit<QueryItemArgs, "table"> => ({
+    index: `GSI${RESOURCE_GSI_INDEX}`,
+    keyCondition: "#PK = :PK",
+    expressionNames: {
+      "#PK": "ResourceName",
+    },
+    expressionValues: {
+      ":PK": this.Data.Resource,
+    },
+  });
 
   buildPutAttributes = (input: { id?: string; user: string; resource: { name: string; version: string } }) => {
     const id = input.id ?? v4();

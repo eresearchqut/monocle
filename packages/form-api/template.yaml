@@ -55,6 +55,8 @@ Resources:
           AttributeType: "S"
         - AttributeName: "SK"
           AttributeType: "S"
+        - AttributeName: "ResourceName"
+          AttributeType: "S"
         - AttributeName: "GSI1-PK"
           AttributeType: "S"
         - AttributeName: "GSI1-SK"
@@ -64,6 +66,12 @@ Resources:
         - AttributeName: "GSI2-SK"
           AttributeType: "S"
       GlobalSecondaryIndexes:
+        - IndexName: "GSI0"
+          KeySchema:
+            - AttributeName: "ResourceName"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "ALL"
         - IndexName: "GSI1"
           KeySchema:
             - AttributeName: "GSI1-PK"

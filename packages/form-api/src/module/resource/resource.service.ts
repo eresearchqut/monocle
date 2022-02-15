@@ -30,6 +30,11 @@ interface PutResourceInput {
 
 interface QueryResourceInput {
   resource: string;
+  version?: string;
+}
+
+interface QueryRelatedResourceInput {
+  resource: string;
   id: string;
   version?: string;
   targetResource: string;
@@ -129,13 +134,26 @@ export class ResourceService {
     return await this.dynamodbService.deleteItem({ table: this.configService.get("RESOURCE_TABLE"), ...key });
   }
 
-  public async *queryRelatedResources(input: QueryResourceInput) {
+  public async *queryResources(input: QueryResourceInput) {
+    const { buildQuery } = await this.metadataService.getMetadata(input.resource);
+
+    // TODO: run authorization policy check
+
+    yield* this.dynamodbService.queryItems({
+      table: this.configService.get("RESOURCE_TABLE"),
+      ...buildQuery(),
+    });
+  }
+
+  public async *queryRelatedResources(input: QueryRelatedResourceInput) {
     const {
       Data: {
         Schemas: { RelationshipsVersion },
       },
     } = await this.metadataService.getMetadata(input.targetResource); // TODO: consider including resource semver in relationships
     const { buildQuery } = await this.relationshipsService.getRelationships(RelationshipsVersion);
+
+    // TODO: run authorization policy check
 
     yield* this.dynamodbService.queryItems({
       table: this.configService.get("RESOURCE_TABLE"),

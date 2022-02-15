@@ -7,6 +7,7 @@ import { Type } from "class-transformer";
 import { RELATIONSHIP_TYPES, SYSTEM_USER } from "./constants";
 import { RelationshipException } from "../resource/resource.exception";
 import { match } from "ts-pattern";
+import { QueryItemArgs } from "../dynamodb/dynamodb.repository";
 
 abstract class Relationship {
   @Matches(/[a-zA-Z0-9_]+/)
@@ -110,7 +111,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
       }));
   };
 
-  buildQuery = (relationshipName: string, sourceIdentifier: string) => {
+  buildQuery = (relationshipName: string, sourceIdentifier: string): Omit<QueryItemArgs, "table"> => {
     const relationship = this.Data.Relationships.get(relationshipName);
 
     if (relationship === undefined) {

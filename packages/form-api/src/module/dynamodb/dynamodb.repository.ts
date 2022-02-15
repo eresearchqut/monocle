@@ -12,14 +12,14 @@ import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { ItemEntity } from "./dynamodb.entity";
 import { DynamoDbClientProvider } from "./dynamodb.client";
 
-type GetItemArgs = {
+export type GetItemArgs = {
   table: string;
   PK: string;
   SK?: string;
   consistent?: boolean;
 };
 
-type QueryItemArgs = {
+export type QueryItemArgs = {
   table: string;
   index?: `GSI${number}`;
   reverse?: boolean;
@@ -29,24 +29,24 @@ type QueryItemArgs = {
   expressionValues: { [key: string]: string | number };
 };
 
-type PutItemArgs<T extends ItemEntity> = {
+export type PutItemArgs<T extends ItemEntity> = {
   table: string;
   item: T;
 };
 
-type CreateItemArgs<T extends ItemEntity> = {
+export type CreateItemArgs<T extends ItemEntity> = {
   table: string;
   item: T;
 };
 
-type PutVersionTransactionArgs<T extends ItemEntity> = {
+export type PutVersionTransactionArgs<T extends ItemEntity> = {
   table: string;
   lastVersion: string;
   nextVersion: string;
   item: T;
 };
 
-type DeleteItemArgs = {
+export type DeleteItemArgs = {
   table: string;
   PK: string;
   SK?: string;

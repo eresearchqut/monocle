@@ -136,13 +136,14 @@ export class MetadataController {
             .with({ Type: RELATIONSHIP_TYPES.INDEX }, (r) => ({
               type: r.Type,
               key: r.Key,
-              index: r.Index,
               resource: r.Resource,
+              index: r.Index,
             }))
             .with({ Type: RELATIONSHIP_TYPES.COMPOSITE }, (r) => ({
               type: r.Type,
               key: r.Key,
               resource: r.Resource,
+              dataKey: r.DataKey,
             }))
             .exhaustive(),
         ])

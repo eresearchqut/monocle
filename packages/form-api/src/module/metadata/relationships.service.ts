@@ -23,6 +23,7 @@ type PutRelationshipsInput = Map<
       key: string;
       resource: string;
       type: RELATIONSHIP_TYPES.COMPOSITE;
+      dataKey: string;
     }
 >;
 
@@ -97,6 +98,7 @@ export class RelationshipsService {
                     Key: r.key,
                     Resource: r.resource,
                     Type: r.type,
+                    DataKey: r.dataKey,
                   }))
                   .exhaustive(),
               ])

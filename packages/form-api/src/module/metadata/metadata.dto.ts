@@ -43,15 +43,6 @@ class GetMetadataResponseSchemas {
   relationshipsVersion!: string;
 }
 
-class GetMetadataResponseRelationship {
-  @IsEnum(RELATIONSHIP_TYPES)
-  type!: RELATIONSHIP_TYPES;
-
-  @IsString()
-  @ValidateNested({ each: true })
-  key!: string[];
-}
-
 export class GetMetadataResponse {
   @IsSemVer()
   version!: string;
@@ -95,15 +86,6 @@ export class PostMetadataBody {
   @Type(() => PostMetadataBodyGroup)
   @ValidateNested()
   schemas!: PostMetadataBodyGroup;
-}
-
-class PostMetadataBodyRelationship {
-  @IsEnum(RELATIONSHIP_TYPES)
-  type!: RELATIONSHIP_TYPES;
-
-  @IsString()
-  @ValidateNested({ each: true })
-  key!: string[];
 }
 
 export class PutMetadataResponse {
@@ -173,6 +155,9 @@ export class IndexRelationship extends Relationship {
 export class CompositeRelationship extends Relationship {
   @Equals(RELATIONSHIP_TYPES.COMPOSITE)
   type!: RELATIONSHIP_TYPES.COMPOSITE;
+
+  @IsString()
+  dataKey!: string;
 }
 
 export type ConcreteRelationships = IndexRelationship | CompositeRelationship;
@@ -192,7 +177,7 @@ export class PutRelationshipsBody {
       property: "type",
       subTypes: [
         { value: IndexRelationship, name: RELATIONSHIP_TYPES.INDEX },
-        { value: CompositeRelationship, name: RELATIONSHIP_TYPES.COMPOSITE },
+        { value: CompositeRelationship, name: RELATIONSHIP_TYPES.COMPOSITE }, // TODO: Fix not validating concrete keys
       ],
     },
   })

@@ -8,6 +8,7 @@ import { FormService } from "../metadata/form.service";
 import { RelationshipsService } from "../metadata/relationships.service";
 import { RelationshipException, ValidationException } from "./resource.exception";
 import { RELATIONSHIP_TYPES } from "../metadata/constants";
+import { match } from "ts-pattern";
 
 interface GetResourceInput {
   resource: string;
@@ -89,14 +90,12 @@ export class ResourceService {
       },
     });
 
-    const { buildRelationshipIndexKeys } = await this.relationshipsService.getRelationships(
-      Schemas.RelationshipsVersion
-    );
+    const identifier = this.metadataService.buildResourceIdentifier(Resource, attrs.Id);
 
-    const relationshipKeys = buildRelationshipIndexKeys(
-      this.metadataService.buildResourceIdentifier(Resource, attrs.Id),
-      input.data
-    );
+    const { buildRelationshipIndexKeys, buildRelationshipCompositeItems } =
+      await this.relationshipsService.getRelationships(Schemas.RelationshipsVersion);
+
+    const relationshipKeys = buildRelationshipIndexKeys(identifier, input.data);
 
     const data = {
       ...attrs,
@@ -104,12 +103,23 @@ export class ResourceService {
       Data: input.data,
     };
 
+    const relatedItems = buildRelationshipCompositeItems(identifier, input.data);
+
     // TODO: run authorization policy check
 
-    await this.dynamodbService.putItem({
-      table: this.configService.get("RESOURCE_TABLE"),
-      item: data,
-    });
+    const table = this.configService.get("RESOURCE_TABLE");
+    await Promise.all([
+      this.dynamodbService.putItem({
+        table,
+        item: data,
+      }),
+      ...relatedItems.map((r) =>
+        this.dynamodbService.putItem({
+          table,
+          item: r,
+        })
+      ),
+    ]);
 
     return data;
   }
@@ -134,29 +144,40 @@ export class ResourceService {
       Data: { Relationships },
     } = await this.relationshipsService.getRelationships(RelationshipsVersion);
 
-    // TODO: support querying composite relationships
     const relationship = Relationships.get(input.relationshipName);
 
-    if (
-      relationship === undefined ||
-      relationship.Type !== RELATIONSHIP_TYPES.INDEX ||
-      relationship.Resource !== input.resource
-    ) {
-      throw new RelationshipException("Invalid relationship"); // TODO: consider removing message to not leak relationships
+    if (relationship === undefined || relationship.Resource !== input.resource) {
+      throw new RelationshipException("Invalid relationship");
     }
 
-    yield* this.dynamodbService.queryItems({
-      table: this.configService.get("RESOURCE_TABLE"),
-      index: `GSI${relationship.Index}`,
-      keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
-      expressionNames: {
-        "#PK": `GSI${relationship.Index}-PK`,
-        "#SK": `GSI${relationship.Index}-SK`,
-      },
-      expressionValues: {
-        ":PK": this.metadataService.buildResourceIdentifier(input.resource, input.id),
-        ":SKPrefix": this.relationshipsService.buildResourcePrefix(Resource),
-      },
-    });
+    yield* this.dynamodbService.queryItems(
+      match(relationship)
+        .with({ Type: RELATIONSHIP_TYPES.INDEX }, (r) => ({
+          table: this.configService.get("RESOURCE_TABLE"),
+          index: `GSI${r.Index}`,
+          keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
+          expressionNames: {
+            "#PK": `GSI${r.Index}-PK`,
+            "#SK": `GSI${r.Index}-SK`,
+          },
+          expressionValues: {
+            ":PK": this.metadataService.buildResourceIdentifier(input.resource, input.id),
+            ":SKPrefix": this.relationshipsService.buildResourcePrefix(Resource),
+          },
+        }))
+        .with({ Type: RELATIONSHIP_TYPES.COMPOSITE }, (r) => ({
+          table: this.configService.get("RESOURCE_TABLE"),
+          keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
+          expressionNames: {
+            "#PK": `PK`,
+            "#SK": `SK`,
+          },
+          expressionValues: {
+            ":PK": this.metadataService.buildResourceIdentifier(input.resource, input.id),
+            ":SKPrefix": this.relationshipsService.buildResourcePrefix(Resource),
+          },
+        }))
+        .exhaustive()
+    );
   }
 }

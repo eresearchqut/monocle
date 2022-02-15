@@ -4,13 +4,13 @@ import { Form } from "@eresearchqut/form-definition";
 import { get } from "lodash";
 import { buildResourceIdentifier } from "./utils";
 import { Type } from "class-transformer";
-import { RELATIONSHIP_TYPES } from "./constants";
+import { RELATIONSHIP_TYPES, SYSTEM_USER } from "./constants";
 
 abstract class Relationship {
   @Matches(/[a-zA-Z0-9_]+/)
   Resource!: string;
 
-  @IsString({ each: true })
+  @IsString()
   Key!: string;
 
   @IsEnum(RELATIONSHIP_TYPES)
@@ -29,6 +29,9 @@ class IndexRelationship extends Relationship {
 class CompositeRelationship extends Relationship {
   @Equals(RELATIONSHIP_TYPES.COMPOSITE)
   Type!: RELATIONSHIP_TYPES.COMPOSITE;
+
+  @IsString()
+  DataKey!: string;
 }
 
 export type ConcreteRelationships = IndexRelationship | CompositeRelationship;
@@ -38,6 +41,7 @@ interface DataType {
 }
 
 export type MetadataRelationshipsType = ItemEntity<DataType, "Relationships">;
+
 class MetadataRelationshipData {
   @ValidateNested({ each: true })
   @Type(() => Relationship, {
@@ -52,6 +56,18 @@ class MetadataRelationshipData {
   Relationships!: Map<string, ConcreteRelationships>;
 }
 
+const getIdentifier = (data: Form, key: string) => {
+  // TODO: Replace lodash get with something like jq that can return multiple
+  const identifier = get(data, key);
+  if (identifier === undefined || identifier === null) {
+    throw new Error(`Failed retrieving relationship key ${key}`);
+  }
+  if (typeof identifier !== "string") {
+    throw new Error(`Invalid relationship key value ${identifier} for key ${key}`);
+  }
+  return identifier;
+};
+
 export class MetadataRelationships extends ItemEntity<DataType, "Relationships"> implements MetadataRelationshipsType {
   @Equals("Relationships")
   ItemType: "Relationships" = "Relationships";
@@ -60,22 +76,29 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
   @Type(() => MetadataRelationshipData)
   Data!: MetadataRelationshipData;
 
-  // TODO: Memoize
   buildRelationshipIndexKeys = (sourceKey: string, data: Form): Record<string, string> =>
     Array.from(this.Data.Relationships.values())
       .filter((r): r is IndexRelationship => r.Type === RELATIONSHIP_TYPES.INDEX)
       .reduce((keys, relationship) => {
-        const identifier = get(data, relationship.Key);
-        if (identifier === undefined || identifier === null) {
-          throw new Error(`Failed retrieving relationship key ${relationship.Key}`);
-        }
-        if (typeof identifier !== "string") {
-          throw new Error(`Invalid relationship key value ${identifier} for key ${relationship.Key}`);
-        }
-
-        keys[`GSI${relationship.Index}-PK`] = buildResourceIdentifier(relationship.Resource, identifier);
+        keys[`GSI${relationship.Index}-PK`] = buildResourceIdentifier(
+          relationship.Resource,
+          getIdentifier(data, relationship.Key)
+        );
         keys[`GSI${relationship.Index}-SK`] = sourceKey;
 
         return keys;
       }, {} as Record<string, string>);
+
+  buildRelationshipCompositeItems = (sourceKey: string, data: Form): ItemEntity[] =>
+    Array.from(this.Data.Relationships.entries())
+      .filter((r): r is [string, CompositeRelationship] => r[1].Type === RELATIONSHIP_TYPES.COMPOSITE)
+      .map(([name, relationship]) => ({
+        Id: sourceKey,
+        PK: buildResourceIdentifier(relationship.Resource, getIdentifier(data, relationship.Key)),
+        SK: `${name}:${sourceKey}`,
+        ItemType: "CompositeRelationship",
+        CreatedAt: new Date().toISOString(),
+        CreatedBy: SYSTEM_USER,
+        Data: get(data, relationship.DataKey) || {},
+      }));
 }

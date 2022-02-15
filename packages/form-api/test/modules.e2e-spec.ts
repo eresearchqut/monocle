@@ -668,6 +668,12 @@ describe("Resource module", () => {
             key: "testSection.targetKey",
             index: 1,
           },
+          relationship2: {
+            type: "COMPOSITE",
+            resource: targetResource,
+            key: "testSection.targetKey",
+            dataKey: "",
+          },
         },
       })
       .expect(200)
@@ -738,16 +744,23 @@ describe("Resource module", () => {
     );
 
     // Query target relationships
-    await request(app.getHttpServer())
-      .get(`/resource/${targetResource}/${targetResourceId}/relationship1/${sourceResource}`)
-      .expect(200)
-      .then((r) =>
-        expect(
-          isEqual(
-            r.body.map((resource: { Id: string }) => resource.Id),
-            sourceResourceIds
-          )
-        )
-      );
+
+    // Query target relationships
+    await Promise.all(
+      ["relationship1", "relationship2"].map((r) =>
+        request(app.getHttpServer())
+          .get(`/resource/${targetResource}/${targetResourceId}/${r}/${sourceResource}`)
+          .expect(200)
+          .then((r) => {
+            expect(isEqual(r.body.length, 5));
+            expect(
+              isEqual(
+                r.body.map((resource: { Id: string }) => resource.Id),
+                sourceResourceIds
+              )
+            );
+          })
+      )
+    );
   });
 });

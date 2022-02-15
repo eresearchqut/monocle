@@ -8,7 +8,6 @@ import { ConcreteRelationships, MetadataRelationships, MetadataRelationshipsType
 import { ConditionallyValidateClassAsync } from "../../decorator/validate.decorator";
 import { TransformPlainToClass } from "class-transformer";
 import { MetadataException } from "./metadata.exception";
-import { buildResourcePrefix } from "./utils";
 import { match } from "ts-pattern";
 
 type PutRelationshipsInput = Map<
@@ -46,8 +45,6 @@ export const EMPTY_RELATIONSHIPS: MetadataRelationshipsType = {
 @Injectable()
 export class RelationshipsService {
   constructor(public configService: ConfigService<AppConfig, true>, private dynamodbService: DynamodbRepository) {}
-
-  buildResourcePrefix = (resource: string) => buildResourcePrefix(resource);
 
   @ConditionallyValidateClassAsync("VALIDATE_METADATA_ON_READ")
   @TransformPlainToClass(MetadataRelationships)

@@ -727,19 +727,21 @@ describe("Resource module", () => {
       .then((r) => r.body.Id);
 
     // Create source resources
-    const sourceResourceIds = await Promise.all(
-      range(5).map(async () =>
-        request(app.getHttpServer())
-          .put(`/resource/${sourceResource}`)
-          .send({
-            data: {
-              testSection: {
-                targetKey: targetResourceId,
+    const sourceResourceIds = new Set(
+      await Promise.all(
+        range(5).map(async () =>
+          request(app.getHttpServer())
+            .put(`/resource/${sourceResource}`)
+            .send({
+              data: {
+                testSection: {
+                  targetKey: targetResourceId,
+                },
               },
-            },
-          })
-          .expect(200)
-          .then((r) => r.body.Id)
+            })
+            .expect(200)
+            .then((r) => r.body.Id)
+        )
       )
     );
 
@@ -752,13 +754,8 @@ describe("Resource module", () => {
           .get(`/resource/${targetResource}/${targetResourceId}/${r}/${sourceResource}`)
           .expect(200)
           .then((r) => {
-            expect(isEqual(r.body.length, 5));
-            expect(
-              isEqual(
-                r.body.map((resource: { Id: string }) => resource.Id),
-                sourceResourceIds
-              )
-            );
+            expect(r.body.length).toEqual(5);
+            expect(new Set(r.body.map((resource: { Id: string }) => resource.Id))).toEqual(sourceResourceIds);
           })
       )
     );

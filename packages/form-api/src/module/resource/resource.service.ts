@@ -6,9 +6,7 @@ import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
 import { FormService } from "../metadata/form.service";
 import { RelationshipsService } from "../metadata/relationships.service";
-import { RelationshipException, ValidationException } from "./resource.exception";
-import { RELATIONSHIP_TYPES } from "../metadata/constants";
-import { match } from "ts-pattern";
+import { ValidationException } from "./resource.exception";
 
 interface GetResourceInput {
   resource: string;
@@ -90,12 +88,10 @@ export class ResourceService {
       },
     });
 
-    const identifier = this.metadataService.buildResourceIdentifier(Resource, attrs.Id);
-
     const { buildRelationshipIndexKeys, buildRelationshipCompositeItems } =
       await this.relationshipsService.getRelationships(Schemas.RelationshipsVersion);
 
-    const relationshipKeys = buildRelationshipIndexKeys(identifier, input.data);
+    const relationshipKeys = buildRelationshipIndexKeys(Resource, attrs.Id, input.data);
 
     const data = {
       ...attrs,
@@ -103,7 +99,7 @@ export class ResourceService {
       Data: input.data,
     };
 
-    const relatedItems = buildRelationshipCompositeItems(identifier, input.data);
+    const relatedItems = buildRelationshipCompositeItems(Resource, attrs.Id, input.data);
 
     // TODO: run authorization policy check
 
@@ -136,48 +132,14 @@ export class ResourceService {
   public async *queryRelatedResources(input: QueryResourceInput) {
     const {
       Data: {
-        Resource,
         Schemas: { RelationshipsVersion },
       },
     } = await this.metadataService.getMetadata(input.targetResource); // TODO: consider including resource semver in relationships
-    const {
-      Data: { Relationships },
-    } = await this.relationshipsService.getRelationships(RelationshipsVersion);
+    const { buildQuery } = await this.relationshipsService.getRelationships(RelationshipsVersion);
 
-    const relationship = Relationships.get(input.relationshipName);
-
-    if (relationship === undefined || relationship.Resource !== input.resource) {
-      throw new RelationshipException("Invalid relationship");
-    }
-
-    yield* this.dynamodbService.queryItems(
-      match(relationship)
-        .with({ Type: RELATIONSHIP_TYPES.INDEX }, (r) => ({
-          table: this.configService.get("RESOURCE_TABLE"),
-          index: `GSI${r.Index}`,
-          keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
-          expressionNames: {
-            "#PK": `GSI${r.Index}-PK`,
-            "#SK": `GSI${r.Index}-SK`,
-          },
-          expressionValues: {
-            ":PK": this.metadataService.buildResourceIdentifier(input.resource, input.id),
-            ":SKPrefix": this.relationshipsService.buildResourcePrefix(Resource),
-          },
-        }))
-        .with({ Type: RELATIONSHIP_TYPES.COMPOSITE }, (r) => ({
-          table: this.configService.get("RESOURCE_TABLE"),
-          keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
-          expressionNames: {
-            "#PK": `PK`,
-            "#SK": `SK`,
-          },
-          expressionValues: {
-            ":PK": this.metadataService.buildResourceIdentifier(input.resource, input.id),
-            ":SKPrefix": this.relationshipsService.buildResourcePrefix(Resource),
-          },
-        }))
-        .exhaustive()
-    );
+    yield* this.dynamodbService.queryItems({
+      table: this.configService.get("RESOURCE_TABLE"),
+      ...buildQuery(input.relationshipName, input.id),
+    });
   }
 }

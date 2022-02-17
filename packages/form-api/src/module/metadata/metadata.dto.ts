@@ -15,7 +15,7 @@ import {
 import { form as FormSchema, Form } from "@eresearchqut/form-definition";
 import { IsJsonSchema } from "src/decorator/validate.decorator";
 import { Type } from "class-transformer";
-import { RELATIONSHIP_TYPES } from "./constants";
+import { RELATIONSHIP_TYPES } from "../constants";
 
 abstract class ResourceParams {
   @Matches(/[a-zA-Z0-9_]+/)

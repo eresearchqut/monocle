@@ -2,8 +2,8 @@ import { Equals, IsSemVer, IsUUID, Matches, ValidateNested } from "class-validat
 import { Type } from "class-transformer";
 import { v4 } from "uuid";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
-import { buildResourceIdentifier } from "./utils";
-import { RESOURCE_GSI_INDEX } from "./constants";
+import { buildResourceIdentifier } from "../utils";
+import { RESOURCE_GSI_INDEX } from "../constants";
 import { QueryItemArgs } from "../dynamodb/dynamodb.repository";
 
 interface DataType {

@@ -4,7 +4,7 @@ import { AppConfig } from "../../app.config";
 import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
 import { MetadataAuthorization, MetadataAuthorizationType } from "./authorization.entity";
 import { NIL as NIL_UUID, v4 as uuidV4 } from "uuid";
-import { SYSTEM_USER } from "./constants";
+import { SYSTEM_USER } from "../constants";
 import { ConditionallyValidateClassAsync } from "../../decorator/validate.decorator";
 import { TransformPlainToClass } from "class-transformer";
 import { MetadataException } from "./metadata.exception";

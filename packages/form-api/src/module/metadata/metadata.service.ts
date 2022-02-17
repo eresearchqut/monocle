@@ -17,7 +17,7 @@ import "ix/add/asynciterable-operators/find";
 import "ix/add/asynciterable-operators/map";
 import { match } from "ts-pattern";
 import { TransformAsyncGeneratorPlainToClass } from "../../decorator/transform.decorator";
-import { INITIAL_SEMVER, SYSTEM_USER } from "./constants";
+import { INITIAL_SEMVER, SYSTEM_USER } from "../constants";
 import { FormService } from "./form.service";
 
 function buildMetadataItemKey(resource: string, version?: string) {

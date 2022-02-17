@@ -2,9 +2,9 @@ import { Equals, IsEnum, IsPositive, IsString, Matches, ValidateNested } from "c
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
 import { Form } from "@eresearchqut/form-definition";
 import { get } from "lodash";
-import { buildResourceIdentifier } from "./utils";
+import { buildResourceIdentifier } from "../utils";
 import { Type } from "class-transformer";
-import { RELATIONSHIP_TYPES, SYSTEM_USER } from "./constants";
+import { RELATIONSHIP_TYPES, SYSTEM_USER } from "../constants";
 import { RelationshipException } from "../resource/resource.exception";
 import { match } from "ts-pattern";
 import { QueryItemArgs } from "../dynamodb/dynamodb.repository";

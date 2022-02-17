@@ -5,7 +5,7 @@ import { MetadataForm, MetaDataFormType } from "./form.entity";
 import { NIL as NIL_UUID, v4 as uuidV4 } from "uuid";
 import { MetadataException } from "./metadata.exception";
 import { Form, Section } from "@eresearchqut/form-definition";
-import { SYSTEM_USER } from "./constants";
+import { SYSTEM_USER } from "../constants";
 import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
 import { ConfigService } from "@nestjs/config";
 import { AppConfig } from "../../app.config";

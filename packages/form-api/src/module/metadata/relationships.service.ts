@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { AppConfig } from "../../app.config";
 import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
 import { NIL as NIL_UUID, v4 as uuidV4 } from "uuid";
-import { RELATIONSHIP_TYPES, SYSTEM_USER } from "./constants";
+import { RELATIONSHIP_TYPES, SYSTEM_USER } from "../constants";
 import { ConcreteRelationships, MetadataRelationships, MetadataRelationshipsType } from "./relationships.entity";
 import { ConditionallyValidateClassAsync } from "../../decorator/validate.decorator";
 import { TransformPlainToClass } from "class-transformer";

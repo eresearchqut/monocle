@@ -35,7 +35,7 @@ import { FormService } from "./form.service";
 import { AuthorizationService } from "./authorization.service";
 import { RelationshipsService } from "./relationships.service";
 import { match } from "ts-pattern";
-import { RELATIONSHIP_TYPES } from "./constants";
+import { RELATIONSHIP_TYPES } from "../constants";
 
 @Controller("/metadata")
 export class MetadataController {

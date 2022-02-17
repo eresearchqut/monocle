@@ -1,5 +1,5 @@
 {
-  "name": "form-api",
+  "name": "@eresearchqut/form-api",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -23,8 +23,8 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "3.25.0",
     "@aws-sdk/util-dynamodb": "3.26.0",
-    "@eresearchqut/form-compiler": "^0.18.0",
-    "@eresearchqut/form-definition": "^0.18.0",
+    "@eresearchqut/form-compiler": "^0.25.0",
+    "@eresearchqut/form-definition": "^0.25.0",
     "@nestjs/common": "^7.6.15",
     "@nestjs/config": "^1.1.0",
     "@nestjs/core": "^7.6.15",
@@ -41,7 +41,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.6",
     "semver": "^7.3.5",
-    "ts-pattern": "^3.3.3",
+    "ts-pattern": "^3.3.4",
     "uuid": "8.3.2"
   },
   "devDependencies": {

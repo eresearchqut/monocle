@@ -31,9 +31,9 @@ import {
   PutRelationshipsBody,
 } from "./metadata.dto";
 import { VersionedErrorInterceptor } from "../../interceptor/dynamodb.interceptor";
-import { FormService } from "./form.service";
-import { AuthorizationService } from "./authorization.service";
-import { RelationshipsService } from "./relationships.service";
+import { FormService } from "../form/form.service";
+import { AuthorizationService } from "../authorization/authorization.service";
+import { RelationshipsService } from "../relationships/relationships.service";
 import { match } from "ts-pattern";
 import { RELATIONSHIP_TYPES } from "../constants";
 

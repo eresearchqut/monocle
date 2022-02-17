@@ -3,7 +3,7 @@ import { ConditionallyValidateClassAsync } from "../../decorator/validate.decora
 import { TransformPlainToClass } from "class-transformer";
 import { MetadataForm, MetaDataFormType } from "./form.entity";
 import { NIL as NIL_UUID, v4 as uuidV4 } from "uuid";
-import { MetadataException } from "./metadata.exception";
+import { MetadataException } from "../metadata/metadata.exception";
 import { Form, Section } from "@eresearchqut/form-definition";
 import { SYSTEM_USER } from "../constants";
 import { DynamodbRepository } from "../dynamodb/dynamodb.repository";

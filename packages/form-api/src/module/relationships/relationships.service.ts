@@ -7,7 +7,7 @@ import { RELATIONSHIP_TYPES, SYSTEM_USER } from "../constants";
 import { ConcreteRelationships, MetadataRelationships, MetadataRelationshipsType } from "./relationships.entity";
 import { ConditionallyValidateClassAsync } from "../../decorator/validate.decorator";
 import { TransformPlainToClass } from "class-transformer";
-import { MetadataException } from "./metadata.exception";
+import { MetadataException } from "../metadata/metadata.exception";
 import { match } from "ts-pattern";
 
 type PutRelationshipsInput = Map<

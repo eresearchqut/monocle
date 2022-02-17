@@ -1,4 +1,4 @@
-import { Equals, IsString, ValidateNested } from "class-validator";
+import { Equals, ValidateNested } from "class-validator";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
 import Ajv from "ajv";
 import { findFormCompiler } from "@eresearchqut/form-compiler";

@@ -18,7 +18,7 @@ import "ix/add/asynciterable-operators/map";
 import { match } from "ts-pattern";
 import { TransformAsyncGeneratorPlainToClass } from "../../decorator/transform.decorator";
 import { INITIAL_SEMVER, SYSTEM_USER } from "../constants";
-import { FormService } from "./form.service";
+import { FormService } from "../form/form.service";
 
 function buildMetadataItemKey(resource: string, version?: string) {
   const key = `Resource:${resource}#metadata:${resource}`; // TODO: ban 'metadata' as a resource type

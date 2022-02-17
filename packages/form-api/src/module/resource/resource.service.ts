@@ -4,8 +4,8 @@ import { ConfigService } from "@nestjs/config";
 import { MetadataService } from "../metadata/metadata.service";
 import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
-import { FormService } from "../metadata/form.service";
-import { RelationshipsService } from "../metadata/relationships.service";
+import { FormService } from "../form/form.service";
+import { RelationshipsService } from "../relationships/relationships.service";
 import { ValidationException } from "./resource.exception";
 
 interface GetResourceInput {

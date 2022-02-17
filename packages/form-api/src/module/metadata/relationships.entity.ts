@@ -11,7 +11,7 @@ import { QueryItemArgs } from "../dynamodb/dynamodb.repository";
 
 abstract class Relationship {
   @Matches(/[a-zA-Z0-9_]+/)
-  Resource!: string;
+  Resource!: string; // TODO: check target resource doesn't have other relationships with same name
 
   @IsString()
   Key!: string;
@@ -79,37 +79,51 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
   @Type(() => MetadataRelationshipData)
   Data!: MetadataRelationshipData;
 
-  buildRelationshipIndexKeys = (sourceResource: string, sourceId: string, data: Form): Record<string, string> => {
-    const sourceIdentifier = buildResourceIdentifier(sourceResource, sourceId);
+  private filterRelationships(relationshipType: RELATIONSHIP_TYPES.INDEX): [string, IndexRelationship][];
+  private filterRelationships(relationshipType: RELATIONSHIP_TYPES.COMPOSITE): [string, CompositeRelationship][];
+  private filterRelationships(
+    relationshipType: RELATIONSHIP_TYPES
+  ): [string, IndexRelationship | CompositeRelationship][] {
+    return Array.from(this.Data.Relationships.entries()).filter(
+      (r): r is [string, IndexRelationship | CompositeRelationship] => r[1].Type === relationshipType
+    );
+  }
 
-    return Array.from(this.Data.Relationships.entries())
-      .filter((r): r is [string, IndexRelationship] => r[1].Type === RELATIONSHIP_TYPES.INDEX)
-      .reduce((keys, [name, relationship]) => {
-        keys[`GSI${relationship.Index}-PK`] = buildResourceIdentifier(
-          relationship.Resource,
-          getIdentifier(data, relationship.Key)
-        );
-        keys[`GSI${relationship.Index}-SK`] = `${name}:${sourceIdentifier}`;
+  buildRelationshipsIndexKeys = (sourceResource: string, sourceId: string, data: Form): Record<string, string> =>
+    this.filterRelationships(RELATIONSHIP_TYPES.INDEX).reduce((keys, [name, relationship]) => {
+      keys[`GSI${relationship.Index}-PK`] = buildResourceIdentifier(
+        relationship.Resource,
+        getIdentifier(data, relationship.Key)
+      );
+      keys[`GSI${relationship.Index}-SK`] = `${name}:${buildResourceIdentifier(sourceResource, sourceId)}`;
 
-        return keys;
-      }, {} as Record<string, string>);
-  };
+      return keys;
+    }, {} as Record<string, string>);
 
-  buildRelationshipCompositeItems = (sourceResource: string, sourceId: string, data: Form): ItemEntity[] => {
-    const sourceIdentifier = buildResourceIdentifier(sourceResource, sourceId);
+  private buildRelationshipCompositeAttributes = (
+    sourceResource: string,
+    sourceId: string,
+    data: Form,
+    relationship: [string, CompositeRelationship]
+  ) => ({
+    PK: buildResourceIdentifier(relationship[1].Resource, getIdentifier(data, relationship[1].Key)),
+    SK: `${relationship[0]}:${buildResourceIdentifier(sourceResource, sourceId)}`,
+  });
 
-    return Array.from(this.Data.Relationships.entries())
-      .filter((r): r is [string, CompositeRelationship] => r[1].Type === RELATIONSHIP_TYPES.COMPOSITE)
-      .map(([name, relationship]) => ({
-        Id: sourceId,
-        PK: buildResourceIdentifier(relationship.Resource, getIdentifier(data, relationship.Key)),
-        SK: `${name}:${sourceIdentifier}`,
-        ItemType: "CompositeRelationship",
-        CreatedAt: new Date().toISOString(),
-        CreatedBy: SYSTEM_USER,
-        Data: get(data, relationship.DataKey) || {},
-      }));
-  };
+  buildRelationshipsCompositeAttributes = (sourceResource: string, sourceId: string, data: Form) =>
+    this.filterRelationships(RELATIONSHIP_TYPES.COMPOSITE).map((relationship) =>
+      this.buildRelationshipCompositeAttributes(sourceResource, sourceId, data, relationship)
+    );
+
+  buildRelationshipsCompositeItems = (sourceResource: string, sourceId: string, data: Form): ItemEntity[] =>
+    this.filterRelationships(RELATIONSHIP_TYPES.COMPOSITE).map(([name, relationship]) => ({
+      ...this.buildRelationshipCompositeAttributes(sourceResource, sourceId, data, [name, relationship]),
+      Id: sourceId,
+      ItemType: "CompositeRelationship",
+      CreatedAt: new Date().toISOString(),
+      CreatedBy: SYSTEM_USER,
+      Data: get(data, relationship.DataKey) || {},
+    }));
 
   buildQuery = (relationshipName: string, sourceIdentifier: string): Omit<QueryItemArgs, "table"> => {
     const relationship = this.Data.Relationships.get(relationshipName);
@@ -133,7 +147,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
           ":SKPrefix": `${relationshipName}:`,
         },
       }))
-      .with({ Type: RELATIONSHIP_TYPES.COMPOSITE }, (r) => ({
+      .with({ Type: RELATIONSHIP_TYPES.COMPOSITE }, () => ({
         keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
         expressionNames: {
           "#PK": `PK`,

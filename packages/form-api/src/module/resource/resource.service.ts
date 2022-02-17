@@ -93,10 +93,10 @@ export class ResourceService {
       },
     });
 
-    const { buildRelationshipIndexKeys, buildRelationshipCompositeItems } =
+    const { buildRelationshipsIndexKeys, buildRelationshipsCompositeItems } =
       await this.relationshipsService.getRelationships(Schemas.RelationshipsVersion);
 
-    const relationshipKeys = buildRelationshipIndexKeys(Resource, attrs.Id, input.data);
+    const relationshipKeys = buildRelationshipsIndexKeys(Resource, attrs.Id, input.data);
 
     const data = {
       ...attrs,
@@ -104,7 +104,7 @@ export class ResourceService {
       Data: input.data,
     };
 
-    const relatedItems = buildRelationshipCompositeItems(Resource, attrs.Id, input.data);
+    const relatedItems = buildRelationshipsCompositeItems(Resource, attrs.Id, input.data);
 
     // TODO: run authorization policy check
 

@@ -806,12 +806,6 @@ describe("Resource module", () => {
       .expect(200)
       .then((r) => r.body.Id);
 
-    // DELETE ME
-    await request(app.getHttpServer())
-      .get(`/resource/${targetResource}/${targetResourceId}`)
-      .expect(200)
-      .then((r) => r.body.Id);
-
     // Create source resources
     const sourceResourceIds = new Set(
       await Promise.all(

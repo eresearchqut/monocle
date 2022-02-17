@@ -5,4 +5,6 @@ export const RESOURCE_GSI_INDEX = 0;
 export enum RELATIONSHIP_TYPES {
   COMPOSITE = "COMPOSITE",
   INDEX = "INDEX",
+  // TODO: m2m / adjacency composite support
+  // TODO: nested / hierarchical
 }

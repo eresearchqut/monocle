@@ -32,6 +32,7 @@ export type QueryItemArgs = {
 export type PutItemArgs<T extends ItemEntity> = {
   table: string;
   item: T;
+  ignoreOld?: boolean;
 };
 
 export type CreateItemArgs<T extends ItemEntity> = {
@@ -106,10 +107,10 @@ export class DynamodbRepository {
       new PutItemCommand({
         TableName: input.table,
         Item: marshall(input.item),
-        ReturnValues: "ALL_OLD",
+        ReturnValues: input.ignoreOld ? undefined : "ALL_OLD",
       })
     );
-    if (item.Attributes) {
+    if (!input.ignoreOld && item.Attributes) {
       return unmarshall(item.Attributes) as T;
     } else {
       return null;
@@ -190,7 +191,7 @@ export class DynamodbRepository {
     );
   }
 
-  async deleteItem<T extends ItemEntity>(input: DeleteItemArgs): Promise<T | null> {
+  async deleteItem<T extends ItemEntity>(input: DeleteItemArgs): Promise<T> {
     const item = await this.client.send(
       new DeleteItemCommand({
         TableName: input.table,
@@ -201,11 +202,10 @@ export class DynamodbRepository {
         ReturnValues: "ALL_OLD",
       })
     );
-    if (item.Attributes) {
-      return unmarshall(item.Attributes) as T;
-    } else {
-      return null;
+    if (item.Attributes === undefined) {
+      throw Error("Invalid response when deleting item using ALL_OLD");
     }
+    return unmarshall(item.Attributes) as T;
   }
 }
 

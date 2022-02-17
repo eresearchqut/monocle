@@ -666,7 +666,7 @@ describe("Resource module", () => {
       });
   });
 
-  it("Creates resources with relationships", async () => {
+  it("Can CRUD resources with relationships", async () => {
     // Create empty metadata
     const sourceResource = generateResourceName();
     await request(app.getHttpServer())
@@ -748,13 +748,13 @@ describe("Resource module", () => {
       .put(`/metadata/relationships`)
       .send({
         relationships: {
-          relationship1: {
+          indexRelationship: {
             type: "INDEX",
             resource: targetResource,
             key: "testSection.targetKey",
             index: 1,
           },
-          relationship2: {
+          compositeRelationship: {
             type: "COMPOSITE",
             resource: targetResource,
             key: "testSection.targetKey",
@@ -827,13 +827,44 @@ describe("Resource module", () => {
 
     // Query target relationships
     await Promise.all(
-      ["relationship1", "relationship2"].map((r) =>
+      ["indexRelationship", "compositeRelationship"].map((r) =>
         request(app.getHttpServer())
           .get(`/resource/${targetResource}/${targetResourceId}/${r}/${sourceResource}`)
           .expect(200)
           .then((r) => {
             expect(r.body.length).toEqual(5);
             expect(new Set(r.body.map((resource: { Id: string }) => resource.Id))).toEqual(sourceResourceIds);
+          })
+      )
+    );
+
+    const [firstSourceResource, secondSourceResource, ...remainingSourceResources] = Array.from(sourceResourceIds);
+    const newSourceResourceIds = new Set(remainingSourceResources);
+
+    // Delete first source resource
+    await request(app.getHttpServer()).delete(`/resource/${sourceResource}/${firstSourceResource}`).expect(200);
+
+    // Update second source resource
+    await request(app.getHttpServer())
+      .post(`/resource/${sourceResource}/${secondSourceResource}`)
+      .send({
+        data: {
+          testSection: {
+            targetKey: "",
+          },
+        },
+      })
+      .expect(201);
+
+    // Confirm only 3 related resources remain
+    await Promise.all(
+      ["indexRelationship", "compositeRelationship"].map((r) =>
+        request(app.getHttpServer())
+          .get(`/resource/${targetResource}/${targetResourceId}/${r}/${sourceResource}`)
+          .expect(200)
+          .then((r) => {
+            expect(r.body.length).toEqual(3);
+            expect(new Set(r.body.map((resource: { Id: string }) => resource.Id))).toEqual(newSourceResourceIds);
           })
       )
     );

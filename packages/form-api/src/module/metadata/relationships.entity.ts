@@ -125,6 +125,18 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
       Data: get(data, relationship.DataKey) || {},
     }));
 
+  buildRelationshipOldCompositeAttributes = (sourceResource: string, sourceId: string, oldData: Form, newData: Form) =>
+    this.filterRelationships(RELATIONSHIP_TYPES.COMPOSITE).reduce((keys, [name, relationship]) => {
+      const oldId = getIdentifier(oldData, relationship.Key);
+      const newId = getIdentifier(newData, relationship.Key);
+
+      if (oldId !== newId) {
+        keys.push(this.buildRelationshipCompositeAttributes(sourceResource, sourceId, oldData, [name, relationship]));
+      }
+
+      return keys;
+    }, [] as { PK: string; SK: string }[]);
+
   buildQuery = (relationshipName: string, sourceIdentifier: string): Omit<QueryItemArgs, "table"> => {
     const relationship = this.Data.Relationships.get(relationshipName);
 

@@ -93,7 +93,7 @@ export class ResourceService {
       },
     });
 
-    const { buildRelationshipsIndexKeys, buildRelationshipsCompositeItems } =
+    const { buildRelationshipsIndexKeys, buildRelationshipsCompositeItems, buildRelationshipOldCompositeAttributes } =
       await this.relationshipsService.getRelationships(Schemas.RelationshipsVersion);
 
     const relationshipKeys = buildRelationshipsIndexKeys(Resource, attrs.Id, input.data);
@@ -109,29 +109,65 @@ export class ResourceService {
     // TODO: run authorization policy check
 
     const table = this.configService.get("RESOURCE_TABLE");
-    await Promise.all([
+    const [oldItem] = await Promise.all([
       this.dynamodbService.putItem({
         table,
         item: data,
+        ignoreOld: input.id === undefined,
       }),
       ...relatedItems.map((r) =>
         this.dynamodbService.putItem({
           table,
           item: r,
+          ignoreOld: true,
         })
       ),
     ]);
 
+    if (input.id) {
+      if (oldItem === null) {
+        throw Error("Item didn't already exist");
+      }
+
+      const oldRelatedKeys = buildRelationshipOldCompositeAttributes(Resource, attrs.Id, oldItem.Data, input.data);
+
+      await Promise.all(oldRelatedKeys.map((keys) => this.dynamodbService.deleteItem({ table, ...keys })));
+    }
+
+    // TODO: optionally return old data
     return data;
   }
 
   public async deleteResource(input: DeleteResourceInput): Promise<any> {
-    const { buildGetAttributes } = await this.metadataService.getMetadata(input.resource);
+    const {
+      Data: { Resource, Schemas },
+      buildGetAttributes,
+    } = await this.metadataService.getMetadata(input.resource);
     const key = buildGetAttributes(input.id);
+
+    const { buildRelationshipsCompositeAttributes } = await this.relationshipsService.getRelationships(
+      Schemas.RelationshipsVersion
+    );
 
     // TODO: run authorization policy check
 
-    return await this.dynamodbService.deleteItem({ table: this.configService.get("RESOURCE_TABLE"), ...key });
+    const table = this.configService.get("RESOURCE_TABLE");
+
+    const item = await this.dynamodbService.deleteItem({ table, ...key });
+
+    const toDelete = buildRelationshipsCompositeAttributes(Resource, input.id, item.Data);
+
+    await Promise.all(
+      toDelete.map((key) =>
+        this.dynamodbService.deleteItem({
+          table,
+          ...key,
+        })
+      )
+    );
+
+    // TODO: optionally return all deleted relationship items as well
+    return item;
   }
 
   public async *queryResources(input: QueryResourceInput) {

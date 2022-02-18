@@ -2,7 +2,7 @@ import { RelationshipsService } from "./relationships.service";
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Put } from "@nestjs/common";
 import { GetRelationshipsParams, GetRelationshipsResponse, PutRelationshipsBody } from "./relationships.dto";
 import { match } from "ts-pattern";
-import { RELATIONSHIP_TYPES } from "../constants";
+import { RELATIONSHIP_TYPES } from "./relationships.constants";
 
 @Controller("/meta/relationships")
 export class RelationshipsController {

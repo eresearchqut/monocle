@@ -1,5 +1,5 @@
 import { Equals, IsString, ValidateNested } from "class-validator";
-import { ItemEntity } from "../dynamodb/dynamodb.entity";
+import { ItemEntity } from "../../dynamodb/dynamodb.entity";
 
 interface DataType {
   Policy: string;

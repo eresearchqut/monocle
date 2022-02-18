@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { AppConfig } from "../../app.config";
 import { ConfigService } from "@nestjs/config";
-import { MetadataService } from "../metadata/metadata.service";
+import { MetadataService } from "../meta/metadata/metadata.service";
 import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
-import { FormService } from "../form/form.service";
-import { RelationshipsService } from "../relationships/relationships.service";
+import { FormService } from "../meta/form/form.service";
+import { RelationshipsService } from "../meta/relationships/relationships.service";
 import { ValidationException } from "./resource.exception";
 
 interface GetResourceInput {

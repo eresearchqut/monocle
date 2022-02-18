@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { MetadataService } from "./metadata.service";
-import { DynamodbModule } from "../dynamodb/dynamodb.module";
+import { DynamodbModule } from "../../dynamodb/dynamodb.module";
 import { MetadataController } from "./metadata.controller";
 import { AuthorizationService } from "../authorization/authorization.service";
 import { FormModule } from "../form/form.module";

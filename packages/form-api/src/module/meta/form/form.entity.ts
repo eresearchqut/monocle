@@ -1,10 +1,10 @@
 import { Equals, ValidateNested } from "class-validator";
-import { ItemEntity } from "../dynamodb/dynamodb.entity";
+import { ItemEntity } from "../../dynamodb/dynamodb.entity";
 import Ajv from "ajv";
 import { findFormCompiler } from "@eresearchqut/form-compiler";
 import addFormats from "ajv-formats";
 import { Form } from "@eresearchqut/form-definition";
-import { IsJsonSchema } from "../../decorator/validate.decorator";
+import { IsJsonSchema } from "../../../decorator/validate.decorator";
 import { form as FormSchema } from "@eresearchqut/form-definition/dist/schema";
 
 const ajv = new Ajv({

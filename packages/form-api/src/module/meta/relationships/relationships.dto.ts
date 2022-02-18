@@ -1,6 +1,6 @@
 import { Equals, IsEnum, IsNotEmpty, IsPositive, IsString, IsUUID, ValidateNested } from "class-validator";
-import { RELATIONSHIP_TYPES } from "../constants";
 import { Type } from "class-transformer";
+import { RELATIONSHIP_TYPES } from "./relationships.constants";
 
 export class GetRelationshipsParams {
   @IsUUID()

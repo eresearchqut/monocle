@@ -10,7 +10,7 @@ import {
   PutMetadataParams,
   PutMetadataResponse,
 } from "./metadata.dto";
-import { VersionedErrorInterceptor } from "../../interceptor/dynamodb.interceptor";
+import { VersionedErrorInterceptor } from "../../../interceptor/dynamodb.interceptor";
 
 @Controller("/meta/metadata")
 export class MetadataController {

@@ -8,7 +8,7 @@ import * as fs from "fs";
 import { CLOUDFORMATION_SCHEMA } from "cloudformation-js-yaml-schema";
 import { NIL as NIL_UUID, v4 as uuid } from "uuid";
 import { DynamodbModule } from "../src/module/dynamodb/dynamodb.module";
-import { MetadataModule } from "../src/module/metadata/metadata.module";
+import { MetadataModule } from "../src/module/meta/metadata/metadata.module";
 import { ResourceModule } from "../src/module/resource/resource.module";
 import {
   AddressInput,
@@ -38,9 +38,9 @@ import { DynamoDbClientProvider } from "../src/module/dynamodb/dynamodb.client";
 import { match } from "ts-pattern";
 import { buildApp } from "../src/app.build";
 import { range } from "lodash";
-import { FormModule } from "../src/module/form/form.module";
-import { RelationshipsModule } from "../src/module/relationships/relationships.module";
-import { AuthorizationModule } from "../src/module/authorization/authorization.module";
+import { FormModule } from "../src/module/meta/form/form.module";
+import { RelationshipsModule } from "../src/module/meta/relationships/relationships.module";
+import { AuthorizationModule } from "../src/module/meta/authorization/authorization.module";
 
 const getTableInput = (name: string) => {
   const template = yaml.load(fs.readFileSync("template.yaml", "utf8"), {

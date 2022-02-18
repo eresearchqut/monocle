@@ -7,7 +7,7 @@ import {
   ConditionallyValidateClassAsync,
   ConditionallyValidateClassAsyncGenerator,
 } from "src/decorator/validate.decorator";
-import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
+import { DynamodbRepository } from "../../dynamodb/dynamodb.repository";
 import { Metadata, MetadataEntityType } from "./metadata.entity";
 import { NIL as NIL_UUID } from "uuid";
 import { eq as semverEq, gte as semverGte, SemVer } from "semver";
@@ -16,9 +16,10 @@ import { from as ixFrom } from "ix/asynciterable";
 import "ix/add/asynciterable-operators/find";
 import "ix/add/asynciterable-operators/map";
 import { match } from "ts-pattern";
-import { TransformAsyncGeneratorPlainToClass } from "../../decorator/transform.decorator";
-import { INITIAL_SEMVER, SYSTEM_USER } from "../constants";
+import { TransformAsyncGeneratorPlainToClass } from "../../../decorator/transform.decorator";
+import { SYSTEM_USER } from "../constants";
 import { FormService } from "../form/form.service";
+import { INITIAL_SEMVER } from "./metadata.constants";
 
 function buildMetadataItemKey(resource: string, version?: string) {
   const key = `Resource:${resource}#metadata:${resource}`; // TODO: ban 'meta' & 'metadata' as a resource type

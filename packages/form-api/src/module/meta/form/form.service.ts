@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import { ConditionallyValidateClassAsync } from "../../decorator/validate.decorator";
+import { ConditionallyValidateClassAsync } from "../../../decorator/validate.decorator";
 import { TransformPlainToClass } from "class-transformer";
 import { MetadataForm, MetaDataFormType } from "./form.entity";
 import { NIL as NIL_UUID, v4 as uuidV4 } from "uuid";
 import { Form, Section } from "@eresearchqut/form-definition";
 import { SYSTEM_USER } from "../constants";
-import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
+import { DynamodbRepository } from "../../dynamodb/dynamodb.repository";
 import { ConfigService } from "@nestjs/config";
-import { AppConfig } from "../../app.config";
+import { AppConfig } from "../../../app.config";
 import { FormException } from "./form.exception";
 
 function buildFormItemKey(id: string) {

@@ -1,5 +1,5 @@
 import { IsObject, IsUUID } from "class-validator";
-import { IsJsonSchema } from "../../decorator/validate.decorator";
+import { IsJsonSchema } from "../../../decorator/validate.decorator";
 import { form as FormSchema } from "@eresearchqut/form-definition/dist/schema";
 import { Form } from "@eresearchqut/form-definition";
 

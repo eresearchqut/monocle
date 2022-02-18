@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { AppConfig } from "../../app.config";
-import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
+import { AppConfig } from "../../../app.config";
+import { DynamodbRepository } from "../../dynamodb/dynamodb.repository";
 import { MetadataAuthorization, MetadataAuthorizationType } from "./authorization.entity";
 import { NIL as NIL_UUID, v4 as uuidV4 } from "uuid";
 import { SYSTEM_USER } from "../constants";
-import { ConditionallyValidateClassAsync } from "../../decorator/validate.decorator";
+import { ConditionallyValidateClassAsync } from "../../../decorator/validate.decorator";
 import { TransformPlainToClass } from "class-transformer";
 import { AuthorizationException } from "./authorization.exception";
 

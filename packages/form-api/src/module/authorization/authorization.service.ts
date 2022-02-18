@@ -7,7 +7,7 @@ import { NIL as NIL_UUID, v4 as uuidV4 } from "uuid";
 import { SYSTEM_USER } from "../constants";
 import { ConditionallyValidateClassAsync } from "../../decorator/validate.decorator";
 import { TransformPlainToClass } from "class-transformer";
-import { MetadataException } from "../metadata/metadata.exception";
+import { AuthorizationException } from "./authorization.exception";
 
 export function buildAuthorizationItemKey(id: string) {
   const key = `Authorization:${id}`;
@@ -44,7 +44,7 @@ export class AuthorizationService {
       ...key,
     });
     if (item === null) {
-      throw new MetadataException(`Failed to retrieve authorization policy for resource ${id}`);
+      throw new AuthorizationException(`Failed to retrieve authorization policy for resource ${id}`);
     }
     return item;
   }

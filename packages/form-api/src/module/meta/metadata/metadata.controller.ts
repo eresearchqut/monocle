@@ -16,7 +16,7 @@ import { VersionedErrorInterceptor } from "../../../interceptor/dynamodb.interce
 export class MetadataController {
   public constructor(private metadataService: MetadataService) {}
 
-  @Get("/resource/:resource")
+  @Get(":resource")
   async getMetadata(
     @Param() params: GetMetadataParams,
     @Query() query: GetMetadataQuery
@@ -32,13 +32,13 @@ export class MetadataController {
     };
   }
 
-  @Put("/resource/:resource")
+  @Put(":resource")
   @UseInterceptors(VersionedErrorInterceptor)
   async putMetadata(@Param() params: PutMetadataParams): Promise<PutMetadataResponse> {
     return { created: await this.metadataService.addMetadata(params.resource) };
   }
 
-  @Post("/resource/:resource")
+  @Post(":resource")
   async postMetaData(
     @Param() params: PostMetadataParams,
     @Query() query: PostMetadataQuery,

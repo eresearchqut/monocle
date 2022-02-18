@@ -120,14 +120,11 @@ describe("Metadata module", () => {
     const resourceName = generateResourceName();
 
     // Create empty metadata
-    await request(app.getHttpServer())
-      .put(`/meta/metadata/resource/${resourceName}`)
-      .expect(200)
-      .expect({ created: true });
+    await request(app.getHttpServer()).put(`/meta/metadata/${resourceName}`).expect(200).expect({ created: true });
 
     // Retrieve empty metadata
     await request(app.getHttpServer())
-      .get(`/meta/metadata/resource/${resourceName}`)
+      .get(`/meta/metadata/${resourceName}`)
       .expect(200)
       .expect({
         version: "0.0.0",
@@ -140,7 +137,7 @@ describe("Metadata module", () => {
 
     // Attempt re-creating metadata with the same name
     await request(app.getHttpServer())
-      .put(`/meta/metadata/resource/${resourceName}`)
+      .put(`/meta/metadata/${resourceName}`)
       .expect(409)
       .expect((r) => r.body.message === "Item already exists");
   });
@@ -182,10 +179,7 @@ describe("Metadata module", () => {
     const resourceName = generateResourceName();
 
     // Create empty metadata
-    await request(app.getHttpServer())
-      .put(`/meta/metadata/resource/${resourceName}`)
-      .expect(200)
-      .expect({ created: true });
+    await request(app.getHttpServer()).put(`/meta/metadata/${resourceName}`).expect(200).expect({ created: true });
 
     // Add a form
     const formDefinition: Form = {
@@ -229,7 +223,7 @@ describe("Metadata module", () => {
 
     // Create metadata v1.0.0
     await request(app.getHttpServer())
-      .post(`/meta/metadata/resource/${resourceName}?validation=validate`)
+      .post(`/meta/metadata/${resourceName}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -244,7 +238,7 @@ describe("Metadata module", () => {
 
     // Get latest metadata
     await request(app.getHttpServer())
-      .get(`/meta/metadata/resource/${resourceName}`)
+      .get(`/meta/metadata/${resourceName}`)
       .expect(200)
       .expect({
         version: "1.0.0",
@@ -313,10 +307,7 @@ describe("Resource module", () => {
     };
 
     // Create empty metadata
-    await request(app.getHttpServer())
-      .put(`/meta/metadata/resource/${resourceName}`)
-      .expect(200)
-      .expect({ created: true });
+    await request(app.getHttpServer()).put(`/meta/metadata/${resourceName}`).expect(200).expect({ created: true });
 
     await crud(resourceName, resourceData, updatedResourceData);
   });
@@ -534,10 +525,7 @@ describe("Resource module", () => {
     );
 
     // Create empty metadata
-    await request(app.getHttpServer())
-      .put(`/meta/metadata/resource/${resourceName}`)
-      .expect(200)
-      .expect({ created: true });
+    await request(app.getHttpServer()).put(`/meta/metadata/${resourceName}`).expect(200).expect({ created: true });
 
     const formId = await request(app.getHttpServer())
       .put(`/meta/form`)
@@ -549,7 +537,7 @@ describe("Resource module", () => {
 
     // Create metadata version
     await request(app.getHttpServer())
-      .post(`/meta/metadata/resource/${resourceName}?validation=validate`)
+      .post(`/meta/metadata/${resourceName}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -597,16 +585,10 @@ describe("Resource module", () => {
   it("Queries created resources", async () => {
     // Create empty metadata
     const testResource = generateResourceName();
-    await request(app.getHttpServer())
-      .put(`/meta/metadata/resource/${testResource}`)
-      .expect(200)
-      .expect({ created: true });
+    await request(app.getHttpServer()).put(`/meta/metadata/${testResource}`).expect(200).expect({ created: true });
 
     const targetResource = generateResourceName();
-    await request(app.getHttpServer())
-      .put(`/meta/metadata/resource/${targetResource}`)
-      .expect(200)
-      .expect({ created: true });
+    await request(app.getHttpServer()).put(`/meta/metadata/${targetResource}`).expect(200).expect({ created: true });
 
     // Add forms
     const formDefinition: Form = {
@@ -642,7 +624,7 @@ describe("Resource module", () => {
 
     // Create metadata v1.0.0
     await request(app.getHttpServer())
-      .post(`/meta/metadata/resource/${testResource}?validation=validate`)
+      .post(`/meta/metadata/${testResource}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -687,16 +669,10 @@ describe("Resource module", () => {
   it("Can CRUD resources with relationships", async () => {
     // Create empty metadata
     const sourceResource = generateResourceName();
-    await request(app.getHttpServer())
-      .put(`/meta/metadata/resource/${sourceResource}`)
-      .expect(200)
-      .expect({ created: true });
+    await request(app.getHttpServer()).put(`/meta/metadata/${sourceResource}`).expect(200).expect({ created: true });
 
     const targetResource = generateResourceName();
-    await request(app.getHttpServer())
-      .put(`/meta/metadata/resource/${targetResource}`)
-      .expect(200)
-      .expect({ created: true });
+    await request(app.getHttpServer()).put(`/meta/metadata/${targetResource}`).expect(200).expect({ created: true });
 
     // Add forms
     const sourceFormDefinition: Form = {
@@ -785,7 +761,7 @@ describe("Resource module", () => {
 
     // Create metadata v1.0.0
     await request(app.getHttpServer())
-      .post(`/meta/metadata/resource/${sourceResource}?validation=validate`)
+      .post(`/meta/metadata/${sourceResource}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -798,7 +774,7 @@ describe("Resource module", () => {
       .expect((r) => expect(r.body.pushed).toBe(true))
       .expect((r) => expect(r.body.validation.lastVersion).toBe("0.0.0"));
     await request(app.getHttpServer())
-      .post(`/meta/metadata/resource/${targetResource}?validation=validate`)
+      .post(`/meta/metadata/${targetResource}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {

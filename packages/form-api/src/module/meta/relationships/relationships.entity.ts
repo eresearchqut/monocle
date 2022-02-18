@@ -113,26 +113,37 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
       return keys;
     }, {} as Record<string, string>);
 
-  private buildRelationshipCompositeAttributes = (
+  private buildRelationshipItemCompositeAttributes = (
+    sourceResource: string,
+    sourceId: string,
+    targetId: string,
+    relationship: [string, CompositeRelationship]
+  ) => ({
+    PK: buildResourceIdentifier(relationship[1].Resource, targetId),
+    SK: `${relationship[0]}:${buildResourceIdentifier(sourceResource, sourceId)}`,
+  });
+
+  private buildRelationshipItemsCompositeAttributes = (
     sourceResource: string,
     sourceId: string,
     data: Form,
     relationship: [string, CompositeRelationship]
   ): { PK: string; SK: string }[] =>
-    Array.from(getIdentifiers(data, relationship[1].Key)).map((i) => ({
-      PK: buildResourceIdentifier(relationship[1].Resource, i),
-      SK: `${relationship[0]}:${buildResourceIdentifier(sourceResource, sourceId)}`,
-    }));
+    Array.from(getIdentifiers(data, relationship[1].Key)).map((i) =>
+      this.buildRelationshipItemCompositeAttributes(sourceResource, sourceId, i, relationship)
+    );
 
   buildRelationshipsCompositeAttributes = (sourceResource: string, sourceId: string, data: Form) =>
     this.filterRelationships(RELATIONSHIP_TYPES.COMPOSITE)
-      .map((relationship) => this.buildRelationshipCompositeAttributes(sourceResource, sourceId, data, relationship))
+      .map((relationship) =>
+        this.buildRelationshipItemsCompositeAttributes(sourceResource, sourceId, data, relationship)
+      )
       .flat();
 
   buildRelationshipsCompositeItems = (sourceResource: string, sourceId: string, data: Form): ItemEntity[] =>
     this.filterRelationships(RELATIONSHIP_TYPES.COMPOSITE)
       .map(([name, relationship]) =>
-        this.buildRelationshipCompositeAttributes(sourceResource, sourceId, data, [name, relationship]).map(
+        this.buildRelationshipItemsCompositeAttributes(sourceResource, sourceId, data, [name, relationship]).map(
           (attributes) => ({
             ...attributes,
             Id: sourceId,
@@ -147,14 +158,15 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
 
   buildRelationshipOldCompositeAttributes = (sourceResource: string, sourceId: string, oldData: Form, newData: Form) =>
     this.filterRelationships(RELATIONSHIP_TYPES.COMPOSITE).reduce((keys, [name, relationship]) => {
-      const oldId = getIdentifiers(oldData, relationship.Key);
-      const newId = getIdentifiers(newData, relationship.Key);
+      const oldIds = getIdentifiers(oldData, relationship.Key);
+      const newIds = getIdentifiers(newData, relationship.Key);
 
-      if (oldId !== newId) {
-        keys.push(
-          ...this.buildRelationshipCompositeAttributes(sourceResource, sourceId, oldData, [name, relationship])
-        );
-      }
+      // JS set difference is missing :( https://stackoverflow.com/a/36504668
+      keys.push(
+        ...[...oldIds]
+          .filter((i) => !newIds.has(i))
+          .map((i) => this.buildRelationshipItemCompositeAttributes(sourceResource, sourceId, i, [name, relationship]))
+      );
 
       return keys;
     }, [] as { PK: string; SK: string }[]);

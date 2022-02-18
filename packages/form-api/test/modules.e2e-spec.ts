@@ -852,6 +852,7 @@ describe("Resource module", () => {
 
     // Confirm only 3 related resources remain
     await Promise.all(
+      // TODO: add form definition input that can support m2m composite relationships
       ["indexRelationship", "compositeRelationship"].map((r) =>
         request(app.getHttpServer())
           .get(`/resource/${targetResource}/${targetResourceId}/${r}/${sourceResource}`)

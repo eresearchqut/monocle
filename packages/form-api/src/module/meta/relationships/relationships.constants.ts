@@ -3,4 +3,5 @@ export enum RELATIONSHIP_TYPES {
   INDEX = "INDEX",
   // TODO: m2m / adjacency composite support
   // TODO: nested / hierarchical
+  // TODO: multiple relationships to same resource?
 }

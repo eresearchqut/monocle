@@ -21,7 +21,7 @@ import { INITIAL_SEMVER, SYSTEM_USER } from "../constants";
 import { FormService } from "../form/form.service";
 
 function buildMetadataItemKey(resource: string, version?: string) {
-  const key = `Resource:${resource}#metadata:${resource}`; // TODO: ban 'metadata' as a resource type
+  const key = `Resource:${resource}#metadata:${resource}`; // TODO: ban 'meta' & 'metadata' as a resource type
   return { PK: key, SK: `${key}${version !== undefined ? `:${version}` : ""}` };
 }
 

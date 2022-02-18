@@ -38,6 +38,9 @@ import { DynamoDbClientProvider } from "../src/module/dynamodb/dynamodb.client";
 import { match } from "ts-pattern";
 import { buildApp } from "../src/app.build";
 import { range } from "lodash";
+import { FormModule } from "../src/module/form/form.module";
+import { RelationshipsModule } from "../src/module/relationships/relationships.module";
+import { AuthorizationModule } from "../src/module/authorization/authorization.module";
 
 const getTableInput = (name: string) => {
   const template = yaml.load(fs.readFileSync("template.yaml", "utf8"), {
@@ -110,18 +113,21 @@ describe("Metadata module", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    app = await initApp([DynamodbModule, MetadataModule]);
+    app = await initApp([DynamodbModule, MetadataModule, FormModule, RelationshipsModule, AuthorizationModule]);
   });
 
   it("Creates empty metadata", async () => {
     const resourceName = generateResourceName();
 
     // Create empty metadata
-    await request(app.getHttpServer()).put(`/metadata/resource/${resourceName}`).expect(200).expect({ created: true });
+    await request(app.getHttpServer())
+      .put(`/meta/metadata/resource/${resourceName}`)
+      .expect(200)
+      .expect({ created: true });
 
     // Retrieve empty metadata
     await request(app.getHttpServer())
-      .get(`/metadata/resource/${resourceName}`)
+      .get(`/meta/metadata/resource/${resourceName}`)
       .expect(200)
       .expect({
         version: "0.0.0",
@@ -134,12 +140,12 @@ describe("Metadata module", () => {
 
     // Attempt re-creating metadata with the same name
     await request(app.getHttpServer())
-      .put(`/metadata/resource/${resourceName}`)
+      .put(`/meta/metadata/resource/${resourceName}`)
       .expect(409)
       .expect((r) => r.body.message === "Item already exists");
   });
 
-  it("Can retrieve the empty form", () => request(app.getHttpServer()).get(`/metadata/form/${NIL_UUID}`).expect(200));
+  it("Can retrieve the empty form", () => request(app.getHttpServer()).get(`/meta/form/${NIL_UUID}`).expect(200));
 
   it("Can add a new form", async () => {
     const formData = {
@@ -149,7 +155,7 @@ describe("Metadata module", () => {
     };
 
     const formId = await request(app.getHttpServer())
-      .put(`/metadata/form`)
+      .put(`/meta/form`)
       .send({
         definition: formData,
       })
@@ -159,14 +165,14 @@ describe("Metadata module", () => {
       .then((r) => r.body.id);
 
     await request(app.getHttpServer())
-      .get(`/metadata/form/${formId}`)
+      .get(`/meta/form/${formId}`)
       .expect(200)
       .expect((r) => expect(r.body.form).toMatchObject(formData));
   });
 
   it("Can't add a form with an invalid definition", () =>
     request(app.getHttpServer())
-      .put(`/metadata/form`)
+      .put(`/meta/form`)
       .send({
         definition: 11,
       })
@@ -176,7 +182,10 @@ describe("Metadata module", () => {
     const resourceName = generateResourceName();
 
     // Create empty metadata
-    await request(app.getHttpServer()).put(`/metadata/resource/${resourceName}`).expect(200).expect({ created: true });
+    await request(app.getHttpServer())
+      .put(`/meta/metadata/resource/${resourceName}`)
+      .expect(200)
+      .expect({ created: true });
 
     // Add a form
     const formDefinition: Form = {
@@ -211,7 +220,7 @@ describe("Metadata module", () => {
       ],
     };
     const formId = await request(app.getHttpServer())
-      .put(`/metadata/form`)
+      .put(`/meta/form`)
       .send({
         definition: formDefinition,
       })
@@ -220,7 +229,7 @@ describe("Metadata module", () => {
 
     // Create metadata v1.0.0
     await request(app.getHttpServer())
-      .post(`/metadata/resource/${resourceName}?validation=validate`)
+      .post(`/meta/metadata/resource/${resourceName}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -235,7 +244,7 @@ describe("Metadata module", () => {
 
     // Get latest metadata
     await request(app.getHttpServer())
-      .get(`/metadata/resource/${resourceName}`)
+      .get(`/meta/metadata/resource/${resourceName}`)
       .expect(200)
       .expect({
         version: "1.0.0",
@@ -252,7 +261,7 @@ describe("Resource module", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    app = await initApp([DynamodbModule, MetadataModule, ResourceModule]);
+    app = await initApp([ResourceModule]);
   });
 
   const crud = async (name: string, putData: unknown, updateData: unknown) => {
@@ -304,7 +313,10 @@ describe("Resource module", () => {
     };
 
     // Create empty metadata
-    await request(app.getHttpServer()).put(`/metadata/resource/${resourceName}`).expect(200).expect({ created: true });
+    await request(app.getHttpServer())
+      .put(`/meta/metadata/resource/${resourceName}`)
+      .expect(200)
+      .expect({ created: true });
 
     await crud(resourceName, resourceData, updatedResourceData);
   });
@@ -522,10 +534,13 @@ describe("Resource module", () => {
     );
 
     // Create empty metadata
-    await request(app.getHttpServer()).put(`/metadata/resource/${resourceName}`).expect(200).expect({ created: true });
+    await request(app.getHttpServer())
+      .put(`/meta/metadata/resource/${resourceName}`)
+      .expect(200)
+      .expect({ created: true });
 
     const formId = await request(app.getHttpServer())
-      .put(`/metadata/form`)
+      .put(`/meta/form`)
       .send({
         definition: formDefinition,
       })
@@ -534,7 +549,7 @@ describe("Resource module", () => {
 
     // Create metadata version
     await request(app.getHttpServer())
-      .post(`/metadata/resource/${resourceName}?validation=validate`)
+      .post(`/meta/metadata/resource/${resourceName}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -582,11 +597,14 @@ describe("Resource module", () => {
   it("Queries created resources", async () => {
     // Create empty metadata
     const testResource = generateResourceName();
-    await request(app.getHttpServer()).put(`/metadata/resource/${testResource}`).expect(200).expect({ created: true });
+    await request(app.getHttpServer())
+      .put(`/meta/metadata/resource/${testResource}`)
+      .expect(200)
+      .expect({ created: true });
 
     const targetResource = generateResourceName();
     await request(app.getHttpServer())
-      .put(`/metadata/resource/${targetResource}`)
+      .put(`/meta/metadata/resource/${targetResource}`)
       .expect(200)
       .expect({ created: true });
 
@@ -615,7 +633,7 @@ describe("Resource module", () => {
       ],
     };
     const formId = await request(app.getHttpServer())
-      .put(`/metadata/form`)
+      .put(`/meta/form`)
       .send({
         definition: formDefinition,
       })
@@ -624,7 +642,7 @@ describe("Resource module", () => {
 
     // Create metadata v1.0.0
     await request(app.getHttpServer())
-      .post(`/metadata/resource/${testResource}?validation=validate`)
+      .post(`/meta/metadata/resource/${testResource}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -670,13 +688,13 @@ describe("Resource module", () => {
     // Create empty metadata
     const sourceResource = generateResourceName();
     await request(app.getHttpServer())
-      .put(`/metadata/resource/${sourceResource}`)
+      .put(`/meta/metadata/resource/${sourceResource}`)
       .expect(200)
       .expect({ created: true });
 
     const targetResource = generateResourceName();
     await request(app.getHttpServer())
-      .put(`/metadata/resource/${targetResource}`)
+      .put(`/meta/metadata/resource/${targetResource}`)
       .expect(200)
       .expect({ created: true });
 
@@ -705,7 +723,7 @@ describe("Resource module", () => {
       ],
     };
     const sourceFormId = await request(app.getHttpServer())
-      .put(`/metadata/form`)
+      .put(`/meta/form`)
       .send({
         definition: sourceFormDefinition,
       })
@@ -736,7 +754,7 @@ describe("Resource module", () => {
       ],
     };
     const targetFormId = await request(app.getHttpServer())
-      .put(`/metadata/form`)
+      .put(`/meta/form`)
       .send({
         definition: targetFormDefinition,
       })
@@ -745,7 +763,7 @@ describe("Resource module", () => {
 
     // Add relationship
     const sourceRelationshipsId = await request(app.getHttpServer())
-      .put(`/metadata/relationships`)
+      .put(`/meta/relationships`)
       .send({
         relationships: {
           indexRelationship: {
@@ -767,7 +785,7 @@ describe("Resource module", () => {
 
     // Create metadata v1.0.0
     await request(app.getHttpServer())
-      .post(`/metadata/resource/${sourceResource}?validation=validate`)
+      .post(`/meta/metadata/resource/${sourceResource}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -780,7 +798,7 @@ describe("Resource module", () => {
       .expect((r) => expect(r.body.pushed).toBe(true))
       .expect((r) => expect(r.body.validation.lastVersion).toBe("0.0.0"));
     await request(app.getHttpServer())
-      .post(`/metadata/resource/${targetResource}?validation=validate`)
+      .post(`/meta/metadata/resource/${targetResource}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {

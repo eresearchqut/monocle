@@ -43,6 +43,18 @@ export const EMPTY_RELATIONSHIPS: MetadataRelationshipsType = {
   },
 } as const;
 
+const validateUniqueIndexes = (relationships: PutRelationshipsInput) => {
+  const indexes = new Set();
+  for (const indexRelationship of relationships.values()) {
+    if (indexRelationship.type === RELATIONSHIP_TYPES.INDEX) {
+      if (indexes.has(indexRelationship.index)) {
+        throw new RelationshipsException(`Duplicate index ${indexRelationship.index}`);
+      }
+      indexes.add(indexRelationship.index);
+    }
+  }
+};
+
 @Injectable()
 export class RelationshipsService {
   constructor(public configService: ConfigService<AppConfig, true>, private dynamodbService: DynamodbRepository) {}
@@ -72,6 +84,9 @@ export class RelationshipsService {
   public async putRelationships(relationships: PutRelationshipsInput): Promise<{ created: boolean; id?: string }> {
     const id = uuidV4();
     const key = buildRelationshipsItemKey(id);
+
+    validateUniqueIndexes(relationships);
+
     return this.dynamodbService
       .createItem<MetadataRelationshipsType>({
         table: this.configService.get("RESOURCE_TABLE"),

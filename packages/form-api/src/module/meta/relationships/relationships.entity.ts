@@ -1,4 +1,4 @@
-import { Equals, IsEnum, IsPositive, IsString, Matches, ValidateNested } from "class-validator";
+import { Equals, IsEnum, IsString, Matches, Max, Min, ValidateNested } from "class-validator";
 import { ItemEntity } from "../../dynamodb/dynamodb.entity";
 import { Form } from "@eresearchqut/form-definition";
 import { get } from "lodash";
@@ -26,7 +26,8 @@ class IndexRelationship extends Relationship {
   Type!: RELATIONSHIP_TYPES.INDEX;
 
   // Required because DynamoDB's Map doesn't preserve order
-  @IsPositive()
+  @Min(1)
+  @Max(20)
   Index!: number;
 }
 

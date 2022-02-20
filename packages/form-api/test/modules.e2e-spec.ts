@@ -687,7 +687,15 @@ describe("Resource module", () => {
           type: SectionType.DEFAULT,
           inputs: [
             {
-              name: "targetKey",
+              name: "targetKey1",
+              label: "Target resource Key",
+              description: "Target resource",
+              type: InputType.TEXT,
+              id: uuid(),
+              required: true,
+            },
+            {
+              name: "targetKey2",
               label: "Target resource Key",
               description: "Target resource",
               type: InputType.TEXT,
@@ -745,13 +753,19 @@ describe("Resource module", () => {
           indexRelationship: {
             type: "INDEX",
             resource: targetResource,
-            key: "testSection.targetKey",
+            key: "testSection.targetKey1",
             index: 1,
           },
-          compositeRelationship: {
+          singleCompositeRelationship: {
             type: "COMPOSITE",
             resource: targetResource,
-            key: "testSection.targetKey",
+            key: "testSection.targetKey1",
+            dataKey: "",
+          },
+          multipleCompositeRelationship: {
+            type: "COMPOSITE",
+            resource: targetResource,
+            key: "testSection.*",
             dataKey: "",
           },
         },
@@ -787,8 +801,19 @@ describe("Resource module", () => {
       .expect((r) => expect(r.body.pushed).toBe(true))
       .expect((r) => expect(r.body.validation.lastVersion).toBe("0.0.0"));
 
-    // Create target resource id
-    const targetResourceId = await request(app.getHttpServer())
+    // Create target resource ids
+    const targetResourceId1 = await request(app.getHttpServer())
+      .put(`/resource/${targetResource}`)
+      .send({
+        data: {
+          testSection: {
+            targetValue: "Target",
+          },
+        },
+      })
+      .expect(200)
+      .then((r) => r.body.Id);
+    const targetResourceId2 = await request(app.getHttpServer())
       .put(`/resource/${targetResource}`)
       .send({
         data: {
@@ -809,7 +834,8 @@ describe("Resource module", () => {
             .send({
               data: {
                 testSection: {
-                  targetKey: targetResourceId,
+                  targetKey1: targetResourceId1,
+                  targetKey2: targetResourceId2,
                 },
               },
             })
@@ -821,9 +847,20 @@ describe("Resource module", () => {
 
     // Query target relationships
     await Promise.all(
-      ["indexRelationship", "compositeRelationship"].map((r) =>
+      ["indexRelationship", "singleCompositeRelationship"].map((r) =>
         request(app.getHttpServer())
-          .get(`/resource/${targetResource}/${targetResourceId}/${r}/${sourceResource}`)
+          .get(`/resource/${targetResource}/${targetResourceId1}/${r}/${sourceResource}`)
+          .expect(200)
+          .then((r) => {
+            expect(r.body.length).toEqual(5);
+            expect(new Set(r.body.map((resource: { Id: string }) => resource.Id))).toEqual(sourceResourceIds);
+          })
+      )
+    );
+    await Promise.all(
+      [targetResourceId1, targetResourceId2].map((targetResourceId) =>
+        request(app.getHttpServer())
+          .get(`/resource/${targetResource}/${targetResourceId}/multipleCompositeRelationship/${sourceResource}`)
           .expect(200)
           .then((r) => {
             expect(r.body.length).toEqual(5);
@@ -844,7 +881,8 @@ describe("Resource module", () => {
       .send({
         data: {
           testSection: {
-            targetKey: "",
+            targetKey1: "",
+            targetKey2: "",
           },
         },
       })
@@ -852,10 +890,20 @@ describe("Resource module", () => {
 
     // Confirm only 3 related resources remain
     await Promise.all(
-      // TODO: add form definition input that can support m2m composite relationships
-      ["indexRelationship", "compositeRelationship"].map((r) =>
+      ["indexRelationship", "singleCompositeRelationship"].map((r) =>
         request(app.getHttpServer())
-          .get(`/resource/${targetResource}/${targetResourceId}/${r}/${sourceResource}`)
+          .get(`/resource/${targetResource}/${targetResourceId1}/${r}/${sourceResource}`)
+          .expect(200)
+          .then((r) => {
+            expect(r.body.length).toEqual(3);
+            expect(new Set(r.body.map((resource: { Id: string }) => resource.Id))).toEqual(newSourceResourceIds);
+          })
+      )
+    );
+    await Promise.all(
+      [targetResourceId1, targetResourceId2].map((targetResourceId) =>
+        request(app.getHttpServer())
+          .get(`/resource/${targetResource}/${targetResourceId}/multipleCompositeRelationship/${sourceResource}`)
           .expect(200)
           .then((r) => {
             expect(r.body.length).toEqual(3);

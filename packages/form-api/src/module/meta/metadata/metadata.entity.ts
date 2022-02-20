@@ -6,6 +6,8 @@ import { buildResourceIdentifier } from "../utils";
 import { QueryItemArgs } from "../../dynamodb/dynamodb.repository";
 import { RESOURCE_GSI_INDEX } from "./metadata.constants";
 
+// TODO: versioned / longitudinal resources
+
 interface DataType {
   Resource: string;
   Version: string;

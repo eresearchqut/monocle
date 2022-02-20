@@ -95,6 +95,7 @@ export class ResourceController {
       relationshipName: params.relationshipName,
     });
 
+    // TODO: streaming & pagination options
     const resources = [];
     for await (const resource of query) {
       resources.push(resource);

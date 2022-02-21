@@ -1,9 +1,9 @@
 import serverlessExpress from "@vendia/serverless-express";
+import { Callback, Context } from "aws-lambda";
 import { getApp } from "./app.build";
 
-let server;
+let server: ReturnType<typeof serverlessExpress>;
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 async function bootstrap(): Promise<void> {
   if (!server) {
     const nestApp = await getApp();
@@ -13,4 +13,7 @@ async function bootstrap(): Promise<void> {
   }
 }
 
-export const handler = (event, context) => server(event, context);
+export const handler = async (event: any, context: Context, callback: Callback) => {
+  server = server ?? (await bootstrap());
+  return server(event, context, callback);
+};

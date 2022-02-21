@@ -26,16 +26,16 @@ export class GetMetadataResponse {
   schemas!: GetMetadataResponseSchemas;
 }
 
-export class PutMetadataParams extends ResourceParams {}
-
 export class PostMetadataParams extends ResourceParams {}
+
+export class PutMetadataParams extends ResourceParams {}
 
 export enum ValidationStrategy {
   none = "none",
   validate = "validate",
 }
 
-export class PostMetadataQuery {
+export class PutMetadataQuery {
   @IsOptional()
   @IsEnum(ValidationStrategy)
   validation?: ValidationStrategy;
@@ -52,7 +52,7 @@ class PostMetadataBodyGroup {
   relationshipsVersion!: string;
 }
 
-export class PostMetadataBody {
+export class PutMetadataBody {
   @IsSemVer()
   version!: string;
 

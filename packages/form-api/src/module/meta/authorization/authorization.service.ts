@@ -49,9 +49,9 @@ export class AuthorizationService {
     return item;
   }
 
-  public async putAuthorization(policy: string): Promise<{ created: false }>;
-  public async putAuthorization(policy: string): Promise<{ created: true; id: string }>;
-  public async putAuthorization(policy: string): Promise<{ created: boolean; id?: string }> {
+  public async createAuthorization(policy: string): Promise<{ created: false }>;
+  public async createAuthorization(policy: string): Promise<{ created: true; id: string }>;
+  public async createAuthorization(policy: string): Promise<{ created: boolean; id?: string }> {
     const id = uuidV4();
     const key = buildAuthorizationItemKey(id);
     return this.dynamodbService

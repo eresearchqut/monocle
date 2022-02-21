@@ -68,7 +68,7 @@ export class MetadataService {
     private formService: FormService
   ) {}
 
-  async addMetadata(resource: string): Promise<boolean> {
+  async createMetadata(resource: string): Promise<boolean> {
     const key = buildMetadataItemKey(resource);
     return this.dynamodbService
       .putVersionedItem<MetadataEntityType>({

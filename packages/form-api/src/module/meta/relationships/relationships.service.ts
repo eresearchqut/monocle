@@ -79,9 +79,9 @@ export class RelationshipsService {
     return item;
   }
 
-  public async putRelationships(relationships: PutRelationshipsInput): Promise<{ created: false }>;
-  public async putRelationships(relationships: PutRelationshipsInput): Promise<{ created: true; id: string }>;
-  public async putRelationships(relationships: PutRelationshipsInput): Promise<{ created: boolean; id?: string }> {
+  public async createRelationships(relationships: PutRelationshipsInput): Promise<{ created: false }>;
+  public async createRelationships(relationships: PutRelationshipsInput): Promise<{ created: true; id: string }>;
+  public async createRelationships(relationships: PutRelationshipsInput): Promise<{ created: boolean; id?: string }> {
     const id = uuidV4();
     const key = buildRelationshipsItemKey(id);
 

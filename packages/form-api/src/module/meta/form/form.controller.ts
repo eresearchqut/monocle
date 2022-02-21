@@ -1,6 +1,6 @@
 import { FormService } from "./form.service";
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Put } from "@nestjs/common";
-import { GetFormParams, GetFormResponse, PutFormBody } from "./form.dto";
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from "@nestjs/common";
+import { GetFormParams, GetFormResponse, PostFormBody } from "./form.dto";
 
 @Controller("/meta/form")
 export class FormController {
@@ -16,9 +16,9 @@ export class FormController {
     };
   }
 
-  @Put("")
-  async putForm(@Body() body: PutFormBody) {
-    const result = await this.formService.putForm(body.definition);
+  @Post("")
+  async postForm(@Body() body: PostFormBody) {
+    const result = await this.formService.createForm(body.definition);
     if (result.created) {
       return result;
     } else {

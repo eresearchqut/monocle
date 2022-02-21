@@ -16,7 +16,7 @@ export class GetFormResponse {
   schema: any;
 }
 
-export class PutFormBody {
+export class PostFormBody {
   @IsJsonSchema(FormSchema, {
     allowUnionTypes: true,
   })

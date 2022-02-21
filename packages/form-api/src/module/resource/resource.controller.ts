@@ -4,12 +4,12 @@ import {
   DeleteResourceParams,
   GetResourceQuery,
   GetResourceParams,
-  PostResourceQuery,
-  PostResourceParams,
   PutResourceQuery,
   PutResourceParams,
-  PutResourceBody,
+  PostResourceQuery,
+  PostResourceParams,
   PostResourceBody,
+  PutResourceBody,
   QueryRelatedResourceParams,
   QueryResourceParams,
 } from "./resource.dto";
@@ -34,11 +34,11 @@ export class ResourceController {
     return resource;
   }
 
-  @Put(":resource")
-  public async putResource(
-    @Param() params: PutResourceParams,
-    @Query() query: PutResourceQuery,
-    @Body() body: PutResourceBody
+  @Post(":resource")
+  public async postResource(
+    @Param() params: PostResourceParams,
+    @Query() query: PostResourceQuery,
+    @Body() body: PostResourceBody
   ) {
     return await this.resourceService.putResource({
       resource: params.resource,
@@ -48,11 +48,11 @@ export class ResourceController {
     });
   }
 
-  @Post(":resource/:id")
-  public async postResource(
-    @Param() params: PostResourceParams,
-    @Query() query: PostResourceQuery,
-    @Body() body: PostResourceBody
+  @Put(":resource/:id")
+  public async putResource(
+    @Param() params: PutResourceParams,
+    @Query() query: PutResourceQuery,
+    @Body() body: PutResourceBody
   ) {
     return await this.resourceService.putResource({
       resource: params.resource,

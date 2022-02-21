@@ -43,7 +43,7 @@ export class GetRelationshipsResponse {
   relationships!: Map<string, ConcreteRelationships>;
 }
 
-export class PutRelationshipsBody {
+export class PostRelationshipsBody {
   @IsNotEmpty()
   @ValidateNested({ each: true })
   @Type(() => Relationship, {

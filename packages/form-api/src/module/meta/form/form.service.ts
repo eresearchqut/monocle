@@ -53,9 +53,9 @@ export class FormService {
     return item;
   }
 
-  public async putForm(definition: Form): Promise<{ created: false }>;
-  public async putForm(definition: Form): Promise<{ created: true; id: string }>;
-  public async putForm(definition: Form): Promise<{ created: boolean; id?: string }> {
+  public async createForm(definition: Form): Promise<{ created: false }>;
+  public async createForm(definition: Form): Promise<{ created: true; id: string }>;
+  public async createForm(definition: Form): Promise<{ created: boolean; id?: string }> {
     const id = uuidV4();
     const key = buildFormItemKey(id);
     return this.dynamodbService

@@ -1,5 +1,5 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Put } from "@nestjs/common";
-import { GetAuthorizationParams, GetAuthorizationResponse, PutAuthorizationBody } from "./authorization.dto";
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from "@nestjs/common";
+import { GetAuthorizationParams, GetAuthorizationResponse, PostAuthorizationBody } from "./authorization.dto";
 import { AuthorizationService } from "./authorization.service";
 
 @Controller("/meta/authorization")
@@ -14,9 +14,9 @@ export class AuthorizationController {
     };
   }
 
-  @Put("/authorization")
-  async putAuthorization(@Body() body: PutAuthorizationBody) {
-    const result = await this.authorizationService.putAuthorization(body.policy);
+  @Post("/authorization")
+  async postAuthorization(@Body() body: PostAuthorizationBody) {
+    const result = await this.authorizationService.createAuthorization(body.policy);
     if (result.created) {
       return result;
     } else {

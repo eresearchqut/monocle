@@ -1,6 +1,6 @@
 import { RelationshipsService } from "./relationships.service";
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Put } from "@nestjs/common";
-import { GetRelationshipsParams, GetRelationshipsResponse, PutRelationshipsBody } from "./relationships.dto";
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from "@nestjs/common";
+import { GetRelationshipsParams, GetRelationshipsResponse, PostRelationshipsBody } from "./relationships.dto";
 import { match } from "ts-pattern";
 import { RELATIONSHIP_TYPES } from "./relationships.constants";
 
@@ -34,9 +34,9 @@ export class RelationshipsController {
     };
   }
 
-  @Put("")
-  async putRelationships(@Body() body: PutRelationshipsBody) {
-    const result = await this.relationshipsService.putRelationships(body.relationships);
+  @Post("")
+  async postRelationships(@Body() body: PostRelationshipsBody) {
+    const result = await this.relationshipsService.createRelationships(body.relationships);
     if (result.created) {
       return result;
     } else {

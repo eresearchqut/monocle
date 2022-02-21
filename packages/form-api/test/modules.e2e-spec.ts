@@ -120,7 +120,7 @@ describe("Metadata module", () => {
     const resourceName = generateResourceName();
 
     // Create empty metadata
-    await request(app.getHttpServer()).put(`/meta/metadata/${resourceName}`).expect(200).expect({ created: true });
+    await request(app.getHttpServer()).post(`/meta/metadata/${resourceName}`).expect(201).expect({ created: true });
 
     // Retrieve empty metadata
     await request(app.getHttpServer())
@@ -137,7 +137,7 @@ describe("Metadata module", () => {
 
     // Attempt re-creating metadata with the same name
     await request(app.getHttpServer())
-      .put(`/meta/metadata/${resourceName}`)
+      .post(`/meta/metadata/${resourceName}`)
       .expect(409)
       .expect((r) => r.body.message === "Item already exists");
   });
@@ -152,11 +152,11 @@ describe("Metadata module", () => {
     };
 
     const formId = await request(app.getHttpServer())
-      .put(`/meta/form`)
+      .post(`/meta/form`)
       .send({
         definition: formData,
       })
-      .expect(200)
+      .expect(201)
       .expect((r) => expect(r.body).toHaveProperty("id"))
       .expect((r) => expect(r.body.created).toBe(true))
       .then((r) => r.body.id);
@@ -169,7 +169,7 @@ describe("Metadata module", () => {
 
   it("Can't add a form with an invalid definition", () =>
     request(app.getHttpServer())
-      .put(`/meta/form`)
+      .post(`/meta/form`)
       .send({
         definition: 11,
       })
@@ -179,7 +179,7 @@ describe("Metadata module", () => {
     const resourceName = generateResourceName();
 
     // Create empty metadata
-    await request(app.getHttpServer()).put(`/meta/metadata/${resourceName}`).expect(200).expect({ created: true });
+    await request(app.getHttpServer()).post(`/meta/metadata/${resourceName}`).expect(201).expect({ created: true });
 
     // Add a form
     const formDefinition: Form = {
@@ -214,16 +214,16 @@ describe("Metadata module", () => {
       ],
     };
     const formId = await request(app.getHttpServer())
-      .put(`/meta/form`)
+      .post(`/meta/form`)
       .send({
         definition: formDefinition,
       })
-      .expect(200)
+      .expect(201)
       .then((res) => res.body.id);
 
     // Create metadata v1.0.0
     await request(app.getHttpServer())
-      .post(`/meta/metadata/${resourceName}?validation=validate`)
+      .put(`/meta/metadata/${resourceName}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -232,7 +232,7 @@ describe("Metadata module", () => {
           relationshipsVersion: NIL_UUID,
         },
       })
-      .expect(201)
+      .expect(200)
       .expect((r) => expect(r.body.pushed).toBe(true))
       .expect((r) => expect(r.body.validation.lastVersion).toBe("0.0.0"));
 
@@ -261,11 +261,11 @@ describe("Resource module", () => {
   const crud = async (name: string, putData: unknown, updateData: unknown) => {
     // Create resource
     const resourceId = await request(app.getHttpServer())
-      .put(`/resource/${name}`)
+      .post(`/resource/${name}`)
       .send({
         data: putData,
       })
-      .expect(200)
+      .expect(201)
       .expect((r) => expect(r.body.Data).toEqual(putData))
       .then((r) => r.body.Id);
 
@@ -277,11 +277,11 @@ describe("Resource module", () => {
 
     // Update resource
     await request(app.getHttpServer())
-      .post(`/resource/${name}/${resourceId}`)
+      .put(`/resource/${name}/${resourceId}`)
       .send({
         data: updateData,
       })
-      .expect(201)
+      .expect(200)
       .expect((r) => expect(r.body.Data).toEqual(updateData));
 
     // Read updated resource
@@ -307,7 +307,7 @@ describe("Resource module", () => {
     };
 
     // Create empty metadata
-    await request(app.getHttpServer()).put(`/meta/metadata/${resourceName}`).expect(200).expect({ created: true });
+    await request(app.getHttpServer()).post(`/meta/metadata/${resourceName}`).expect(201).expect({ created: true });
 
     await crud(resourceName, resourceData, updatedResourceData);
   });
@@ -525,19 +525,19 @@ describe("Resource module", () => {
     );
 
     // Create empty metadata
-    await request(app.getHttpServer()).put(`/meta/metadata/${resourceName}`).expect(200).expect({ created: true });
+    await request(app.getHttpServer()).post(`/meta/metadata/${resourceName}`).expect(201).expect({ created: true });
 
     const formId = await request(app.getHttpServer())
-      .put(`/meta/form`)
+      .post(`/meta/form`)
       .send({
         definition: formDefinition,
       })
-      .expect(200)
+      .expect(201)
       .then((res) => res.body.id);
 
     // Create metadata version
     await request(app.getHttpServer())
-      .post(`/meta/metadata/${resourceName}?validation=validate`)
+      .put(`/meta/metadata/${resourceName}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -546,7 +546,7 @@ describe("Resource module", () => {
           relationshipsVersion: NIL_UUID,
         },
       })
-      .expect(201);
+      .expect(200);
 
     await crud(resourceName, { resourceSection: resourceData }, { resourceSection: updatedResourceData });
   });
@@ -557,7 +557,7 @@ describe("Resource module", () => {
 
     // Create resource
     await request(app.getHttpServer())
-      .put(`/resource/${resourceName}/${resourceId}`)
+      .post(`/resource/${resourceName}/${resourceId}`)
       .send({
         data: {
           key: "test",
@@ -570,7 +570,7 @@ describe("Resource module", () => {
 
     // Update resource
     await request(app.getHttpServer())
-      .post(`/resource/${resourceName}/${resourceId}`)
+      .put(`/resource/${resourceName}/${resourceId}`)
       .send({
         data: {
           key: "test",
@@ -585,10 +585,10 @@ describe("Resource module", () => {
   it("Queries created resources", async () => {
     // Create empty metadata
     const testResource = generateResourceName();
-    await request(app.getHttpServer()).put(`/meta/metadata/${testResource}`).expect(200).expect({ created: true });
+    await request(app.getHttpServer()).post(`/meta/metadata/${testResource}`).expect(201).expect({ created: true });
 
     const targetResource = generateResourceName();
-    await request(app.getHttpServer()).put(`/meta/metadata/${targetResource}`).expect(200).expect({ created: true });
+    await request(app.getHttpServer()).post(`/meta/metadata/${targetResource}`).expect(201).expect({ created: true });
 
     // Add forms
     const formDefinition: Form = {
@@ -615,16 +615,16 @@ describe("Resource module", () => {
       ],
     };
     const formId = await request(app.getHttpServer())
-      .put(`/meta/form`)
+      .post(`/meta/form`)
       .send({
         definition: formDefinition,
       })
-      .expect(200)
+      .expect(201)
       .then((res) => res.body.id);
 
     // Create metadata v1.0.0
     await request(app.getHttpServer())
-      .post(`/meta/metadata/${testResource}?validation=validate`)
+      .put(`/meta/metadata/${testResource}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -633,7 +633,7 @@ describe("Resource module", () => {
           relationshipsVersion: NIL_UUID,
         },
       })
-      .expect(201)
+      .expect(200)
       .expect((r) => expect(r.body.pushed).toBe(true))
       .expect((r) => expect(r.body.validation.lastVersion).toBe("0.0.0"));
 
@@ -642,7 +642,7 @@ describe("Resource module", () => {
       await Promise.all(
         range(5).map(async (index) =>
           request(app.getHttpServer())
-            .put(`/resource/${testResource}`)
+            .post(`/resource/${testResource}`)
             .send({
               data: {
                 testSection: {
@@ -650,7 +650,7 @@ describe("Resource module", () => {
                 },
               },
             })
-            .expect(200)
+            .expect(201)
             .then((r) => r.body.Id)
         )
       )
@@ -669,10 +669,10 @@ describe("Resource module", () => {
   it("Can CRUD resources with relationships", async () => {
     // Create empty metadata
     const sourceResource = generateResourceName();
-    await request(app.getHttpServer()).put(`/meta/metadata/${sourceResource}`).expect(200).expect({ created: true });
+    await request(app.getHttpServer()).post(`/meta/metadata/${sourceResource}`).expect(201).expect({ created: true });
 
     const targetResource = generateResourceName();
-    await request(app.getHttpServer()).put(`/meta/metadata/${targetResource}`).expect(200).expect({ created: true });
+    await request(app.getHttpServer()).post(`/meta/metadata/${targetResource}`).expect(201).expect({ created: true });
 
     // Add forms
     const sourceFormDefinition: Form = {
@@ -707,11 +707,11 @@ describe("Resource module", () => {
       ],
     };
     const sourceFormId = await request(app.getHttpServer())
-      .put(`/meta/form`)
+      .post(`/meta/form`)
       .send({
         definition: sourceFormDefinition,
       })
-      .expect(200)
+      .expect(201)
       .then((res) => res.body.id);
 
     const targetFormDefinition: Form = {
@@ -738,16 +738,16 @@ describe("Resource module", () => {
       ],
     };
     const targetFormId = await request(app.getHttpServer())
-      .put(`/meta/form`)
+      .post(`/meta/form`)
       .send({
         definition: targetFormDefinition,
       })
-      .expect(200)
+      .expect(201)
       .then((res) => res.body.id);
 
     // Add relationship
     const sourceRelationshipsId = await request(app.getHttpServer())
-      .put(`/meta/relationships`)
+      .post(`/meta/relationships`)
       .send({
         relationships: {
           indexRelationship: {
@@ -770,12 +770,12 @@ describe("Resource module", () => {
           },
         },
       })
-      .expect(200)
+      .expect(201)
       .then((res) => res.body.id);
 
     // Create metadata v1.0.0
     await request(app.getHttpServer())
-      .post(`/meta/metadata/${sourceResource}?validation=validate`)
+      .put(`/meta/metadata/${sourceResource}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -784,11 +784,11 @@ describe("Resource module", () => {
           relationshipsVersion: sourceRelationshipsId,
         },
       })
-      .expect(201)
+      .expect(200)
       .expect((r) => expect(r.body.pushed).toBe(true))
       .expect((r) => expect(r.body.validation.lastVersion).toBe("0.0.0"));
     await request(app.getHttpServer())
-      .post(`/meta/metadata/${targetResource}?validation=validate`)
+      .put(`/meta/metadata/${targetResource}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -797,13 +797,13 @@ describe("Resource module", () => {
           relationshipsVersion: NIL_UUID,
         },
       })
-      .expect(201)
+      .expect(200)
       .expect((r) => expect(r.body.pushed).toBe(true))
       .expect((r) => expect(r.body.validation.lastVersion).toBe("0.0.0"));
 
     // Create target resource ids
     const targetResourceId1 = await request(app.getHttpServer())
-      .put(`/resource/${targetResource}`)
+      .post(`/resource/${targetResource}`)
       .send({
         data: {
           testSection: {
@@ -811,10 +811,10 @@ describe("Resource module", () => {
           },
         },
       })
-      .expect(200)
+      .expect(201)
       .then((r) => r.body.Id);
     const targetResourceId2 = await request(app.getHttpServer())
-      .put(`/resource/${targetResource}`)
+      .post(`/resource/${targetResource}`)
       .send({
         data: {
           testSection: {
@@ -822,7 +822,7 @@ describe("Resource module", () => {
           },
         },
       })
-      .expect(200)
+      .expect(201)
       .then((r) => r.body.Id);
 
     // Create source resources
@@ -830,7 +830,7 @@ describe("Resource module", () => {
       await Promise.all(
         range(5).map(async () =>
           request(app.getHttpServer())
-            .put(`/resource/${sourceResource}`)
+            .post(`/resource/${sourceResource}`)
             .send({
               data: {
                 testSection: {
@@ -839,7 +839,7 @@ describe("Resource module", () => {
                 },
               },
             })
-            .expect(200)
+            .expect(201)
             .then((r) => r.body.Id)
         )
       )
@@ -877,7 +877,7 @@ describe("Resource module", () => {
 
     // Update second source resource
     await request(app.getHttpServer())
-      .post(`/resource/${sourceResource}/${secondSourceResource}`)
+      .put(`/resource/${sourceResource}/${secondSourceResource}`)
       .send({
         data: {
           testSection: {
@@ -886,7 +886,7 @@ describe("Resource module", () => {
           },
         },
       })
-      .expect(201);
+      .expect(200);
 
     // Confirm only 3 related resources remain
     await Promise.all(

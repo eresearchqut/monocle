@@ -10,7 +10,7 @@ export class GetAuthorizationResponse {
   policy!: string;
 }
 
-export class PutAuthorizationBody {
+export class PostAuthorizationBody {
   @IsString()
   policy!: string;
 }

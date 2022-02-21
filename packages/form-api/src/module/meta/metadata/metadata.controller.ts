@@ -4,10 +4,10 @@ import {
   GetMetadataParams,
   GetMetadataQuery,
   GetMetadataResponse,
-  PostMetadataBody,
-  PostMetadataParams,
-  PostMetadataQuery,
+  PutMetadataBody,
   PutMetadataParams,
+  PutMetadataQuery,
+  PostMetadataParams,
   PutMetadataResponse,
 } from "./metadata.dto";
 import { VersionedErrorInterceptor } from "../../../interceptor/dynamodb.interceptor";
@@ -32,17 +32,17 @@ export class MetadataController {
     };
   }
 
-  @Put(":resource")
+  @Post(":resource")
   @UseInterceptors(VersionedErrorInterceptor)
-  async putMetadata(@Param() params: PutMetadataParams): Promise<PutMetadataResponse> {
-    return { created: await this.metadataService.addMetadata(params.resource) };
+  async postMetadata(@Param() params: PostMetadataParams): Promise<PutMetadataResponse> {
+    return { created: await this.metadataService.createMetadata(params.resource) };
   }
 
-  @Post(":resource")
-  async postMetaData(
-    @Param() params: PostMetadataParams,
-    @Query() query: PostMetadataQuery,
-    @Body() body: PostMetadataBody
+  @Put(":resource")
+  async putMetaData(
+    @Param() params: PutMetadataParams,
+    @Query() query: PutMetadataQuery,
+    @Body() body: PutMetadataBody
   ) {
     const data = {
       resource: params.resource,

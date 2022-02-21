@@ -63,8 +63,6 @@ class MetadataRelationshipData {
 }
 
 const getIdentifiers = (data: Form, key: string): Set<string> => {
-  // TODO: Replace lodash get with something like jq that can return multiple
-  // const identifier = get(data, key);
   const identifiers = JSONPath({ path: key, json: data, wrap: true, preventEval: true });
   if (identifiers === undefined || identifiers === null || !Array.isArray(identifiers)) {
     throw new Error(`Failed retrieving relationship key ${key}`);

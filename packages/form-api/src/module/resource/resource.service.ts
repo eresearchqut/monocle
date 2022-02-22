@@ -5,7 +5,7 @@ import { MetadataService } from "../meta/metadata/metadata.service";
 import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
 import { FormService } from "../meta/form/form.service";
-import { RelationshipsService } from "../meta/relationships/relationships.service";
+import { ProjectionsService } from "../meta/projections/projections.service";
 import { ValidationException } from "./resource.exception";
 
 interface GetResourceInput {
@@ -47,7 +47,7 @@ export class ResourceService {
     private configService: ConfigService<AppConfig, true>,
     private metadataService: MetadataService,
     private formService: FormService,
-    private relationshipsService: RelationshipsService,
+    private relationshipsService: ProjectionsService,
     private dynamodbService: DynamodbRepository
   ) {}
 
@@ -94,7 +94,7 @@ export class ResourceService {
     });
 
     const { buildRelationshipsIndexKeys, buildRelationshipsCompositeItems, buildRelationshipOldCompositeAttributes } =
-      await this.relationshipsService.getRelationships(Schemas.RelationshipsVersion);
+      await this.relationshipsService.getProjections(Schemas.RelationshipsVersion);
 
     const relationshipKeys = buildRelationshipsIndexKeys(Resource, attrs.Id, input.data);
 
@@ -145,7 +145,7 @@ export class ResourceService {
     } = await this.metadataService.getMetadata(input.resource);
     const key = buildGetAttributes(input.id);
 
-    const { buildRelationshipsCompositeAttributes } = await this.relationshipsService.getRelationships(
+    const { buildRelationshipsCompositeAttributes } = await this.relationshipsService.getProjections(
       Schemas.RelationshipsVersion
     );
 
@@ -186,8 +186,8 @@ export class ResourceService {
       Data: {
         Schemas: { RelationshipsVersion },
       },
-    } = await this.metadataService.getMetadata(input.targetResource); // TODO: consider including resource semver in relationships
-    const { buildQuery } = await this.relationshipsService.getRelationships(RelationshipsVersion);
+    } = await this.metadataService.getMetadata(input.targetResource); // TODO: consider including resource semver in projections
+    const { buildQuery } = await this.relationshipsService.getProjections(RelationshipsVersion);
 
     // TODO: run authorization policy check
 

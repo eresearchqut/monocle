@@ -39,7 +39,7 @@ import { match } from "ts-pattern";
 import { buildApp } from "../src/app.build";
 import { range } from "lodash";
 import { FormModule } from "../src/module/meta/form/form.module";
-import { RelationshipsModule } from "../src/module/meta/relationships/relationships.module";
+import { ProjectionsModule } from "../src/module/meta/projections/projections.module";
 import { AuthorizationModule } from "../src/module/meta/authorization/authorization.module";
 
 const getTableInput = (name: string) => {
@@ -113,7 +113,7 @@ describe("Metadata module", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    app = await initApp([DynamodbModule, MetadataModule, FormModule, RelationshipsModule, AuthorizationModule]);
+    app = await initApp([DynamodbModule, MetadataModule, FormModule, ProjectionsModule, AuthorizationModule]);
   });
 
   it("Creates empty metadata", async () => {
@@ -747,7 +747,7 @@ describe("Resource module", () => {
 
     // Add relationship
     const sourceRelationshipsId = await request(app.getHttpServer())
-      .post(`/meta/relationships`)
+      .post(`/meta/projections`)
       .send({
         relationships: {
           indexRelationship: {

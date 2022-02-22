@@ -1,4 +1,4 @@
-export enum RELATIONSHIP_TYPES {
+export enum PROJECTION_TYPES {
   COMPOSITE = "COMPOSITE",
   INDEX = "INDEX",
   // TODO: nested / hierarchical

@@ -8,23 +8,23 @@ import { SYSTEM_USER } from "../constants";
 import { RelationshipException } from "../../resource/resource.exception";
 import { match } from "ts-pattern";
 import { QueryItemArgs } from "../../dynamodb/dynamodb.repository";
-import { RELATIONSHIP_TYPES } from "./relationships.constants";
+import { PROJECTION_TYPES } from "./projections.constants";
 import { JSONPath } from "jsonpath-plus";
 
-abstract class Relationship {
+abstract class Projection {
   @Matches(/[a-zA-Z0-9_]+/)
-  Resource!: string; // TODO: check target resource doesn't have other relationships with same name
+  Resource!: string; // TODO: check target resource doesn't have other projections with same name
 
   @IsString()
   Key!: string;
 
-  @IsEnum(RELATIONSHIP_TYPES)
-  Type!: RELATIONSHIP_TYPES;
+  @IsEnum(PROJECTION_TYPES)
+  Type!: PROJECTION_TYPES;
 }
 
-class IndexRelationship extends Relationship {
-  @Equals(RELATIONSHIP_TYPES.INDEX)
-  Type!: RELATIONSHIP_TYPES.INDEX;
+class IndexRelationship extends Projection {
+  @Equals(PROJECTION_TYPES.INDEX)
+  Type!: PROJECTION_TYPES.INDEX;
 
   // Required because DynamoDB's Map doesn't preserve order
   @Min(1)
@@ -32,72 +32,70 @@ class IndexRelationship extends Relationship {
   Index!: number;
 }
 
-class CompositeRelationship extends Relationship {
-  @Equals(RELATIONSHIP_TYPES.COMPOSITE)
-  Type!: RELATIONSHIP_TYPES.COMPOSITE;
+class CompositeRelationship extends Projection {
+  @Equals(PROJECTION_TYPES.COMPOSITE)
+  Type!: PROJECTION_TYPES.COMPOSITE;
 
   @IsString()
   DataKey!: string;
 }
 
-export type ConcreteRelationships = IndexRelationship | CompositeRelationship;
+export type ConcreteProjections = IndexRelationship | CompositeRelationship;
 
 interface DataType {
-  Relationships: Map<string, ConcreteRelationships>;
+  Projections: Map<string, ConcreteProjections>;
 }
 
-export type MetadataRelationshipsType = ItemEntity<DataType, "Relationships">;
+export type MetadataProjectionsType = ItemEntity<DataType, "Projections">;
 
-class MetadataRelationshipData {
+class MetadataProjectionsData {
   @ValidateNested({ each: true })
-  @Type(() => Relationship, {
+  @Type(() => Projection, {
     discriminator: {
       property: "Type",
       subTypes: [
-        { value: IndexRelationship, name: RELATIONSHIP_TYPES.INDEX },
-        { value: CompositeRelationship, name: RELATIONSHIP_TYPES.COMPOSITE },
+        { value: IndexRelationship, name: PROJECTION_TYPES.INDEX },
+        { value: CompositeRelationship, name: PROJECTION_TYPES.COMPOSITE },
       ],
     },
   })
-  Relationships!: Map<string, ConcreteRelationships>;
+  Projections!: Map<string, ConcreteProjections>;
 }
 
 const getIdentifiers = (data: Form, key: string): Set<string> => {
   const identifiers = JSONPath({ path: key, json: data, wrap: true, preventEval: true });
   if (identifiers === undefined || identifiers === null || !Array.isArray(identifiers)) {
-    throw new Error(`Failed retrieving relationship key ${key}`);
+    throw new Error(`Failed retrieving projection key ${key}`);
   }
 
   return new Set(
     identifiers.map((i) => {
       if (typeof i !== "string") {
-        throw new Error(`Invalid relationship key value ${i} for key ${key}`);
+        throw new Error(`Invalid projection key value ${i} for key ${key}`);
       }
       return i;
     })
   );
 };
 
-export class MetadataRelationships extends ItemEntity<DataType, "Relationships"> implements MetadataRelationshipsType {
-  @Equals("Relationships")
-  ItemType: "Relationships" = "Relationships";
+export class MetadataProjections extends ItemEntity<DataType, "Projections"> implements MetadataProjectionsType {
+  @Equals("Projections")
+  ItemType: "Projections" = "Projections";
 
   @ValidateNested()
-  @Type(() => MetadataRelationshipData)
-  Data!: MetadataRelationshipData;
+  @Type(() => MetadataProjectionsData)
+  Data!: MetadataProjectionsData;
 
-  private filterRelationships(relationshipType: RELATIONSHIP_TYPES.INDEX): [string, IndexRelationship][];
-  private filterRelationships(relationshipType: RELATIONSHIP_TYPES.COMPOSITE): [string, CompositeRelationship][];
-  private filterRelationships(
-    relationshipType: RELATIONSHIP_TYPES
-  ): [string, IndexRelationship | CompositeRelationship][] {
-    return Array.from(this.Data.Relationships.entries()).filter(
+  private filterProjections(relationshipType: PROJECTION_TYPES.INDEX): [string, IndexRelationship][];
+  private filterProjections(relationshipType: PROJECTION_TYPES.COMPOSITE): [string, CompositeRelationship][];
+  private filterProjections(relationshipType: PROJECTION_TYPES): [string, IndexRelationship | CompositeRelationship][] {
+    return Array.from(this.Data.Projections.entries()).filter(
       (r): r is [string, IndexRelationship | CompositeRelationship] => r[1].Type === relationshipType
     );
   }
 
   buildRelationshipsIndexKeys = (sourceResource: string, sourceId: string, data: Form): Record<string, string> =>
-    this.filterRelationships(RELATIONSHIP_TYPES.INDEX).reduce((keys, [name, relationship]) => {
+    this.filterProjections(PROJECTION_TYPES.INDEX).reduce((keys, [name, relationship]) => {
       const identifiers = getIdentifiers(data, relationship.Key);
 
       if (identifiers.size === 1) {
@@ -132,14 +130,14 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
     );
 
   buildRelationshipsCompositeAttributes = (sourceResource: string, sourceId: string, data: Form) =>
-    this.filterRelationships(RELATIONSHIP_TYPES.COMPOSITE)
+    this.filterProjections(PROJECTION_TYPES.COMPOSITE)
       .map((relationship) =>
         this.buildRelationshipItemsCompositeAttributes(sourceResource, sourceId, data, relationship)
       )
       .flat();
 
   buildRelationshipsCompositeItems = (sourceResource: string, sourceId: string, data: Form): ItemEntity[] =>
-    this.filterRelationships(RELATIONSHIP_TYPES.COMPOSITE)
+    this.filterProjections(PROJECTION_TYPES.COMPOSITE)
       .map(([name, relationship]) =>
         this.buildRelationshipItemsCompositeAttributes(sourceResource, sourceId, data, [name, relationship]).map(
           (attributes) => ({
@@ -155,7 +153,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
       .flat();
 
   buildRelationshipOldCompositeAttributes = (sourceResource: string, sourceId: string, oldData: Form, newData: Form) =>
-    this.filterRelationships(RELATIONSHIP_TYPES.COMPOSITE).reduce((keys, [name, relationship]) => {
+    this.filterProjections(PROJECTION_TYPES.COMPOSITE).reduce((keys, [name, relationship]) => {
       const oldIds = getIdentifiers(oldData, relationship.Key);
       const newIds = getIdentifiers(newData, relationship.Key);
 
@@ -170,7 +168,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
     }, [] as { PK: string; SK: string }[]);
 
   buildQuery = (relationshipName: string, sourceIdentifier: string): Omit<QueryItemArgs, "table"> => {
-    const relationship = this.Data.Relationships.get(relationshipName);
+    const relationship = this.Data.Projections.get(relationshipName);
 
     if (relationship === undefined) {
       throw new RelationshipException("Invalid relationship");
@@ -179,7 +177,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
     const pk = buildResourceIdentifier(relationship.Resource, sourceIdentifier);
 
     return match(relationship)
-      .with({ Type: RELATIONSHIP_TYPES.INDEX }, (r) => ({
+      .with({ Type: PROJECTION_TYPES.INDEX }, (r) => ({
         index: `GSI${r.Index}`,
         keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
         expressionNames: {
@@ -191,7 +189,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
           ":SKPrefix": `${relationshipName}:`,
         },
       }))
-      .with({ Type: RELATIONSHIP_TYPES.COMPOSITE }, () => ({
+      .with({ Type: PROJECTION_TYPES.COMPOSITE }, () => ({
         keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
         expressionNames: {
           "#PK": `PK`,

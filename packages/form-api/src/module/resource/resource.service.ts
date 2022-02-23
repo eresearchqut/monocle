@@ -33,12 +33,20 @@ interface QueryResourceInput {
   version?: string;
 }
 
+interface QueryResourceProjectionInput {
+  projection: string;
+  resource: string;
+  reverse: boolean;
+  query?: string;
+  version?: string;
+}
+
 interface QueryRelatedResourceInput {
+  projection: string;
   resource: string;
   id: string;
-  version?: string;
   targetResource: string;
-  projectionName: string;
+  version?: string;
 }
 
 @Injectable()
@@ -181,6 +189,23 @@ export class ResourceService {
     });
   }
 
+  public async *queryResourceProjection(input: QueryResourceProjectionInput) {
+    const {
+      Data: {
+        Schemas: { projectionsVersion },
+        Resource,
+      },
+    } = await this.metadataService.getMetadata(input.resource);
+    const { buildPrimitiveProjectionQuery } = await this.projectionsService.getProjections(projectionsVersion);
+
+    // TODO: run authorization policy check
+
+    yield* this.dynamodbService.queryItems({
+      table: this.configService.get("RESOURCE_TABLE"),
+      ...buildPrimitiveProjectionQuery(input.projection, Resource, input.reverse, input.query),
+    });
+  }
+
   public async *queryRelatedResources(input: QueryRelatedResourceInput) {
     const {
       Data: {
@@ -193,7 +218,7 @@ export class ResourceService {
 
     yield* this.dynamodbService.queryItems({
       table: this.configService.get("RESOURCE_TABLE"),
-      ...buildRelatedQuery(input.projectionName, input.id),
+      ...buildRelatedQuery(input.projection, input.id),
     });
   }
 }

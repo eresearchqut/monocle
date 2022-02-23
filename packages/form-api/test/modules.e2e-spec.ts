@@ -920,4 +920,272 @@ describe("Resource projections", () => {
       )
     );
   });
+
+  it("Can sort resources", async () => {
+    // Create empty metadata
+    const testResource = generateResourceName();
+    await request(app.getHttpServer()).post(`/meta/metadata/${testResource}`).expect(201).expect({ created: true });
+
+    // Add forms
+    const sourceFormDefinition: Form = {
+      name: "TestForm",
+      description: "Test Form Description",
+      sections: [
+        {
+          name: "testSection",
+          label: "Test Section",
+          description: "Test Section Description",
+          id: NIL_UUID,
+          type: SectionType.DEFAULT,
+          inputs: [
+            {
+              name: "index",
+              label: "Index",
+              description: "Index",
+              type: InputType.NUMERIC,
+              id: uuid(),
+              required: true,
+            },
+            {
+              name: "stringKey1",
+              label: "String key 1",
+              description: "String key 1",
+              type: InputType.TEXT,
+              id: uuid(),
+              required: true,
+            },
+            {
+              name: "stringKey2",
+              label: "String key 2",
+              description: "String key 2",
+              type: InputType.TEXT,
+              id: uuid(),
+              required: true,
+            },
+            {
+              name: "numberKey1",
+              label: "Number key 1",
+              description: "Number key 1",
+              type: InputType.NUMERIC,
+              id: uuid(),
+              required: true,
+            },
+            {
+              name: "numberKey2",
+              label: "Number key 2",
+              description: "Number key 2",
+              type: InputType.NUMERIC,
+              id: uuid(),
+              required: true,
+            },
+            {
+              name: "booleanKey1",
+              label: "Boolean key 1",
+              description: "Boolean key 1",
+              type: InputType.BOOLEAN,
+              id: uuid(),
+              required: true,
+            },
+            {
+              name: "booleanKey2",
+              label: "Boolean key 2",
+              description: "Boolean key 2",
+              type: InputType.BOOLEAN,
+              id: uuid(),
+              required: true,
+            },
+          ],
+        },
+      ],
+    };
+    const formId = await request(app.getHttpServer())
+      .post(`/meta/form`)
+      .send({
+        definition: sourceFormDefinition,
+      })
+      .expect(201)
+      .then((res) => res.body.id);
+
+    // Add projection
+    const projections = await request(app.getHttpServer())
+      .post(`/meta/projections`)
+      .send({
+        projections: {
+          stringIndexSort: {
+            type: "INDEX",
+            key: "testSection.stringKey1",
+            index: 1,
+          },
+          stringCompositeSort: {
+            type: "COMPOSITE",
+            key: "testSection.stringKey2",
+            dataKey: "$",
+          },
+          numberIndexSort: {
+            type: "INDEX",
+            key: "testSection.numberKey1",
+            index: 2,
+          },
+          numberCompositeSort: {
+            type: "COMPOSITE",
+            key: "testSection.numberKey2",
+            dataKey: "$",
+          },
+          booleanIndexSort: {
+            type: "INDEX",
+            key: "testSection.booleanKey1",
+            index: 3,
+          },
+          booleanCompositeSort: {
+            type: "COMPOSITE",
+            key: "testSection.booleanKey2",
+            dataKey: "$",
+          },
+        },
+      })
+      .expect(201)
+      .then((res) => res.body.id);
+
+    // Create metadata v1.0.0
+    await request(app.getHttpServer())
+      .put(`/meta/metadata/${testResource}?validation=validate`)
+      .send({
+        version: "1.0.0",
+        schemas: {
+          formVersion: formId,
+          authorizationVersion: NIL_UUID,
+          projectionsVersion: projections,
+        },
+      })
+      .expect(200)
+      .expect((r) => expect(r.body.pushed).toBe(true))
+      .expect((r) => expect(r.body.validation.lastVersion).toBe("0.0.0"));
+
+    // Create resources
+    const resourceIds = await Promise.all(
+      [3, 5, 1, 4, 2].map(async (i) =>
+        request(app.getHttpServer())
+          .post(`/resource/${testResource}`)
+          .send({
+            data: {
+              testSection: {
+                index: i,
+                stringKey1: i.toString(),
+                stringKey2: i.toString(),
+                numberKey1: i,
+                numberKey2: i,
+                booleanKey1: i % 2 === 0,
+                booleanKey2: i % 2 === 0,
+              },
+            },
+          })
+          .expect(201)
+          .then((r) => r.body.Id)
+      )
+    );
+
+    // Query target relationships
+    await Promise.all(
+      ["stringIndexSort", "stringCompositeSort", "numberIndexSort", "numberCompositeSort"].map((projection) =>
+        Promise.all(
+          [
+            [undefined, [1, 2, 3, 4, 5]],
+            ["reverse", [5, 4, 3, 2, 1]],
+          ].map(([order, sorted]) =>
+            request(app.getHttpServer())
+              .get(`/resource/${testResource}/projection/${projection}`)
+              .query({ order })
+              .expect(200)
+              .then((r) => {
+                expect(r.body.length).toEqual(5);
+                expect(r.body.map((resource: any) => resource.Data.testSection.index)).toEqual(sorted);
+              })
+          )
+        )
+      )
+    );
+    await Promise.all(
+      ["booleanIndexSort", "booleanCompositeSort"].map((projection) =>
+        Promise.all(
+          [
+            [undefined, [false, false, false, true, true]],
+            ["reverse", [true, true, false, false, false]],
+          ].map(([order, sorted]) =>
+            request(app.getHttpServer())
+              .get(`/resource/${testResource}/projection/${projection}`)
+              .query({ order })
+              .expect(200)
+              .then((r) => {
+                expect(r.body.length).toEqual(5);
+                expect(r.body.map((resource: any) => resource.Data.testSection.index % 2 === 0)).toEqual(sorted);
+              })
+          )
+        )
+      )
+    );
+
+    const [firstResource, secondResource, ..._] = resourceIds;
+
+    // Delete first resource
+    await request(app.getHttpServer()).delete(`/resource/${testResource}/${firstResource}`).expect(200);
+
+    // Update second resource
+    await request(app.getHttpServer())
+      .put(`/resource/${testResource}/${secondResource}`)
+      .send({
+        data: {
+          testSection: {
+            index: 6,
+            stringKey1: "6",
+            stringKey2: "6",
+            numberKey1: 6,
+            numberKey2: 6,
+            booleanKey1: false,
+            booleanKey2: false,
+          },
+        },
+      })
+      .expect(200);
+
+    // Confirm updated resource order
+    await Promise.all(
+      // TODO: add booleanIndex
+      ["stringIndexSort", "stringCompositeSort", "numberIndexSort", "numberCompositeSort"].map((projection) =>
+        Promise.all(
+          [
+            [undefined, [1, 2, 4, 6]],
+            ["reverse", [6, 4, 2, 1]],
+          ].map(([order, sorted]) =>
+            request(app.getHttpServer())
+              .get(`/resource/${testResource}/projection/${projection}`)
+              .query({ order })
+              .expect(200)
+              .then((r) => {
+                expect(r.body.length).toEqual(4);
+                expect(r.body.map((resource: any) => resource.Data.testSection.index)).toEqual(sorted);
+              })
+          )
+        )
+      )
+    );
+    await Promise.all(
+      ["booleanIndexSort", "booleanCompositeSort"].map((projection) =>
+        Promise.all(
+          [
+            [undefined, [false, true, true, true]],
+            ["reverse", [true, true, true, false]],
+          ].map(([order, sorted]) =>
+            request(app.getHttpServer())
+              .get(`/resource/${testResource}/projection/${projection}`)
+              .query({ order })
+              .expect(200)
+              .then((r) => {
+                expect(r.body.length).toEqual(4);
+                expect(r.body.map((resource: any) => resource.Data.testSection.index % 2 === 0)).toEqual(sorted);
+              })
+          )
+        )
+      )
+    );
+  });
 });

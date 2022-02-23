@@ -8,4 +8,4 @@ export enum PROJECTION_TYPES {
   // TODO: unbounded composite storage?
 }
 
-export const NUMERIC_KEY_PADDING = 10; // TODO: allow configurable padding
+export const NUMERIC_KEY_PADDING = 20; // TODO: allow configurable padding

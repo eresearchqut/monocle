@@ -64,8 +64,10 @@ class MetadataProjectionsData {
   Projections!: Map<string, ConcreteProjections>;
 }
 
+const jsonPathData = (data: any, key: string) => JSONPath({ path: key, json: data, wrap: true, preventEval: true });
+
 const getKeys = (data: Form, key: string): Set<string> => {
-  const keys = JSONPath({ path: key, json: data, wrap: true, preventEval: true });
+  const keys = jsonPathData(data, key);
   if (keys === undefined || keys === null || !Array.isArray(keys)) {
     throw new Error(`Failed retrieving projection key ${key}`);
   }
@@ -80,6 +82,9 @@ const getKeys = (data: Form, key: string): Set<string> => {
           throw new Error(`Invalid projection key value numeric ${i} for key ${key}`);
         }
         return i.toString().padStart(NUMERIC_KEY_PADDING, "0");
+      }
+      if (typeof i === "boolean") {
+        return i.toString();
       }
       return i;
     })
@@ -111,14 +116,12 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
         return allKeys;
       }
 
-      const sourceResourceIdentifier = buildResourceIdentifier(sourceResource, sourceId); // TODO: don't build each time
-
       if (projection.Resource) {
         allKeys[`GSI${projection.Index}-PK`] = buildResourceIdentifier(projection.Resource, key);
-        allKeys[`GSI${projection.Index}-SK`] = `${name}:${sourceResourceIdentifier}`;
+        allKeys[`GSI${projection.Index}-SK`] = `${name}:${buildResourceIdentifier(sourceResource, sourceId)}`; // TODO: don't build each time
       } else {
-        allKeys[`GSI${projection.Index}-PK`] = sourceResourceIdentifier;
-        allKeys[`GSI${projection.Index}-SK`] = `${name}:${key}`;
+        allKeys[`GSI${projection.Index}-PK`] = sourceResource; // TODO better PK
+        allKeys[`GSI${projection.Index}-SK`] = `${name}:${key}:${sourceId}`;
       }
 
       return allKeys;
@@ -130,17 +133,15 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
     key: string,
     projection: [string, CompositeProjection]
   ) => {
-    const sourceResourceIdentifier = buildResourceIdentifier(sourceResource, sourceId); // TODO: don't build each time
-
     if (projection[1].Resource) {
       return {
         PK: buildResourceIdentifier(projection[1].Resource, key),
-        SK: `${projection[0]}:${sourceResourceIdentifier}`,
+        SK: `${projection[0]}:${buildResourceIdentifier(sourceResource, sourceId)}`, // TODO: don't build each time
       };
     } else {
       return {
-        PK: sourceResourceIdentifier,
-        SK: `${projection[0]}:${key}`,
+        PK: sourceResource, // TODO better PK
+        SK: `${projection[0]}:${key}:${sourceId}`,
       };
     }
   };
@@ -170,7 +171,7 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
             ItemType: projection.Resource ? "CompositeRelationship" : "CompositeProjection",
             CreatedAt: new Date().toISOString(),
             CreatedBy: SYSTEM_USER,
-            Data: get(data, projection.DataKey) || {},
+            Data: jsonPathData(data, projection.DataKey)?.[0] ?? {},
           })
         )
       )
@@ -184,12 +185,55 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
       // JS set difference is missing :( https://stackoverflow.com/a/36504668
       removedKeys.push(
         ...[...prevKeys]
-          .filter((i) => !newKeys.has(i))
-          .map((i) => this.buildProjectionItemCompositeAttributes(sourceResource, sourceId, i, [name, projection]))
+          .filter((k) => !newKeys.has(k))
+          .map((k) => this.buildProjectionItemCompositeAttributes(sourceResource, sourceId, k, [name, projection]))
       );
 
       return removedKeys;
     }, [] as { PK: string; SK: string }[]);
+
+  buildPrimitiveProjectionQuery = (
+    projectionName: string,
+    resource: string,
+    reverse: boolean,
+    query?: string
+  ): Omit<QueryItemArgs, "table"> => {
+    const projection = this.Data.Projections.get(projectionName);
+
+    if (projection === undefined || projection.Resource !== undefined) {
+      throw new ProjectionsException("Invalid projected relationship");
+    }
+
+    const pk = resource; // TODO better PK
+
+    return match(projection)
+      .with({ Type: PROJECTION_TYPES.INDEX }, (r) => ({
+        index: `GSI${r.Index}`,
+        keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
+        expressionNames: {
+          "#PK": `GSI${r.Index}-PK`,
+          "#SK": `GSI${r.Index}-SK`,
+        },
+        expressionValues: {
+          ":PK": pk,
+          ":SKPrefix": `${projectionName}:`,
+        },
+        reverse,
+      }))
+      .with({ Type: PROJECTION_TYPES.COMPOSITE }, () => ({
+        keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
+        expressionNames: {
+          "#PK": `PK`,
+          "#SK": `SK`,
+        },
+        expressionValues: {
+          ":PK": pk,
+          ":SKPrefix": `${projectionName}:${query ?? ""}`,
+        },
+        reverse,
+      }))
+      .exhaustive();
+  };
 
   buildRelatedQuery = (projectionName: string, sourceIdentifier: string): Omit<QueryItemArgs, "table"> => {
     const projection = this.Data.Projections.get(projectionName);

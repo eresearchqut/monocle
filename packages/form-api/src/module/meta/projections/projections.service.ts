@@ -103,13 +103,13 @@ export class ProjectionsService {
                 match(projection)
                   .with({ type: PROJECTION_TYPES.INDEX }, (r) => ({
                     Key: r.key,
-                    Resource: r.resource,
+                    ...(r.resource !== undefined && { Resource: r.resource }),
                     Type: r.type,
                     Index: r.index,
                   }))
                   .with({ type: PROJECTION_TYPES.COMPOSITE }, (r) => ({
                     Key: r.key,
-                    Resource: r.resource,
+                    ...(r.resource !== undefined && { Resource: r.resource }),
                     Type: r.type,
                     DataKey: r.dataKey,
                   }))

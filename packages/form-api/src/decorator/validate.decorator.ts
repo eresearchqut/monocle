@@ -18,7 +18,7 @@ export const ConditionallyValidateClassAsync = (setting: BooleanKeys<AppConfig>)
     descriptor.value = async function (...args: any[]) {
       if ((this as { configService: AppConfigService }).configService.get(setting)) {
         return originalMethod.apply(this, args).then(async (result) => {
-          await validateOrReject(result);
+          await validateOrReject(result, { skipUndefinedProperties: true }); // TODO: remove projection fix
           return result;
         });
       } else {

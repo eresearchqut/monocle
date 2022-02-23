@@ -1,4 +1,4 @@
-import { Equals, IsEnum, IsNotEmpty, IsPositive, IsString, IsUUID, ValidateNested } from "class-validator";
+import { Equals, IsEnum, IsNotEmpty, IsOptional, IsPositive, IsString, IsUUID, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 import { PROJECTION_TYPES } from "./projections.constants";
 
@@ -9,6 +9,7 @@ export class GetProjectionsParams {
 
 class Projection {
   @IsString()
+  @IsOptional()
   resource?: string;
 
   @IsString()

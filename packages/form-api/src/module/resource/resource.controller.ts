@@ -12,6 +12,8 @@ import {
   PutResourceBody,
   QueryRelatedResourceParams,
   QueryResourceParams,
+  QueryResourceProjectionParams,
+  QueryResourceProjectionQuery,
 } from "./resource.dto";
 import { ResourceService } from "./resource.service";
 
@@ -86,18 +88,39 @@ export class ResourceController {
     return resources;
   }
 
-  @Get(":resource/:id/:projectionName/:targetResource")
-  public async queryRelated(@Param() params: QueryRelatedResourceParams) {
-    const query = this.resourceService.queryRelatedResources({
+  @Get(":resource/projection/:projection")
+  public async queryProjection(
+    @Param() params: QueryResourceProjectionParams,
+    @Query() query: QueryResourceProjectionQuery
+  ) {
+    const results = this.resourceService.queryResourceProjection({
       resource: params.resource,
-      id: params.id,
-      targetResource: params.targetResource,
-      projectionName: params.projectionName,
+      projection: params.projection,
+      reverse: query.order === "reverse",
+      query: query.query,
     });
 
     // TODO: streaming & pagination options
     const resources = [];
-    for await (const resource of query) {
+    for await (const resource of results) {
+      resources.push(resource);
+    }
+
+    return resources;
+  }
+
+  @Get(":resource/:id/:projection/:targetResource")
+  public async queryRelated(@Param() params: QueryRelatedResourceParams) {
+    const results = this.resourceService.queryRelatedResources({
+      resource: params.resource,
+      id: params.id,
+      targetResource: params.targetResource,
+      projection: params.projection,
+    });
+
+    // TODO: streaming & pagination options
+    const resources = [];
+    for await (const resource of results) {
       resources.push(resource);
     }
 

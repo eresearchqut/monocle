@@ -1,4 +1,4 @@
-import { IsObject, IsOptional, IsSemVer, IsString, Matches } from "class-validator";
+import { Equals, IsBoolean, IsIBAN, IsObject, IsOptional, IsSemVer, IsString, Matches } from "class-validator";
 
 abstract class ResourceParams {
   @Matches(/[a-zA-Z0-9_]+/)
@@ -63,6 +63,21 @@ export class DeleteResourceQuery {
 
 export class QueryResourceParams extends OptionallyVersionedResourceParams {}
 
+export class QueryResourceProjectionParams extends ResourceParams {
+  @IsString()
+  projection!: string;
+}
+
+export class QueryResourceProjectionQuery {
+  @Equals("reverse")
+  @IsOptional()
+  order?: "reverse";
+
+  @IsString()
+  @IsOptional()
+  query?: string;
+}
+
 export class QueryRelatedResourceParams extends ResourceParams {
   @IsString()
   id!: string;
@@ -71,5 +86,5 @@ export class QueryRelatedResourceParams extends ResourceParams {
   targetResource!: string;
 
   @IsString()
-  projectionName!: string;
+  projection!: string;
 }

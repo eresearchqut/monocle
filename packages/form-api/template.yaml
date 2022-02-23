@@ -65,6 +65,10 @@ Resources:
           AttributeType: "S"
         - AttributeName: "GSI2-SK"
           AttributeType: "S"
+        - AttributeName: "GSI3-PK"
+          AttributeType: "S"
+        - AttributeName: "GSI3-SK"
+          AttributeType: "S"
       GlobalSecondaryIndexes:
         - IndexName: "GSI0"
           KeySchema:
@@ -85,6 +89,14 @@ Resources:
             - AttributeName: "GSI2-PK"
               KeyType: "HASH"
             - AttributeName: "GSI2-SK"
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: "ALL"
+        - IndexName: "GSI3"
+          KeySchema:
+            - AttributeName: "GSI3-PK"
+              KeyType: "HASH"
+            - AttributeName: "GSI3-SK"
               KeyType: "RANGE"
           Projection:
             ProjectionType: "ALL"

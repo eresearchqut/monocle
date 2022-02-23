@@ -71,5 +71,5 @@ export class QueryRelatedResourceParams extends ResourceParams {
   targetResource!: string;
 
   @IsString()
-  relationshipName!: string;
+  projectionName!: string;
 }

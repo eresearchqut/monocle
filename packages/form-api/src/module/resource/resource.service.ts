@@ -38,7 +38,7 @@ interface QueryRelatedResourceInput {
   id: string;
   version?: string;
   targetResource: string;
-  relationshipName: string;
+  projectionName: string;
 }
 
 @Injectable()
@@ -47,7 +47,7 @@ export class ResourceService {
     private configService: ConfigService<AppConfig, true>,
     private metadataService: MetadataService,
     private formService: FormService,
-    private relationshipsService: ProjectionsService,
+    private projectionsService: ProjectionsService,
     private dynamodbService: DynamodbRepository
   ) {}
 
@@ -93,18 +93,18 @@ export class ResourceService {
       },
     });
 
-    const { buildRelationshipsIndexKeys, buildRelationshipsCompositeItems, buildRelationshipOldCompositeAttributes } =
-      await this.relationshipsService.getProjections(Schemas.RelationshipsVersion);
+    const { buildProjectionsIndexKeys, buildProjectionsCompositeItems, buildProjectionOldCompositeAttributes } =
+      await this.projectionsService.getProjections(Schemas.projectionsVersion);
 
-    const relationshipKeys = buildRelationshipsIndexKeys(Resource, attrs.Id, input.data);
+    const projectionKeys = buildProjectionsIndexKeys(Resource, attrs.Id, input.data);
 
     const data = {
       ...attrs,
-      ...relationshipKeys,
+      ...projectionKeys,
       Data: input.data,
     };
 
-    const relatedItems = buildRelationshipsCompositeItems(Resource, attrs.Id, input.data);
+    const relatedItems = buildProjectionsCompositeItems(Resource, attrs.Id, input.data);
 
     // TODO: run authorization policy check
 
@@ -129,7 +129,7 @@ export class ResourceService {
         throw Error("Item didn't already exist");
       }
 
-      const oldRelatedKeys = buildRelationshipOldCompositeAttributes(Resource, attrs.Id, oldItem.Data, input.data);
+      const oldRelatedKeys = buildProjectionOldCompositeAttributes(Resource, attrs.Id, oldItem.Data, input.data);
 
       await Promise.all(oldRelatedKeys.map((keys) => this.dynamodbService.deleteItem({ table, ...keys })));
     }
@@ -145,8 +145,8 @@ export class ResourceService {
     } = await this.metadataService.getMetadata(input.resource);
     const key = buildGetAttributes(input.id);
 
-    const { buildRelationshipsCompositeAttributes } = await this.relationshipsService.getProjections(
-      Schemas.RelationshipsVersion
+    const { buildProjectionsCompositeAttributes } = await this.projectionsService.getProjections(
+      Schemas.projectionsVersion
     );
 
     // TODO: run authorization policy check
@@ -155,7 +155,7 @@ export class ResourceService {
 
     const item = await this.dynamodbService.deleteItem({ table, ...key });
 
-    const toDelete = buildRelationshipsCompositeAttributes(Resource, input.id, item.Data);
+    const toDelete = buildProjectionsCompositeAttributes(Resource, input.id, item.Data);
 
     await Promise.all(
       toDelete.map((key) =>
@@ -166,7 +166,7 @@ export class ResourceService {
       )
     );
 
-    // TODO: optionally return all deleted relationship items as well
+    // TODO: optionally return all deleted projection items as well
     return item;
   }
 
@@ -184,16 +184,16 @@ export class ResourceService {
   public async *queryRelatedResources(input: QueryRelatedResourceInput) {
     const {
       Data: {
-        Schemas: { RelationshipsVersion },
+        Schemas: { projectionsVersion },
       },
     } = await this.metadataService.getMetadata(input.targetResource); // TODO: consider including resource semver in projections
-    const { buildQuery } = await this.relationshipsService.getProjections(RelationshipsVersion);
+    const { buildRelatedQuery } = await this.projectionsService.getProjections(projectionsVersion);
 
     // TODO: run authorization policy check
 
     yield* this.dynamodbService.queryItems({
       table: this.configService.get("RESOURCE_TABLE"),
-      ...buildQuery(input.relationshipName, input.id),
+      ...buildRelatedQuery(input.projectionName, input.id),
     });
   }
 }

@@ -6,14 +6,14 @@ import { PROJECTION_TYPES } from "./projections.constants";
 
 @Controller("/meta/projections")
 export class ProjectionsController {
-  constructor(private relationshipsService: ProjectionsService) {}
+  constructor(private projectionsService: ProjectionsService) {}
 
   @Get(":projectionsId")
   async getProjections(@Param() params: GetProjectionsParams): Promise<GetProjectionsResponse> {
-    const relationships = await this.relationshipsService.getProjections(params.projectionsId);
+    const projections = await this.projectionsService.getProjections(params.projectionsId);
     return {
       projections: new Map(
-        Array.from(relationships.Data.Projections).map(([key, value]) => [
+        Array.from(projections.Data.Projections).map(([key, value]) => [
           key,
           match(value)
             .with({ Type: PROJECTION_TYPES.INDEX }, (r) => ({
@@ -36,7 +36,7 @@ export class ProjectionsController {
 
   @Post("")
   async postProjections(@Body() body: PostProjectionsBody) {
-    const result = await this.relationshipsService.createProjections(body.relationships);
+    const result = await this.projectionsService.createProjections(body.projections);
     if (result.created) {
       return result;
     } else {

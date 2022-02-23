@@ -6,9 +6,3 @@ export class ValidationException extends HttpException {
     super(errors, HttpStatus.BAD_REQUEST);
   }
 }
-
-export class RelationshipException extends HttpException {
-  constructor(message: string) {
-    super(message, HttpStatus.NOT_FOUND);
-  }
-}

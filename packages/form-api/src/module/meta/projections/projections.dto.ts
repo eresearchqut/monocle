@@ -9,7 +9,7 @@ export class GetProjectionsParams {
 
 class Projection {
   @IsString()
-  resource!: string;
+  resource?: string;
 
   @IsString()
   key!: string;
@@ -18,7 +18,7 @@ class Projection {
   type!: PROJECTION_TYPES;
 }
 
-export class IndexRelationship extends Projection {
+export class IndexProjection extends Projection {
   @IsPositive()
   index!: number;
 
@@ -26,7 +26,7 @@ export class IndexRelationship extends Projection {
   type!: PROJECTION_TYPES.INDEX;
 }
 
-export class CompositeRelationship extends Projection {
+export class CompositeProjection extends Projection {
   @Equals(PROJECTION_TYPES.COMPOSITE)
   type!: PROJECTION_TYPES.COMPOSITE;
 
@@ -34,7 +34,7 @@ export class CompositeRelationship extends Projection {
   dataKey!: string;
 }
 
-export type ConcreteProjections = IndexRelationship | CompositeRelationship;
+export type ConcreteProjections = IndexProjection | CompositeProjection;
 
 export class GetProjectionsResponse {
   @IsNotEmpty()
@@ -50,10 +50,10 @@ export class PostProjectionsBody {
     discriminator: {
       property: "type",
       subTypes: [
-        { value: IndexRelationship, name: PROJECTION_TYPES.INDEX },
-        { value: CompositeRelationship, name: PROJECTION_TYPES.COMPOSITE }, // TODO: Fix not validating concrete keys
+        { value: IndexProjection, name: PROJECTION_TYPES.INDEX },
+        { value: CompositeProjection, name: PROJECTION_TYPES.COMPOSITE }, // TODO: Fix not validating concrete keys
       ],
     },
   })
-  relationships!: Map<string, ConcreteProjections>;
+  projections!: Map<string, ConcreteProjections>;
 }

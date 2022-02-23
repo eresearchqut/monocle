@@ -5,15 +5,15 @@ import { get } from "lodash";
 import { buildResourceIdentifier } from "../utils";
 import { Type } from "class-transformer";
 import { SYSTEM_USER } from "../constants";
-import { RelationshipException } from "../../resource/resource.exception";
 import { match } from "ts-pattern";
 import { QueryItemArgs } from "../../dynamodb/dynamodb.repository";
-import { PROJECTION_TYPES } from "./projections.constants";
+import { NUMERIC_KEY_PADDING, PROJECTION_TYPES } from "./projections.constants";
 import { JSONPath } from "jsonpath-plus";
+import { ProjectionsException } from "./projections.exception";
 
 abstract class Projection {
   @Matches(/[a-zA-Z0-9_]+/)
-  Resource!: string; // TODO: check target resource doesn't have other projections with same name
+  Resource?: string; // TODO: check target resource doesn't have other projections with same name
 
   @IsString()
   Key!: string;
@@ -22,7 +22,7 @@ abstract class Projection {
   Type!: PROJECTION_TYPES;
 }
 
-class IndexRelationship extends Projection {
+class IndexProjection extends Projection {
   @Equals(PROJECTION_TYPES.INDEX)
   Type!: PROJECTION_TYPES.INDEX;
 
@@ -32,15 +32,17 @@ class IndexRelationship extends Projection {
   Index!: number;
 }
 
-class CompositeRelationship extends Projection {
+class CompositeProjection extends Projection {
   @Equals(PROJECTION_TYPES.COMPOSITE)
   Type!: PROJECTION_TYPES.COMPOSITE;
 
   @IsString()
   DataKey!: string;
+
+  // TODO: allow enforcing consistency type
 }
 
-export type ConcreteProjections = IndexRelationship | CompositeRelationship;
+export type ConcreteProjections = IndexProjection | CompositeProjection;
 
 interface DataType {
   Projections: Map<string, ConcreteProjections>;
@@ -54,24 +56,30 @@ class MetadataProjectionsData {
     discriminator: {
       property: "Type",
       subTypes: [
-        { value: IndexRelationship, name: PROJECTION_TYPES.INDEX },
-        { value: CompositeRelationship, name: PROJECTION_TYPES.COMPOSITE },
+        { value: IndexProjection, name: PROJECTION_TYPES.INDEX },
+        { value: CompositeProjection, name: PROJECTION_TYPES.COMPOSITE },
       ],
     },
   })
   Projections!: Map<string, ConcreteProjections>;
 }
 
-const getIdentifiers = (data: Form, key: string): Set<string> => {
-  const identifiers = JSONPath({ path: key, json: data, wrap: true, preventEval: true });
-  if (identifiers === undefined || identifiers === null || !Array.isArray(identifiers)) {
+const getKeys = (data: Form, key: string): Set<string> => {
+  const keys = JSONPath({ path: key, json: data, wrap: true, preventEval: true });
+  if (keys === undefined || keys === null || !Array.isArray(keys)) {
     throw new Error(`Failed retrieving projection key ${key}`);
   }
 
   return new Set(
-    identifiers.map((i) => {
-      if (typeof i !== "string") {
+    keys.map((i) => {
+      if (i === undefined || typeof i === "object") {
         throw new Error(`Invalid projection key value ${i} for key ${key}`);
+      }
+      if (typeof i === "number") {
+        if (i < 0) {
+          throw new Error(`Invalid projection key value numeric ${i} for key ${key}`);
+        }
+        return i.toString().padStart(NUMERIC_KEY_PADDING, "0");
       }
       return i;
     })
@@ -86,97 +94,113 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
   @Type(() => MetadataProjectionsData)
   Data!: MetadataProjectionsData;
 
-  private filterProjections(relationshipType: PROJECTION_TYPES.INDEX): [string, IndexRelationship][];
-  private filterProjections(relationshipType: PROJECTION_TYPES.COMPOSITE): [string, CompositeRelationship][];
-  private filterProjections(relationshipType: PROJECTION_TYPES): [string, IndexRelationship | CompositeRelationship][] {
+  private filterProjections(projectionType: PROJECTION_TYPES.INDEX): [string, IndexProjection][];
+  private filterProjections(projectionType: PROJECTION_TYPES.COMPOSITE): [string, CompositeProjection][];
+  private filterProjections(projectionType: PROJECTION_TYPES): [string, IndexProjection | CompositeProjection][] {
     return Array.from(this.Data.Projections.entries()).filter(
-      (r): r is [string, IndexRelationship | CompositeRelationship] => r[1].Type === relationshipType
+      (r): r is [string, IndexProjection | CompositeProjection] => r[1].Type === projectionType
     );
   }
 
-  buildRelationshipsIndexKeys = (sourceResource: string, sourceId: string, data: Form): Record<string, string> =>
-    this.filterProjections(PROJECTION_TYPES.INDEX).reduce((keys, [name, relationship]) => {
-      const identifiers = getIdentifiers(data, relationship.Key);
+  buildProjectionsIndexKeys = (sourceResource: string, sourceId: string, data: Form): Record<string, string> =>
+    this.filterProjections(PROJECTION_TYPES.INDEX).reduce((allKeys, [name, projection]) => {
+      const keys = getKeys(data, projection.Key);
+      const key = keys.values().next().value;
 
-      if (identifiers.size === 1) {
-        keys[`GSI${relationship.Index}-PK`] = buildResourceIdentifier(
-          relationship.Resource,
-          identifiers.values().next().value
-        );
-        keys[`GSI${relationship.Index}-SK`] = `${name}:${buildResourceIdentifier(sourceResource, sourceId)}`;
+      if (key === undefined) {
+        return allKeys;
       }
 
-      return keys;
+      const sourceResourceIdentifier = buildResourceIdentifier(sourceResource, sourceId); // TODO: don't build each time
+
+      if (projection.Resource) {
+        allKeys[`GSI${projection.Index}-PK`] = buildResourceIdentifier(projection.Resource, key);
+        allKeys[`GSI${projection.Index}-SK`] = `${name}:${sourceResourceIdentifier}`;
+      } else {
+        allKeys[`GSI${projection.Index}-PK`] = sourceResourceIdentifier;
+        allKeys[`GSI${projection.Index}-SK`] = `${name}:${key}`;
+      }
+
+      return allKeys;
     }, {} as Record<string, string>);
 
-  private buildRelationshipItemCompositeAttributes = (
+  private buildProjectionItemCompositeAttributes = (
     sourceResource: string,
     sourceId: string,
-    targetId: string,
-    relationship: [string, CompositeRelationship]
-  ) => ({
-    PK: buildResourceIdentifier(relationship[1].Resource, targetId),
-    SK: `${relationship[0]}:${buildResourceIdentifier(sourceResource, sourceId)}`,
-  });
+    key: string,
+    projection: [string, CompositeProjection]
+  ) => {
+    const sourceResourceIdentifier = buildResourceIdentifier(sourceResource, sourceId); // TODO: don't build each time
 
-  private buildRelationshipItemsCompositeAttributes = (
+    if (projection[1].Resource) {
+      return {
+        PK: buildResourceIdentifier(projection[1].Resource, key),
+        SK: `${projection[0]}:${sourceResourceIdentifier}`,
+      };
+    } else {
+      return {
+        PK: sourceResourceIdentifier,
+        SK: `${projection[0]}:${key}`,
+      };
+    }
+  };
+
+  private buildProjectionItemsCompositeAttributes = (
     sourceResource: string,
     sourceId: string,
     data: Form,
-    relationship: [string, CompositeRelationship]
+    projection: [string, CompositeProjection]
   ): { PK: string; SK: string }[] =>
-    Array.from(getIdentifiers(data, relationship[1].Key)).map((i) =>
-      this.buildRelationshipItemCompositeAttributes(sourceResource, sourceId, i, relationship)
+    Array.from(getKeys(data, projection[1].Key)).map((i) =>
+      this.buildProjectionItemCompositeAttributes(sourceResource, sourceId, i, projection)
     );
 
-  buildRelationshipsCompositeAttributes = (sourceResource: string, sourceId: string, data: Form) =>
+  buildProjectionsCompositeAttributes = (sourceResource: string, sourceId: string, data: Form) =>
     this.filterProjections(PROJECTION_TYPES.COMPOSITE)
-      .map((relationship) =>
-        this.buildRelationshipItemsCompositeAttributes(sourceResource, sourceId, data, relationship)
-      )
-      .flat();
+      .map((projection) => this.buildProjectionItemsCompositeAttributes(sourceResource, sourceId, data, projection))
+      .flat(); // TODO: replace with reduce
 
-  buildRelationshipsCompositeItems = (sourceResource: string, sourceId: string, data: Form): ItemEntity[] =>
+  buildProjectionsCompositeItems = (sourceResource: string, sourceId: string, data: Form): ItemEntity[] =>
     this.filterProjections(PROJECTION_TYPES.COMPOSITE)
-      .map(([name, relationship]) =>
-        this.buildRelationshipItemsCompositeAttributes(sourceResource, sourceId, data, [name, relationship]).map(
+      .map(([name, projection]) =>
+        this.buildProjectionItemsCompositeAttributes(sourceResource, sourceId, data, [name, projection]).map(
           (attributes) => ({
             ...attributes,
             Id: sourceId,
-            ItemType: "CompositeRelationship",
+            ItemType: projection.Resource ? "CompositeRelationship" : "CompositeProjection",
             CreatedAt: new Date().toISOString(),
             CreatedBy: SYSTEM_USER,
-            Data: get(data, relationship.DataKey) || {},
+            Data: get(data, projection.DataKey) || {},
           })
         )
       )
-      .flat();
+      .flat(); // TODO: replace with reduce
 
-  buildRelationshipOldCompositeAttributes = (sourceResource: string, sourceId: string, oldData: Form, newData: Form) =>
-    this.filterProjections(PROJECTION_TYPES.COMPOSITE).reduce((keys, [name, relationship]) => {
-      const oldIds = getIdentifiers(oldData, relationship.Key);
-      const newIds = getIdentifiers(newData, relationship.Key);
+  buildProjectionOldCompositeAttributes = (sourceResource: string, sourceId: string, oldData: Form, newData: Form) =>
+    this.filterProjections(PROJECTION_TYPES.COMPOSITE).reduce((removedKeys, [name, projection]) => {
+      const prevKeys = getKeys(oldData, projection.Key);
+      const newKeys = getKeys(newData, projection.Key);
 
       // JS set difference is missing :( https://stackoverflow.com/a/36504668
-      keys.push(
-        ...[...oldIds]
-          .filter((i) => !newIds.has(i))
-          .map((i) => this.buildRelationshipItemCompositeAttributes(sourceResource, sourceId, i, [name, relationship]))
+      removedKeys.push(
+        ...[...prevKeys]
+          .filter((i) => !newKeys.has(i))
+          .map((i) => this.buildProjectionItemCompositeAttributes(sourceResource, sourceId, i, [name, projection]))
       );
 
-      return keys;
+      return removedKeys;
     }, [] as { PK: string; SK: string }[]);
 
-  buildQuery = (relationshipName: string, sourceIdentifier: string): Omit<QueryItemArgs, "table"> => {
-    const relationship = this.Data.Projections.get(relationshipName);
+  buildRelatedQuery = (projectionName: string, sourceIdentifier: string): Omit<QueryItemArgs, "table"> => {
+    const projection = this.Data.Projections.get(projectionName);
 
-    if (relationship === undefined) {
-      throw new RelationshipException("Invalid relationship");
+    if (projection === undefined || projection.Resource === undefined) {
+      throw new ProjectionsException("Invalid projected relationship");
     }
 
-    const pk = buildResourceIdentifier(relationship.Resource, sourceIdentifier);
+    const pk = buildResourceIdentifier(projection.Resource, sourceIdentifier);
 
-    return match(relationship)
+    return match(projection)
       .with({ Type: PROJECTION_TYPES.INDEX }, (r) => ({
         index: `GSI${r.Index}`,
         keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
@@ -186,7 +210,7 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
         },
         expressionValues: {
           ":PK": pk,
-          ":SKPrefix": `${relationshipName}:`,
+          ":SKPrefix": `${projectionName}:`,
         },
       }))
       .with({ Type: PROJECTION_TYPES.COMPOSITE }, () => ({
@@ -197,7 +221,7 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
         },
         expressionValues: {
           ":PK": pk,
-          ":SKPrefix": `${relationshipName}:`,
+          ":SKPrefix": `${projectionName}:`,
         },
       }))
       .exhaustive();

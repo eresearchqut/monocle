@@ -131,7 +131,7 @@ describe("Metadata module", () => {
         schemas: {
           formVersion: NIL_UUID,
           authorizationVersion: NIL_UUID,
-          relationshipsVersion: NIL_UUID,
+          projectionsVersion: NIL_UUID,
         },
       });
 
@@ -229,7 +229,7 @@ describe("Metadata module", () => {
         schemas: {
           formVersion: formId,
           authorizationVersion: NIL_UUID,
-          relationshipsVersion: NIL_UUID,
+          projectionsVersion: NIL_UUID,
         },
       })
       .expect(200)
@@ -245,7 +245,7 @@ describe("Metadata module", () => {
         schemas: {
           formVersion: formId,
           authorizationVersion: NIL_UUID,
-          relationshipsVersion: NIL_UUID,
+          projectionsVersion: NIL_UUID,
         },
       });
   });
@@ -543,7 +543,7 @@ describe("Resource module", () => {
         schemas: {
           formVersion: formId,
           authorizationVersion: NIL_UUID,
-          relationshipsVersion: NIL_UUID,
+          projectionsVersion: NIL_UUID,
         },
       })
       .expect(200);
@@ -630,7 +630,7 @@ describe("Resource module", () => {
         schemas: {
           formVersion: formId,
           authorizationVersion: NIL_UUID,
-          relationshipsVersion: NIL_UUID,
+          projectionsVersion: NIL_UUID,
         },
       })
       .expect(200)
@@ -749,7 +749,7 @@ describe("Resource module", () => {
     const sourceRelationshipsId = await request(app.getHttpServer())
       .post(`/meta/projections`)
       .send({
-        relationships: {
+        projections: {
           indexRelationship: {
             type: "INDEX",
             resource: targetResource,
@@ -781,7 +781,7 @@ describe("Resource module", () => {
         schemas: {
           formVersion: sourceFormId,
           authorizationVersion: NIL_UUID,
-          relationshipsVersion: sourceRelationshipsId,
+          projectionsVersion: sourceRelationshipsId,
         },
       })
       .expect(200)
@@ -794,7 +794,7 @@ describe("Resource module", () => {
         schemas: {
           formVersion: targetFormId,
           authorizationVersion: NIL_UUID,
-          relationshipsVersion: NIL_UUID,
+          projectionsVersion: NIL_UUID,
         },
       })
       .expect(200)

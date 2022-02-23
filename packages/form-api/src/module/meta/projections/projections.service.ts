@@ -15,13 +15,13 @@ type PutProjectionsInput = Map<
   string,
   | {
       key: string;
-      resource: string;
+      resource?: string;
       type: PROJECTION_TYPES.INDEX;
       index: number;
     }
   | {
       key: string;
-      resource: string;
+      resource?: string;
       type: PROJECTION_TYPES.COMPOSITE;
       dataKey: string;
     }
@@ -63,7 +63,7 @@ export class ProjectionsService {
   @TransformPlainToClass(MetadataProjections)
   public async getProjections(id: string): Promise<MetadataProjections> {
     if (id === NIL_UUID) {
-      // Must cast to MetadataRelationships because transform decorator cannot change method signature
+      // Must cast to MetadataProjections because transform decorator cannot change method signature
       return EMPTY_PROJECTIONS as MetadataProjections;
     }
 
@@ -79,13 +79,13 @@ export class ProjectionsService {
     return item;
   }
 
-  public async createProjections(relationships: PutProjectionsInput): Promise<{ created: false }>;
-  public async createProjections(relationships: PutProjectionsInput): Promise<{ created: true; id: string }>;
-  public async createProjections(relationships: PutProjectionsInput): Promise<{ created: boolean; id?: string }> {
+  public async createProjections(projections: PutProjectionsInput): Promise<{ created: false }>;
+  public async createProjections(projections: PutProjectionsInput): Promise<{ created: true; id: string }>;
+  public async createProjections(projections: PutProjectionsInput): Promise<{ created: boolean; id?: string }> {
     const id = uuidV4();
     const key = buildProjectionsItemKey(id);
 
-    validateUniqueIndexes(relationships);
+    validateUniqueIndexes(projections);
 
     return this.dynamodbService
       .createItem<MetadataProjectionsType>({
@@ -98,9 +98,9 @@ export class ProjectionsService {
           CreatedBy: SYSTEM_USER,
           Data: {
             Projections: new Map(
-              Array.from(relationships).map(([name, relationship]) => [
+              Array.from(projections).map(([name, projection]) => [
                 name,
-                match(relationship)
+                match(projection)
                   .with({ type: PROJECTION_TYPES.INDEX }, (r) => ({
                     Key: r.key,
                     Resource: r.resource,

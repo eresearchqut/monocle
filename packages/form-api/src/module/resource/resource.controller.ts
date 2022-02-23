@@ -86,13 +86,13 @@ export class ResourceController {
     return resources;
   }
 
-  @Get(":resource/:id/:relationshipName/:targetResource")
+  @Get(":resource/:id/:projectionName/:targetResource")
   public async queryRelated(@Param() params: QueryRelatedResourceParams) {
     const query = this.resourceService.queryRelatedResources({
       resource: params.resource,
       id: params.id,
       targetResource: params.targetResource,
-      relationshipName: params.relationshipName,
+      projectionName: params.projectionName,
     });
 
     // TODO: streaming & pagination options

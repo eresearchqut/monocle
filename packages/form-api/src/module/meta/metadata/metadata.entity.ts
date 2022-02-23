@@ -7,6 +7,8 @@ import { QueryItemArgs } from "../../dynamodb/dynamodb.repository";
 import { RESOURCE_GSI_INDEX } from "./metadata.constants";
 
 // TODO: versioned / longitudinal resources
+// TODO: nested / hierarchical resources
+// TODO: enforce consistency type
 
 interface DataType {
   Resource: string;
@@ -14,7 +16,7 @@ interface DataType {
   Schemas: {
     FormVersion: string;
     AuthorizationVersion: string;
-    RelationshipsVersion: string;
+    projectionsVersion: string;
   };
 }
 
@@ -28,7 +30,7 @@ class SchemaData {
   AuthorizationVersion!: string;
 
   @IsUUID()
-  RelationshipsVersion!: string;
+  projectionsVersion!: string;
 }
 
 export class MetadataData {

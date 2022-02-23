@@ -3,4 +3,4 @@
  * @param resource
  * @param id
  */
-export const buildResourceIdentifier = (resource: string, id: string) => `Resource:${resource}#data:${id}`;
+export const buildResourceIdentifier = (resource: string, id: string) => `Resource:${resource}#data:${id}`; // TODO: template string return type

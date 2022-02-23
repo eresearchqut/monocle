@@ -109,7 +109,7 @@ const initApp = async (modules: any[]): Promise<INestApplication> => {
   return app;
 };
 
-describe("Metadata module", () => {
+describe("Metadata", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -251,7 +251,7 @@ describe("Metadata module", () => {
   });
 });
 
-describe("Resource module", () => {
+describe("Resource forms", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -664,6 +664,14 @@ describe("Resource module", () => {
         expect(r.body.length).toEqual(5);
         expect(new Set(r.body.map((resource: { Id: string }) => resource.Id))).toEqual(resourceIds);
       });
+  });
+});
+
+describe("Resource projections", () => {
+  let app: INestApplication;
+
+  beforeAll(async () => {
+    app = await initApp([ResourceModule]);
   });
 
   it("Can CRUD resources with relationships", async () => {

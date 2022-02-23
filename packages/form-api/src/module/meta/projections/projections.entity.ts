@@ -1,7 +1,6 @@
-import { Equals, IsEnum, IsString, Matches, Max, Min, ValidateNested } from "class-validator";
+import { Equals, IsEnum, IsOptional, IsString, Matches, Max, Min, ValidateNested } from "class-validator";
 import { ItemEntity } from "../../dynamodb/dynamodb.entity";
 import { Form } from "@eresearchqut/form-definition";
-import { get } from "lodash";
 import { buildResourceIdentifier } from "../utils";
 import { Type } from "class-transformer";
 import { SYSTEM_USER } from "../constants";
@@ -13,6 +12,7 @@ import { ProjectionsException } from "./projections.exception";
 
 abstract class Projection {
   @Matches(/[a-zA-Z0-9_]+/)
+  @IsOptional()
   Resource?: string; // TODO: check target resource doesn't have other projections with same name
 
   @IsString()

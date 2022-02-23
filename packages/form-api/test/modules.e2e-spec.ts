@@ -1149,7 +1149,6 @@ describe("Resource projections", () => {
 
     // Confirm updated resource order
     await Promise.all(
-      // TODO: add booleanIndex
       ["stringIndexSort", "stringCompositeSort", "numberIndexSort", "numberCompositeSort"].map((projection) =>
         Promise.all(
           [

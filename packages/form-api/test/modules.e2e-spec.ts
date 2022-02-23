@@ -61,7 +61,7 @@ const initApp = async (modules: any[]): Promise<INestApplication> => {
 
   const dynamodbClient = new DynamoDBClient({
     region: "local",
-    // logger: new DynamodbLogger(DynamodbRepository.name),
+    // logger: new DynamodbLogger(DynamodbService.name),
     credentials: {
       accessKeyId: "fake",
       secretAccessKey: "fake",

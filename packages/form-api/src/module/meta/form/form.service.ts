@@ -5,7 +5,7 @@ import { MetadataForm, MetaDataFormType } from "./form.entity";
 import { NIL as NIL_UUID, v4 as uuidV4 } from "uuid";
 import { Form, Section } from "@eresearchqut/form-definition";
 import { SYSTEM_USER } from "../constants";
-import { DynamodbRepository } from "../../dynamodb/dynamodb.repository";
+import { DynamodbService } from "../../dynamodb/dynamodb.service";
 import { ConfigService } from "@nestjs/config";
 import { AppConfig } from "../../../app.config";
 import { FormException } from "./form.exception";
@@ -31,7 +31,7 @@ const EMPTY_FORM: MetaDataFormType = {
 
 @Injectable()
 export class FormService {
-  constructor(public configService: ConfigService<AppConfig, true>, private dynamodbService: DynamodbRepository) {}
+  constructor(public configService: ConfigService<AppConfig, true>, private dynamodbService: DynamodbService) {}
 
   @ConditionallyValidateClassAsync("VALIDATE_METADATA_ON_READ")
   @TransformPlainToClass(MetadataForm)

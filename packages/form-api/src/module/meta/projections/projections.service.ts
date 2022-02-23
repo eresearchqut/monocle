@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { AppConfig } from "../../../app.config";
-import { DynamodbRepository } from "../../dynamodb/dynamodb.repository";
+import { DynamodbService } from "../../dynamodb/dynamodb.service";
 import { NIL as NIL_UUID, v4 as uuidV4 } from "uuid";
 import { SYSTEM_USER } from "../constants";
 import { ConcreteProjections, MetadataProjections, MetadataProjectionsType } from "./projections.entity";
@@ -57,7 +57,7 @@ const validateUniqueIndexes = (projections: PutProjectionsInput) => {
 
 @Injectable()
 export class ProjectionsService {
-  constructor(public configService: ConfigService<AppConfig, true>, private dynamodbService: DynamodbRepository) {}
+  constructor(public configService: ConfigService<AppConfig, true>, private dynamodbService: DynamodbService) {}
 
   @ConditionallyValidateClassAsync("VALIDATE_METADATA_ON_READ")
   @TransformPlainToClass(MetadataProjections)

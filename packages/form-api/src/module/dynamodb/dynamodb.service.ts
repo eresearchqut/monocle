@@ -54,7 +54,7 @@ export type DeleteItemArgs = {
 };
 
 @Injectable()
-export class DynamodbRepository {
+export class DynamodbService {
   private readonly client: DynamoDBClient;
 
   constructor(private clientProvider: DynamoDbClientProvider) {

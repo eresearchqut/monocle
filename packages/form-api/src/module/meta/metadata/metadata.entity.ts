@@ -3,7 +3,7 @@ import { Type } from "class-transformer";
 import { v4 } from "uuid";
 import { ItemEntity } from "../../dynamodb/dynamodb.entity";
 import { buildResourceIdentifier } from "../utils";
-import { QueryItemArgs } from "../../dynamodb/dynamodb.repository";
+import { QueryItemArgs } from "../../dynamodb/dynamodb.service";
 import { RESOURCE_GSI_INDEX } from "./metadata.constants";
 
 // TODO: versioned / longitudinal resources

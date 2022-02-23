@@ -5,7 +5,7 @@ import { buildResourceIdentifier } from "../utils";
 import { Type } from "class-transformer";
 import { SYSTEM_USER } from "../constants";
 import { match } from "ts-pattern";
-import { QueryItemArgs } from "../../dynamodb/dynamodb.repository";
+import { QueryItemArgs } from "../../dynamodb/dynamodb.service";
 import { NUMERIC_KEY_PADDING, PROJECTION_TYPES } from "./projections.constants";
 import { JSONPath } from "jsonpath-plus";
 import { ProjectionsException } from "./projections.exception";

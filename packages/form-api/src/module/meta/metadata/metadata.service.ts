@@ -7,7 +7,7 @@ import {
   ConditionallyValidateClassAsync,
   ConditionallyValidateClassAsyncGenerator,
 } from "src/decorator/validate.decorator";
-import { DynamodbRepository } from "../../dynamodb/dynamodb.repository";
+import { DynamodbService } from "../../dynamodb/dynamodb.service";
 import { Metadata, MetadataEntityType } from "./metadata.entity";
 import { NIL as NIL_UUID } from "uuid";
 import { eq as semverEq, gte as semverGte, SemVer } from "semver";
@@ -64,7 +64,7 @@ interface ValidationResult {
 export class MetadataService {
   constructor(
     public configService: ConfigService<AppConfig, true>,
-    private dynamodbService: DynamodbRepository,
+    private dynamodbService: DynamodbService,
     private formService: FormService
   ) {}
 

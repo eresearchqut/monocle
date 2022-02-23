@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { AppConfig } from "../../app.config";
 import { ConfigService } from "@nestjs/config";
 import { MetadataService } from "../meta/metadata/metadata.service";
-import { DynamodbRepository } from "../dynamodb/dynamodb.repository";
+import { DynamodbService } from "../dynamodb/dynamodb.service";
 import { ItemEntity } from "../dynamodb/dynamodb.entity";
 import { FormService } from "../meta/form/form.service";
 import { ProjectionsService } from "../meta/projections/projections.service";
@@ -56,7 +56,7 @@ export class ResourceService {
     private metadataService: MetadataService,
     private formService: FormService,
     private projectionsService: ProjectionsService,
-    private dynamodbService: DynamodbRepository
+    private dynamodbService: DynamodbService
   ) {}
 
   public async getResource(input: GetResourceInput): Promise<ItemEntity | null> {

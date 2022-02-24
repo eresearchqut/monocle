@@ -921,13 +921,14 @@ describe("Resource projections", () => {
     );
   });
 
+  // TODO: split into individual tests
   it("Can sort resources", async () => {
     // Create empty metadata
     const testResource = generateResourceName();
     await request(app.getHttpServer()).post(`/meta/metadata/${testResource}`).expect(201).expect({ created: true });
 
-    // Add forms
-    const sourceFormDefinition: Form = {
+    // Add form
+    const formDefinition: Form = {
       name: "TestForm",
       description: "Test Form Description",
       sections: [
@@ -1001,7 +1002,7 @@ describe("Resource projections", () => {
     const formId = await request(app.getHttpServer())
       .post(`/meta/form`)
       .send({
-        definition: sourceFormDefinition,
+        definition: formDefinition,
       })
       .expect(201)
       .then((res) => res.body.id);
@@ -1084,7 +1085,7 @@ describe("Resource projections", () => {
       )
     );
 
-    // Query target relationships
+    // Query sorted projections
     await Promise.all(
       ["stringIndexSort", "stringCompositeSort", "numberIndexSort", "numberCompositeSort"].map((projection) =>
         Promise.all(
@@ -1124,7 +1125,7 @@ describe("Resource projections", () => {
       )
     );
 
-    const [firstResource, secondResource, ..._] = resourceIds;
+    const [firstResource, secondResource] = resourceIds;
 
     // Delete first resource
     await request(app.getHttpServer()).delete(`/resource/${testResource}/${firstResource}`).expect(200);
@@ -1182,6 +1183,292 @@ describe("Resource projections", () => {
                 expect(r.body.length).toEqual(4);
                 expect(r.body.map((resource: any) => resource.Data.testSection.index % 2 === 0)).toEqual(sorted);
               })
+          )
+        )
+      )
+    );
+  });
+
+  // TODO: split into individual tests
+  it("Can query resources", async () => {
+    // Create empty metadata
+    const testResource = generateResourceName();
+    await request(app.getHttpServer()).post(`/meta/metadata/${testResource}`).expect(201).expect({ created: true });
+
+    // Add form
+    const formDefinition: Form = {
+      name: "TestForm",
+      description: "Test Form Description",
+      sections: [
+        {
+          name: "testSection",
+          label: "Test Section",
+          description: "Test Section Description",
+          id: NIL_UUID,
+          type: SectionType.DEFAULT,
+          inputs: [
+            {
+              name: "index",
+              label: "Index",
+              description: "Index",
+              type: InputType.NUMERIC,
+              id: uuid(),
+              required: true,
+            },
+            {
+              name: "stringKey1",
+              label: "String key 1",
+              description: "String key 1",
+              type: InputType.TEXT,
+              id: uuid(),
+              required: true,
+            },
+            {
+              name: "stringKey2",
+              label: "String key 2",
+              description: "String key 2",
+              type: InputType.TEXT,
+              id: uuid(),
+              required: true,
+            },
+            {
+              name: "numberKey1",
+              label: "Number key 1",
+              description: "Number key 1",
+              type: InputType.NUMERIC,
+              id: uuid(),
+              required: true,
+            },
+            {
+              name: "numberKey2",
+              label: "Number key 2",
+              description: "Number key 2",
+              type: InputType.NUMERIC,
+              id: uuid(),
+              required: true,
+            },
+            {
+              name: "booleanKey1",
+              label: "Boolean key 1",
+              description: "Boolean key 1",
+              type: InputType.BOOLEAN,
+              id: uuid(),
+              required: true,
+            },
+            {
+              name: "booleanKey2",
+              label: "Boolean key 2",
+              description: "Boolean key 2",
+              type: InputType.BOOLEAN,
+              id: uuid(),
+              required: true,
+            },
+          ],
+        },
+      ],
+    };
+    const formId = await request(app.getHttpServer())
+      .post(`/meta/form`)
+      .send({
+        definition: formDefinition,
+      })
+      .expect(201)
+      .then((res) => res.body.id);
+
+    // Add projection
+    const projections = await request(app.getHttpServer())
+      .post(`/meta/projections`)
+      .send({
+        projections: {
+          stringIndexQuery: {
+            type: "INDEX",
+            key: "testSection.stringKey1",
+            index: 1,
+          },
+          stringCompositeQuery: {
+            type: "COMPOSITE",
+            key: "testSection.stringKey2",
+            dataKey: "$",
+          },
+          numberIndexQuery: {
+            type: "INDEX",
+            key: "testSection.numberKey1",
+            index: 2,
+          },
+          numberCompositeQuery: {
+            type: "COMPOSITE",
+            key: "testSection.numberKey2",
+            dataKey: "$",
+          },
+          booleanIndexQuery: {
+            type: "INDEX",
+            key: "testSection.booleanKey1",
+            index: 3,
+          },
+          booleanCompositeQuery: {
+            type: "COMPOSITE",
+            key: "testSection.booleanKey2",
+            dataKey: "$",
+          },
+        },
+      })
+      .expect(201)
+      .then((res) => res.body.id);
+
+    // Create metadata v1.0.0
+    await request(app.getHttpServer())
+      .put(`/meta/metadata/${testResource}?validation=validate`)
+      .send({
+        version: "1.0.0",
+        schemas: {
+          formVersion: formId,
+          authorizationVersion: NIL_UUID,
+          projectionsVersion: projections,
+        },
+      })
+      .expect(200)
+      .expect((r) => expect(r.body.pushed).toBe(true))
+      .expect((r) => expect(r.body.validation.lastVersion).toBe("0.0.0"));
+
+    // Create resources
+    const inputValues: [string, number, boolean][] = [
+      ["abc", 123, true],
+      ["abc", 456, false],
+      ["def", 123, false],
+      ["def", 456, true],
+    ];
+    const resourceIds = await Promise.all(
+      inputValues.map(async ([s, n, b], i) =>
+        request(app.getHttpServer())
+          .post(`/resource/${testResource}`)
+          .send({
+            data: {
+              testSection: {
+                index: i,
+                stringKey1: s,
+                stringKey2: s,
+                numberKey1: n,
+                numberKey2: n,
+                booleanKey1: b,
+                booleanKey2: b,
+              },
+            },
+          })
+          .expect(201)
+          .then((r) => r.body.Id)
+      )
+    );
+
+    // Query projections
+    const initialQueries: [string[], [string | number | boolean, string, number[]][]][] = [
+      [
+        ["stringIndexQuery", "stringCompositeQuery"],
+        [
+          ["abc", "string", [0, 1]],
+          ["def", "string", [2, 3]],
+          ["ghi", "string", []],
+        ],
+      ],
+      [
+        ["numberIndexQuery", "numberCompositeQuery"],
+        [
+          [123, "number", [0, 2]],
+          [456, "number", [1, 3]],
+          [789, "number", []],
+        ],
+      ],
+      [
+        ["booleanIndexQuery", "booleanCompositeQuery"],
+        [
+          [true, "boolean", [0, 3]],
+          [false, "boolean", [1, 2]],
+        ],
+      ],
+    ];
+    await Promise.all(
+      initialQueries.map(([projections, queries]) =>
+        Promise.all(
+          projections.map((projection) =>
+            Promise.all(
+              queries.map(([query, queryType, expected]) =>
+                request(app.getHttpServer())
+                  .get(`/resource/${testResource}/projection/${projection}`)
+                  .query({ query, queryType })
+                  .expect(200)
+                  .then((r) => {
+                    expect(r.body.map((resource: any) => resource.Data.testSection.index).sort()).toEqual(expected);
+                  })
+              )
+            )
+          )
+        )
+      )
+    );
+
+    const [firstResource, secondResource] = resourceIds;
+
+    // Delete first resource
+    await request(app.getHttpServer()).delete(`/resource/${testResource}/${firstResource}`).expect(200);
+
+    // Update second resource
+    await request(app.getHttpServer())
+      .put(`/resource/${testResource}/${secondResource}`)
+      .send({
+        data: {
+          testSection: {
+            index: 4,
+            stringKey1: "ghi",
+            stringKey2: "ghi",
+            numberKey1: 789,
+            numberKey2: 789,
+            booleanKey1: true,
+            booleanKey2: true,
+          },
+        },
+      })
+      .expect(200);
+
+    // Confirm updated resource order
+    const updatedQueries: [string[], [string | number | boolean, string, number[]][]][] = [
+      [
+        ["stringIndexQuery", "stringCompositeQuery"],
+        [
+          ["abc", "string", []],
+          ["def", "string", [2, 3]],
+          ["ghi", "string", [4]],
+        ],
+      ],
+      [
+        ["numberIndexQuery", "numberCompositeQuery"],
+        [
+          [123, "number", [2]],
+          [456, "number", [3]],
+          [789, "number", [4]],
+        ],
+      ],
+      [
+        ["booleanIndexQuery", "booleanCompositeQuery"],
+        [
+          [true, "boolean", [3, 4]],
+          [false, "boolean", [2]],
+        ],
+      ],
+    ];
+    await Promise.all(
+      updatedQueries.map(([projections, queries]) =>
+        Promise.all(
+          projections.map((projection) =>
+            Promise.all(
+              queries.map(([query, queryType, expected]) =>
+                request(app.getHttpServer())
+                  .get(`/resource/${testResource}/projection/${projection}`)
+                  .query({ query, queryType })
+                  .expect(200)
+                  .then((r) => {
+                    expect(r.body.map((resource: any) => resource.Data.testSection.index).sort()).toEqual(expected);
+                  })
+              )
+            )
           )
         )
       )

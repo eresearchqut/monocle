@@ -1140,8 +1140,8 @@ describe("Resource projections", () => {
             stringKey2: "6",
             numberKey1: 6,
             numberKey2: 6,
-            booleanKey1: false,
-            booleanKey2: false,
+            booleanKey1: true,
+            booleanKey2: true,
           },
         },
       })

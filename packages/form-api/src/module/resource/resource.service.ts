@@ -37,7 +37,7 @@ interface QueryResourceProjectionInput {
   projection: string;
   resource: string;
   reverse: boolean;
-  query?: string;
+  query?: string | number | boolean;
   version?: string;
 }
 

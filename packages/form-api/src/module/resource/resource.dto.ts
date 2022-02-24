@@ -1,4 +1,4 @@
-import { Equals, IsBoolean, IsIBAN, IsObject, IsOptional, IsSemVer, IsString, Matches } from "class-validator";
+import { Equals, IsBoolean, IsEnum, IsIBAN, IsObject, IsOptional, IsSemVer, IsString, Matches } from "class-validator";
 
 abstract class ResourceParams {
   @Matches(/[a-zA-Z0-9_]+/)
@@ -68,6 +68,12 @@ export class QueryResourceProjectionParams extends ResourceParams {
   projection!: string;
 }
 
+export enum QueryType {
+  STRING = "string",
+  NUMBER = "number",
+  BOOLEAN = "boolean",
+}
+
 export class QueryResourceProjectionQuery {
   @Equals("reverse")
   @IsOptional()
@@ -76,6 +82,9 @@ export class QueryResourceProjectionQuery {
   @IsString()
   @IsOptional()
   query?: string;
+
+  @IsEnum(QueryType)
+  queryType: QueryType = QueryType.STRING;
 }
 
 export class QueryRelatedResourceParams extends ResourceParams {

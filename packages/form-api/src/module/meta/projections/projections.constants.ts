@@ -7,5 +7,3 @@ export enum PROJECTION_TYPES {
   // TODO: choose between eventual and strong consistency
   // TODO: unbounded composite storage?
 }
-
-export const NUMERIC_KEY_PADDING = 20; // TODO: allow configurable padding

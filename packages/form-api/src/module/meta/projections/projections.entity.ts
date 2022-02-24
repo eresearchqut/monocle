@@ -4,11 +4,12 @@ import { Form } from "@eresearchqut/form-definition";
 import { buildResourceIdentifier } from "../utils";
 import { Type } from "class-transformer";
 import { SYSTEM_USER } from "../constants";
-import { match } from "ts-pattern";
+import { __, match } from "ts-pattern";
 import { QueryItemArgs } from "../../dynamodb/dynamodb.service";
-import { NUMERIC_KEY_PADDING, PROJECTION_TYPES } from "./projections.constants";
+import { PROJECTION_TYPES } from "./projections.constants";
 import { JSONPath } from "jsonpath-plus";
 import { ProjectionsException } from "./projections.exception";
+import { padNumber } from "./projections.utils";
 
 abstract class Projection {
   @Matches(/[a-zA-Z0-9_]+/)
@@ -81,7 +82,7 @@ const getKeys = (data: Form, key: string): Set<string> => {
         if (i < 0) {
           throw new Error(`Invalid projection key value numeric ${i} for key ${key}`);
         }
-        return i.toString().padStart(NUMERIC_KEY_PADDING, "0");
+        return padNumber(i);
       }
       if (typeof i === "boolean") {
         return i.toString();
@@ -196,7 +197,7 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
     projectionName: string,
     resource: string,
     reverse: boolean,
-    query?: string
+    query?: string | number | boolean
   ): Omit<QueryItemArgs, "table"> => {
     const projection = this.Data.Projections.get(projectionName);
 
@@ -205,6 +206,11 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
     }
 
     const pk = resource; // TODO better PK
+    const queryPostfix = match(query)
+      .with(__.string, (q) => q + ":")
+      .with(__.number, (q) => padNumber(q) + ":")
+      .with(__.boolean, (q) => q + ":")
+      .otherwise(() => "");
 
     return match(projection)
       .with({ Type: PROJECTION_TYPES.INDEX }, (r) => ({
@@ -216,7 +222,7 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
         },
         expressionValues: {
           ":PK": pk,
-          ":SKPrefix": `${projectionName}:`,
+          ":SKPrefix": `${projectionName}:${queryPostfix}`,
         },
         reverse,
       }))
@@ -228,7 +234,7 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
         },
         expressionValues: {
           ":PK": pk,
-          ":SKPrefix": `${projectionName}:${query === undefined ? "" : query + ":"}`,
+          ":SKPrefix": `${projectionName}:${queryPostfix}`,
         },
         reverse,
       }))

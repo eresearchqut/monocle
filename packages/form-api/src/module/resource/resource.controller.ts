@@ -1,21 +1,23 @@
 import { Body, Controller, Delete, Get, HttpException, Param, Post, Put, Query } from "@nestjs/common";
 import {
-  DeleteResourceQuery,
   DeleteResourceParams,
-  GetResourceQuery,
+  DeleteResourceQuery,
   GetResourceParams,
-  PutResourceQuery,
-  PutResourceParams,
-  PostResourceQuery,
-  PostResourceParams,
+  GetResourceQuery,
   PostResourceBody,
+  PostResourceParams,
+  PostResourceQuery,
   PutResourceBody,
+  PutResourceParams,
+  PutResourceQuery,
   QueryRelatedResourceParams,
   QueryResourceParams,
   QueryResourceProjectionParams,
   QueryResourceProjectionQuery,
+  QueryType,
 } from "./resource.dto";
 import { ResourceService } from "./resource.service";
+import { __, match } from "ts-pattern";
 
 // TODO: Consider stripping non-Data keys from responses for security reasons
 
@@ -93,11 +95,17 @@ export class ResourceController {
     @Param() params: QueryResourceProjectionParams,
     @Query() query: QueryResourceProjectionQuery
   ) {
+    const queryValue = match(query)
+      .with({ query: __.string, queryType: QueryType.STRING }, (q) => q.query)
+      .with({ query: __.string, queryType: QueryType.NUMBER }, (q) => parseInt(q.query))
+      .with({ query: __.string, queryType: QueryType.BOOLEAN }, (q) => q.query === "true")
+      .otherwise(() => undefined);
+
     const results = this.resourceService.queryResourceProjection({
       resource: params.resource,
       projection: params.projection,
       reverse: query.order === "reverse",
-      query: query.query,
+      query: queryValue,
     });
 
     // TODO: streaming & pagination options

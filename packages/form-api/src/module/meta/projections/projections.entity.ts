@@ -228,7 +228,7 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
         },
         expressionValues: {
           ":PK": pk,
-          ":SKPrefix": `${projectionName}:${query ?? ""}:`,
+          ":SKPrefix": `${projectionName}:${query === undefined ? "" : query + ":"}`,
         },
         reverse,
       }))

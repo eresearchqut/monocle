@@ -669,12 +669,17 @@ describe("Resource forms", () => {
 
 describe("Resource relationship projections", () => {
   let app: INestApplication;
+  let initialSourceResource: string;
+  let initialTargetResource: string;
+  let initialSourceIds: Set<string> = new Set();
+  let initialTargetIds: string[];
 
-  beforeAll(async () => {
-    app = await initApp([ResourceModule]);
-  });
+  let updatedSourceResource: string;
+  let updatedTargetResource: string;
+  let updatedSourceIds: Set<string> = new Set();
+  let updatedTargetIds: string[];
 
-  it("Can CRUD resources with relationships", async () => {
+  const createTestResources = async () => {
     // Create empty metadata
     const sourceResource = generateResourceName();
     await request(app.getHttpServer()).post(`/meta/metadata/${sourceResource}`).expect(201).expect({ created: true });
@@ -809,29 +814,23 @@ describe("Resource relationship projections", () => {
       .expect((r) => expect(r.body.pushed).toBe(true))
       .expect((r) => expect(r.body.validation.lastVersion).toBe("0.0.0"));
 
-    // Create target resource ids
-    const targetResourceId1 = await request(app.getHttpServer())
-      .post(`/resource/${targetResource}`)
-      .send({
-        data: {
-          testSection: {
-            targetValue: "Target",
-          },
-        },
-      })
-      .expect(201)
-      .then((r) => r.body.Id);
-    const targetResourceId2 = await request(app.getHttpServer())
-      .post(`/resource/${targetResource}`)
-      .send({
-        data: {
-          testSection: {
-            targetValue: "Target",
-          },
-        },
-      })
-      .expect(201)
-      .then((r) => r.body.Id);
+    // Create target resources
+    const targetResourceIds = await Promise.all(
+      range(2).map(async () =>
+        request(app.getHttpServer())
+          .post(`/resource/${targetResource}`)
+          .send({
+            data: {
+              testSection: {
+                targetValue: "Target",
+              },
+            },
+          })
+          .expect(201)
+          .then((r) => r.body.Id)
+      )
+    );
+    const [targetResourceId1, targetResourceId2] = targetResourceIds;
 
     // Create source resources
     const sourceResourceIds = new Set(
@@ -853,39 +852,54 @@ describe("Resource relationship projections", () => {
       )
     );
 
-    // Query target relationships
-    await Promise.all(
-      ["indexRelationship", "singleCompositeRelationship"].map((r) =>
-        request(app.getHttpServer())
-          .get(`/resource/${targetResource}/${targetResourceId1}/${r}/${sourceResource}`)
-          .expect(200)
-          .then((r) => {
-            expect(r.body.length).toEqual(5);
-            expect(new Set(r.body.map((resource: { Id: string }) => resource.Id))).toEqual(sourceResourceIds);
-          })
-      )
-    );
-    await Promise.all(
-      [targetResourceId1, targetResourceId2].map((targetResourceId) =>
-        request(app.getHttpServer())
-          .get(`/resource/${targetResource}/${targetResourceId}/multipleCompositeRelationship/${sourceResource}`)
-          .expect(200)
-          .then((r) => {
-            expect(r.body.length).toEqual(5);
-            expect(new Set(r.body.map((resource: { Id: string }) => resource.Id))).toEqual(sourceResourceIds);
-          })
-      )
-    );
+    return { sourceResource, targetResource, sourceResourceIds, targetResourceIds };
+  };
 
-    const [firstSourceResource, secondSourceResource, ...remainingSourceResources] = Array.from(sourceResourceIds);
-    const newSourceResourceIds = new Set(remainingSourceResources);
+  const requestRelationships = async (
+    sourceResource: string,
+    targetResource: string,
+    relationship: string,
+    targetResourceId: string,
+    length: number,
+    sourceResourceIds: Set<string>
+  ) =>
+    request(app.getHttpServer())
+      .get(`/resource/${targetResource}/${targetResourceId}/${relationship}/${sourceResource}`)
+      .expect(200)
+      .then((r) => {
+        expect(r.body.length).toEqual(length);
+        expect(new Set(r.body.map((resource: { Id: string }) => resource.Id))).toEqual(sourceResourceIds);
+      });
+
+  beforeAll(async () => {
+    app = await initApp([ResourceModule]);
+
+    // Create initial resources
+    ({
+      sourceResource: initialSourceResource,
+      targetResource: initialTargetResource,
+      sourceResourceIds: initialSourceIds,
+      targetResourceIds: initialTargetIds,
+    } = await createTestResources());
+
+    // Create same resources then apply changes
+    let resourceIds;
+    ({
+      sourceResource: updatedSourceResource,
+      targetResource: updatedTargetResource,
+      sourceResourceIds: resourceIds,
+      targetResourceIds: updatedTargetIds,
+    } = await createTestResources());
+
+    const [firstResource, secondResource, ...remainingResources] = resourceIds;
+    updatedSourceIds = new Set(remainingResources);
 
     // Delete first source resource
-    await request(app.getHttpServer()).delete(`/resource/${sourceResource}/${firstSourceResource}`).expect(200);
+    await request(app.getHttpServer()).delete(`/resource/${updatedSourceResource}/${firstResource}`).expect(200);
 
     // Update second source resource
     await request(app.getHttpServer())
-      .put(`/resource/${sourceResource}/${secondSourceResource}`)
+      .put(`/resource/${updatedSourceResource}/${secondResource}`)
       .send({
         data: {
           testSection: {
@@ -895,28 +909,72 @@ describe("Resource relationship projections", () => {
         },
       })
       .expect(200);
+  });
 
-    // Confirm only 3 related resources remain
-    await Promise.all(
-      ["indexRelationship", "singleCompositeRelationship"].map((r) =>
-        request(app.getHttpServer())
-          .get(`/resource/${targetResource}/${targetResourceId1}/${r}/${sourceResource}`)
-          .expect(200)
-          .then((r) => {
-            expect(r.body.length).toEqual(3);
-            expect(new Set(r.body.map((resource: { Id: string }) => resource.Id))).toEqual(newSourceResourceIds);
-          })
+  describe("Single index relationship", () => {
+    const relationship = "indexRelationship";
+    test("Initial resource", async () =>
+      requestRelationships(
+        initialSourceResource,
+        initialTargetResource,
+        relationship,
+        initialTargetIds[0],
+        5,
+        initialSourceIds
+      ));
+    test("Updated resource", async () =>
+      requestRelationships(
+        updatedSourceResource,
+        updatedTargetResource,
+        relationship,
+        updatedTargetIds[0],
+        3,
+        updatedSourceIds
+      ));
+  });
+
+  describe("Single composite relationship", () => {
+    const relationship = "singleCompositeRelationship";
+    test("Initial resource", async () =>
+      requestRelationships(
+        initialSourceResource,
+        initialTargetResource,
+        relationship,
+        initialTargetIds[0],
+        5,
+        initialSourceIds
+      ));
+    test("Updated resource", async () =>
+      requestRelationships(
+        updatedSourceResource,
+        updatedTargetResource,
+        relationship,
+        updatedTargetIds[0],
+        3,
+        updatedSourceIds
+      ));
+  });
+
+  describe("Multiple composite relationship", () => {
+    const relationship = "multipleCompositeRelationship";
+    test.each([1, 2])("Initial resource %i", async (targetIndex) =>
+      requestRelationships(
+        initialSourceResource,
+        initialTargetResource,
+        relationship,
+        Array.from(initialTargetIds)[targetIndex - 1],
+        5,
+        initialSourceIds
       )
     );
-    await Promise.all(
-      [targetResourceId1, targetResourceId2].map((targetResourceId) =>
-        request(app.getHttpServer())
-          .get(`/resource/${targetResource}/${targetResourceId}/multipleCompositeRelationship/${sourceResource}`)
-          .expect(200)
-          .then((r) => {
-            expect(r.body.length).toEqual(3);
-            expect(new Set(r.body.map((resource: { Id: string }) => resource.Id))).toEqual(newSourceResourceIds);
-          })
+    test.each([1, 2])("Updated resource %i", async (targetIndex) =>
+      requestRelationships(
+        updatedSourceResource,
+        updatedTargetResource,
+        relationship,
+        Array.from(updatedTargetIds)[targetIndex - 1],
+        3,
+        updatedSourceIds
       )
     );
   });

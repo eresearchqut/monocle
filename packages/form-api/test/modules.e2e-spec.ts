@@ -924,16 +924,12 @@ describe("Resource relationship projections", () => {
 
 describe("Resource sort projections", () => {
   let app: INestApplication;
+  let initialResourceName: string;
+  let updatedResourceName: string;
 
-  beforeAll(async () => {
-    app = await initApp([ResourceModule]);
-  });
-
-  // TODO: split into individual tests
-  it("Can sort resources", async () => {
-    // Create empty metadata
-    const testResource = generateResourceName();
-    await request(app.getHttpServer()).post(`/meta/metadata/${testResource}`).expect(201).expect({ created: true });
+  const createTestResources = async () => {
+    const resourceName = generateResourceName();
+    await request(app.getHttpServer()).post(`/meta/metadata/${resourceName}`).expect(201).expect({ created: true });
 
     // Add form
     const formDefinition: Form = {
@@ -1057,7 +1053,7 @@ describe("Resource sort projections", () => {
 
     // Create metadata v1.0.0
     await request(app.getHttpServer())
-      .put(`/meta/metadata/${testResource}?validation=validate`)
+      .put(`/meta/metadata/${resourceName}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -1074,7 +1070,7 @@ describe("Resource sort projections", () => {
     const resourceIds = await Promise.all(
       [3, 5, 1, 4, 2].map(async (i) =>
         request(app.getHttpServer())
-          .post(`/resource/${testResource}`)
+          .post(`/resource/${resourceName}`)
           .send({
             data: {
               testSection: {
@@ -1093,54 +1089,46 @@ describe("Resource sort projections", () => {
       )
     );
 
-    // Query sorted projections
-    await Promise.all(
-      ["stringIndexSort", "stringCompositeSort", "numberIndexSort", "numberCompositeSort"].map((projection) =>
-        Promise.all(
-          [
-            [undefined, [1, 2, 3, 4, 5]],
-            ["reverse", [5, 4, 3, 2, 1]],
-          ].map(([order, sorted]) =>
-            request(app.getHttpServer())
-              .get(`/resource/${testResource}/projection/${projection}`)
-              .query({ order })
-              .expect(200)
-              .then((r) => {
-                expect(r.body.length).toEqual(5);
-                expect(r.body.map((resource: any) => resource.Data.testSection.index)).toEqual(sorted);
-              })
+    return { resourceName, resourceIds };
+  };
+
+  const requestSort = async (
+    resource: string,
+    projection: string,
+    order: "reverse" | undefined,
+    resultProperty: "index" | "even",
+    expected: (number | boolean)[]
+  ) =>
+    request(app.getHttpServer())
+      .get(`/resource/${resource}/projection/${projection}`)
+      .query({ order })
+      .expect(200)
+      .then((r) => {
+        expect(
+          r.body.map((resource: any) =>
+            resultProperty === "index" ? resource.Data.testSection.index : resource.Data.testSection.index % 2 === 0
           )
-        )
-      )
-    );
-    await Promise.all(
-      ["booleanIndexSort", "booleanCompositeSort"].map((projection) =>
-        Promise.all(
-          [
-            [undefined, [false, false, false, true, true]],
-            ["reverse", [true, true, false, false, false]],
-          ].map(([order, sorted]) =>
-            request(app.getHttpServer())
-              .get(`/resource/${testResource}/projection/${projection}`)
-              .query({ order })
-              .expect(200)
-              .then((r) => {
-                expect(r.body.length).toEqual(5);
-                expect(r.body.map((resource: any) => resource.Data.testSection.index % 2 === 0)).toEqual(sorted);
-              })
-          )
-        )
-      )
-    );
+        ).toEqual(expected);
+      });
+
+  beforeAll(async () => {
+    app = await initApp([ResourceModule]);
+
+    // Create initial resources
+    ({ resourceName: initialResourceName } = await createTestResources());
+
+    // Create same resources then apply changes
+    let resourceIds;
+    ({ resourceName: updatedResourceName, resourceIds } = await createTestResources());
 
     const [firstResource, secondResource] = resourceIds;
 
     // Delete first resource
-    await request(app.getHttpServer()).delete(`/resource/${testResource}/${firstResource}`).expect(200);
+    await request(app.getHttpServer()).delete(`/resource/${updatedResourceName}/${firstResource}`).expect(200);
 
     // Update second resource
     await request(app.getHttpServer())
-      .put(`/resource/${testResource}/${secondResource}`)
+      .put(`/resource/${updatedResourceName}/${secondResource}`)
       .send({
         data: {
           testSection: {
@@ -1155,46 +1143,123 @@ describe("Resource sort projections", () => {
         },
       })
       .expect(200);
+  });
 
-    // Confirm updated resource order
-    await Promise.all(
-      ["stringIndexSort", "stringCompositeSort", "numberIndexSort", "numberCompositeSort"].map((projection) =>
-        Promise.all(
-          [
-            [undefined, [1, 2, 4, 6]],
-            ["reverse", [6, 4, 2, 1]],
-          ].map(([order, sorted]) =>
-            request(app.getHttpServer())
-              .get(`/resource/${testResource}/projection/${projection}`)
-              .query({ order })
-              .expect(200)
-              .then((r) => {
-                expect(r.body.length).toEqual(4);
-                expect(r.body.map((resource: any) => resource.Data.testSection.index)).toEqual(sorted);
-              })
-          )
-        )
-      )
-    );
-    await Promise.all(
-      ["booleanIndexSort", "booleanCompositeSort"].map((projection) =>
-        Promise.all(
-          [
-            [undefined, [false, true, true, true]],
-            ["reverse", [true, true, true, false]],
-          ].map(([order, sorted]) =>
-            request(app.getHttpServer())
-              .get(`/resource/${testResource}/projection/${projection}`)
-              .query({ order })
-              .expect(200)
-              .then((r) => {
-                expect(r.body.length).toEqual(4);
-                expect(r.body.map((resource: any) => resource.Data.testSection.index % 2 === 0)).toEqual(sorted);
-              })
-          )
-        )
-      )
-    );
+  describe("String sorting", () => {
+    describe("Initial resources", () => {
+      const orderings: ["reverse" | undefined, number[]][] = [
+        [undefined, [1, 2, 3, 4, 5]],
+        ["reverse", [5, 4, 3, 2, 1]],
+      ];
+      describe("Index projection", () => {
+        const projection = "stringIndexSort";
+        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+          requestSort(initialResourceName, projection, order, "index", sorted)
+        );
+      });
+      describe("Composite projection", () => {
+        const projection = "stringCompositeSort";
+        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+          requestSort(initialResourceName, projection, order, "index", sorted)
+        );
+      });
+    });
+    describe("Updated resources", () => {
+      const orderings: ["reverse" | undefined, number[]][] = [
+        [undefined, [1, 2, 4, 6]],
+        ["reverse", [6, 4, 2, 1]],
+      ];
+      describe("Index projection", () => {
+        const projection = "stringIndexSort";
+        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+          requestSort(updatedResourceName, projection, order, "index", sorted)
+        );
+      });
+      describe("Composite projection", () => {
+        const projection = "stringCompositeSort";
+        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+          requestSort(updatedResourceName, projection, order, "index", sorted)
+        );
+      });
+    });
+  });
+
+  describe("Number sorting", () => {
+    describe("Initial resources", () => {
+      const orderings: ["reverse" | undefined, number[]][] = [
+        [undefined, [1, 2, 3, 4, 5]],
+        ["reverse", [5, 4, 3, 2, 1]],
+      ];
+      describe("Index projection", () => {
+        const projection = "numberIndexSort";
+        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+          requestSort(initialResourceName, projection, order, "index", sorted)
+        );
+      });
+      describe("Composite projection", () => {
+        const projection = "numberCompositeSort";
+        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+          requestSort(initialResourceName, projection, order, "index", sorted)
+        );
+      });
+    });
+    describe("Updated resources", () => {
+      const orderings: ["reverse" | undefined, number[]][] = [
+        [undefined, [1, 2, 4, 6]],
+        ["reverse", [6, 4, 2, 1]],
+      ];
+      describe("Index projection", () => {
+        const projection = "numberIndexSort";
+        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+          requestSort(updatedResourceName, projection, order, "index", sorted)
+        );
+      });
+      describe("Composite projection", () => {
+        const projection = "numberCompositeSort";
+        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+          requestSort(updatedResourceName, projection, order, "index", sorted)
+        );
+      });
+    });
+  });
+
+  describe("Boolean sorting", () => {
+    describe("Initial resources", () => {
+      const orderings: ["reverse" | undefined, boolean[]][] = [
+        [undefined, [false, false, false, true, true]],
+        ["reverse", [true, true, false, false, false]],
+      ];
+      describe("Index projection", () => {
+        const projection = "booleanIndexSort";
+        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+          requestSort(initialResourceName, projection, order, "even", sorted)
+        );
+      });
+      describe("Composite projection", () => {
+        const projection = "booleanCompositeSort";
+        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+          requestSort(initialResourceName, projection, order, "even", sorted)
+        );
+      });
+    });
+    describe("Updated resources", () => {
+      const orderings: ["reverse" | undefined, boolean[]][] = [
+        [undefined, [false, true, true, true]],
+        ["reverse", [true, true, true, false]],
+      ];
+      describe("Index projection", () => {
+        const projection = "booleanIndexSort";
+        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+          requestSort(updatedResourceName, projection, order, "even", sorted)
+        );
+      });
+      describe("Composite projection", () => {
+        const projection = "booleanCompositeSort";
+        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+          requestSort(updatedResourceName, projection, order, "even", sorted)
+        );
+      });
+    });
   });
 });
 
@@ -1202,21 +1267,6 @@ describe("Resource query projections", () => {
   let app: INestApplication;
   let initialResourceName: string;
   let updatedResourceName: string;
-
-  const requestQuery = async (
-    resource: string,
-    projection: string,
-    query: string | number | boolean,
-    queryType: string,
-    expected: number[]
-  ) =>
-    request(app.getHttpServer())
-      .get(`/resource/${resource}/projection/${projection}`)
-      .query({ query, queryType })
-      .expect(200)
-      .then((r) => {
-        expect(r.body.map((resource: any) => resource.Data.testSection.index).sort()).toEqual(expected);
-      });
 
   const createTestResources = async () => {
     const resourceName = generateResourceName();
@@ -1388,6 +1438,21 @@ describe("Resource query projections", () => {
 
     return { resourceName, resourceIds };
   };
+
+  const requestQuery = async (
+    resource: string,
+    projection: string,
+    query: string | number | boolean,
+    queryType: string,
+    expected: number[]
+  ) =>
+    request(app.getHttpServer())
+      .get(`/resource/${resource}/projection/${projection}`)
+      .query({ query, queryType })
+      .expect(200)
+      .then((r) => {
+        expect(r.body.map((resource: any) => resource.Data.testSection.index).sort()).toEqual(expected);
+      });
 
   beforeAll(async () => {
     app = await initApp([ResourceModule]);

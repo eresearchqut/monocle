@@ -1200,29 +1200,27 @@ describe("Resource sort projections", () => {
 
 describe("Resource query projections", () => {
   let app: INestApplication;
-  let testResource: string;
-  let resourceIds: string[];
+  let initialResourceName: string;
+  let updatedResourceName: string;
 
   const requestQuery = async (
+    resource: string,
     projection: string,
     query: string | number | boolean,
     queryType: string,
     expected: number[]
   ) =>
     request(app.getHttpServer())
-      .get(`/resource/${testResource}/projection/${projection}`)
+      .get(`/resource/${resource}/projection/${projection}`)
       .query({ query, queryType })
       .expect(200)
       .then((r) => {
         expect(r.body.map((resource: any) => resource.Data.testSection.index).sort()).toEqual(expected);
       });
 
-  beforeAll(async () => {
-    app = await initApp([ResourceModule]);
-
-    // Create empty metadata
-    testResource = generateResourceName();
-    await request(app.getHttpServer()).post(`/meta/metadata/${testResource}`).expect(201).expect({ created: true });
+  const createTestResources = async () => {
+    const resourceName = generateResourceName();
+    await request(app.getHttpServer()).post(`/meta/metadata/${resourceName}`).expect(201).expect({ created: true });
 
     // Add form
     const formDefinition: Form = {
@@ -1346,7 +1344,7 @@ describe("Resource query projections", () => {
 
     // Create metadata v1.0.0
     await request(app.getHttpServer())
-      .put(`/meta/metadata/${testResource}?validation=validate`)
+      .put(`/meta/metadata/${resourceName}?validation=validate`)
       .send({
         version: "1.0.0",
         schemas: {
@@ -1366,10 +1364,10 @@ describe("Resource query projections", () => {
       ["def", 123, false],
       ["def", 456, true],
     ];
-    resourceIds = await Promise.all(
+    const resourceIds = await Promise.all(
       inputValues.map(async ([s, n, b], i) =>
         request(app.getHttpServer())
-          .post(`/resource/${testResource}`)
+          .post(`/resource/${resourceName}`)
           .send({
             data: {
               testSection: {
@@ -1387,119 +1385,162 @@ describe("Resource query projections", () => {
           .then((r) => r.body.Id)
       )
     );
+
+    return { resourceName, resourceIds };
+  };
+
+  beforeAll(async () => {
+    app = await initApp([ResourceModule]);
+
+    // Create initial resources
+    ({ resourceName: initialResourceName } = await createTestResources());
+
+    // Create same resources then apply changes
+    let resourceIds;
+    ({ resourceName: updatedResourceName, resourceIds } = await createTestResources());
+
+    const [firstResource, secondResource] = resourceIds;
+
+    // Delete first resource
+    await request(app.getHttpServer()).delete(`/resource/${updatedResourceName}/${firstResource}`).expect(200);
+
+    // Update second resource
+    await request(app.getHttpServer())
+      .put(`/resource/${updatedResourceName}/${secondResource}`)
+      .send({
+        data: {
+          testSection: {
+            index: 4,
+            stringKey1: "ghi",
+            stringKey2: "ghi",
+            numberKey1: 789,
+            numberKey2: 789,
+            booleanKey1: true,
+            booleanKey2: true,
+          },
+        },
+      })
+      .expect(200);
   });
 
-  // TODO: split into individual tests
-  it.each([
-    {
-      projections: { type: "string", projections: ["stringIndexQuery", "stringCompositeQuery"] },
-      queries: [
+  describe("String queries", () => {
+    describe("Initial resources", () => {
+      const queries: [string, string, number[]][] = [
         ["abc", "string", [0, 1]],
         ["def", "string", [2, 3]],
         ["ghi", "string", []],
-      ],
-    },
-    {
-      projections: {
-        type: "number",
-        projections: ["numberIndexQuery", "numberCompositeQuery"],
-      },
-      queries: [
+      ];
+      describe("Index projection", () => {
+        const projection = "stringIndexQuery";
+        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+          requestQuery(initialResourceName, projection, query, queryType, expected)
+        );
+      });
+      describe("Composite projection", () => {
+        const projection = "stringCompositeQuery";
+        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+          requestQuery(initialResourceName, projection, query, queryType, expected)
+        );
+      });
+    });
+    describe("Updated resources", () => {
+      const queries: [string, string, number[]][] = [
+        ["abc", "string", []],
+        ["def", "string", [2, 3]],
+        ["ghi", "string", [4]],
+      ];
+      describe("Index projection", () => {
+        const projection = "stringIndexQuery";
+        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+          requestQuery(updatedResourceName, projection, query, queryType, expected)
+        );
+      });
+      describe("Composite projection", () => {
+        const projection = "stringCompositeQuery";
+        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+          requestQuery(updatedResourceName, projection, query, queryType, expected)
+        );
+      });
+    });
+  });
+
+  describe("Number queries", () => {
+    describe("Initial resources", () => {
+      const queries: [number, string, number[]][] = [
         [123, "number", [0, 2]],
         [456, "number", [1, 3]],
         [789, "number", []],
-      ],
-    },
-    {
-      projections: {
-        type: "boolean",
-        projections: ["booleanIndexQuery", "booleanCompositeQuery"],
-      },
-      queries: [
+      ];
+      describe("Index projection", () => {
+        const projection = "numberIndexQuery";
+        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+          requestQuery(initialResourceName, projection, query, queryType, expected)
+        );
+      });
+      describe("Composite projection", () => {
+        const projection = "numberCompositeQuery";
+        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+          requestQuery(initialResourceName, projection, query, queryType, expected)
+        );
+      });
+    });
+    describe("Updated resources", () => {
+      const queries: [number, string, number[]][] = [
+        [123, "number", [2]],
+        [456, "number", [3]],
+        [789, "number", [4]],
+      ];
+      describe("Index projection", () => {
+        const projection = "numberIndexQuery";
+        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+          requestQuery(updatedResourceName, projection, query, queryType, expected)
+        );
+      });
+      describe("Composite projection", () => {
+        const projection = "numberCompositeQuery";
+        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+          requestQuery(updatedResourceName, projection, query, queryType, expected)
+        );
+      });
+    });
+  });
+
+  describe("Boolean queries", () => {
+    describe("Initial resources", () => {
+      const queries: [boolean, string, number[]][] = [
         [true, "boolean", [0, 3]],
         [false, "boolean", [1, 2]],
-      ],
-    },
-  ] as { projections: { type: string; projections: string[] }; queries: [string | number | boolean, string, number[]][] }[])(
-    "Can query $projections.type projections",
-    async ({ projections: { projections }, queries }) => {
-      // Query projections
-      await Promise.all(
-        projections.map((projection) =>
-          Promise.all(
-            queries.map(([query, queryType, expected]) => requestQuery(projection, query, queryType, expected))
-          )
-        )
-      );
-
-      // const [firstResource, secondResource] = resourceIds;
-      //
-      // // Delete first resource
-      // await request(app.getHttpServer()).delete(`/resource/${testResource}/${firstResource}`).expect(200);
-      //
-      // // Update second resource
-      // await request(app.getHttpServer())
-      //   .put(`/resource/${testResource}/${secondResource}`)
-      //   .send({
-      //     data: {
-      //       testSection: {
-      //         index: 4,
-      //         stringKey1: "ghi",
-      //         stringKey2: "ghi",
-      //         numberKey1: 789,
-      //         numberKey2: 789,
-      //         booleanKey1: true,
-      //         booleanKey2: true,
-      //       },
-      //     },
-      //   })
-      //   .expect(200);
-      //
-      // // Confirm updated resource order
-      // const updatedQueries: [string[], [string | number | boolean, string, number[]][]][] = [
-      //   [
-      //     ["stringIndexQuery", "stringCompositeQuery"],
-      //     [
-      //       ["abc", "string", []],
-      //       ["def", "string", [2, 3]],
-      //       ["ghi", "string", [4]],
-      //     ],
-      //   ],
-      //   [
-      //     ["numberIndexQuery", "numberCompositeQuery"],
-      //     [
-      //       [123, "number", [2]],
-      //       [456, "number", [3]],
-      //       [789, "number", [4]],
-      //     ],
-      //   ],
-      //   [
-      //     ["booleanIndexQuery", "booleanCompositeQuery"],
-      //     [
-      //       [true, "boolean", [3, 4]],
-      //       [false, "boolean", [2]],
-      //     ],
-      //   ],
-      // ];
-      // await Promise.all(
-      //   updatedQueries.map(([projections, queries]) =>
-      //     Promise.all(
-      //       projections.map((projection) =>
-      //         Promise.all(
-      //           queries.map(([query, queryType, expected]) =>
-      //             request(app.getHttpServer())
-      //               .get(`/resource/${testResource}/projection/${projection}`)
-      //               .query({ query, queryType })
-      //               .expect(200)
-      //               .then((r) => {
-      //                 expect(r.body.map((resource: any) => resource.Data.testSection.index).sort()).toEqual(expected);
-      //               })
-      //           )
-      //         )
-      //       )
-      //     )
-      //   )
-      // );
-    }
-  );
+      ];
+      describe("Index projection", () => {
+        const projection = "booleanIndexQuery";
+        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+          requestQuery(initialResourceName, projection, query, queryType, expected)
+        );
+      });
+      describe("Composite projection", () => {
+        const projection = "booleanCompositeQuery";
+        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+          requestQuery(initialResourceName, projection, query, queryType, expected)
+        );
+      });
+    });
+    describe("Updated resources", () => {
+      const queries: [boolean, string, number[]][] = [
+        [true, "boolean", [3, 4]],
+        [false, "boolean", [2]],
+      ];
+      describe("Index projection", () => {
+        const projection = "booleanIndexQuery";
+        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+          requestQuery(updatedResourceName, projection, query, queryType, expected)
+        );
+      });
+      describe("Composite projection", () => {
+        const projection = "booleanCompositeQuery";
+        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+          requestQuery(updatedResourceName, projection, query, queryType, expected)
+        );
+      });
+    });
+  });
 });

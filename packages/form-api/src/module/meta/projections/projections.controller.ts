@@ -16,14 +16,16 @@ export class ProjectionsController {
         Array.from(projections.Data.Projections).map(([key, value]) => [
           key,
           match(value)
-            .with({ Type: PROJECTION_TYPES.INDEX }, (r) => ({
-              type: r.Type,
+            .with({ ProjectionType: PROJECTION_TYPES.INDEX }, (r) => ({
+              projectionType: r.ProjectionType,
+              partitionType: r.PartitionType,
               key: r.Key,
               resource: r.Resource,
               index: r.Index,
             }))
-            .with({ Type: PROJECTION_TYPES.COMPOSITE }, (r) => ({
-              type: r.Type,
+            .with({ ProjectionType: PROJECTION_TYPES.COMPOSITE }, (r) => ({
+              projectionType: r.ProjectionType,
+              partitionType: r.PartitionType,
               key: r.Key,
               resource: r.Resource,
               dataKey: r.DataKey,

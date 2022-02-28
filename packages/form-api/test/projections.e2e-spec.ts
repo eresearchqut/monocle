@@ -103,19 +103,22 @@ describe("Resource relationship projections", () => {
       .send({
         projections: {
           indexRelationship: {
-            type: "INDEX",
+            projectionType: "INDEX",
+            partitionType: "NAME_POSTFIX",
             resource: targetResource,
             key: "testSection.targetKey1",
             index: 1,
           },
           singleCompositeRelationship: {
-            type: "COMPOSITE",
+            projectionType: "COMPOSITE",
+            partitionType: "NAME_POSTFIX",
             resource: targetResource,
             key: "testSection.targetKey1",
             dataKey: "",
           },
           multipleCompositeRelationship: {
-            type: "COMPOSITE",
+            projectionType: "COMPOSITE",
+            partitionType: "NAME_POSTFIX",
             resource: targetResource,
             key: "testSection.*",
             dataKey: "",
@@ -414,32 +417,38 @@ describe("Resource sort projections", () => {
       .send({
         projections: {
           stringIndexSort: {
-            type: "INDEX",
+            projectionType: "INDEX",
+            partitionType: "NAME_POSTFIX",
             key: "testSection.stringKey1",
             index: 1,
           },
           stringCompositeSort: {
-            type: "COMPOSITE",
+            projectionType: "COMPOSITE",
+            partitionType: "NAME_POSTFIX",
             key: "testSection.stringKey2",
             dataKey: "$",
           },
           numberIndexSort: {
-            type: "INDEX",
+            projectionType: "INDEX",
+            partitionType: "NAME_POSTFIX",
             key: "testSection.numberKey1",
             index: 2,
           },
           numberCompositeSort: {
-            type: "COMPOSITE",
+            projectionType: "COMPOSITE",
+            partitionType: "NAME_POSTFIX",
             key: "testSection.numberKey2",
             dataKey: "$",
           },
           booleanIndexSort: {
-            type: "INDEX",
+            projectionType: "INDEX",
+            partitionType: "NAME_POSTFIX",
             key: "testSection.booleanKey1",
             index: 3,
           },
           booleanCompositeSort: {
-            type: "COMPOSITE",
+            projectionType: "COMPOSITE",
+            partitionType: "NAME_POSTFIX",
             key: "testSection.booleanKey2",
             dataKey: "$",
           },
@@ -755,32 +764,38 @@ describe("Resource query projections", () => {
       .send({
         projections: {
           stringIndexQuery: {
-            type: "INDEX",
+            projectionType: "INDEX",
+            partitionType: "NAME_POSTFIX",
             key: "testSection.stringKey1",
             index: 1,
           },
           stringCompositeQuery: {
-            type: "COMPOSITE",
+            projectionType: "COMPOSITE",
+            partitionType: "NAME_POSTFIX",
             key: "testSection.stringKey2",
             dataKey: "$",
           },
           numberIndexQuery: {
-            type: "INDEX",
+            projectionType: "INDEX",
+            partitionType: "NAME_POSTFIX",
             key: "testSection.numberKey1",
             index: 2,
           },
           numberCompositeQuery: {
-            type: "COMPOSITE",
+            projectionType: "COMPOSITE",
+            partitionType: "NAME_POSTFIX",
             key: "testSection.numberKey2",
             dataKey: "$",
           },
           booleanIndexQuery: {
-            type: "INDEX",
+            projectionType: "INDEX",
+            partitionType: "NAME_POSTFIX",
             key: "testSection.booleanKey1",
             index: 3,
           },
           booleanCompositeQuery: {
-            type: "COMPOSITE",
+            projectionType: "COMPOSITE",
+            partitionType: "NAME_POSTFIX",
             key: "testSection.booleanKey2",
             dataKey: "$",
           },

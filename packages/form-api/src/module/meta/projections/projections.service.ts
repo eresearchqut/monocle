@@ -9,20 +9,22 @@ import { ConditionallyValidateClassAsync } from "../../../decorator/validate.dec
 import { TransformPlainToClass } from "class-transformer";
 import { match } from "ts-pattern";
 import { ProjectionsException } from "./projections.exception";
-import { PROJECTION_TYPES } from "./projections.constants";
+import { PARTITION_TYPES, PROJECTION_TYPES } from "./projections.constants";
 
 type PutProjectionsInput = Map<
   string,
   | {
       key: string;
       resource?: string;
-      type: PROJECTION_TYPES.INDEX;
+      projectionType: PROJECTION_TYPES.INDEX;
+      partitionType: PARTITION_TYPES;
       index: number;
     }
   | {
       key: string;
       resource?: string;
-      type: PROJECTION_TYPES.COMPOSITE;
+      projectionType: PROJECTION_TYPES.COMPOSITE;
+      partitionType: PARTITION_TYPES;
       dataKey: string;
     }
 >;
@@ -46,7 +48,7 @@ export const EMPTY_PROJECTIONS: MetadataProjectionsType = {
 const validateUniqueIndexes = (projections: PutProjectionsInput) => {
   const indexes = new Set();
   for (const indexProjection of projections.values()) {
-    if (indexProjection.type === PROJECTION_TYPES.INDEX) {
+    if (indexProjection.projectionType === PROJECTION_TYPES.INDEX) {
       if (indexes.has(indexProjection.index)) {
         throw new ProjectionsException(`Duplicate index ${indexProjection.index}`);
       }
@@ -101,16 +103,18 @@ export class ProjectionsService {
               Array.from(projections).map(([name, projection]) => [
                 name,
                 match(projection)
-                  .with({ type: PROJECTION_TYPES.INDEX }, (r) => ({
+                  .with({ projectionType: PROJECTION_TYPES.INDEX }, (r) => ({
                     Key: r.key,
                     ...(r.resource !== undefined && { Resource: r.resource }),
-                    Type: r.type,
+                    PartitionType: r.partitionType,
+                    ProjectionType: r.projectionType,
                     Index: r.index,
                   }))
-                  .with({ type: PROJECTION_TYPES.COMPOSITE }, (r) => ({
+                  .with({ projectionType: PROJECTION_TYPES.COMPOSITE }, (r) => ({
                     Key: r.key,
                     ...(r.resource !== undefined && { Resource: r.resource }),
-                    Type: r.type,
+                    PartitionType: r.partitionType,
+                    ProjectionType: r.projectionType,
                     DataKey: r.dataKey,
                   }))
                   .exhaustive(),

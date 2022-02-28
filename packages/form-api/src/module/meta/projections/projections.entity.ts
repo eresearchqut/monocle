@@ -1,12 +1,12 @@
 import { Equals, IsEnum, IsOptional, IsString, Matches, Max, Min, ValidateNested } from "class-validator";
 import { ItemEntity } from "../../dynamodb/dynamodb.entity";
 import { Form } from "@eresearchqut/form-definition";
-import { buildResourceIdentifier } from "../utils";
+import { buildResourceIdentifier, buildResourcePartitionPrefix } from "../utils";
 import { Type } from "class-transformer";
 import { SYSTEM_USER } from "../constants";
 import { __, match } from "ts-pattern";
 import { QueryItemArgs } from "../../dynamodb/dynamodb.service";
-import { PROJECTION_TYPES } from "./projections.constants";
+import { PARTITION_TYPES, PROJECTION_TYPES } from "./projections.constants";
 import { JSONPath } from "jsonpath-plus";
 import { ProjectionsException } from "./projections.exception";
 import { padNumber } from "./projections.utils";
@@ -16,16 +16,19 @@ abstract class Projection {
   @IsOptional()
   Resource?: string; // TODO: check target resource doesn't have other projections with same name
 
+  @IsEnum(PARTITION_TYPES)
+  PartitionType!: PARTITION_TYPES;
+
   @IsString()
   Key!: string;
 
   @IsEnum(PROJECTION_TYPES)
-  Type!: PROJECTION_TYPES;
+  ProjectionType!: PROJECTION_TYPES;
 }
 
 class IndexProjection extends Projection {
   @Equals(PROJECTION_TYPES.INDEX)
-  Type!: PROJECTION_TYPES.INDEX;
+  ProjectionType!: PROJECTION_TYPES.INDEX;
 
   // Required because DynamoDB's Map doesn't preserve order
   @Min(1)
@@ -35,7 +38,7 @@ class IndexProjection extends Projection {
 
 class CompositeProjection extends Projection {
   @Equals(PROJECTION_TYPES.COMPOSITE)
-  Type!: PROJECTION_TYPES.COMPOSITE;
+  ProjectionType!: PROJECTION_TYPES.COMPOSITE;
 
   @IsString()
   DataKey!: string;
@@ -55,7 +58,7 @@ class MetadataProjectionsData {
   @ValidateNested({ each: true })
   @Type(() => Projection, {
     discriminator: {
-      property: "Type",
+      property: "ProjectionType",
       subTypes: [
         { value: IndexProjection, name: PROJECTION_TYPES.INDEX },
         { value: CompositeProjection, name: PROJECTION_TYPES.COMPOSITE },
@@ -104,8 +107,37 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
   private filterProjections(projectionType: PROJECTION_TYPES.COMPOSITE): [string, CompositeProjection][];
   private filterProjections(projectionType: PROJECTION_TYPES): [string, IndexProjection | CompositeProjection][] {
     return Array.from(this.Data.Projections.entries()).filter(
-      (r): r is [string, IndexProjection | CompositeProjection] => r[1].Type === projectionType
+      (r): r is [string, IndexProjection | CompositeProjection] => r[1].ProjectionType === projectionType
     );
+  }
+
+  private buildResourcePartitionKey(
+    projectionName: string,
+    partitionType: PARTITION_TYPES,
+    targetResource: string,
+    key: string
+  ): string {
+    const prefix = buildResourceIdentifier(targetResource, key);
+    switch (partitionType) {
+      case PARTITION_TYPES.BARE:
+        return prefix;
+      case PARTITION_TYPES.NAME_POSTFIX:
+        return `${prefix}#projection:${projectionName}`;
+    }
+  }
+
+  private buildDataPartitionKey(
+    projectionName: string,
+    partitionType: PARTITION_TYPES,
+    sourceResource: string
+  ): string {
+    const prefix = buildResourcePartitionPrefix(sourceResource);
+    switch (partitionType) {
+      case PARTITION_TYPES.BARE:
+        return prefix;
+      case PARTITION_TYPES.NAME_POSTFIX:
+        return `${prefix}#projection:${projectionName}`;
+    }
   }
 
   buildProjectionsIndexKeys = (sourceResource: string, sourceId: string, data: Form): Record<string, string> =>
@@ -117,11 +149,20 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
         return allKeys;
       }
 
-      if (projection.Resource) {
-        allKeys[`GSI${projection.Index}-PK`] = buildResourceIdentifier(projection.Resource, key);
+      if (projection.Resource !== undefined) {
+        allKeys[`GSI${projection.Index}-PK`] = this.buildResourcePartitionKey(
+          name,
+          projection.PartitionType,
+          projection.Resource,
+          key
+        );
         allKeys[`GSI${projection.Index}-SK`] = `${name}:${buildResourceIdentifier(sourceResource, sourceId)}`; // TODO: don't build each time
       } else {
-        allKeys[`GSI${projection.Index}-PK`] = sourceResource; // TODO better PK
+        allKeys[`GSI${projection.Index}-PK`] = this.buildDataPartitionKey(
+          name,
+          projection.PartitionType,
+          sourceResource
+        );
         allKeys[`GSI${projection.Index}-SK`] = `${name}:${key}:${sourceId}`;
       }
 
@@ -136,12 +177,12 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
   ) => {
     if (projection[1].Resource) {
       return {
-        PK: buildResourceIdentifier(projection[1].Resource, key),
+        PK: this.buildResourcePartitionKey(projection[0], projection[1].PartitionType, projection[1].Resource, key),
         SK: `${projection[0]}:${buildResourceIdentifier(sourceResource, sourceId)}`, // TODO: don't build each time
       };
     } else {
       return {
-        PK: sourceResource, // TODO better PK
+        PK: this.buildDataPartitionKey(projection[0], projection[1].PartitionType, sourceResource),
         SK: `${projection[0]}:${key}:${sourceId}`,
       };
     }
@@ -205,7 +246,7 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
       throw new ProjectionsException("Invalid projected relationship");
     }
 
-    const pk = resource; // TODO better PK
+    const pk = this.buildDataPartitionKey(projectionName, projection.PartitionType, resource);
     const queryPostfix = match(query)
       .with(__.string, (q) => q + ":")
       .with(__.number, (q) => padNumber(q) + ":")
@@ -213,7 +254,7 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
       .otherwise(() => "");
 
     return match(projection)
-      .with({ Type: PROJECTION_TYPES.INDEX }, (r) => ({
+      .with({ ProjectionType: PROJECTION_TYPES.INDEX }, (r) => ({
         index: `GSI${r.Index}`,
         keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
         expressionNames: {
@@ -226,7 +267,7 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
         },
         reverse,
       }))
-      .with({ Type: PROJECTION_TYPES.COMPOSITE }, () => ({
+      .with({ ProjectionType: PROJECTION_TYPES.COMPOSITE }, () => ({
         keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
         expressionNames: {
           "#PK": `PK`,
@@ -248,10 +289,15 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
       throw new ProjectionsException("Invalid projected relationship");
     }
 
-    const pk = buildResourceIdentifier(projection.Resource, sourceIdentifier);
+    const pk = this.buildResourcePartitionKey(
+      projectionName,
+      projection.PartitionType,
+      projection.Resource,
+      sourceIdentifier
+    );
 
     return match(projection)
-      .with({ Type: PROJECTION_TYPES.INDEX }, (r) => ({
+      .with({ ProjectionType: PROJECTION_TYPES.INDEX }, (r) => ({
         index: `GSI${r.Index}`,
         keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
         expressionNames: {
@@ -263,7 +309,7 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
           ":SKPrefix": `${projectionName}:`,
         },
       }))
-      .with({ Type: PROJECTION_TYPES.COMPOSITE }, () => ({
+      .with({ ProjectionType: PROJECTION_TYPES.COMPOSITE }, () => ({
         keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
         expressionNames: {
           "#PK": `PK`,

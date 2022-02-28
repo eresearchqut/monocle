@@ -7,3 +7,8 @@ export enum PROJECTION_TYPES {
   // TODO: choose between eventual and strong consistency
   // TODO: unbounded composite storage?
 }
+
+export enum PARTITION_TYPES {
+  BARE = "BARE",
+  NAME_POSTFIX = "NAME_POSTFIX",
+}

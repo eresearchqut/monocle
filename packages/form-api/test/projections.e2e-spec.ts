@@ -102,21 +102,42 @@ describe("Resource relationship projections", () => {
       .post(`/meta/projections`)
       .send({
         projections: {
-          indexRelationship: {
+          indexRelationshipBare: {
             projectionType: "INDEX",
-            partitionType: "NAME_POSTFIX",
+            partitionType: "BARE",
             resource: targetResource,
             key: "testSection.targetKey1",
             index: 1,
           },
-          singleCompositeRelationship: {
+          indexRelationshipNamed: {
+            projectionType: "INDEX",
+            partitionType: "NAME_POSTFIX",
+            resource: targetResource,
+            key: "testSection.targetKey1",
+            index: 2,
+          },
+          singleCompositeRelationshipBare: {
+            projectionType: "COMPOSITE",
+            partitionType: "BARE",
+            resource: targetResource,
+            key: "testSection.targetKey1",
+            dataKey: "",
+          },
+          singleCompositeRelationshipNamed: {
             projectionType: "COMPOSITE",
             partitionType: "NAME_POSTFIX",
             resource: targetResource,
             key: "testSection.targetKey1",
             dataKey: "",
           },
-          multipleCompositeRelationship: {
+          multipleCompositeRelationshipBare: {
+            projectionType: "COMPOSITE",
+            partitionType: "BARE",
+            resource: targetResource,
+            key: "testSection.*",
+            dataKey: "",
+          },
+          multipleCompositeRelationshipNamed: {
             projectionType: "COMPOSITE",
             partitionType: "NAME_POSTFIX",
             resource: targetResource,
@@ -254,71 +275,74 @@ describe("Resource relationship projections", () => {
   });
 
   describe("Single index relationship", () => {
-    const relationship = "indexRelationship";
-    test("Initial resource", async () =>
-      requestRelationships(
-        initialSourceResource,
-        initialTargetResource,
-        relationship,
-        initialTargetIds[0],
-        5,
-        initialSourceIds
-      ));
-    test("Updated resource", async () =>
-      requestRelationships(
-        updatedSourceResource,
-        updatedTargetResource,
-        relationship,
-        updatedTargetIds[0],
-        3,
-        updatedSourceIds
-      ));
+    describe.each(["indexRelationshipBare", "indexRelationshipNamed"])("%s", (relationship) => {
+      test("Initial resource", async () =>
+        requestRelationships(
+          initialSourceResource,
+          initialTargetResource,
+          relationship,
+          initialTargetIds[0],
+          5,
+          initialSourceIds
+        ));
+      test("Updated resource", async () =>
+        requestRelationships(
+          updatedSourceResource,
+          updatedTargetResource,
+          relationship,
+          updatedTargetIds[0],
+          3,
+          updatedSourceIds
+        ));
+    });
   });
 
   describe("Single composite relationship", () => {
-    const relationship = "singleCompositeRelationship";
-    test("Initial resource", async () =>
-      requestRelationships(
-        initialSourceResource,
-        initialTargetResource,
-        relationship,
-        initialTargetIds[0],
-        5,
-        initialSourceIds
-      ));
-    test("Updated resource", async () =>
-      requestRelationships(
-        updatedSourceResource,
-        updatedTargetResource,
-        relationship,
-        updatedTargetIds[0],
-        3,
-        updatedSourceIds
-      ));
+    describe.each(["singleCompositeRelationshipBare", "singleCompositeRelationshipNamed"])("%s", (relationship) => {
+      test("Initial resource", async () =>
+        requestRelationships(
+          initialSourceResource,
+          initialTargetResource,
+          relationship,
+          initialTargetIds[0],
+          5,
+          initialSourceIds
+        ));
+      test("Updated resource", async () =>
+        requestRelationships(
+          updatedSourceResource,
+          updatedTargetResource,
+          relationship,
+          updatedTargetIds[0],
+          3,
+          updatedSourceIds
+        ));
+    });
   });
 
   describe("Multiple composite relationship", () => {
-    const relationship = "multipleCompositeRelationship";
-    test.each([1, 2])("Initial resource %i", async (targetIndex) =>
-      requestRelationships(
-        initialSourceResource,
-        initialTargetResource,
-        relationship,
-        Array.from(initialTargetIds)[targetIndex - 1],
-        5,
-        initialSourceIds
-      )
-    );
-    test.each([1, 2])("Updated resource %i", async (targetIndex) =>
-      requestRelationships(
-        updatedSourceResource,
-        updatedTargetResource,
-        relationship,
-        Array.from(updatedTargetIds)[targetIndex - 1],
-        3,
-        updatedSourceIds
-      )
-    );
+    describe.each(["multipleCompositeRelationshipBare", "multipleCompositeRelationshipNamed"])("%s", (relationship) => {
+      test.each([1, 2])("Initial resource %i", async (targetIndex) =>
+        requestRelationships(
+          initialSourceResource,
+          initialTargetResource,
+          relationship,
+          Array.from(initialTargetIds)[targetIndex - 1],
+          5,
+          initialSourceIds
+        )
+      );
+      test.each([1, 2])("Updated resource %i", async (targetIndex) =>
+        requestRelationships(
+          updatedSourceResource,
+          updatedTargetResource,
+          relationship,
+          Array.from(updatedTargetIds)[targetIndex - 1],
+          3,
+          updatedSourceIds
+        )
+      );
+    });
   });
 });
 
@@ -416,37 +440,73 @@ describe("Resource sort projections", () => {
       .post(`/meta/projections`)
       .send({
         projections: {
-          stringIndexSort: {
+          stringIndexSortBare: {
             projectionType: "INDEX",
-            partitionType: "NAME_POSTFIX",
+            partitionType: "BARE",
             key: "testSection.stringKey1",
             index: 1,
           },
-          stringCompositeSort: {
+          stringIndexSortNamed: {
+            projectionType: "INDEX",
+            partitionType: "NAME_POSTFIX",
+            key: "testSection.stringKey1",
+            index: 2,
+          },
+          stringCompositeSortBare: {
+            projectionType: "COMPOSITE",
+            partitionType: "BARE",
+            key: "testSection.stringKey2",
+            dataKey: "$",
+          },
+          stringCompositeSortNamed: {
             projectionType: "COMPOSITE",
             partitionType: "NAME_POSTFIX",
             key: "testSection.stringKey2",
             dataKey: "$",
           },
-          numberIndexSort: {
+          numberIndexSortBare: {
+            projectionType: "INDEX",
+            partitionType: "BARE",
+            key: "testSection.numberKey1",
+            index: 3,
+          },
+          numberIndexSortNamed: {
             projectionType: "INDEX",
             partitionType: "NAME_POSTFIX",
             key: "testSection.numberKey1",
-            index: 2,
+            index: 4,
           },
-          numberCompositeSort: {
+          numberCompositeSortBare: {
+            projectionType: "COMPOSITE",
+            partitionType: "BARE",
+            key: "testSection.numberKey2",
+            dataKey: "$",
+          },
+          numberCompositeSortNamed: {
             projectionType: "COMPOSITE",
             partitionType: "NAME_POSTFIX",
             key: "testSection.numberKey2",
             dataKey: "$",
           },
-          booleanIndexSort: {
+          booleanIndexSortBare: {
+            projectionType: "INDEX",
+            partitionType: "BARE",
+            key: "testSection.booleanKey1",
+            index: 5,
+          },
+          booleanIndexSortNamed: {
             projectionType: "INDEX",
             partitionType: "NAME_POSTFIX",
             key: "testSection.booleanKey1",
-            index: 3,
+            index: 6,
           },
-          booleanCompositeSort: {
+          booleanCompositeSortBare: {
+            projectionType: "COMPOSITE",
+            partitionType: "BARE",
+            key: "testSection.booleanKey2",
+            dataKey: "$",
+          },
+          booleanCompositeSortNamed: {
             projectionType: "COMPOSITE",
             partitionType: "NAME_POSTFIX",
             key: "testSection.booleanKey2",
@@ -558,16 +618,18 @@ describe("Resource sort projections", () => {
         ["reverse", [5, 4, 3, 2, 1]],
       ];
       describe("Index projection", () => {
-        const projection = "stringIndexSort";
-        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
-          requestSort(initialResourceName, projection, order, "index", sorted)
-        );
+        describe.each(["stringIndexSortBare", "stringIndexSortNamed"])("%s", (projection) => {
+          test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+            requestSort(initialResourceName, projection, order, "index", sorted)
+          );
+        });
       });
       describe("Composite projection", () => {
-        const projection = "stringCompositeSort";
-        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
-          requestSort(initialResourceName, projection, order, "index", sorted)
-        );
+        describe.each(["stringCompositeSortBare", "stringCompositeSortNamed"])("%s", (projection) => {
+          test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+            requestSort(initialResourceName, projection, order, "index", sorted)
+          );
+        });
       });
     });
     describe("Updated resources", () => {
@@ -576,16 +638,18 @@ describe("Resource sort projections", () => {
         ["reverse", [6, 4, 2, 1]],
       ];
       describe("Index projection", () => {
-        const projection = "stringIndexSort";
-        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
-          requestSort(updatedResourceName, projection, order, "index", sorted)
-        );
+        describe.each(["stringIndexSortBare", "stringIndexSortNamed"])("%s", (projection) => {
+          test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+            requestSort(updatedResourceName, projection, order, "index", sorted)
+          );
+        });
       });
       describe("Composite projection", () => {
-        const projection = "stringCompositeSort";
-        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
-          requestSort(updatedResourceName, projection, order, "index", sorted)
-        );
+        describe.each(["stringCompositeSortBare", "stringCompositeSortNamed"])("%s", (projection) => {
+          test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+            requestSort(updatedResourceName, projection, order, "index", sorted)
+          );
+        });
       });
     });
   });
@@ -597,16 +661,18 @@ describe("Resource sort projections", () => {
         ["reverse", [5, 4, 3, 2, 1]],
       ];
       describe("Index projection", () => {
-        const projection = "numberIndexSort";
-        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
-          requestSort(initialResourceName, projection, order, "index", sorted)
-        );
+        describe.each(["numberIndexSortBare", "numberIndexSortNamed"])("%s", (projection) => {
+          test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+            requestSort(initialResourceName, projection, order, "index", sorted)
+          );
+        });
       });
       describe("Composite projection", () => {
-        const projection = "numberCompositeSort";
-        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
-          requestSort(initialResourceName, projection, order, "index", sorted)
-        );
+        describe.each(["numberCompositeSortBare", "numberCompositeSortNamed"])("%s", (projection) => {
+          test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+            requestSort(initialResourceName, projection, order, "index", sorted)
+          );
+        });
       });
     });
     describe("Updated resources", () => {
@@ -615,16 +681,18 @@ describe("Resource sort projections", () => {
         ["reverse", [6, 4, 2, 1]],
       ];
       describe("Index projection", () => {
-        const projection = "numberIndexSort";
-        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
-          requestSort(updatedResourceName, projection, order, "index", sorted)
-        );
+        describe.each(["numberIndexSortBare", "numberIndexSortNamed"])("%s", (projection) => {
+          test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+            requestSort(updatedResourceName, projection, order, "index", sorted)
+          );
+        });
       });
       describe("Composite projection", () => {
-        const projection = "numberCompositeSort";
-        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
-          requestSort(updatedResourceName, projection, order, "index", sorted)
-        );
+        describe.each(["numberCompositeSortBare", "numberCompositeSortNamed"])("%s", (projection) => {
+          test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+            requestSort(updatedResourceName, projection, order, "index", sorted)
+          );
+        });
       });
     });
   });
@@ -636,16 +704,18 @@ describe("Resource sort projections", () => {
         ["reverse", [true, true, false, false, false]],
       ];
       describe("Index projection", () => {
-        const projection = "booleanIndexSort";
-        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
-          requestSort(initialResourceName, projection, order, "even", sorted)
-        );
+        describe.each(["booleanIndexSortBare", "booleanIndexSortNamed"])("%s", (projection) => {
+          test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+            requestSort(initialResourceName, projection, order, "even", sorted)
+          );
+        });
       });
       describe("Composite projection", () => {
-        const projection = "booleanCompositeSort";
-        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
-          requestSort(initialResourceName, projection, order, "even", sorted)
-        );
+        describe.each(["booleanCompositeSortBare", "booleanCompositeSortNamed"])("%s", (projection) => {
+          test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+            requestSort(initialResourceName, projection, order, "even", sorted)
+          );
+        });
       });
     });
     describe("Updated resources", () => {
@@ -654,16 +724,18 @@ describe("Resource sort projections", () => {
         ["reverse", [true, true, true, false]],
       ];
       describe("Index projection", () => {
-        const projection = "booleanIndexSort";
-        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
-          requestSort(updatedResourceName, projection, order, "even", sorted)
-        );
+        describe.each(["booleanIndexSortBare", "booleanIndexSortNamed"])("%s", (projection) => {
+          test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+            requestSort(updatedResourceName, projection, order, "even", sorted)
+          );
+        });
       });
       describe("Composite projection", () => {
-        const projection = "booleanCompositeSort";
-        test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
-          requestSort(updatedResourceName, projection, order, "even", sorted)
-        );
+        describe.each(["booleanCompositeSortBare", "booleanCompositeSortNamed"])("%s", (projection) => {
+          test.each(orderings)("Order: %s -> %s", async (order, sorted) =>
+            requestSort(updatedResourceName, projection, order, "even", sorted)
+          );
+        });
       });
     });
   });
@@ -763,37 +835,73 @@ describe("Resource query projections", () => {
       .post(`/meta/projections`)
       .send({
         projections: {
-          stringIndexQuery: {
+          stringIndexQueryBare: {
             projectionType: "INDEX",
-            partitionType: "NAME_POSTFIX",
+            partitionType: "BARE",
             key: "testSection.stringKey1",
             index: 1,
           },
-          stringCompositeQuery: {
+          stringIndexQueryNamed: {
+            projectionType: "INDEX",
+            partitionType: "NAME_POSTFIX",
+            key: "testSection.stringKey1",
+            index: 2,
+          },
+          stringCompositeQueryBare: {
+            projectionType: "COMPOSITE",
+            partitionType: "BARE",
+            key: "testSection.stringKey2",
+            dataKey: "$",
+          },
+          stringCompositeQueryNamed: {
             projectionType: "COMPOSITE",
             partitionType: "NAME_POSTFIX",
             key: "testSection.stringKey2",
             dataKey: "$",
           },
-          numberIndexQuery: {
+          numberIndexQueryBare: {
+            projectionType: "INDEX",
+            partitionType: "BARE",
+            key: "testSection.numberKey1",
+            index: 3,
+          },
+          numberIndexQueryNamed: {
             projectionType: "INDEX",
             partitionType: "NAME_POSTFIX",
             key: "testSection.numberKey1",
-            index: 2,
+            index: 4,
           },
-          numberCompositeQuery: {
+          numberCompositeQueryBare: {
+            projectionType: "COMPOSITE",
+            partitionType: "BARE",
+            key: "testSection.numberKey2",
+            dataKey: "$",
+          },
+          numberCompositeQueryNamed: {
             projectionType: "COMPOSITE",
             partitionType: "NAME_POSTFIX",
             key: "testSection.numberKey2",
             dataKey: "$",
           },
-          booleanIndexQuery: {
+          booleanIndexQueryBare: {
+            projectionType: "INDEX",
+            partitionType: "BARE",
+            key: "testSection.booleanKey1",
+            index: 5,
+          },
+          booleanIndexQueryNamed: {
             projectionType: "INDEX",
             partitionType: "NAME_POSTFIX",
             key: "testSection.booleanKey1",
-            index: 3,
+            index: 6,
           },
-          booleanCompositeQuery: {
+          booleanCompositeQueryBare: {
+            projectionType: "COMPOSITE",
+            partitionType: "BARE",
+            key: "testSection.booleanKey2",
+            dataKey: "$",
+          },
+          booleanCompositeQueryNamed: {
             projectionType: "COMPOSITE",
             partitionType: "NAME_POSTFIX",
             key: "testSection.booleanKey2",
@@ -908,16 +1016,18 @@ describe("Resource query projections", () => {
         ["ghi", "string", []],
       ];
       describe("Index projection", () => {
-        const projection = "stringIndexQuery";
-        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
-          requestQuery(initialResourceName, projection, query, queryType, expected)
-        );
+        describe.each(["stringIndexQueryBare", "stringIndexQueryNamed"])("%s", (projection) => {
+          test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+            requestQuery(initialResourceName, projection, query, queryType, expected)
+          );
+        });
       });
       describe("Composite projection", () => {
-        const projection = "stringCompositeQuery";
-        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
-          requestQuery(initialResourceName, projection, query, queryType, expected)
-        );
+        describe.each(["stringCompositeQueryBare", "stringCompositeQueryNamed"])("%s", (projection) => {
+          test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+            requestQuery(initialResourceName, projection, query, queryType, expected)
+          );
+        });
       });
     });
     describe("Updated resources", () => {
@@ -927,16 +1037,18 @@ describe("Resource query projections", () => {
         ["ghi", "string", [4]],
       ];
       describe("Index projection", () => {
-        const projection = "stringIndexQuery";
-        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
-          requestQuery(updatedResourceName, projection, query, queryType, expected)
-        );
+        describe.each(["stringIndexQueryBare", "stringIndexQueryNamed"])("%s", (projection) => {
+          test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+            requestQuery(updatedResourceName, projection, query, queryType, expected)
+          );
+        });
       });
       describe("Composite projection", () => {
-        const projection = "stringCompositeQuery";
-        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
-          requestQuery(updatedResourceName, projection, query, queryType, expected)
-        );
+        describe.each(["stringCompositeQueryBare", "stringCompositeQueryNamed"])("%s", (projection) => {
+          test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+            requestQuery(updatedResourceName, projection, query, queryType, expected)
+          );
+        });
       });
     });
   });
@@ -949,16 +1061,18 @@ describe("Resource query projections", () => {
         [789, "number", []],
       ];
       describe("Index projection", () => {
-        const projection = "numberIndexQuery";
-        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
-          requestQuery(initialResourceName, projection, query, queryType, expected)
-        );
+        describe.each(["numberIndexQueryBare", "numberIndexQueryNamed"])("%s", (projection) => {
+          test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+            requestQuery(initialResourceName, projection, query, queryType, expected)
+          );
+        });
       });
       describe("Composite projection", () => {
-        const projection = "numberCompositeQuery";
-        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
-          requestQuery(initialResourceName, projection, query, queryType, expected)
-        );
+        describe.each(["numberCompositeQueryBare", "numberCompositeQueryNamed"])("%s", (projection) => {
+          test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+            requestQuery(initialResourceName, projection, query, queryType, expected)
+          );
+        });
       });
     });
     describe("Updated resources", () => {
@@ -968,16 +1082,18 @@ describe("Resource query projections", () => {
         [789, "number", [4]],
       ];
       describe("Index projection", () => {
-        const projection = "numberIndexQuery";
-        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
-          requestQuery(updatedResourceName, projection, query, queryType, expected)
-        );
+        describe.each(["numberIndexQueryBare", "numberIndexQueryNamed"])("%s", (projection) => {
+          test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+            requestQuery(updatedResourceName, projection, query, queryType, expected)
+          );
+        });
       });
       describe("Composite projection", () => {
-        const projection = "numberCompositeQuery";
-        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
-          requestQuery(updatedResourceName, projection, query, queryType, expected)
-        );
+        describe.each(["numberCompositeQueryBare", "numberCompositeQueryNamed"])("%s", (projection) => {
+          test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+            requestQuery(updatedResourceName, projection, query, queryType, expected)
+          );
+        });
       });
     });
   });
@@ -989,16 +1105,18 @@ describe("Resource query projections", () => {
         [false, "boolean", [1, 2]],
       ];
       describe("Index projection", () => {
-        const projection = "booleanIndexQuery";
-        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
-          requestQuery(initialResourceName, projection, query, queryType, expected)
-        );
+        describe.each(["booleanIndexQueryBare", "booleanIndexQueryNamed"])("%s", (projection) => {
+          test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+            requestQuery(initialResourceName, projection, query, queryType, expected)
+          );
+        });
       });
       describe("Composite projection", () => {
-        const projection = "booleanCompositeQuery";
-        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
-          requestQuery(initialResourceName, projection, query, queryType, expected)
-        );
+        describe.each(["booleanCompositeQueryBare", "booleanCompositeQueryNamed"])("%s", (projection) => {
+          test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+            requestQuery(initialResourceName, projection, query, queryType, expected)
+          );
+        });
       });
     });
     describe("Updated resources", () => {
@@ -1007,16 +1125,18 @@ describe("Resource query projections", () => {
         [false, "boolean", [2]],
       ];
       describe("Index projection", () => {
-        const projection = "booleanIndexQuery";
-        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
-          requestQuery(updatedResourceName, projection, query, queryType, expected)
-        );
+        describe.each(["booleanIndexQueryBare", "booleanIndexQueryNamed"])("%s", (projection) => {
+          test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+            requestQuery(updatedResourceName, projection, query, queryType, expected)
+          );
+        });
       });
       describe("Composite projection", () => {
-        const projection = "booleanCompositeQuery";
-        test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
-          requestQuery(updatedResourceName, projection, query, queryType, expected)
-        );
+        describe.each(["booleanCompositeQueryBare", "booleanCompositeQueryNamed"])("%s", (projection) => {
+          test.each(queries)("Query: %s (%s) -> %s", async (query, queryType, expected) =>
+            requestQuery(updatedResourceName, projection, query, queryType, expected)
+          );
+        });
       });
     });
   });

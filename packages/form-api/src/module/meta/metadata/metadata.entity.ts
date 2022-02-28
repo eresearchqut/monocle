@@ -77,6 +77,8 @@ export class Metadata extends ItemEntity<DataType, "Metadata"> implements Metada
       PK,
       SK,
       ItemType: "Resource",
+      // TODO: Use a request-global timestamp & user
+      // TODO: Use epoch time for DDB TTL
       CreatedAt: new Date().toISOString(),
       CreatedBy: input.user,
       ResourceName: input.resource.name,

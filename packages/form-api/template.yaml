@@ -44,6 +44,9 @@ Resources:
       StreamSpecification:
         StreamEnabled: true
         StreamViewType: "NEW_AND_OLD_IMAGES"
+      TimeToLiveSpecification:
+        AttributeName: "TTL"
+        Enabled: true
       ContributorInsightsSpecification:
         Enabled: true
       KeySchema:

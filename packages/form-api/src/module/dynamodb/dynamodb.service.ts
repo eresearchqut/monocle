@@ -40,6 +40,15 @@ export type CreateItemArgs<T extends ItemEntity> = {
   item: T;
 };
 
+export type PutItemsTransactionArgs<T extends ItemEntity> = {
+  table: string;
+  baseItem: T;
+  previousBaseCreatedAt: string;
+  putItems: ItemEntity[];
+  deleteItems: { PK: string; SK: string }[];
+  idempotencyToken?: string;
+};
+
 export type PutVersionTransactionArgs<T extends ItemEntity> = {
   table: string;
   lastVersion: string;
@@ -122,10 +131,9 @@ export class DynamodbService {
       new PutItemCommand({
         TableName: input.table,
         Item: marshall(input.item),
-        ConditionExpression: "attribute_not_exists(#PK) and attribute_not_exists(#SK)",
+        ConditionExpression: "attribute_not_exists(#Id)",
         ExpressionAttributeNames: {
-          "#PK": "PK",
-          "#SK": "SK",
+          "#Id": "Id",
         },
         ReturnValues: "ALL_OLD",
       })
@@ -135,6 +143,41 @@ export class DynamodbService {
     } else {
       return null;
     }
+  }
+
+  async putItemsTransaction<T extends ItemEntity>(input: PutItemsTransactionArgs<T>) {
+    return this.client.send(
+      new TransactWriteItemsCommand({
+        TransactItems: [
+          {
+            Put: {
+              TableName: input.table,
+              Item: marshall(input.baseItem),
+              ConditionExpression: "#CreatedAt = :CreatedAt",
+              ExpressionAttributeNames: {
+                "#CreatedAt": "CreatedAt",
+              },
+              ExpressionAttributeValues: marshall({
+                ":CreatedAt": input.previousBaseCreatedAt,
+              }),
+            },
+          },
+          ...input.putItems.map((item) => ({
+            Put: {
+              TableName: input.table,
+              Item: marshall(item),
+            },
+          })),
+          ...input.deleteItems.map((item) => ({
+            Delete: {
+              TableName: input.table,
+              Key: marshall(item),
+            },
+          })),
+        ],
+        ClientRequestToken: input.idempotencyToken,
+      })
+    );
   }
 
   async putVersionedItem<T extends ItemEntity>(

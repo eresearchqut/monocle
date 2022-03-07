@@ -7,6 +7,7 @@ import { ItemEntity } from "../dynamodb/dynamodb.entity";
 import { FormService } from "../meta/form/form.service";
 import { ProjectionsService } from "../meta/projections/projections.service";
 import { ValidationException } from "./resource.exception";
+import { SYSTEM_USER } from "../meta/constants";
 
 interface GetResourceInput {
   resource: string;
@@ -49,6 +50,9 @@ interface QueryRelatedResourceInput {
   version?: string;
 }
 
+const LOCK_TTL_DELTA = 60;
+const LOCK_RETRY_DELAY = 2000;
+
 @Injectable()
 export class ResourceService {
   constructor(
@@ -78,6 +82,43 @@ export class ResourceService {
     return item;
   }
 
+  private async acquireLock(table: string, partitionKey: string) {
+    let lockCreated = false;
+    while (!lockCreated) {
+      lockCreated = await this.dynamodbService
+        .createItem({
+          table,
+          item: {
+            PK: partitionKey,
+            SK: "Lock",
+            CreatedAt: new Date().toISOString(),
+            CreatedBy: SYSTEM_USER,
+            Id: "Lock",
+            ItemType: "Lock",
+            TTL: Math.floor(Date.now() / 1000) + LOCK_TTL_DELTA,
+            Data: {},
+          },
+        })
+        .then(() => true)
+        .catch(async (err) => {
+          if (err.code === "ConditionalCheckFailed") {
+            await new Promise((resolve) => setTimeout(resolve, LOCK_RETRY_DELAY));
+            return false;
+          } else {
+            return Promise.reject(err);
+          }
+        });
+    }
+  }
+
+  private async releaseLock(table: string, partitionKey: string) {
+    await this.dynamodbService.deleteItem({
+      table,
+      PK: partitionKey,
+      SK: "Lock",
+    });
+  }
+
   public async putResource(input: PutResourceInput): Promise<any> {
     const {
       buildPutAttributes,
@@ -101,8 +142,12 @@ export class ResourceService {
       },
     });
 
-    const { buildProjectionsIndexKeys, buildProjectionsCompositeItems, buildProjectionOldCompositeAttributes } =
-      await this.projectionsService.getProjections(Schemas.projectionsVersion);
+    const {
+      requiresLock,
+      buildProjectionsIndexKeys,
+      buildProjectionsCompositeItems,
+      buildProjectionOldCompositeAttributes,
+    } = await this.projectionsService.getProjections(Schemas.projectionsVersion);
 
     const projectionKeys = buildProjectionsIndexKeys(Resource, attrs.Id, input.data);
 
@@ -112,34 +157,81 @@ export class ResourceService {
       Data: input.data,
     };
 
-    const relatedItems = buildProjectionsCompositeItems(Resource, attrs.Id, input.data);
+    const { transaction: transactionItems, lock: lockItems } = buildProjectionsCompositeItems(
+      Resource,
+      attrs.Id,
+      input.data
+    );
 
     // TODO: run authorization policy check
 
     const table = this.configService.get("RESOURCE_TABLE");
-    const [oldItem] = await Promise.all([
-      this.dynamodbService.putItem({
-        table,
-        item: data,
-        ignoreOld: input.id === undefined,
-      }),
-      ...relatedItems.map((r) =>
-        this.dynamodbService.putItem({
-          table,
-          item: r,
-          ignoreOld: true,
-        })
-      ),
-    ]);
 
     if (input.id) {
-      if (oldItem === null) {
-        throw Error("Item didn't already exist");
+      const useLock = requiresLock();
+      if (useLock) {
+        await this.acquireLock(table, attrs.PK);
       }
 
-      const oldRelatedKeys = buildProjectionOldCompositeAttributes(Resource, attrs.Id, oldItem.Data, input.data);
+      try {
+        const oldItem = await this.dynamodbService.getItem({
+          table,
+          PK: attrs.PK,
+          SK: attrs.SK,
+          consistent: true,
+        });
 
-      await Promise.all(oldRelatedKeys.map((keys) => this.dynamodbService.deleteItem({ table, ...keys })));
+        if (oldItem === null) {
+          throw new Error("Item didn't already exist");
+        }
+
+        const oldRelatedKeys = buildProjectionOldCompositeAttributes(Resource, attrs.Id, oldItem.Data, input.data);
+
+        if (transactionItems.length + oldRelatedKeys.length > 24) {
+          throw new Error("Too many projection operations at once"); // TODO: test
+        }
+
+        await Promise.all([
+          this.dynamodbService.putItemsTransaction({
+            table,
+            baseItem: data,
+            previousBaseCreatedAt: oldItem.CreatedAt,
+            putItems: transactionItems,
+            deleteItems: oldRelatedKeys,
+          }),
+          ...lockItems.map((item) =>
+            this.dynamodbService.putItem({
+              table,
+              item,
+              ignoreOld: true,
+            })
+          ),
+        ]); // TODO: handle failure
+      } finally {
+        if (useLock) {
+          await this.releaseLock(table, attrs.PK);
+        }
+      }
+    } else {
+      const projectionItems = transactionItems.concat(lockItems);
+      const [oldItem] = await Promise.all([
+        this.dynamodbService.putItem({
+          table,
+          item: data,
+          ignoreOld: input.id === undefined,
+        }),
+        ...projectionItems.map((item) =>
+          this.dynamodbService.putItem({
+            table,
+            item,
+            ignoreOld: true,
+          })
+        ),
+      ]);
+
+      if (oldItem !== null) {
+        throw new Error("Item already existed");
+      }
     }
 
     // TODO: optionally return old data

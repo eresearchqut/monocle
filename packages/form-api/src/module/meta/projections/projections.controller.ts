@@ -23,13 +23,18 @@ export class ProjectionsController {
               resource: r.Resource,
               index: r.Index,
             }))
-            .with({ ProjectionType: PROJECTION_TYPES.COMPOSITE }, (r) => ({
-              projectionType: r.ProjectionType,
-              partitionType: r.PartitionType,
-              key: r.Key,
-              resource: r.Resource,
-              dataKey: r.DataKey,
-            }))
+            .with(
+              { ProjectionType: PROJECTION_TYPES.COMPOSITE_TRANSACTION },
+              { ProjectionType: PROJECTION_TYPES.COMPOSITE_LOCK },
+              { ProjectionType: PROJECTION_TYPES.COMPOSITE_STREAM },
+              (r) => ({
+                projectionType: r.ProjectionType,
+                partitionType: r.PartitionType,
+                key: r.Key,
+                resource: r.Resource,
+                dataKey: r.DataKey,
+              })
+            )
             .exhaustive(),
         ])
       ),

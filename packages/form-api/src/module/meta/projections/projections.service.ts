@@ -23,7 +23,10 @@ type PutProjectionsInput = Map<
   | {
       key: string;
       resource?: string;
-      projectionType: PROJECTION_TYPES.COMPOSITE;
+      projectionType:
+        | PROJECTION_TYPES.COMPOSITE_TRANSACTION
+        | PROJECTION_TYPES.COMPOSITE_LOCK
+        | PROJECTION_TYPES.COMPOSITE_STREAM;
       partitionType: PARTITION_TYPES;
       dataKey: string;
     }
@@ -110,13 +113,27 @@ export class ProjectionsService {
                     ProjectionType: r.projectionType,
                     Index: r.index,
                   }))
-                  .with({ projectionType: PROJECTION_TYPES.COMPOSITE }, (r) => ({
-                    Key: r.key,
-                    ...(r.resource !== undefined && { Resource: r.resource }),
-                    PartitionType: r.partitionType,
-                    ProjectionType: r.projectionType,
-                    DataKey: r.dataKey,
-                  }))
+                  .with(
+                    { projectionType: PROJECTION_TYPES.COMPOSITE_TRANSACTION },
+                    { projectionType: PROJECTION_TYPES.COMPOSITE_LOCK },
+                    { projectionType: PROJECTION_TYPES.COMPOSITE_STREAM },
+                    (r: {
+                      key: string;
+                      resource: string | undefined;
+                      projectionType:
+                        | PROJECTION_TYPES.COMPOSITE_TRANSACTION
+                        | PROJECTION_TYPES.COMPOSITE_LOCK
+                        | PROJECTION_TYPES.COMPOSITE_STREAM;
+                      partitionType: PARTITION_TYPES;
+                      dataKey: string;
+                    }) => ({
+                      Key: r.key,
+                      ...(r.resource !== undefined && { Resource: r.resource }),
+                      PartitionType: r.partitionType,
+                      ProjectionType: r.projectionType,
+                      DataKey: r.dataKey,
+                    })
+                  )
                   .exhaustive(),
               ])
             ),

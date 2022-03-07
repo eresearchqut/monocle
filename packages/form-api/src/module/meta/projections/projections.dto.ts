@@ -31,8 +31,13 @@ export class IndexProjection extends Projection {
 }
 
 export class CompositeProjection extends Projection {
-  @Equals(PROJECTION_TYPES.COMPOSITE)
-  projectionType!: PROJECTION_TYPES.COMPOSITE;
+  @Equals(PROJECTION_TYPES.COMPOSITE_TRANSACTION)
+  @Equals(PROJECTION_TYPES.COMPOSITE_LOCK)
+  @Equals(PROJECTION_TYPES.COMPOSITE_STREAM)
+  projectionType!:
+    | PROJECTION_TYPES.COMPOSITE_TRANSACTION
+    | PROJECTION_TYPES.COMPOSITE_LOCK
+    | PROJECTION_TYPES.COMPOSITE_STREAM;
 
   @IsString()
   dataKey!: string;
@@ -55,7 +60,10 @@ export class PostProjectionsBody {
       property: "projectionType",
       subTypes: [
         { value: IndexProjection, name: PROJECTION_TYPES.INDEX },
-        { value: CompositeProjection, name: PROJECTION_TYPES.COMPOSITE }, // TODO: Fix not validating concrete keys
+        // TODO: Fix not validating concrete keys
+        { value: CompositeProjection, name: PROJECTION_TYPES.COMPOSITE_TRANSACTION },
+        { value: CompositeProjection, name: PROJECTION_TYPES.COMPOSITE_LOCK },
+        { value: CompositeProjection, name: PROJECTION_TYPES.COMPOSITE_STREAM },
       ],
     },
   })

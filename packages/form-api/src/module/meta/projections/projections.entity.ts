@@ -36,9 +36,9 @@ class IndexProjection extends Projection {
   Index!: number;
 }
 
-class CompositeProjection extends Projection {
-  @Equals(PROJECTION_TYPES.COMPOSITE)
-  ProjectionType!: PROJECTION_TYPES.COMPOSITE;
+class CompositeTransactionProjection extends Projection {
+  @Equals(PROJECTION_TYPES.COMPOSITE_TRANSACTION)
+  ProjectionType!: PROJECTION_TYPES.COMPOSITE_TRANSACTION;
 
   @IsString()
   DataKey!: string;
@@ -46,7 +46,29 @@ class CompositeProjection extends Projection {
   // TODO: allow enforcing consistency type
 }
 
-export type ConcreteProjections = IndexProjection | CompositeProjection;
+class CompositeLockProjection extends Projection {
+  @Equals(PROJECTION_TYPES.COMPOSITE_LOCK)
+  ProjectionType!: PROJECTION_TYPES.COMPOSITE_LOCK;
+
+  @IsString()
+  DataKey!: string;
+
+  // TODO: allow enforcing consistency type
+}
+
+class CompositeStreamProjection extends Projection {
+  @Equals(PROJECTION_TYPES.COMPOSITE_STREAM)
+  ProjectionType!: PROJECTION_TYPES.COMPOSITE_STREAM;
+
+  @IsString()
+  DataKey!: string;
+
+  // TODO: allow enforcing consistency type
+}
+
+export type CompositeProjections = CompositeTransactionProjection | CompositeLockProjection | CompositeStreamProjection;
+
+export type ConcreteProjections = IndexProjection | CompositeProjections;
 
 interface DataType {
   Projections: Map<string, ConcreteProjections>;
@@ -61,7 +83,9 @@ class MetadataProjectionsData {
       property: "ProjectionType",
       subTypes: [
         { value: IndexProjection, name: PROJECTION_TYPES.INDEX },
-        { value: CompositeProjection, name: PROJECTION_TYPES.COMPOSITE },
+        { value: CompositeTransactionProjection, name: PROJECTION_TYPES.COMPOSITE_TRANSACTION },
+        { value: CompositeLockProjection, name: PROJECTION_TYPES.COMPOSITE_LOCK },
+        { value: CompositeStreamProjection, name: PROJECTION_TYPES.COMPOSITE_STREAM },
       ],
     },
   })
@@ -103,11 +127,17 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
   @Type(() => MetadataProjectionsData)
   Data!: MetadataProjectionsData;
 
+  requiresLock = (): boolean => this.filterProjections(PROJECTION_TYPES.COMPOSITE_LOCK).length > 0;
+
   private filterProjections(projectionType: PROJECTION_TYPES.INDEX): [string, IndexProjection][];
-  private filterProjections(projectionType: PROJECTION_TYPES.COMPOSITE): [string, CompositeProjection][];
-  private filterProjections(projectionType: PROJECTION_TYPES): [string, IndexProjection | CompositeProjection][] {
+  private filterProjections(
+    projectionType: PROJECTION_TYPES.COMPOSITE_TRANSACTION
+  ): [string, CompositeTransactionProjection][];
+  private filterProjections(projectionType: PROJECTION_TYPES.COMPOSITE_LOCK): [string, CompositeLockProjection][];
+  private filterProjections(projectionType: PROJECTION_TYPES.COMPOSITE_STREAM): [string, CompositeStreamProjection][];
+  private filterProjections(projectionType: PROJECTION_TYPES): [string, ConcreteProjections][] {
     return Array.from(this.Data.Projections.entries()).filter(
-      (r): r is [string, IndexProjection | CompositeProjection] => r[1].ProjectionType === projectionType
+      (r): r is [string, ConcreteProjections] => r[1].ProjectionType === projectionType
     );
   }
 
@@ -173,7 +203,7 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
     sourceResource: string,
     sourceId: string,
     key: string,
-    projection: [string, CompositeProjection]
+    projection: [string, CompositeProjections]
   ) => {
     if (projection[1].Resource) {
       return {
@@ -192,35 +222,41 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
     sourceResource: string,
     sourceId: string,
     data: Form,
-    projection: [string, CompositeProjection]
+    projection: [string, CompositeProjections]
   ): { PK: string; SK: string }[] =>
     Array.from(getKeys(data, projection[1].Key)).map((i) =>
       this.buildProjectionItemCompositeAttributes(sourceResource, sourceId, i, projection)
     );
 
   buildProjectionsCompositeAttributes = (sourceResource: string, sourceId: string, data: Form) =>
-    this.filterProjections(PROJECTION_TYPES.COMPOSITE)
+    this.filterProjections(PROJECTION_TYPES.COMPOSITE_TRANSACTION)
       .map((projection) => this.buildProjectionItemsCompositeAttributes(sourceResource, sourceId, data, projection))
       .flat(); // TODO: replace with reduce
 
-  buildProjectionsCompositeItems = (sourceResource: string, sourceId: string, data: Form): ItemEntity[] =>
-    this.filterProjections(PROJECTION_TYPES.COMPOSITE)
-      .map(([name, projection]) =>
-        this.buildProjectionItemsCompositeAttributes(sourceResource, sourceId, data, [name, projection]).map(
-          (attributes) => ({
-            ...attributes,
-            Id: sourceId,
-            ItemType: projection.Resource ? "CompositeRelationship" : "CompositeProjection",
-            CreatedAt: new Date().toISOString(),
-            CreatedBy: SYSTEM_USER,
-            Data: jsonPathData(data, projection.DataKey)?.[0] ?? {},
-          })
-        )
-      )
-      .flat(); // TODO: replace with reduce
+  buildProjectionsCompositeItems = (
+    sourceResource: string,
+    sourceId: string,
+    data: Form
+  ): { transaction: ItemEntity[]; lock: ItemEntity[] } => {
+    const projectionMapFn = (projection: [string, CompositeProjections]): ItemEntity[] =>
+      this.buildProjectionItemsCompositeAttributes(sourceResource, sourceId, data, projection).map((attributes) => ({
+        ...attributes,
+        Id: sourceId,
+        ItemType: projection[1].Resource ? "CompositeRelationship" : "CompositeProjection",
+        CreatedAt: new Date().toISOString(),
+        CreatedBy: SYSTEM_USER,
+        Data: jsonPathData(data, projection[1].DataKey)?.[0] ?? {},
+      }));
+
+    // TODO: replace flat with reduce
+    return {
+      transaction: this.filterProjections(PROJECTION_TYPES.COMPOSITE_TRANSACTION).map(projectionMapFn).flat(),
+      lock: this.filterProjections(PROJECTION_TYPES.COMPOSITE_LOCK).map(projectionMapFn).flat(),
+    };
+  };
 
   buildProjectionOldCompositeAttributes = (sourceResource: string, sourceId: string, oldData: Form, newData: Form) =>
-    this.filterProjections(PROJECTION_TYPES.COMPOSITE).reduce((removedKeys, [name, projection]) => {
+    this.filterProjections(PROJECTION_TYPES.COMPOSITE_TRANSACTION).reduce((removedKeys, [name, projection]) => {
       const prevKeys = getKeys(oldData, projection.Key);
       const newKeys = getKeys(newData, projection.Key);
 
@@ -267,18 +303,23 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
         },
         reverse,
       }))
-      .with({ ProjectionType: PROJECTION_TYPES.COMPOSITE }, () => ({
-        keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
-        expressionNames: {
-          "#PK": `PK`,
-          "#SK": `SK`,
-        },
-        expressionValues: {
-          ":PK": pk,
-          ":SKPrefix": `${projectionName}:${queryPostfix}`,
-        },
-        reverse,
-      }))
+      .with(
+        { ProjectionType: PROJECTION_TYPES.COMPOSITE_TRANSACTION },
+        { ProjectionType: PROJECTION_TYPES.COMPOSITE_LOCK },
+        { ProjectionType: PROJECTION_TYPES.COMPOSITE_STREAM },
+        () => ({
+          keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
+          expressionNames: {
+            "#PK": `PK`,
+            "#SK": `SK`,
+          },
+          expressionValues: {
+            ":PK": pk,
+            ":SKPrefix": `${projectionName}:${queryPostfix}`,
+          },
+          reverse,
+        })
+      )
       .exhaustive();
   };
 
@@ -309,17 +350,22 @@ export class MetadataProjections extends ItemEntity<DataType, "Projections"> imp
           ":SKPrefix": `${projectionName}:`,
         },
       }))
-      .with({ ProjectionType: PROJECTION_TYPES.COMPOSITE }, () => ({
-        keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
-        expressionNames: {
-          "#PK": `PK`,
-          "#SK": `SK`,
-        },
-        expressionValues: {
-          ":PK": pk,
-          ":SKPrefix": `${projectionName}:`,
-        },
-      }))
+      .with(
+        { ProjectionType: PROJECTION_TYPES.COMPOSITE_TRANSACTION },
+        { ProjectionType: PROJECTION_TYPES.COMPOSITE_LOCK },
+        { ProjectionType: PROJECTION_TYPES.COMPOSITE_STREAM },
+        () => ({
+          keyCondition: "#PK = :PK and begins_with(#SK, :SKPrefix)",
+          expressionNames: {
+            "#PK": `PK`,
+            "#SK": `SK`,
+          },
+          expressionValues: {
+            ":PK": pk,
+            ":SKPrefix": `${projectionName}:`,
+          },
+        })
+      )
       .exhaustive();
   };
 }

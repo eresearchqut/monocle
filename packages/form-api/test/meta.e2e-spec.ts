@@ -7,7 +7,7 @@ import { Form, InputType, SectionType } from "@eresearchqut/form-definition";
 import { FormModule } from "../src/module/meta/form/form.module";
 import { ProjectionsModule } from "../src/module/meta/projections/projections.module";
 import { AuthorizationModule } from "../src/module/meta/authorization/authorization.module";
-import { generateResourceName, initApp } from "./utils";
+import { generateResourceName, initApp, teardownApp } from "./utils";
 
 describe("Metadata", () => {
   let app: INestApplication;
@@ -15,6 +15,8 @@ describe("Metadata", () => {
   beforeAll(async () => {
     app = await initApp([DynamodbModule, MetadataModule, FormModule, ProjectionsModule, AuthorizationModule]);
   });
+
+  afterAll(async () => teardownApp(app));
 
   it("Creates empty metadata", async () => {
     const resourceName = generateResourceName();

@@ -1,5 +1,5 @@
 import { INestApplication } from "@nestjs/common";
-import { generateResourceName, initApp } from "./utils";
+import { generateResourceName, initApp, teardownApp } from "./utils";
 import { ResourceModule } from "../src/module/resource/resource.module";
 import * as request from "supertest";
 import {
@@ -35,6 +35,8 @@ describe("Resource forms", () => {
   beforeAll(async () => {
     app = await initApp([ResourceModule]);
   });
+
+  afterAll(async () => teardownApp(app));
 
   const crud = async (name: string, putData: unknown, updateData: unknown) => {
     // Create resource

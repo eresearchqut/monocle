@@ -1,5 +1,5 @@
 import { INestApplication } from "@nestjs/common";
-import { generateResourceName, initApp } from "./utils";
+import { generateResourceName, initApp, teardownApp } from "./utils";
 import * as request from "supertest";
 import { Form, InputType, SectionType } from "@eresearchqut/form-definition";
 import { NIL as NIL_UUID, v4 as uuid } from "uuid";
@@ -117,28 +117,28 @@ describe("Resource relationship projections", () => {
             index: 2,
           },
           singleCompositeRelationshipBare: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "BARE",
             resource: targetResource,
             key: "testSection.targetKey1",
             dataKey: "",
           },
           singleCompositeRelationshipNamed: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "NAME_POSTFIX",
             resource: targetResource,
             key: "testSection.targetKey1",
             dataKey: "",
           },
           multipleCompositeRelationshipBare: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "BARE",
             resource: targetResource,
             key: "testSection.*",
             dataKey: "",
           },
           multipleCompositeRelationshipNamed: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "NAME_POSTFIX",
             resource: targetResource,
             key: "testSection.*",
@@ -273,6 +273,8 @@ describe("Resource relationship projections", () => {
       })
       .expect(200);
   });
+
+  afterAll(async () => teardownApp(app));
 
   describe("Single index relationship", () => {
     describe.each(["indexRelationshipBare", "indexRelationshipNamed"])("%s", (relationship) => {
@@ -453,13 +455,13 @@ describe("Resource sort projections", () => {
             index: 2,
           },
           stringCompositeSortBare: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "BARE",
             key: "testSection.stringKey2",
             dataKey: "$",
           },
           stringCompositeSortNamed: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "NAME_POSTFIX",
             key: "testSection.stringKey2",
             dataKey: "$",
@@ -477,13 +479,13 @@ describe("Resource sort projections", () => {
             index: 4,
           },
           numberCompositeSortBare: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "BARE",
             key: "testSection.numberKey2",
             dataKey: "$",
           },
           numberCompositeSortNamed: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "NAME_POSTFIX",
             key: "testSection.numberKey2",
             dataKey: "$",
@@ -501,13 +503,13 @@ describe("Resource sort projections", () => {
             index: 6,
           },
           booleanCompositeSortBare: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "BARE",
             key: "testSection.booleanKey2",
             dataKey: "$",
           },
           booleanCompositeSortNamed: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "NAME_POSTFIX",
             key: "testSection.booleanKey2",
             dataKey: "$",
@@ -610,6 +612,8 @@ describe("Resource sort projections", () => {
       })
       .expect(200);
   });
+
+  afterAll(async () => teardownApp(app));
 
   describe("String sorting", () => {
     describe("Initial resources", () => {
@@ -848,13 +852,13 @@ describe("Resource query projections", () => {
             index: 2,
           },
           stringCompositeQueryBare: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "BARE",
             key: "testSection.stringKey2",
             dataKey: "$",
           },
           stringCompositeQueryNamed: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "NAME_POSTFIX",
             key: "testSection.stringKey2",
             dataKey: "$",
@@ -872,13 +876,13 @@ describe("Resource query projections", () => {
             index: 4,
           },
           numberCompositeQueryBare: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "BARE",
             key: "testSection.numberKey2",
             dataKey: "$",
           },
           numberCompositeQueryNamed: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "NAME_POSTFIX",
             key: "testSection.numberKey2",
             dataKey: "$",
@@ -896,13 +900,13 @@ describe("Resource query projections", () => {
             index: 6,
           },
           booleanCompositeQueryBare: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "BARE",
             key: "testSection.booleanKey2",
             dataKey: "$",
           },
           booleanCompositeQueryNamed: {
-            projectionType: "COMPOSITE",
+            projectionType: "COMPOSITE_TRANSACTION",
             partitionType: "NAME_POSTFIX",
             key: "testSection.booleanKey2",
             dataKey: "$",
@@ -1007,6 +1011,8 @@ describe("Resource query projections", () => {
       })
       .expect(200);
   });
+
+  afterAll(async () => teardownApp(app));
 
   describe("String queries", () => {
     describe("Initial resources", () => {

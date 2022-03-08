@@ -2,9 +2,8 @@ import React, { FunctionComponent, useCallback, useEffect, useRef, useState } fr
 import { useResizeDetector } from 'react-resize-detector';
 import QrScanner from 'qr-scanner';
 import QrScannerWorkerPath from '!!file-loader!../../../../../node_modules/qr-scanner/qr-scanner-worker.min.js';
-import { Button } from 'primereact/button';
-import { SplitButton } from 'primereact/splitbutton';
 import { ToggleButton } from 'primereact/togglebutton';
+import { Dropdown } from 'primereact/dropdown';
 
 QrScanner.WORKER_PATH = QrScannerWorkerPath;
 
@@ -29,7 +28,6 @@ export const ReactQRScanner: FunctionComponent<ReactQRScannerProps> = ({
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const qrScannerRef = useRef<QrScanner | null>(null);
     const [availableCameras, setAvailableCameras] = useState<QrScanner.Camera[]>([]);
-    // TODO
     const [selectedCamera, setSelectedCamera] = useState<QrScanner.Camera | null>(null);
     const [lastQRCode, setLastQRCode] = useState<string | null>(null);
     // const [scanRegion, setScanRegion] = useState<QrScanner.ScanRegion | null>(null);
@@ -150,6 +148,19 @@ export const ReactQRScanner: FunctionComponent<ReactQRScannerProps> = ({
         if (error === QrScanner.NO_QR_CODE_FOUND) return;
         console.error('Scanning ERROR:', error);
     }
+
+    useEffect(() => {
+        /* TODO
+          - first try to setCamera, set in state only if no errors
+          - this method is async
+          - proper error handling
+          - what kind of errors would we get? Display some error if we can't set the camera?
+          - maybe display just 2 options? Front and Back (corresponding to user and environment in QrScanner terms)
+        */
+        if (selectedCamera !== null) {
+            qrScannerRef.current?.setCamera(selectedCamera.id);
+        }
+    }, [selectedCamera]);
 
     /*
     Invoke the onQRCodeScanned action only when a new QR Code has been scanned.
@@ -320,13 +331,21 @@ export const ReactQRScanner: FunctionComponent<ReactQRScannerProps> = ({
     }
 
     const cameras = availableCameras;
-    // TODO
-    const currentCamera = cameras.length > 0 ? cameras[0].label : null;
+    const currentCamera =
+        selectedCamera === null ? (cameras.length > 0 ? cameras[0].label : null) : selectedCamera.label;
 
     return (
         <div className="p-d-flex p-flex-column p-ai-center">
             <div className="p-mb-3">
-                {currentCamera && <SplitButton label={currentCamera} icon="pi pi-video" model={cameras} />}
+                {currentCamera && (
+                    <Dropdown
+                        placeholder="Default Camera"
+                        options={cameras}
+                        optionLabel="label"
+                        value={selectedCamera}
+                        onChange={(e) => setSelectedCamera(e.value)}
+                    />
+                )}
             </div>
             <div style={{ width: '100%' }} ref={containerRef}></div>
             <div>

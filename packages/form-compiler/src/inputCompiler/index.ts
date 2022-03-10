@@ -17,6 +17,7 @@ import { MarkdownInputCompiler } from './markdownInputCompiler';
 import { OptionsInputCompiler } from './optionsInputCompiler';
 import { SignatureInputCompiler } from './signatureInputCompiler';
 import { SampleContainerInputCompiler } from './sampleContainerInputCompiler';
+import { QRScannerInputCompiler } from './qrScannerInputCompiler';
 
 export {
     AbstractInputCompiler,
@@ -33,6 +34,8 @@ export {
     BooleanInputCompiler,
     DateTimeInputCompiler,
     SignatureInputCompiler,
+    QRScannerInputCompiler,
+    SampleContainerInputCompiler,
 };
 
 export const inputCompilers: InputCompiler[] = [
@@ -49,6 +52,7 @@ export const inputCompilers: InputCompiler[] = [
     new CountryInputCompiler(),
     new BooleanInputCompiler(),
     new DateTimeInputCompiler(),
+    new QRScannerInputCompiler(),
     new SampleContainerInputCompiler(),
     new SvgMapInputCompiler(),
     new SignatureInputCompiler(),

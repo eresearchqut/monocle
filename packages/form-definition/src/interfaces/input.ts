@@ -19,6 +19,7 @@ export enum InputType {
     MULTILINE_TEXT = 'multiline-text',
     NUMERIC = 'numeric',
     OPTIONS = 'options',
+    QR_SCANNER = 'qr-scanner',
     RANGE = 'range',
     SAMPLE_CONTAINER = 'biobank-sample-container',
     SIGNATURE = 'signature',
@@ -103,15 +104,14 @@ export interface OptionsInput extends AbstractInput {
     /**
      * Option values and labels
      */
-    options:
-      {
-          /**
-           * @format uuid
-           */
-          id: string;
-          label: string;
-          value: number | string;
-      }[];
+    options: {
+        /**
+         * @format uuid
+         */
+        id: string;
+        label: string;
+        value: number | string;
+    }[];
 }
 
 /**
@@ -290,6 +290,14 @@ export interface CurrencyInput extends AbstractInput {
 }
 
 /**
+ * @title QR Scanner
+ *
+ */
+export interface QRScannerInput extends AbstractInput {
+    type: InputType.QR_SCANNER;
+}
+
+/**
  * @title Sample Container
  *
  */
@@ -331,6 +339,7 @@ export type Input =
     | MultilineTextInput
     | NumericInput
     | OptionsInput
+    | QRScannerInput
     | RangeInput
     | Signature
     | SampleContainerInput

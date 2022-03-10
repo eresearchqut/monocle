@@ -14,12 +14,14 @@ const DEFAULT_ASPECT_RATIO = 1.333333333333333333333333333;
 export interface ReactQRScannerProps {
     autoStartScanning?: boolean;
     fps?: number;
+    videoMaxWidthPx?: number;
     onQRCodeScanned?: (qrCode: string) => void;
 }
 
 export const ReactQRScanner: FunctionComponent<ReactQRScannerProps> = ({
     fps = 30,
     autoStartScanning = true,
+    videoMaxWidthPx = Number.MIN_SAFE_INTEGER,
     onQRCodeScanned = (qrCode) => {
         console.log(`Scanned QR Code: ${qrCode}`);
     },
@@ -33,7 +35,6 @@ export const ReactQRScanner: FunctionComponent<ReactQRScannerProps> = ({
     // const [scanRegion, setScanRegion] = useState<QrScanner.ScanRegion | null>(null);
     const scanRegionRef = useRef<QrScanner.ScanRegion | null>(null);
     const aspectRatioRef = useRef<number>(DEFAULT_ASPECT_RATIO);
-    const scaleFactorRef = useRef<number>(1);
 
     const [isStopped, setIsStopped] = useState<boolean>(!autoStartScanning);
     const isStoppedRef = useRef<boolean>(!autoStartScanning);
@@ -203,7 +204,7 @@ export const ReactQRScanner: FunctionComponent<ReactQRScannerProps> = ({
 
         aspectRatioRef.current = video.videoWidth / video.videoHeight;
 
-        canvas.width = availableWidth - SAFETY_MARGIN;
+        canvas.width = Math.min(availableWidth, videoMaxWidthPx) - SAFETY_MARGIN;
         canvas.height = Math.floor(canvas.width / aspectRatioRef.current);
 
         if (canvas !== null) {

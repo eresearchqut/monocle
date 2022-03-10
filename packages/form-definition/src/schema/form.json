@@ -443,6 +443,9 @@
                                 "$ref": "#/definitions/CurrencyInput"
                             },
                             {
+                                "$ref": "#/definitions/QRScannerInput"
+                            },
+                            {
                                 "$ref": "#/definitions/SampleContainerInput"
                             },
                             {
@@ -755,6 +758,47 @@
                 "type"
             ],
             "title": "Options",
+            "type": "object"
+        },
+        "QRScannerInput": {
+            "properties": {
+                "countsToProgress": {
+                    "description": "Does the input count to progress when completed",
+                    "type": "boolean"
+                },
+                "description": {
+                    "description": "Description text can be used to provide more context that will help the user successfully complete the entry.",
+                    "type": "string"
+                },
+                "id": {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "Label can be provided to override the name",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the element",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Can the element be flagged as required",
+                    "type": "boolean"
+                },
+                "type": {
+                    "enum": [
+                        "qr-scanner"
+                    ],
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "name",
+                "type"
+            ],
+            "title": "QR Scanner",
             "type": "object"
         },
         "RangeInput": {

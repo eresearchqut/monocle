@@ -22,6 +22,7 @@ import {
     faVial,
     faVectorSquare,
     IconDefinition,
+    faQrcode,
 } from '@fortawesome/free-solid-svg-icons';
 import { faMarkdown } from '@fortawesome/free-brands-svg-icons';
 import { InputType, SectionType } from '@eresearchqut/form-definition';
@@ -140,6 +141,14 @@ const componentDefaults: Map<InputType | SectionType, ComponentMetadata> = new M
             icon: faClipboardCheck,
             label: 'Options',
             description: 'Single or multiple choice from a list of options',
+        },
+    ],
+    [
+        InputType.QR_SCANNER,
+        {
+            icon: faQrcode,
+            label: 'QR Code Scanner',
+            description: 'Scans QR Codes using the camera',
         },
     ],
     [

@@ -12,8 +12,8 @@ export class QRScannerInputCompiler extends AbstractInputCompiler implements Inp
         return {
             type: 'object',
             properties: {
-                fps: { type: 'number' },
                 autoStartScanning: { type: 'boolean' },
+                videoMaxWidthPx: { type: 'number' },
             },
         } as JsonSchema;
     }

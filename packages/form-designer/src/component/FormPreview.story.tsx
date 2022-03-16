@@ -47,7 +47,6 @@ BiobankExample.args = {
     data: {
         biobank: {
             qrScanner: {
-                fps: 10,
                 autoStartScanning: false,
                 videoMaxWidthPx: 480,
             },

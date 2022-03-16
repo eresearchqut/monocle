@@ -2,8 +2,6 @@ import React from 'react';
 import { and, ControlProps, ControlState, optionIs, RankedTester, rankWith, uiTypeIs } from '@jsonforms/core';
 import { Control, withJsonFormsControlProps } from '@jsonforms/react';
 
-import merge from 'lodash/merge';
-
 import { ReactQRScanner } from '../../component/QRCode/ReactQRScanner';
 
 export class QRScannerControl extends Control<ControlProps, ControlState> {
@@ -13,7 +11,7 @@ export class QRScannerControl extends Control<ControlProps, ControlState> {
 
         return (
             <div className="p-field">
-                <ReactQRScanner fps={fps} autoStartScanning={autoStartScanning} videoMaxWidthPx={640} />
+                <ReactQRScanner autoStartScanning={autoStartScanning} videoMaxWidthPx={640} />
             </div>
         );
     }

@@ -44,15 +44,6 @@
     },
     {
       "path": "packages/form-designer"
-    },
-    {
-      "path": "packages/tenant-resource-manager"
-    },
-    {
-      "path": "packages/user-management-api"
-    },
-    {
-      "path": "packages/user-management-components"
     }
   ]
 }

@@ -8,6 +8,11 @@
             "inputs": [
                 {
                     "id": "6b0b5622-72cc-443c-b2d1-eead5272e451",
+                    "type": "qr-scanner",
+                    "name": "QR Scanner"
+                },
+                {
+                    "id": "6b0b5622-72cc-443c-b2d1-eead5272e452",
                     "type": "biobank-sample-container",
                     "name": "Example Tray"
                 }

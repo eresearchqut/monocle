@@ -9,6 +9,8 @@ import {
     svgMapControlTester,
     SampleContainerControl,
     sampleContainerControlTester,
+    QRScannerControl,
+    qrScannerControlTester,
 } from './controls';
 import {
     CategorizationLayout,
@@ -54,7 +56,6 @@ import {
     InputTextCell,
     inputTextCellTester,
 } from './cells';
-import { sample } from 'lodash';
 
 export * from './controls';
 export * from './cells';
@@ -66,6 +67,7 @@ export const renderers: { tester: RankedTester; renderer: any }[] = [
     { tester: inputBooleanControlTester, renderer: InputBooleanControl },
     { tester: svgMapControlTester, renderer: SvgMapControl },
     { tester: sampleContainerControlTester, renderer: SampleContainerControl },
+    { tester: qrScannerControlTester, renderer: QRScannerControl },
     { tester: verticalLayoutTester, renderer: VerticalLayout },
     { tester: categorizationLayoutTester, renderer: CategorizationLayout },
     { tester: categoryLayoutTester, renderer: CategoryLayout },

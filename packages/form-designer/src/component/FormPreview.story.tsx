@@ -46,6 +46,10 @@ export const BiobankExample = Template.bind({});
 BiobankExample.args = {
     data: {
         biobank: {
+            qrScanner: {
+                autoStartScanning: false,
+                videoMaxWidthPx: 480,
+            },
             exampleTray: {
                 width: 10,
                 length: 10,

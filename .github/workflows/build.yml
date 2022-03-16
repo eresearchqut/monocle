@@ -14,6 +14,7 @@ jobs:
         with:
           node-version: '16'
           registry-url: 'https://npm.pkg.github.com'
+          cache: 'yarn'
       - name: Configure Git User
         run: |
           git config --global user.email "eresearch@qut.edu.au"

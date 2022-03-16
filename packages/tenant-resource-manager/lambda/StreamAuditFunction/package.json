@@ -1,0 +1,11 @@
+{
+  "name": "StreamAuditFunction",
+  "version": "1.0.0",
+  "description": "This lambda is invoked by DynamoDB whenever items are added/updated/removed.",
+  "main": "index.js",
+  "author": "ryan.s.bennett@qut.edu.au",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.49.0",
+    "@aws-sdk/util-dynamodb": "^3.49.0"
+  }
+}

@@ -1,17 +1,28 @@
-// import * as cdk from 'aws-cdk-lib';
-// import { Template } from 'aws-cdk-lib/assertions';
-// import * as TenantResourceManager from '../lib/tenant-resource-manager-stack';
+import * as TenantResourceManager from '../lib/tenant-resource-manager-stack';
+import { App } from 'aws-cdk-lib';
+import { Template } from 'aws-cdk-lib/assertions';
 
-// example test. To run these tests, uncomment this file along with the
-// example resource in lib/tenant-resource-manager-stack.ts
-test('Tenant Resource Manager', () => {
-//   const app = new cdk.App();
-//     // WHEN
-//   const stack = new TenantResourceManager.TenantResourceManagerStack(app, 'MyTestStack');
-//     // THEN
-//   const template = Template.fromStack(stack);
+test('Tenant Resource Manager Test', () => {
 
-//   template.hasResourceProperties('AWS::SQS::Queue', {
-//     VisibilityTimeout: 300
-//   });
+    const app = new App({
+        context: {
+            userPoolExportName: 'TenantUserPool',
+            userPoolClientExportName: 'TenantUserPoolAdminClient',
+        },
+    });
+    // WHEN
+
+    const stack = new TenantResourceManager.TenantResourceManagerStack(app, 'TenantResourceManager');
+    // THEN
+
+    const template = Template.fromStack(stack);
+
+    template.resourceCountIs('AWS::Cognito::UserPool', 1);
+    template.resourceCountIs('AWS::Cognito::UserPoolClient', 1);
+    template.resourceCountIs('AWS::DynamoDB::Table', 2);
+
+    template.hasOutput('UserPoolOutput', { Export: { Name: 'TenantResourceManagerUserPool' } });
+    template.hasOutput('AdminClientOutput', { Export: { Name: 'TenantResourceManagerAdminClient' } });
+    template.hasOutput('RbacTableOutput', { Export: { Name: 'TenantResourceManagerRbacTable' } });
+    template.hasOutput('RbacAuditTableOutput', { Export: { Name: 'TenantResourceManagerRbacAuditTable' } });
 });

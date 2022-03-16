@@ -1,8 +1,16 @@
 {
   "name": "@eresearchqut/tenant-resource-manager",
-  "version": "0.25.0",
+  "version": "0.29.0",
   "bin": {
     "tenant-resource-manager": "bin/tenant-resource-manager.js"
+  },
+  "repository": {
+    "type": "git",
+    "directory": "packages/tenant-resource-manager",
+    "url": "https://github.com/eresearchqut/future-state-mono-repo/tree/main/packages/tenant-resource-manager"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
     "build": "tsc",

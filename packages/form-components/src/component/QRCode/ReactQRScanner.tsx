@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
-import { useResizeDetector } from 'react-resize-detector';
 import QrScanner from 'qr-scanner';
 import { ToggleButton } from 'primereact/togglebutton';
 import { Dropdown } from 'primereact/dropdown';
@@ -108,7 +107,7 @@ export const ReactQRScanner: FunctionComponent<ReactQRScannerProps> = ({
         setLastQRCode(qrCode);
     }
 
-    function onScanError(error: string) {
+    function onScanError(error: Error | string) {
         if (error === QrScanner.NO_QR_CODE_FOUND) return;
         console.error('Scanning ERROR:', error);
     }

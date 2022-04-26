@@ -1,6 +1,6 @@
 {
   "name": "@eresearchqut/form-components",
-  "version": "0.29.0",
+  "version": "0.30.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -25,12 +25,12 @@
   "dependencies": {
     "@jsonforms/core": "3.0.0-alpha.3",
     "@jsonforms/react": "3.0.0-alpha.3",
-    "primeflex": "2.0.0",
-    "primeicons": "5.0.0",
-    "primereact": "7.2.1",
     "country-region-data": "^1.11.0",
     "easymde": "2.15.0",
     "lodash": "4.17.21",
+    "primeflex": "2.0.0",
+    "primeicons": "5.0.0",
+    "primereact": "7.2.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-img-mapper": "1.2.2",
@@ -41,7 +41,6 @@
     "trim-canvas": "^0.1.2",
     "uuid": "^8.3.2"
   },
-
   "devDependencies": {
     "@babel/core": "^7.17.0",
     "@types/enzyme": "^3.10.3",

@@ -17,10 +17,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 const cognitoIdentityProviderClient = new CognitoIdentityProviderClient({
     endpoint: `http://${global.__TESTCONTAINERS_COGNITO_IP__}:${global.__TESTCONTAINERS_COGNITO_PORT_9229__}`,
+    region: 'local'
 });
 
 const dynamoDBClient = new DynamoDBClient({
     endpoint: `http://${global.__TESTCONTAINERS_DYNAMODB_IP__}:${global.__TESTCONTAINERS_DYNAMODB_PORT_8000__}`,
+    region: 'local'
 });
 
 class LocalCognitoProvider {

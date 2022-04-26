@@ -28,4 +28,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.STORYBOOK_AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'ap-southeast-2'
           SOURCE_DIR: 'storybook-static'
-          DEST_DIR: ${{ env.GITHUB_HEAD_REF }}
+          DEST_DIR: ${GITHUB_REF##*/}

@@ -37,4 +37,5 @@ Resources:
             Principal:
               AWS:
                 - !Sub arn:aws:iam::${AWS::AccountId}:role/Admin
+                - !Sub arn:aws:iam::${AWS::AccountId}:role/ResearchAdmin
                 - !GetAtt PublisherUser.Arn

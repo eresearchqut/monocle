@@ -1,6 +1,6 @@
 {
   "name": "@eresearchqut/form-designer",
-  "version": "0.30.0",
+  "version": "0.31.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -22,9 +22,9 @@
     "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0 --fix"
   },
   "dependencies": {
-    "@eresearchqut/form-compiler": "^0.30.0",
-    "@eresearchqut/form-components": "^0.30.0",
-    "@eresearchqut/form-definition": "^0.30.0",
+    "@eresearchqut/form-compiler": "^0.31.0",
+    "@eresearchqut/form-components": "^0.31.0",
+    "@eresearchqut/form-definition": "^0.31.0",
     "@fortawesome/fontawesome-svg-core": "1.2.36",
     "@fortawesome/free-brands-svg-icons": "5.15.4",
     "@fortawesome/free-regular-svg-icons": "5.15.4",

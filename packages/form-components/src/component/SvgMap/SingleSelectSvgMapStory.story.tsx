@@ -7,7 +7,7 @@ import { action } from '@storybook/addon-actions';
 import { SvgMapSelection } from './SvgMap';
 
 export default {
-    title: 'Components/SingleSelectSvgMap',
+    title: 'FormComponents/Components/SingleSelectSvgMap',
     component: SingleSelectSvgMap,
 } as Meta;
 

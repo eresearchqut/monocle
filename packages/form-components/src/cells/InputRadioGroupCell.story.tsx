@@ -6,7 +6,7 @@ import { useArgs } from '@storybook/client-api';
 import { action } from '@storybook/addon-actions';
 
 export default {
-    title: 'Cells/InputRadioGroupCell',
+    title: 'FormComponents/Cells/InputRadioGroupCell',
     component: InputRadioGroupCell,
 } as Meta;
 

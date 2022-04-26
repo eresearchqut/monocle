@@ -23,7 +23,7 @@ const ChangeEmitter: React.FC<JsonFormsReactProps> = ({ onChange }) => {
 };
 
 export default {
-    title: 'Controls/InputBooleanControl',
+    title: 'FormComponents/Controls/InputBooleanControl',
     component: InputBooleanControl,
     decorators: [
         (Story, context) => {

@@ -9,7 +9,7 @@ import MultiSelectSvgMap, { MultiSelectSvgMapProps } from './MultiSelectSvgMap';
 import { SvgMapSelection } from './SvgMap';
 
 export default {
-    title: 'Components/MultiSelectSvgMap',
+    title: 'FormComponents/Components/MultiSelectSvgMap',
     component: MultiSelectSvgMap,
 } as Meta;
 

@@ -8,7 +8,7 @@ import { action } from '@storybook/addon-actions';
 import { useArgs } from '@storybook/client-api';
 
 export default {
-    title: 'Cells/InputNumberCell',
+    title: 'FormComponents/Cells/InputNumberCell',
     component: InputNumberCell,
     controls: { expanded: true },
 } as Meta;

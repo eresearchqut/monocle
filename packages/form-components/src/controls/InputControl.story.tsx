@@ -23,7 +23,7 @@ const ChangeEmitter: React.FC<JsonFormsReactProps> = ({ onChange }) => {
 };
 
 export default {
-    title: 'Controls/InputControl',
+    title: 'FormComponents/Controls/InputControl',
     component: InputControl,
     decorators: [
         (Story, context) => {

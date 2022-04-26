@@ -5,7 +5,7 @@ import Component, { ComponentProps } from './Component';
 import { InputType } from '@eresearchqut/form-definition';
 
 export default {
-    title: 'Component/Component',
+    title: 'FormDesigner/Component',
     component: Component,
 } as Meta;
 

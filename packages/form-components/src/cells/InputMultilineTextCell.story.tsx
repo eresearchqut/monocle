@@ -6,7 +6,7 @@ import { useArgs } from '@storybook/client-api';
 import { action } from '@storybook/addon-actions';
 
 export default {
-    title: 'Cells/InputMultilineTextCell',
+    title: 'FormComponents/Cells/InputMultilineTextCell',
     component: InputMultilineTextCell,
 } as Meta;
 

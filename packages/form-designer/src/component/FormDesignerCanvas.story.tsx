@@ -5,7 +5,7 @@ import { FormDesignerCanvas, FormDesignerCanvasProps } from './FormDesignerCanva
 import { DragDropContext, DropResult, ResponderProvided } from 'react-beautiful-dnd';
 
 export default {
-    title: 'Component/FormDesignerCanvas',
+    title: 'FormDesigner/FormDesignerCanvas',
     component: FormDesignerCanvas,
     decorators: [
         (Story, context) => {

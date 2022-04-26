@@ -1,4 +1,5 @@
 import { CategorizationFormCompiler } from '../../src/formCompiler/categorizationFormCompiler';
+import { InputType, SectionType } from '@eresearchqut/form-definition';
 
 describe('VerticalFormBuilder', () => {
     const formBuilder = new CategorizationFormCompiler();
@@ -9,8 +10,10 @@ describe('VerticalFormBuilder', () => {
                 name: 'All The Details',
                 sections: [
                     {
+                        id: '31ad8bdd-bdf0-4632-8819-457ca30aa1a8',
+                        type: SectionType.DEFAULT,
                         name: 'Personal Details',
-                        inputs: [{ inputType: 'text', name: 'Family Name' }],
+                        inputs: [{ type: InputType.TEXT, id: '8f0c22dc-5efc-4660-bd6b-69c99c013e96', name: 'Family Name' }],
                     },
                 ],
             })
@@ -34,32 +37,37 @@ describe('VerticalFormBuilder', () => {
         expect(
             formBuilder.ui({
                 name: 'All The Details',
+
                 sections: [
                     {
+                        id: '31ad8bdd-bdf0-4632-8819-457ca30aa1a8',
+                        type: SectionType.DEFAULT,
                         name: 'Personal Details',
-                        inputs: [{ inputType: 'text', name: 'Family Name' }],
+                        inputs: [{ type: InputType.TEXT, id: '6f7715f6-4986-46aa-a5cd-850e9eb7b16f', name: 'Family Name' }],
                     },
                 ],
             })
         ).toEqual({
-            elements: [
+            "elements": [
                 {
-                    elements: [
+                    "elements": [
                         {
-                            options: {
-                                input: {
-                                    inputType: 'text',
-                                    name: 'Family Name',
-                                },
+                            "label": "Family Name",
+                            "options": {
+                                "id": "6f7715f6-4986-46aa-a5cd-850e9eb7b16f",
+                                "name": "Family Name",
+                                "type": "text"
                             },
-                            scope: '#/properties/personalDetails/properties/familyName',
-                            type: 'Control',
-                        },
+                            "scope": "#/properties/personalDetails/properties/familyName",
+                            "type": "Control"
+                        }
                     ],
-                    type: 'VerticalLayout',
-                },
+                    "label": "Personal Details",
+                    "type": "Category"
+                }
             ],
-            type: 'VerticalLayout',
+            "label": "All The Details",
+            "type": "Categorization"
         });
     });
 });

@@ -6,7 +6,7 @@ import { action } from '@storybook/addon-actions';
 import { InputEmailCell } from './InputEmailCell';
 
 export default {
-    title: 'Cells/InputEmailCell',
+    title: 'FormComponents/Cells/InputEmailCell',
     component: InputEmailCell,
     argTypes: {
         id: { table: { disable: true } },

@@ -16,43 +16,20 @@
     "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
     "prepack": "yarn build",
     "build": "yarn clean && tsc --build",
-    "test": "jest --no-cache",
-    "test-cov": "jest --no-cache --coverage",
-    "lint": "eslint \"./src/**/*.{ts,tsx}\" --fix --max-warnings=0",
-    "storybook": "(start-storybook -p 6008)",
-    "build-storybook": "rimraf storybook-static && build-storybook -o ../../storybooks/user-manager",
-    "deploy-storybook": "storybook-to-ghpages"
+    "test": "echo '(add some tests) jest --no-cache'",
+    "test-cov": "echo '(add some tests) jest --no-cache --coverage'",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\" --fix --max-warnings=0"
   },
   "dependencies": {
     "lodash": "4.17.21",
-    "primeflex": "2.0.0",
-    "primeicons": "4.1.0",
-    "primereact": "6.6.0",
+    "primereact": "7.2.1",
     "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "uuid": "^8.3.2"
+    "react-dom": "17.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
-    "@storybook/addon-actions": "^6.4.8",
-    "@storybook/addon-essentials": "^6.4.8",
-    "@storybook/addon-links": "^6.4.8",
-    "@storybook/preset-scss": "^1.0.3",
-    "@storybook/react": "^6.4.8",
-    "@storybook/storybook-deployer": "^2.8.10",
-    "@svgr/cli": "^6.1.1",
-    "@svgr/plugin-jsx": "^6.1.0",
-    "@types/enzyme": "^3.10.3",
     "@types/lodash": "4.14.171",
-    "@types/react": "17.0.16",
-    "@types/react-dom": "17.0.9",
-    "@types/uuid": "^8.3.1",
-    "babel-loader": "^8.2.2",
-    "eslint-config-prettier": "^8.3.0",
-    "react-redux": "^7.2.4",
-    "storybook-stylesheet-toggle": "^0.1.3",
-    "svgson-cli": "^1.1.1",
-    "typescript-plugin-css-modules": "3.4.0"
+    "@types/react": "17.0.16"
   },
   "jest": {
     "testEnvironment": "jsdom",

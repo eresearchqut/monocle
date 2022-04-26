@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/react';
 import SvgMap, { SvgMapProps } from './SvgMap';
 
 export default {
-    title: 'Components/SvgMap',
+    title: 'FormComponents/Components/SvgMap',
     component: SvgMap,
 } as Meta;
 

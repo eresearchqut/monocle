@@ -6,7 +6,7 @@ import { useArgs } from '@storybook/client-api';
 import { action } from '@storybook/addon-actions';
 
 export default {
-    title: 'Cells/InputSelectCell',
+    title: 'FormComponents/Cells/InputSelectCell',
     component: InputSelectCell,
 } as Meta;
 

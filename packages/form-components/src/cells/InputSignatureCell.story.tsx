@@ -6,7 +6,7 @@ import { useArgs } from '@storybook/client-api';
 import { action } from '@storybook/addon-actions';
 
 export default {
-    title: 'Cells/InputSignatureCell',
+    title: 'FormComponents/Cells/InputSignatureCell',
     component: InputSignatureCell,
 } as Meta;
 

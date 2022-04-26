@@ -7,7 +7,7 @@ import { useArgs } from '@storybook/client-api';
 import { action } from '@storybook/addon-actions';
 
 export default {
-    title: 'Cells/InputCalendarCell',
+    title: 'FormComponents/Cells/InputCalendarCell',
     component: InputCalendarCell,
     argTypes: {
         data: { control: 'text' },

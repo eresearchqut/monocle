@@ -29,4 +29,5 @@ jobs:
         run: |
           yarn install
           yarn build
+          yarn test
           yarn lerna publish minor --no-changelog --conventional-commits --yes

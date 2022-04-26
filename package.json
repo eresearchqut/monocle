@@ -25,7 +25,8 @@
     "lint": "lerna run lint --stream --parallel",
     "test": "lerna run test --stream",
     "publish": "lerna publish",
-    "storybook": "start-storybook"
+    "storybook": "start-storybook",
+    "storybook-build": "build-storybook"
   },
   "devDependencies": {
     "@types/jest": "26.0.24",

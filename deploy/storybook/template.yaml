@@ -6,7 +6,7 @@ Resources:
   StorybookBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
+      BucketName: !Sub ${AWS::StackName}-${AWS::AccountId}
       WebsiteConfiguration:
         ErrorDocument: error.html
         IndexDocument: index.html
@@ -14,7 +14,7 @@ Resources:
   PublisherUser:
     Type: 'AWS::IAM::User'
     Properties:
-      UserName: !Sub ${AWS::StackName}-${AWS::AccountId}-${AWS::Region}-Publisher
+      UserName: !Sub ${AWS::StackName}-${AWS::AccountId}-Publisher
 
   StorybookBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -25,15 +25,19 @@ Resources:
           - Sid: PublicReadForGetBucketObjects
             Effect: Allow
             Principal: "*"
-            Action: "s3:GetObject"
-            Resource: !Sub "arn:aws:s3:::${StorybookBucket}/*"
+            Action:
+              - s3:GetObject
+              - s3:ListBucket
+            Resource:
+              - !Sub arn:aws:s3:::${AWS::StackName}-${AWS::AccountId}
+              - !Sub arn:aws:s3:::${AWS::StackName}-${AWS::AccountId}/*
           - Sid: PublisherAndAdminPermissions
             Effect: Allow
             Action:
               - s3:*
             Resource:
-              - !Sub arn:aws:s3:::${AWS::StackName}-${AWS::AccountId}-${AWS::Region}
-              - !Sub arn:aws:s3:::${AWS::StackName}-${AWS::AccountId}-${AWS::Region}/*
+              - !Sub arn:aws:s3:::${AWS::StackName}-${AWS::AccountId}
+              - !Sub arn:aws:s3:::${AWS::StackName}-${AWS::AccountId}/*
             Principal:
               AWS:
                 - !Sub arn:aws:iam::${AWS::AccountId}:role/Admin

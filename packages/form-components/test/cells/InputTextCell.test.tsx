@@ -340,6 +340,6 @@ describe('Text cell', () => {
             </Provider>
         );
         const input = wrapper.find('input').getDOMNode() as HTMLInputElement;
-        expect(input.maxLength).toEqual(524288);
+        expect(input.maxLength).toEqual(defaultMaxLength);
     });
 });

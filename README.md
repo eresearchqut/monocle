@@ -23,10 +23,9 @@ yarn build
 
 ## Storybook
 
-To start the storybook for a package
+To start the storybook
 
 ```
-cd [package-name]
 yarn storybook
 ```
 

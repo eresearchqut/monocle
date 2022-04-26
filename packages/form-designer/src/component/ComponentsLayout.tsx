@@ -80,7 +80,7 @@ export const ComponentsLayout: FunctionComponent<ArrayControlProps> = ({
                               reject: () => null,
                           }),
                   }
-                : [],
+                : [] as MenuItem,
             ...(enableMoveUp && moveUp
                 ? [
                       {

@@ -23,7 +23,7 @@ const ChangeEmitter: React.FC<JsonFormsReactProps> = ({ onChange }) => {
 };
 
 export default {
-    title: 'Controls/SvgMapControl',
+    title: 'FormComponents/Controls/SvgMapControl',
     component: SvgMapControl,
     decorators: [
         (Story, context) => {

@@ -28,7 +28,7 @@ import { confirmDialog } from 'primereact/confirmdialog';
 interface Option {
     id: string;
     label: string;
-    value: string | number;
+    value?: any;
 }
 
 interface RowProps extends ColumnProps {
@@ -129,7 +129,7 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({ path, data }) => 
         });
     };
 
-    const editValue = (id: string, value: string | number) => {
+    const editValue = (id: string, value?: any) => {
         setEdits((currentEdits) => {
             const newEdits = { ...currentEdits };
             newEdits[id].value = value;
@@ -221,7 +221,7 @@ const OptionsLayout: FunctionComponent<ArrayControlProps> = ({ path, data }) => 
                 onRowEditCancel={onRowEditCancel}
                 onRowEditChange={onRowEditChange}
                 onRowEditSave={onRowEditSave}
-                rowEditorValidator={rowEditorValidator}
+                rowEditValidator={rowEditorValidator}
             >
                 <Column field="label" header="Label" editor={(props) => labelEditor(props as RowProps)} />
                 <Column field="value" header="Value" editor={(props) => valueEditor(props as RowProps)} />

@@ -4,7 +4,7 @@ import { Meta, Story } from '@storybook/react';
 import { FormPreview, FormPreviewProps } from './FormPreview';
 
 export default {
-    title: 'Component/FormPreview',
+    title: 'FormDesigner/FormPreview',
     component: FormPreview,
 } as Meta;
 

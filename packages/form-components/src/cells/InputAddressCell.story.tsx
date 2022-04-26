@@ -6,7 +6,7 @@ import { useArgs } from '@storybook/client-api';
 import { action } from '@storybook/addon-actions';
 
 export default {
-    title: 'Cells/InputAddressCell',
+    title: 'FormComponents/Cells/InputAddressCell',
     component: InputAddressCell,
     argTypes: {
         id: { table: { disable: true } },

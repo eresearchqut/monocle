@@ -23,7 +23,7 @@ export const InputTextCell = (props: CellProps) => {
         isValid = true,
     } = props;
 
-    const { pattern } = schema;
+    const { pattern, maxLength } = schema;
     const keyFilter = pattern ? new RegExp(pattern) : undefined;
     const { required, focus } = merge({}, config, uischema?.options) as InputTextCellOptions;
     const className = isValid ? undefined : 'p-invalid';
@@ -36,6 +36,8 @@ export const InputTextCell = (props: CellProps) => {
         <InputText
             value={data || ''}
             id={id}
+            size={maxLength}
+            maxLength={maxLength}
             className={className}
             disabled={!enabled}
             onChange={(e) => handleChange(path, e.target.value)}

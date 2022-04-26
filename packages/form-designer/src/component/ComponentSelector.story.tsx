@@ -6,7 +6,7 @@ import { DragDropContext, DropResult, ResponderProvided } from 'react-beautiful-
 import { InputType, SectionType } from '@eresearchqut/form-definition';
 
 export default {
-    title: 'Component/ComponentSelector',
+    title: 'FormDesigner/ComponentSelector',
     component: ComponentSelector,
     decorators: [
         (Story, context) => {

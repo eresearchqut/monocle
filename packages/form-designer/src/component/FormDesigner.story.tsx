@@ -4,7 +4,7 @@ import { Meta, Story } from '@storybook/react';
 import { FormDesigner, FormDesignerProps } from './FormDesigner';
 
 export default {
-    title: 'Component/FormDesigner',
+    title: 'FormDesigner/FormDesigner',
     component: FormDesigner,
 } as Meta;
 

@@ -3,7 +3,7 @@ import {Meta, Story} from '@storybook/react';
 import User, {UserProps} from './User';
 
 export default {
-    title: 'Components/User',
+    title: 'UserManagementComponents/User',
     component: User,
 } as Meta;
 

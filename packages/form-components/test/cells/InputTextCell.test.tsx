@@ -329,17 +329,17 @@ describe('Text cell', () => {
     test('do not use maxLength by default', () => {
         const store = initTestStore({
             data: fixture.data,
-            schema: fixture.maxLengthSchema,
+            schema: fixture.schema,
             uischema: fixture.uischema,
         });
         wrapper = mount(
             <Provider store={store}>
                 <JsonFormsReduxContext>
-                    <InputTextCell schema={fixture.maxLengthSchema} uischema={fixture.uischema} path="name" />
+                    <InputTextCell schema={fixture.schema} uischema={fixture.uischema} path="name" />
                 </JsonFormsReduxContext>
             </Provider>
         );
         const input = wrapper.find('input').getDOMNode() as HTMLInputElement;
-        expect(input.maxLength).toBe(defaultMaxLength);
+        expect(input.maxLength).toEqual(524288);
     });
 });

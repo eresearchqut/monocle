@@ -21,20 +21,26 @@ describe('TextInputCompiler', () => {
         expect(
             inputCompiler.ui({} as Form, { name: 'Personal Details' } as Section, { name: 'Family Name' } as TextInput)
         ).toEqual({
-            scope: '#/properties/personalDetails/properties/familyName',
-            type: 'Control',
-            options: {
-                input: {
-                    name: 'Family Name',
-                },
+            "label": "Family Name",
+            "options": {
+                "name": "Family Name"
             },
+            "scope": "#/properties/personalDetails/properties/familyName",
+            "type": "Control"
         });
     });
 
     test('ui empty section name', () => {
         expect(
             inputCompiler.ui({} as Form, { name: '' } as Section, { name: 'Family Name' } as TextInput)
-        ).toBeUndefined();
+        ).toEqual({
+            "label": "Family Name",
+            "options": {
+                "name": "Family Name"
+            },
+            "scope": "#/properties/familyName",
+            "type": "Control"
+        });
     });
 
     test('ui empty property name', () => {

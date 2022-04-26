@@ -1,4 +1,4 @@
-import { Form } from '@eresearchqut/form-definition';
+import { Form, InputType, SectionType } from '@eresearchqut/form-definition';
 import { CategorySectionCompiler } from '../../src/sectionCompiler/categorySectionCompiler';
 
 describe('VerticalSectionBuilder', () => {
@@ -7,8 +7,10 @@ describe('VerticalSectionBuilder', () => {
     test('build schema', () => {
         expect(
             sectionBuilder.schema({} as Form, {
+                id: 'fd7a40aa-899f-43a1-aa9e-9cc9e3ae96cf',
                 name: 'test',
-                inputs: [{ inputType: 'text', name: 'Family Name' }],
+                type: SectionType.DEFAULT,
+                inputs: [{ type: InputType.TEXT, id: '8836236b-a5af-4356-812e-d17b9fe9914d', name: 'Family Name' }],
             })
         ).toEqual({
             properties: {
@@ -24,23 +26,26 @@ describe('VerticalSectionBuilder', () => {
     test('build ui', () => {
         expect(
             sectionBuilder.ui({} as Form, {
-                name: 'Personal Details',
-                inputs: [{ inputType: 'text', name: 'Family Name' }],
+                id: 'fd7a40aa-899f-43a1-aa9e-9cc9e3ae96cf',
+                name: 'test',
+                type: SectionType.DEFAULT,
+                inputs: [{ type: InputType.TEXT, id: '8836236b-a5af-4356-812e-d17b9fe9914d', name: 'Family Name' }],
             })
         ).toEqual({
-            elements: [
+            "elements": [
                 {
-                    options: {
-                        input: {
-                            inputType: 'text',
-                            name: 'Family Name',
-                        },
+                    "label": "Family Name",
+                    "options": {
+                        "id": "8836236b-a5af-4356-812e-d17b9fe9914d",
+                        "name": "Family Name",
+                        "type": "text"
                     },
-                    scope: '#/properties/personalDetails/properties/familyName',
-                    type: 'Control',
-                },
+                    "scope": "#/properties/test/properties/familyName",
+                    "type": "Control"
+                }
             ],
-            type: 'VerticalLayout',
+            "label": "test",
+            "type": "Category"
         });
     });
 });

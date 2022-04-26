@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/react';
 import SampleContainer, { SampleContainerProps } from './SampleContainer';
 
 export default {
-    title: 'Components/Sample Container',
+    title: 'FormComponents/Components/Sample Container',
     component: SampleContainer,
 } as Meta;
 

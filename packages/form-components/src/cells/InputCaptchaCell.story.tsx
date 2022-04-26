@@ -7,7 +7,7 @@ import { useArgs } from '@storybook/client-api';
 import { action } from '@storybook/addon-actions';
 
 export default {
-    title: 'Cells/InputCaptchaCell',
+    title: 'FormComponents/Cells/InputCaptchaCell',
     component: InputCaptchaCell,
 } as Meta;
 

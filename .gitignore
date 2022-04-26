@@ -113,7 +113,7 @@ dist
 build
 
 # Story Books Static Site
-storybooks
+storybook-static
 
 # OSX DS_Store files
 .DS_Store

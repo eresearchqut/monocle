@@ -7,8 +7,8 @@ Repository of future state modules. This repository will be renamed at some poin
 ## Build instructions
 
 ```
-yarn prepare
-yarn build
+yarn install
+yarn turbo run build
 ```
 
 ## Modules

@@ -108,7 +108,7 @@ export const ComponentsLayout: FunctionComponent<ArrayControlProps> = ({
         options: PanelHeaderTemplateOptions,
         component: Input | Section,
         draggableProvided: DraggableProvided | undefined
-    ): PanelHeaderTemplateType => {
+    ) => {
         const { label, name, type, description } = component;
         const className = `${options.className} p-p-1`;
         const toggleIcon = options.collapsed ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
@@ -163,9 +163,7 @@ export const ComponentsLayout: FunctionComponent<ArrayControlProps> = ({
                                 <React.Fragment>
                                     <Panel
                                         className={'p-mt-2'}
-                                        headerTemplate={(options) =>
-                                            panelHeaderTemplate(options, component, draggableProvided)
-                                        }
+                                        headerTemplate={(options) => panelHeaderTemplate(options, component, draggableProvided)}
                                         toggleable
                                         onToggle={handleToggle(component)}
                                         collapsed={isCollapsed(component)}

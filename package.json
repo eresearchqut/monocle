@@ -24,7 +24,8 @@
     "storybook": "start-storybook",
     "storybook-build": "build-storybook",
     "build": "yarn turbo run build",
-    "test": "yarn turbo run test"
+    "test": "yarn turbo run test",
+    "lint": "yarn turbo run lint"
   },
   "devDependencies": {
     "@storybook/addon-actions": "6.4.22",
@@ -40,6 +41,7 @@
     "eslint": "7.32.0",
     "eslint-config-eslint": "7.0.0",
     "eslint-config-google": "0.14.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-react": "7.25.2",
     "eslint-plugin-react-hooks": "4.2.0",
     "is-ci": "3.0.0",

@@ -31,7 +31,7 @@ export const User: FunctionComponent<UserProps> = (props) => {
     const renderTable = (value: any) =>
         <dl>
             {Object.keys(value).map(key =>
-                <React.Fragment>
+                <React.Fragment key={key}>
                     <dt title={key}>{startCase(key)}</dt>
                     <dd>{renderValue(value[key])}</dd>
                 </React.Fragment>,

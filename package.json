@@ -17,15 +17,13 @@
     "directory": "@eresearchqut/future-state-mono-repo"
   },
   "scripts": {
-    "clean:modules": "find . -type d -name node_modules -exec rm -rf {} \\;",
-    "clean:dist": "find . -type d -name dist -exec rm -rf {} \\;",
-    "clean:turbo": "find . -type d -name .turbo -exec rm -rf {} \\;",
-    "clean": "(yarn clean:dist) && (yarn clean:turbo) && (yarn clean:modules)",
-    "storybook": "start-storybook",
-    "storybook-build": "build-storybook",
+    "build:no-cache": "turbo run build --no-cache --parallel --continue",
+    "clean": "turbo run clean",
     "build": "yarn turbo run build",
-    "test": "yarn turbo run test",
-    "lint": "yarn turbo run lint"
+    "lint": "yarn turbo run lint",
+    "storybook": "start-storybook",
+    "storybook:build": "build-storybook",
+    "test": "yarn turbo run test"
   },
   "devDependencies": {
     "@storybook/addon-actions": "6.4.22",

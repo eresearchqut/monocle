@@ -13,7 +13,7 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
-    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "clean": "rimraf dist && rimraf node_modules && rimraf .turbo && rimraf tsconfig.tsbuildinfo",
     "prepack": "yarn build",
     "build": "yarn clean && tsc --build",
     "test": "echo '(add some tests) jest --no-cache'",

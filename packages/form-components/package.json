@@ -13,7 +13,7 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
-    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "clean": "rimraf dist && rimraf node_modules && rimraf .turbo && rimraf tsconfig.tsbuildinfo",
     "copy-files": "copyfiles -u 1 \"src/**/*.scss\" dist/ && copyfiles -u 1 \"src/**/*.svg\" dist/ && copyfiles package.json dist/",
     "prepack": "yarn build",
     "svgson": "svgson src/component/SvgMap/svgs --output src/component/SvgMap/maps/svgs",

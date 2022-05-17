@@ -17,9 +17,10 @@
     "directory": "@eresearchqut/future-state-mono-repo"
   },
   "scripts": {
-    "build:no-cache": "turbo run build --no-cache --parallel --continue",
-    "clean": "turbo run clean",
+
+    "clean": "turbo run clean && rimraf node_modules",
     "build": "yarn turbo run build",
+    "build:no-cache": "turbo run build --no-cache --parallel --continue",
     "lint": "yarn turbo run lint",
     "storybook": "start-storybook",
     "storybook:build": "build-storybook",

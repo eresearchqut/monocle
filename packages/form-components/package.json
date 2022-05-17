@@ -17,7 +17,7 @@
     "copy-files": "copyfiles -u 1 \"src/**/*.scss\" dist/ && copyfiles -u 1 \"src/**/*.svg\" dist/ && copyfiles package.json dist/",
     "prepack": "yarn build",
     "svgson": "svgson src/component/SvgMap/svgs --output src/component/SvgMap/maps/svgs",
-    "build": "yarn clean && yarn svgson && tsc --build && yarn copy-files",
+    "build": "yarn svgson && tsc --build && yarn copy-files",
     "test": "jest --no-cache",
     "test-cov": "jest --no-cache --coverage",
     "lint": "eslint \"./src/**/*.{ts,tsx}\" --fix --max-warnings=0"

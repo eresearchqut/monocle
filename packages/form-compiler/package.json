@@ -15,7 +15,7 @@
   "scripts": {
     "clean": "rimraf dist && rimraf node_modules && rimraf .turbo && rimraf tsconfig.tsbuildinfo",
     "prepack": "yarn build",
-    "build": "yarn clean && tsc --build && cp \"./package.json\" ./dist/",
+    "build": "tsc --build && cp \"./package.json\" ./dist/",
     "test": "jest --no-cache",
     "test-cov": "jest --no-cache --coverage",
     "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0 --fix"

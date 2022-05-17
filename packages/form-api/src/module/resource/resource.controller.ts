@@ -12,12 +12,8 @@ import {
   PutResourceQuery,
   QueryRelatedResourceParams,
   QueryResourceParams,
-  QueryResourceProjectionParams,
-  QueryResourceProjectionQuery,
-  QueryType,
 } from "./resource.dto";
 import { ResourceService } from "./resource.service";
-import { __, match } from "ts-pattern";
 
 // TODO: Consider stripping non-Data keys from responses for security reasons
 
@@ -45,8 +41,10 @@ export class ResourceController {
     @Body() body: PostResourceBody
   ) {
     return await this.resourceService.putResource({
-      resource: params.resource,
-      version: params.version,
+      resource: {
+        name: params.resource,
+        version: query.version,
+      },
       options: query.options,
       data: body.data,
     });
@@ -59,9 +57,12 @@ export class ResourceController {
     @Body() body: PutResourceBody
   ) {
     return await this.resourceService.putResource({
-      resource: params.resource,
+      resource: {
+        name: params.resource,
+        version: query.version,
+      },
       id: params.id,
-      version: params.version,
+      version: body.version,
       options: query.options,
       data: body.data,
     });
@@ -90,40 +91,13 @@ export class ResourceController {
     return resources;
   }
 
-  @Get(":resource/projection/:projection")
-  public async queryProjection(
-    @Param() params: QueryResourceProjectionParams,
-    @Query() query: QueryResourceProjectionQuery
-  ) {
-    const queryValue = match(query)
-      .with({ query: __.string, queryType: QueryType.STRING }, (q) => q.query)
-      .with({ query: __.string, queryType: QueryType.NUMBER }, (q) => parseInt(q.query))
-      .with({ query: __.string, queryType: QueryType.BOOLEAN }, (q) => q.query === "true")
-      .otherwise(() => undefined);
-
-    const results = this.resourceService.queryResourceProjection({
-      resource: params.resource,
-      projection: params.projection,
-      reverse: query.order === "reverse",
-      query: queryValue,
-    });
-
-    // TODO: streaming & pagination options
-    const resources = [];
-    for await (const resource of results) {
-      resources.push(resource);
-    }
-
-    return resources;
-  }
-
-  @Get(":resource/:id/:projection/:targetResource")
+  @Get(":resource/:id/:relationship/:targetResource")
   public async queryRelated(@Param() params: QueryRelatedResourceParams) {
     const results = this.resourceService.queryRelatedResources({
       resource: params.resource,
       id: params.id,
       targetResource: params.targetResource,
-      projection: params.projection,
+      relationship: params.relationship,
     });
 
     // TODO: streaming & pagination options

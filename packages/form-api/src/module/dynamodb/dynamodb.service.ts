@@ -1,5 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import {
+  BatchWriteItemCommand,
   DeleteItemCommand,
   DynamoDBClient,
   GetItemCommand,
@@ -7,10 +8,15 @@ import {
   PutItemCommand,
   TransactWriteItemsCommand,
   TransactWriteItemsCommandOutput,
+  UpdateItemCommand,
+  UpdateItemCommandOutput,
 } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
-import { ItemEntity } from "./dynamodb.entity";
+import { ItemEntity, VersionedItemEntity } from "./dynamodb.entity";
 import { DynamoDbClientProvider } from "./dynamodb.client";
+import { BatchWriteItemCommandOutput } from "@aws-sdk/client-dynamodb/dist-types/ts3.4";
+import { EXPONENTIAL_BACKOFF_RETRIES } from "./dynamodb.constants";
+import * as assert from "assert";
 
 export type GetItemArgs = {
   table: string;
@@ -42,17 +48,22 @@ export type CreateItemArgs<T extends ItemEntity> = {
 
 export type PutItemsTransactionArgs<T extends ItemEntity> = {
   table: string;
-  baseItem: T;
-  previousBaseCreatedAt: string;
+  key: { PK: string; SK: string };
+  version: number;
   putItems: ItemEntity[];
-  deleteItems: { PK: string; SK: string }[];
   idempotencyToken?: string;
 };
 
-export type PutVersionTransactionArgs<T extends ItemEntity> = {
+export type PutSemanticallyVersionedTransactionArgs<T extends ItemEntity> = {
   table: string;
   lastVersion: string;
   nextVersion: string;
+  item: T;
+};
+
+export type PutVersionedArgs<T extends ItemEntity> = {
+  table: string;
+  lastVersion: number;
   item: T;
 };
 
@@ -60,6 +71,14 @@ export type DeleteItemArgs = {
   table: string;
   PK: string;
   SK?: string;
+};
+
+export type BulkDeleteItemsArgs = {
+  table: string;
+  items: {
+    PK: string;
+    SK?: string;
+  }[];
 };
 
 @Injectable()
@@ -150,15 +169,15 @@ export class DynamodbService {
       new TransactWriteItemsCommand({
         TransactItems: [
           {
-            Put: {
+            ConditionCheck: {
               TableName: input.table,
-              Item: marshall(input.baseItem),
-              ConditionExpression: "#CreatedAt = :CreatedAt",
+              Key: marshall(input.key),
+              ConditionExpression: "#Version = :Version",
               ExpressionAttributeNames: {
-                "#CreatedAt": "CreatedAt",
+                "#Version": "Version",
               },
               ExpressionAttributeValues: marshall({
-                ":CreatedAt": input.previousBaseCreatedAt,
+                ":Version": input.version,
               }),
             },
           },
@@ -168,20 +187,14 @@ export class DynamodbService {
               Item: marshall(item),
             },
           })),
-          ...input.deleteItems.map((item) => ({
-            Delete: {
-              TableName: input.table,
-              Key: marshall(item),
-            },
-          })),
         ],
         ClientRequestToken: input.idempotencyToken,
       })
     );
   }
 
-  async putVersionedItem<T extends ItemEntity>(
-    input: PutVersionTransactionArgs<T>
+  async putSemanticallyVersionedItem<T extends ItemEntity>(
+    input: PutSemanticallyVersionedTransactionArgs<T>
   ): Promise<TransactWriteItemsCommandOutput> {
     return this.client.send(
       new TransactWriteItemsCommand({
@@ -234,6 +247,61 @@ export class DynamodbService {
     );
   }
 
+  async putVersionedItem<T extends ItemEntity>(
+    input: PutVersionedArgs<T>
+  ): Promise<{ created: boolean; item?: VersionedItemEntity<T["Data"], T["ItemType"]> }> {
+    const expressionAttributes = Object.entries(input.item).reduce(
+      (acc, [key, value]) => {
+        if (key !== "PK" && key !== "SK" && key !== "Version" && key !== "Increment") {
+          const attributeNameKey = `#${key}`;
+          const attributeValueKey = `:${key}`;
+          acc.UpdateExpression.push(`${attributeNameKey} = ${attributeValueKey}`);
+          acc.ExpressionAttributeNames[attributeNameKey] = key;
+          acc.ExpressionAttributeValues[attributeValueKey] = value;
+        }
+        return acc;
+      },
+      {
+        UpdateExpression: [] as string[],
+        ExpressionAttributeNames: {} as { [k: string]: string },
+        ExpressionAttributeValues: {} as { [k: string]: unknown },
+      }
+    );
+
+    const item: UpdateItemCommandOutput | false = await this.client
+      .send(
+        new UpdateItemCommand({
+          TableName: input.table,
+          Key: marshall({
+            PK: input.item.PK,
+            SK: input.item.SK,
+          }),
+          ConditionExpression: "attribute_not_exists(#Version) or #Version = :Version",
+          UpdateExpression: `ADD #Version :Increment SET ${expressionAttributes.UpdateExpression.join(", ")}`,
+          ExpressionAttributeNames: {
+            "#Version": "Version",
+            ...expressionAttributes.ExpressionAttributeNames,
+          },
+          ExpressionAttributeValues: marshall({
+            ":Version": input.lastVersion,
+            ":Increment": 1,
+            ...expressionAttributes.ExpressionAttributeValues,
+          }),
+          ReturnValues: "ALL_OLD",
+        })
+      )
+      .catch((err) => (err.code === "ConditionalCheckFailed" ? false : Promise.reject(err)));
+
+    if (item === false) {
+      return { created: false };
+    } else {
+      return {
+        created: true,
+        item: item.Attributes ? (unmarshall(item.Attributes) as VersionedItemEntity) : undefined,
+      };
+    }
+  }
+
   async deleteItem<T extends ItemEntity>(input: DeleteItemArgs): Promise<T> {
     const item = await this.client.send(
       new DeleteItemCommand({
@@ -249,6 +317,38 @@ export class DynamodbService {
       throw Error("Invalid response when deleting item using ALL_OLD");
     }
     return unmarshall(item.Attributes) as T;
+  }
+
+  async bulkDeleteItems<T extends ItemEntity>(input: BulkDeleteItemsArgs): Promise<{ PK: string; SK?: string }[]> {
+    assert(input.items.length <= 25, "Cannot delete > 25 items");
+
+    let remainingItems: BatchWriteItemCommandOutput["UnprocessedItems"] = {
+      [input.table]: input.items.map((item) => ({
+        DeleteRequest: {
+          Key: marshall({ PK: item.PK, SK: item.SK }),
+        },
+      })),
+    };
+
+    for (let i = 1; i < EXPONENTIAL_BACKOFF_RETRIES; i++) {
+      const response: BatchWriteItemCommandOutput = await this.client.send(
+        new BatchWriteItemCommand({
+          RequestItems: remainingItems,
+        })
+      );
+
+      if (response.UnprocessedItems?.[input.table] === undefined) {
+        return [];
+      }
+
+      remainingItems = response.UnprocessedItems;
+
+      await new Promise((resolve) => setTimeout(resolve, 2 ** i * 1000 * (Math.random() + 1)));
+    }
+
+    return (remainingItems?.[input.table] ?? []).map(
+      (operation) => unmarshall(operation?.DeleteRequest?.Key ?? {}) as { PK: string; SK?: string }
+    );
   }
 }
 

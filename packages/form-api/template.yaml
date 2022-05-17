@@ -65,26 +65,6 @@ Resources:
           AttributeType: "S"
         - AttributeName: "GSI1-SK"
           AttributeType: "S"
-        - AttributeName: "GSI2-PK"
-          AttributeType: "S"
-        - AttributeName: "GSI2-SK"
-          AttributeType: "S"
-        - AttributeName: "GSI3-PK"
-          AttributeType: "S"
-        - AttributeName: "GSI3-SK"
-          AttributeType: "S"
-        - AttributeName: "GSI4-PK"
-          AttributeType: "S"
-        - AttributeName: "GSI4-SK"
-          AttributeType: "S"
-        - AttributeName: "GSI5-PK"
-          AttributeType: "S"
-        - AttributeName: "GSI5-SK"
-          AttributeType: "S"
-        - AttributeName: "GSI6-PK"
-          AttributeType: "S"
-        - AttributeName: "GSI6-SK"
-          AttributeType: "S"
       GlobalSecondaryIndexes:
         - IndexName: "GSI0"
           KeySchema:
@@ -97,46 +77,6 @@ Resources:
             - AttributeName: "GSI1-PK"
               KeyType: "HASH"
             - AttributeName: "GSI1-SK"
-              KeyType: "RANGE"
-          Projection:
-            ProjectionType: "ALL"
-        - IndexName: "GSI2"
-          KeySchema:
-            - AttributeName: "GSI2-PK"
-              KeyType: "HASH"
-            - AttributeName: "GSI2-SK"
-              KeyType: "RANGE"
-          Projection:
-            ProjectionType: "ALL"
-        - IndexName: "GSI3"
-          KeySchema:
-            - AttributeName: "GSI3-PK"
-              KeyType: "HASH"
-            - AttributeName: "GSI3-SK"
-              KeyType: "RANGE"
-          Projection:
-            ProjectionType: "ALL"
-        - IndexName: "GSI4"
-          KeySchema:
-            - AttributeName: "GSI4-PK"
-              KeyType: "HASH"
-            - AttributeName: "GSI4-SK"
-              KeyType: "RANGE"
-          Projection:
-            ProjectionType: "ALL"
-        - IndexName: "GSI5"
-          KeySchema:
-            - AttributeName: "GSI5-PK"
-              KeyType: "HASH"
-            - AttributeName: "GSI5-SK"
-              KeyType: "RANGE"
-          Projection:
-            ProjectionType: "ALL"
-        - IndexName: "GSI6"
-          KeySchema:
-            - AttributeName: "GSI6-PK"
-              KeyType: "HASH"
-            - AttributeName: "GSI6-SK"
               KeyType: "RANGE"
           Projection:
             ProjectionType: "ALL"

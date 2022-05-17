@@ -1,0 +1,1 @@
+export const RELATIONSHIP_GSI_INDEX = 1;

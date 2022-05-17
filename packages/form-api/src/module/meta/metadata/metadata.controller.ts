@@ -27,7 +27,7 @@ export class MetadataController {
       schemas: {
         formVersion: metadata.Data.Schemas.FormVersion,
         authorizationVersion: metadata.Data.Schemas.AuthorizationVersion,
-        projectionsVersion: metadata.Data.Schemas.projectionsVersion,
+        relationshipsVersion: metadata.Data.Schemas.RelationshipsVersion,
       },
     };
   }

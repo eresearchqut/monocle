@@ -60,6 +60,7 @@ describe("Resource forms", () => {
       .put(`/resource/${name}/${resourceId}`)
       .send({
         data: updateData,
+        version: 1,
       })
       .expect(200)
       .expect((r) => expect(r.body.Data).toEqual(updateData));
@@ -323,7 +324,7 @@ describe("Resource forms", () => {
         schemas: {
           formVersion: formId,
           authorizationVersion: NIL_UUID,
-          projectionsVersion: NIL_UUID,
+          relationshipsVersion: NIL_UUID,
         },
       })
       .expect(200);
@@ -349,14 +350,19 @@ describe("Resource forms", () => {
     await request(app.getHttpServer()).get(`/resource/${resourceName}/${resourceId}`).expect(404);
 
     // Update resource
-    await request(app.getHttpServer())
-      .put(`/resource/${resourceName}/${resourceId}`)
-      .send({
-        data: {
-          key: "test",
-        },
-      })
-      .expect(404);
+    await Promise.all(
+      range(1, 3).map((version) =>
+        request(app.getHttpServer())
+          .put(`/resource/${resourceName}/${resourceId}`)
+          .send({
+            data: {
+              key: "test",
+            },
+            version,
+          })
+          .expect(404)
+      )
+    );
 
     // Delete resource
     await request(app.getHttpServer()).delete(`/resource/${resourceName}/${resourceId}`).expect(404);
@@ -410,7 +416,7 @@ describe("Resource forms", () => {
         schemas: {
           formVersion: formId,
           authorizationVersion: NIL_UUID,
-          projectionsVersion: NIL_UUID,
+          relationshipsVersion: NIL_UUID,
         },
       })
       .expect(200)

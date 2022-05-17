@@ -14,7 +14,7 @@ class GetMetadataResponseSchemas {
   authorizationVersion!: string;
 
   @IsUUID()
-  projectionsVersion!: string;
+  relationshipsVersion!: string;
 }
 
 export class GetMetadataResponse {
@@ -49,7 +49,7 @@ class PostMetadataBodyGroup {
   authorizationVersion!: string;
 
   @IsUUID()
-  projectionsVersion!: string;
+  relationshipsVersion!: string;
 }
 
 export class PutMetadataBody {

@@ -3,11 +3,18 @@ import { AppConfig } from "../../app.config";
 import { ConfigService } from "@nestjs/config";
 import { MetadataService } from "../meta/metadata/metadata.service";
 import { DynamodbService } from "../dynamodb/dynamodb.service";
-import { ItemEntity } from "../dynamodb/dynamodb.entity";
+import { ItemEntity, VersionedItemEntity } from "../dynamodb/dynamodb.entity";
 import { FormService } from "../meta/form/form.service";
-import { ProjectionsService } from "../meta/projections/projections.service";
+import { RelationshipsService } from "../meta/relationships/relationships.service";
 import { ValidationException } from "./resource.exception";
-import { SYSTEM_USER } from "../meta/constants";
+import { from as ixSyncFrom } from "ix/iterable";
+import { from as ixAsyncFrom } from "ix/asynciterable";
+import { bufferCountOrTime } from "ix/asynciterable/operators/buffercountortime";
+import { buffer } from "ix/iterable/operators/buffer";
+
+const TRANSACTION_MAX_PUT_ITEMS = 24;
+const BULK_MAX_DELETE_ITEMS = 25;
+const BULK_MAX_DELETE_MIN_DELAY = 1000;
 
 interface GetResourceInput {
   resource: string;
@@ -22,9 +29,12 @@ interface DeleteResourceInput {
 }
 
 interface PutResourceInput {
-  resource: string;
+  resource: {
+    name: string;
+    version?: string;
+  };
   id?: string;
-  version?: string;
+  version?: number;
   data: any;
   options?: any;
 }
@@ -34,24 +44,13 @@ interface QueryResourceInput {
   version?: string;
 }
 
-interface QueryResourceProjectionInput {
-  projection: string;
-  resource: string;
-  reverse: boolean;
-  query?: string | number | boolean;
-  version?: string;
-}
-
 interface QueryRelatedResourceInput {
-  projection: string;
+  relationship: string;
   resource: string;
   id: string;
   targetResource: string;
   version?: string;
 }
-
-const LOCK_TTL_DELTA = 60;
-const LOCK_RETRY_DELAY = 2000;
 
 @Injectable()
 export class ResourceService {
@@ -59,7 +58,7 @@ export class ResourceService {
     private configService: ConfigService<AppConfig, true>,
     private metadataService: MetadataService,
     private formService: FormService,
-    private projectionsService: ProjectionsService,
+    private relationshipsService: RelationshipsService,
     private dynamodbService: DynamodbService
   ) {}
 
@@ -82,48 +81,11 @@ export class ResourceService {
     return item;
   }
 
-  private async acquireLock(table: string, partitionKey: string) {
-    let lockCreated = false;
-    while (!lockCreated) {
-      lockCreated = await this.dynamodbService
-        .createItem({
-          table,
-          item: {
-            PK: partitionKey,
-            SK: "Lock",
-            CreatedAt: new Date().toISOString(),
-            CreatedBy: SYSTEM_USER,
-            Id: "Lock",
-            ItemType: "Lock",
-            TTL: Math.floor(Date.now() / 1000) + LOCK_TTL_DELTA,
-            Data: {},
-          },
-        })
-        .then(() => true)
-        .catch(async (err) => {
-          if (err.code === "ConditionalCheckFailed") {
-            await new Promise((resolve) => setTimeout(resolve, LOCK_RETRY_DELAY));
-            return false;
-          } else {
-            return Promise.reject(err);
-          }
-        });
-    }
-  }
-
-  private async releaseLock(table: string, partitionKey: string) {
-    await this.dynamodbService.deleteItem({
-      table,
-      PK: partitionKey,
-      SK: "Lock",
-    });
-  }
-
   public async putResource(input: PutResourceInput): Promise<any> {
     const {
       buildPutAttributes,
       Data: { Resource, Version, Schemas },
-    } = await this.metadataService.getMetadata(input.resource, input.version);
+    } = await this.metadataService.getMetadata(input.resource.name, input.resource.version);
 
     if (this.configService.get("VALIDATE_RESOURCE_ON_WRITE")) {
       const { validate } = await this.formService.getForm(Schemas.FormVersion);
@@ -142,101 +104,81 @@ export class ResourceService {
       },
     });
 
-    const {
-      requiresLock,
-      buildProjectionsIndexKeys,
-      buildProjectionsCompositeItems,
-      buildProjectionOldCompositeAttributes,
-    } = await this.projectionsService.getProjections(Schemas.projectionsVersion);
-
-    const projectionKeys = buildProjectionsIndexKeys(Resource, attrs.Id, input.data);
+    const { buildRelationshipsCompositeItems, buildDeletionQuery } = await this.relationshipsService.getRelationships(
+      Schemas.RelationshipsVersion
+    );
 
     const data = {
       ...attrs,
-      ...projectionKeys,
       Data: input.data,
     };
 
-    const { transaction: transactionItems, lock: lockItems } = buildProjectionsCompositeItems(
-      Resource,
-      attrs.Id,
-      input.data
-    );
+    const lastVersion = input.version ?? 0;
+    const thisVersion = lastVersion + 1;
+
+    const transactionItems = buildRelationshipsCompositeItems(Resource, attrs.Id, input.data, thisVersion);
 
     // TODO: run authorization policy check
 
     const table = this.configService.get("RESOURCE_TABLE");
 
-    if (input.id) {
-      const useLock = requiresLock();
-      if (useLock) {
-        await this.acquireLock(table, attrs.PK);
-      }
+    const putItem = await this.dynamodbService.putVersionedItem({
+      table,
+      item: data,
+      lastVersion,
+    });
 
-      try {
-        const oldItem = await this.dynamodbService.getItem({
-          table,
-          PK: attrs.PK,
-          SK: attrs.SK,
-          consistent: true,
-        });
-
-        if (oldItem === null) {
-          throw new Error("Item didn't already exist");
-        }
-
-        const oldRelatedKeys = buildProjectionOldCompositeAttributes(Resource, attrs.Id, oldItem.Data, input.data);
-
-        if (transactionItems.length + oldRelatedKeys.length > 24) {
-          throw new Error("Too many projection operations at once"); // TODO: test
-        }
-
-        await Promise.all([
-          this.dynamodbService.putItemsTransaction({
-            table,
-            baseItem: data,
-            previousBaseCreatedAt: oldItem.CreatedAt,
-            putItems: transactionItems,
-            deleteItems: oldRelatedKeys,
-          }),
-          ...lockItems.map((item) =>
-            this.dynamodbService.putItem({
-              table,
-              item,
-              ignoreOld: true,
-            })
-          ),
-        ]); // TODO: handle failure
-      } finally {
-        if (useLock) {
-          await this.releaseLock(table, attrs.PK);
-        }
-      }
-    } else {
-      const projectionItems = transactionItems.concat(lockItems);
-      const [oldItem] = await Promise.all([
-        this.dynamodbService.putItem({
-          table,
-          item: data,
-          ignoreOld: input.id === undefined,
-        }),
-        ...projectionItems.map((item) =>
-          this.dynamodbService.putItem({
-            table,
-            item,
-            ignoreOld: true,
-          })
-        ),
-      ]);
-
-      if (oldItem !== null) {
-        throw new Error("Item already existed");
+    if (!putItem.created) {
+      if (input.id) {
+        throw new Error(`Item with version ${input.version} already existed`);
+      } else {
+        throw new Error("Item didn't already exist");
       }
     }
+
+    // Not using Promise.all because many concurrent transactions can cause conflicts when item is deleted
+    // while transactions are still running, and to stop PUTing more items after a resource has been deleted
+    // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transaction-apis.html#transaction-best-practices
+    // TODO: handle transaction exception then continue deleting
+    for (const transactionBatch of ixSyncFrom(transactionItems).pipe(buffer(TRANSACTION_MAX_PUT_ITEMS))) {
+      await this.dynamodbService.putItemsTransaction({
+        table,
+        key: {
+          PK: attrs.PK,
+          SK: attrs.SK,
+        },
+        version: thisVersion,
+        putItems: transactionBatch,
+      });
+    }
+
+    await this.deleteRelated(
+      table,
+      this.dynamodbService.queryItems({
+        table,
+        ...buildDeletionQuery(Resource, attrs.Id, lastVersion),
+      })
+    );
 
     // TODO: optionally return old data
     return data;
   }
+
+  private deleteRelated = (table: string, items: AsyncGenerator<ItemEntity>) =>
+    ixAsyncFrom(items)
+      .pipe(bufferCountOrTime(BULK_MAX_DELETE_ITEMS, BULK_MAX_DELETE_MIN_DELAY))
+      .forEach(async (items) => {
+        await this.dynamodbService
+          .bulkDeleteItems({
+            table,
+            items,
+          })
+          .then((remaining) => {
+            if (remaining.length > 0) {
+              throw new Error(`Failed to delete ${remaining.length} items`);
+            }
+          });
+      });
 
   public async deleteResource(input: DeleteResourceInput): Promise<any> {
     const {
@@ -245,29 +187,32 @@ export class ResourceService {
     } = await this.metadataService.getMetadata(input.resource);
     const key = buildGetAttributes(input.id);
 
-    const { buildProjectionsCompositeAttributes } = await this.projectionsService.getProjections(
-      Schemas.projectionsVersion
-    );
+    const { buildDeletionQuery } = await this.relationshipsService.getRelationships(Schemas.RelationshipsVersion);
 
     // TODO: run authorization policy check
 
     const table = this.configService.get("RESOURCE_TABLE");
 
-    const item = await this.dynamodbService.deleteItem({ table, ...key });
+    const item = await this.dynamodbService.deleteItem<VersionedItemEntity>({ table, ...key });
 
-    const toDelete = buildProjectionsCompositeAttributes(Resource, input.id, item.Data);
+    const toDelete = [];
+    for await (const deletedItem of this.dynamodbService.queryItems({
+      table,
+      ...buildDeletionQuery(Resource, input.id, item.Version),
+    })) {
+      toDelete.push(deletedItem);
+    }
 
-    await Promise.all(
-      toDelete.map((key) =>
-        this.dynamodbService.deleteItem({
-          table,
-          ...key,
-        })
-      )
+    await this.deleteRelated(
+      table,
+      this.dynamodbService.queryItems({
+        table,
+        ...buildDeletionQuery(Resource, input.id, item.Version),
+      })
     );
 
-    // TODO: optionally return all deleted projection items as well
-    return item;
+    // TODO: optionally return all deleted relationship items as well
+    return item.Data;
   }
 
   public async *queryResources(input: QueryResourceInput) {
@@ -281,36 +226,29 @@ export class ResourceService {
     });
   }
 
-  public async *queryResourceProjection(input: QueryResourceProjectionInput) {
-    const {
-      Data: {
-        Schemas: { projectionsVersion },
-        Resource,
-      },
-    } = await this.metadataService.getMetadata(input.resource);
-    const { buildPrimitiveProjectionQuery } = await this.projectionsService.getProjections(projectionsVersion);
-
-    // TODO: run authorization policy check
-
-    yield* this.dynamodbService.queryItems({
-      table: this.configService.get("RESOURCE_TABLE"),
-      ...buildPrimitiveProjectionQuery(input.projection, Resource, input.reverse, input.query),
-    });
-  }
-
   public async *queryRelatedResources(input: QueryRelatedResourceInput) {
     const {
       Data: {
-        Schemas: { projectionsVersion },
+        Schemas: { RelationshipsVersion },
       },
-    } = await this.metadataService.getMetadata(input.targetResource); // TODO: consider including resource semver in projections
-    const { buildRelatedQuery } = await this.projectionsService.getProjections(projectionsVersion);
+    } = await this.metadataService.getMetadata(input.targetResource); // TODO: consider including resource semver in relationships
+    const { buildTargetToSourceQuery } = await this.relationshipsService.getRelationships(RelationshipsVersion);
 
     // TODO: run authorization policy check
 
-    yield* this.dynamodbService.queryItems({
+    const items = this.dynamodbService.queryItems({
       table: this.configService.get("RESOURCE_TABLE"),
-      ...buildRelatedQuery(input.projection, input.id),
+      ...buildTargetToSourceQuery(input.relationship, input.id),
     });
+
+    // Deduplicate related items from partially-deleted relationships from previous resource version
+    const prev = { PK: "", SK: "" };
+    for await (const item of items) {
+      if (item.PK !== prev.PK || item.SK !== prev.SK) {
+        yield item;
+        prev.PK = item.PK;
+        prev.SK = item.SK;
+      }
+    }
   }
 }

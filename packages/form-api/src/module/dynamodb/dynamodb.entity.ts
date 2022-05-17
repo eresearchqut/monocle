@@ -1,4 +1,4 @@
-import { IsISO8601, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
+import { IsISO8601, IsNumber, IsOptional, IsSemVer, IsString, Matches, ValidateNested } from "class-validator";
 
 export abstract class ItemEntity<T = any, U = string> {
   @IsString()
@@ -25,4 +25,9 @@ export abstract class ItemEntity<T = any, U = string> {
   @IsNumber()
   @IsOptional()
   TTL?: number;
+}
+
+export abstract class VersionedItemEntity<T = any, U = string> extends ItemEntity<T, U> {
+  @IsNumber()
+  Version!: number;
 }

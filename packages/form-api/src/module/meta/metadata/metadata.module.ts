@@ -4,12 +4,12 @@ import { DynamodbModule } from "../../dynamodb/dynamodb.module";
 import { MetadataController } from "./metadata.controller";
 import { AuthorizationService } from "../authorization/authorization.service";
 import { FormModule } from "../form/form.module";
-import { ProjectionsModule } from "../projections/projections.module";
+import { RelationshipsModule } from "../relationships/relationships.module";
 
 @Module({
   providers: [MetadataService, AuthorizationService],
   exports: [MetadataService],
-  imports: [DynamodbModule, FormModule, ProjectionsModule],
+  imports: [DynamodbModule, FormModule, RelationshipsModule],
   controllers: [MetadataController],
 })
 export class MetadataModule {}

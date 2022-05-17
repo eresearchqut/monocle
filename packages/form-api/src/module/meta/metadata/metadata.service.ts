@@ -34,7 +34,7 @@ interface PutMetadataInput {
 type MetadataProperties = {
   resource: string;
   version: string;
-  schemas: { formVersion: string; authorizationVersion: string; projectionsVersion: string };
+  schemas: { formVersion: string; authorizationVersion: string; relationshipsVersion: string };
 };
 
 type SchemaDiffResult =
@@ -71,7 +71,7 @@ export class MetadataService {
   async createMetadata(resource: string): Promise<boolean> {
     const key = buildMetadataItemKey(resource);
     return this.dynamodbService
-      .putVersionedItem<MetadataEntityType>({
+      .putSemanticallyVersionedItem<MetadataEntityType>({
         table: this.configService.get("RESOURCE_TABLE"),
         lastVersion: INITIAL_SEMVER,
         nextVersion: INITIAL_SEMVER,
@@ -87,7 +87,7 @@ export class MetadataService {
             Schemas: {
               FormVersion: NIL_UUID,
               AuthorizationVersion: NIL_UUID,
-              projectionsVersion: NIL_UUID,
+              RelationshipsVersion: NIL_UUID,
             },
           },
         },
@@ -116,7 +116,7 @@ export class MetadataService {
     const latest = await this.getMetadata(data.resource);
     const key = buildMetadataItemKey(data.resource);
     return this.dynamodbService
-      .putVersionedItem<MetadataEntityType>({
+      .putSemanticallyVersionedItem<MetadataEntityType>({
         table: this.configService.get("RESOURCE_TABLE"),
         lastVersion: latest.Data.Version,
         nextVersion: data.version,
@@ -132,7 +132,7 @@ export class MetadataService {
             Schemas: {
               FormVersion: data.schemas.formVersion,
               AuthorizationVersion: data.schemas.authorizationVersion,
-              projectionsVersion: data.schemas.projectionsVersion,
+              RelationshipsVersion: data.schemas.relationshipsVersion,
             },
           },
         },

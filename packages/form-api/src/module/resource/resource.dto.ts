@@ -1,27 +1,23 @@
-import { Equals, IsBoolean, IsEnum, IsIBAN, IsObject, IsOptional, IsSemVer, IsString, Matches } from "class-validator";
-
-abstract class ResourceParams {
-  @Matches(/[a-zA-Z0-9_]+/)
-  resource!: string;
-}
+import { IsNumber, IsObject, IsOptional, IsSemVer, IsString, Matches, Min } from "class-validator";
+import { ResourceParams } from "../../dto/resource.dto";
 
 abstract class DataResourceParams {
   @IsObject()
   data: any;
 }
 
-abstract class OptionallyVersionedResourceParams extends ResourceParams {
+abstract class OptionallyVersionedResourceQuery {
   @IsSemVer()
   @IsOptional()
-  version!: string;
+  version?: string;
 }
 
-export class PostResourceParams extends OptionallyVersionedResourceParams {}
+export class PostResourceParams extends ResourceParams {}
 
-export class PostResourceQuery {
+export class PostResourceQuery extends OptionallyVersionedResourceQuery {
   @IsObject()
   @IsOptional()
-  options!: any;
+  options: any;
 }
 
 export class PostResourceBody extends DataResourceParams {}
@@ -37,18 +33,22 @@ export class GetResourceQuery {
   options: any;
 }
 
-export class PutResourceParams extends OptionallyVersionedResourceParams {
+export class PutResourceParams extends ResourceParams {
   @IsString()
   id!: string;
 }
 
-export class PutResourceQuery {
+export class PutResourceQuery extends OptionallyVersionedResourceQuery {
   @IsObject()
   @IsOptional()
   options: any;
 }
 
-export class PutResourceBody extends DataResourceParams {}
+export class PutResourceBody extends DataResourceParams {
+  @IsNumber()
+  @Min(1)
+  version!: number;
+}
 
 export class DeleteResourceParams extends ResourceParams {
   @IsString()
@@ -61,31 +61,7 @@ export class DeleteResourceQuery {
   options: any;
 }
 
-export class QueryResourceParams extends OptionallyVersionedResourceParams {}
-
-export class QueryResourceProjectionParams extends ResourceParams {
-  @IsString()
-  projection!: string;
-}
-
-export enum QueryType {
-  STRING = "string",
-  NUMBER = "number",
-  BOOLEAN = "boolean",
-}
-
-export class QueryResourceProjectionQuery {
-  @Equals("reverse")
-  @IsOptional()
-  order?: "reverse";
-
-  @IsString()
-  @IsOptional()
-  query?: string;
-
-  @IsEnum(QueryType)
-  queryType: QueryType = QueryType.STRING;
-}
+export class QueryResourceParams extends ResourceParams {}
 
 export class QueryRelatedResourceParams extends ResourceParams {
   @IsString()
@@ -95,5 +71,5 @@ export class QueryRelatedResourceParams extends ResourceParams {
   targetResource!: string;
 
   @IsString()
-  projection!: string;
+  relationship!: string;
 }

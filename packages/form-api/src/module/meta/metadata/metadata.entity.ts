@@ -16,7 +16,7 @@ interface DataType {
   Schemas: {
     FormVersion: string;
     AuthorizationVersion: string;
-    projectionsVersion: string;
+    RelationshipsVersion: string;
   };
 }
 
@@ -30,7 +30,7 @@ class SchemaData {
   AuthorizationVersion!: string;
 
   @IsUUID()
-  projectionsVersion!: string;
+  RelationshipsVersion!: string;
 }
 
 export class MetadataData {
@@ -69,7 +69,12 @@ export class Metadata extends ItemEntity<DataType, "Metadata"> implements Metada
     },
   });
 
-  buildPutAttributes = (input: { id?: string; user: string; resource: { name: string; version: string } }) => {
+  buildPutAttributes = (input: {
+    id?: string;
+    user: string;
+    resource: { name: string; version: string };
+    version?: number;
+  }) => {
     const id = input.id ?? v4();
     const { PK, SK } = this.buildGetAttributes(id);
     return {

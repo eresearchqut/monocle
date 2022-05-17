@@ -5,7 +5,7 @@ import { DynamodbModule } from "../src/module/dynamodb/dynamodb.module";
 import { MetadataModule } from "../src/module/meta/metadata/metadata.module";
 import { Form, InputType, SectionType } from "@eresearchqut/form-definition";
 import { FormModule } from "../src/module/meta/form/form.module";
-import { ProjectionsModule } from "../src/module/meta/projections/projections.module";
+import { RelationshipsModule } from "../src/module/meta/relationships/relationships.module";
 import { AuthorizationModule } from "../src/module/meta/authorization/authorization.module";
 import { generateResourceName, initApp, teardownApp } from "./utils";
 
@@ -13,7 +13,7 @@ describe("Metadata", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    app = await initApp([DynamodbModule, MetadataModule, FormModule, ProjectionsModule, AuthorizationModule]);
+    app = await initApp([DynamodbModule, MetadataModule, FormModule, RelationshipsModule, AuthorizationModule]);
   });
 
   afterAll(async () => teardownApp(app));
@@ -33,7 +33,7 @@ describe("Metadata", () => {
         schemas: {
           formVersion: NIL_UUID,
           authorizationVersion: NIL_UUID,
-          projectionsVersion: NIL_UUID,
+          relationshipsVersion: NIL_UUID,
         },
       });
 
@@ -131,7 +131,7 @@ describe("Metadata", () => {
         schemas: {
           formVersion: formId,
           authorizationVersion: NIL_UUID,
-          projectionsVersion: NIL_UUID,
+          relationshipsVersion: NIL_UUID,
         },
       })
       .expect(200)
@@ -147,7 +147,7 @@ describe("Metadata", () => {
         schemas: {
           formVersion: formId,
           authorizationVersion: NIL_UUID,
-          projectionsVersion: NIL_UUID,
+          relationshipsVersion: NIL_UUID,
         },
       });
   });

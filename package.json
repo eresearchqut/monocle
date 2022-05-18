@@ -17,14 +17,17 @@
     "directory": "@eresearchqut/future-state-mono-repo"
   },
   "scripts": {
-    "changeset": "changeset",
     "clean": "turbo run clean && rimraf storybook-static && rimraf node_modules",
     "build": "yarn turbo run build",
     "build:no-cache": "turbo run build --no-cache --parallel --continue",
     "lint": "yarn turbo run lint",
     "storybook": "start-storybook",
     "storybook:build": "build-storybook",
-    "test": "yarn turbo run test"
+    "test": "yarn turbo run test",
+    "changeset": "changeset",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "turbo run build --filter=docs^... && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.22.0",

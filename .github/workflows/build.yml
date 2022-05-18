@@ -1,8 +1,6 @@
 name: Build and Publish
 on:
   push:
-    branches:
-      - main
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,19 +13,8 @@ jobs:
           node-version: '16'
           registry-url: 'https://npm.pkg.github.com'
           cache: 'yarn'
-      - name: Configure Git User
-        run: |
-          git config --global user.email "eresearch@qut.edu.au"
-          git config --global user.name "@$GITHUB_ACTOR"
-      - name: Configure NPMRC
-        uses: ferluisxd/create-npmrc@3
-        env:
-          AUTH_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
-        with:
-          org_name: eresearchqut
       - name: Build Package
         run: |
           yarn install
           yarn build
           yarn test
-          yarn lerna publish minor --no-changelog --conventional-commits --yes

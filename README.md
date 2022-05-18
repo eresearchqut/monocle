@@ -4,11 +4,20 @@
 
 Repository of future state modules. This repository will be renamed at some point.
 
-## Build instructions
+## Dependencies
+
+* [Node 16](https://nodejs.org/en/download/)
+* [Yarn](https://yarnpkg.com/getting-started/install)
+
+## Useful commands
 
 ```
-yarn install
-yarn turbo run build
+yarn install - Initialise the workspace
+yarn build - Build all packages
+yarn lint - Lint all packages
+yarn changeset - Generate a changeset
+yarn clean - Clean up all node_modules and dist folders (runs each package's clean script)
+yarn storybook - Start the storybook
 ```
 
 ## Modules
@@ -21,20 +30,10 @@ yarn turbo run build
 | Form Designer | Drag and Drop form designer that utilises the form-compiler and form-component packages |
 
 
-## Storybook
+## Versioning and Publishing packages
 
-To start the storybook
+Package publishing has been configured using [Changesets](https://github.com/changesets/changesets). Please review their [documentation](https://github.com/changesets/changesets#documentation) to familarize yourself with the workflow.
 
-```
-yarn storybook
-```
+On push to the main branch the [Release](.github/workflows/release.yml) [GitHub Action](https://github.com/changesets/action)
 
-### Node 17+ failure
-
-If you are running Node 17+ on Linux, you might get an `ERR_OSSL_EVP_UNSUPPORTED` error when running `yarn storybook`.
-
-The fix is to `export NODE_OPTIONS=--openssl-legacy-provider` before running `yarn storybook`.
-
-[StackOwerflow reference](https://stackoverflow.com/questions/69394632/webpack-build-failing-with-err-ossl-evp-unsupported)
-
-_Note: remove this sections if this gets fixed later_
+For more information about this automation, refer to the official [changesets documentation](https://github.com/changesets/changesets/blob/main/docs/automating-changesets.md)

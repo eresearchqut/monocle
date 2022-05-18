@@ -16,7 +16,7 @@
     "clean": "rimraf dist && rimraf node_modules && rimraf .turbo && rimraf tsconfig.tsbuildinfo",
     "prepack": "yarn build",
     "schema": "typescript-json-schema ./tsconfig.json --required Form --out ./src/schema/form.json && typescript-json-schema ./tsconfig.json --required Section --out ./src/schema/section.json && typescript-json-schema ./tsconfig.json --required Input --out ./src/schema/input.json",
-    "build": "tsc --build && yarn schema && cp \"./package.json\" ./dist/",
+    "build": "tsc --build && yarn schema && copyfiles package.json dist/",
     "test": "echo 'notest'",
     "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0 --fix"
   },

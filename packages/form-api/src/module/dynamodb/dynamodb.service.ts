@@ -1,6 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import {
   BatchWriteItemCommand,
+  BatchWriteItemCommandOutput,
   DeleteItemCommand,
   DynamoDBClient,
   GetItemCommand,
@@ -14,7 +15,6 @@ import {
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { ItemEntity, VersionedItemEntity } from "./dynamodb.entity";
 import { DynamoDbClientProvider } from "./dynamodb.client";
-import { BatchWriteItemCommandOutput } from "@aws-sdk/client-dynamodb/dist-types/ts3.4";
 import { EXPONENTIAL_BACKOFF_RETRIES } from "./dynamodb.constants";
 import * as assert from "assert";
 

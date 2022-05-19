@@ -74,9 +74,9 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
     version: number
   ) => ({
     PK: buildResourceIdentifier(sourceResource, sourceId),
-    SK: `version#${version}:${relationship[0]}:${key}`,
+    SK: `version#${version}#relationship:${relationship[0]}:${key}`,
     [`GSI${RELATIONSHIP_GSI_INDEX}-PK`]: buildResourceIdentifier(relationship[1].Resource, key),
-    [`GSI${RELATIONSHIP_GSI_INDEX}-SK`]: `${relationship[0]}:${sourceId}`,
+    [`GSI${RELATIONSHIP_GSI_INDEX}-SK`]: `relationship:${relationship[0]}:${sourceId}`,
   });
 
   private buildRelationshipItemsCompositeAttributes = (
@@ -132,7 +132,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
       },
       expressionValues: {
         ":PK": buildResourceIdentifier(sourceResource, sourceIdentifier),
-        ":SKPrefix": `version#${sourceVersion}:${relationshipName}:`, // TODO: add test to confirm colon postfix
+        ":SKPrefix": `version#${sourceVersion}#relationship:${relationshipName}:`, // TODO: add test to confirm colon postfix
       },
     };
   };
@@ -153,7 +153,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
       },
       expressionValues: {
         ":PK": buildResourceIdentifier(relationship.Resource, targetIdentifier),
-        ":SKPrefix": `${relationshipName}:`, // TODO: add test to confirm colon postfix
+        ":SKPrefix": `relationship:${relationshipName}:`, // TODO: add test to confirm colon postfix
       },
     };
   };
@@ -170,7 +170,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
     },
     expressionValues: {
       ":PK": buildResourceIdentifier(sourceResource, sourceIdentifier),
-      ":SKPrefix": `version#${sourceVersion}:`, // TODO: add test to confirm colon postfix
+      ":SKPrefix": `version#${sourceVersion}#`, // TODO: add test to confirm colon postfix
     },
   });
 }

@@ -24,6 +24,7 @@ import {
   SvgMapInput,
   TextInput,
   TimeInput,
+  SampleContainerInput,
 } from "@eresearchqut/form-definition";
 import { match } from "ts-pattern";
 import { NIL as NIL_UUID, v4 as uuid } from "uuid";
@@ -278,6 +279,30 @@ describe("Resource forms", () => {
             type: t,
           },
           values: ["00:00:00", "11:11:11"],
+        }))
+        .with(InputType.SAMPLE_CONTAINER, (t): { input: SampleContainerInput; values: any[] } => ({
+          input: {
+            name: "sampleContainer",
+            label: "SAMPLE_CONTAINER",
+            id: uuid(),
+            required: true,
+            type: t,
+          },
+          values: [
+            { width: 0, length: 0, samples: [] },
+            {
+              width: 8,
+              length: 8,
+              samples: [
+                {
+                  row: 2,
+                  col: 4,
+                  id: "abc123",
+                  highlighted: true,
+                },
+              ],
+            },
+          ],
         }))
         .exhaustive();
 

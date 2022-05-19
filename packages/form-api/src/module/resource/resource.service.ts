@@ -116,7 +116,7 @@ export class ResourceService {
     const lastVersion = input.version ?? 0;
     const thisVersion = lastVersion + 1;
 
-    const transactionItems = buildRelationshipsCompositeItems(Resource, attrs.Id, input.data, thisVersion);
+    const transactionItems = buildRelationshipsCompositeItems(Resource, Version, attrs.Id, input.data, thisVersion);
 
     // TODO: run authorization policy check
 
@@ -231,7 +231,7 @@ export class ResourceService {
       Data: {
         Schemas: { RelationshipsVersion },
       },
-    } = await this.metadataService.getMetadata(input.targetResource); // TODO: consider including resource semver in relationships
+    } = await this.metadataService.getMetadata(input.targetResource);
     const { buildTargetToSourceQuery } = await this.relationshipsService.getRelationships(RelationshipsVersion);
 
     // TODO: run authorization policy check

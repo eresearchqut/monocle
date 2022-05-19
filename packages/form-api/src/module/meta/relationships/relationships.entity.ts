@@ -92,20 +92,23 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
 
   // TODO: replace flat with reduce
   buildRelationshipsCompositeItems = (
-    sourceResource: string,
+    sourceResourceName: string,
+    sourceResourceVersion: string,
     sourceId: string,
     data: Form,
     version: number
   ): ItemEntity[] =>
     Array.from(this.Data.Relationships.entries())
       .map((relationship: [string, Relationship]): ItemEntity[] =>
-        this.buildRelationshipItemsCompositeAttributes(sourceResource, sourceId, data, relationship, version).map(
+        this.buildRelationshipItemsCompositeAttributes(sourceResourceName, sourceId, data, relationship, version).map(
           (attributes) => ({
             ...attributes,
             Id: sourceId,
             ItemType: "Relationship",
             CreatedAt: new Date().toISOString(),
             CreatedBy: SYSTEM_USER,
+            ResourceName: sourceResourceName,
+            ResourceVersion: sourceResourceVersion,
             Data: jsonPathData(data, relationship[1].DataKey)?.[0] ?? {},
           })
         )

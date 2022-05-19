@@ -66,10 +66,6 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
   @Type(() => MetadataRelationshipsData)
   Data!: MetadataRelationshipsData;
 
-  private buildResourcePartitionKey(resourceName: string, resourceId: string): string {
-    return `${buildResourceIdentifier(resourceName, resourceId)}`;
-  }
-
   private buildRelationshipItemCompositeAttributes = (
     sourceResource: string,
     sourceId: string,
@@ -77,9 +73,9 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
     relationship: [string, Relationship],
     version: number
   ) => ({
-    PK: this.buildResourcePartitionKey(sourceResource, sourceId),
+    PK: buildResourceIdentifier(sourceResource, sourceId),
     SK: `version#${version}:${relationship[0]}:${key}`,
-    [`GSI${RELATIONSHIP_GSI_INDEX}-PK`]: this.buildResourcePartitionKey(relationship[1].Resource, key),
+    [`GSI${RELATIONSHIP_GSI_INDEX}-PK`]: buildResourceIdentifier(relationship[1].Resource, key),
     [`GSI${RELATIONSHIP_GSI_INDEX}-SK`]: `${relationship[0]}:${sourceId}`,
   });
 
@@ -135,7 +131,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
         "#SK": `SK`,
       },
       expressionValues: {
-        ":PK": this.buildResourcePartitionKey(sourceResource, sourceIdentifier),
+        ":PK": buildResourceIdentifier(sourceResource, sourceIdentifier),
         ":SKPrefix": `version#${sourceVersion}:${relationshipName}:`, // TODO: add test to confirm colon postfix
       },
     };
@@ -156,7 +152,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
         "#SK": `GSI${RELATIONSHIP_GSI_INDEX}-SK`,
       },
       expressionValues: {
-        ":PK": this.buildResourcePartitionKey(relationship.Resource, targetIdentifier),
+        ":PK": buildResourceIdentifier(relationship.Resource, targetIdentifier),
         ":SKPrefix": `${relationshipName}:`, // TODO: add test to confirm colon postfix
       },
     };
@@ -173,7 +169,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
       "#SK": `SK`,
     },
     expressionValues: {
-      ":PK": this.buildResourcePartitionKey(sourceResource, sourceIdentifier),
+      ":PK": buildResourceIdentifier(sourceResource, sourceIdentifier),
       ":SKPrefix": `version#${sourceVersion}:`, // TODO: add test to confirm colon postfix
     },
   });

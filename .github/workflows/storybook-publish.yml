@@ -16,7 +16,7 @@ jobs:
       - name: Build Story Book
         run: |
           yarn install
-          yarn build
+          yarn build-nocache
           yarn storybook-build
       - name: Publish Story Book
         uses: jakejarvis/s3-sync-action@master

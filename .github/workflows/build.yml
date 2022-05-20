@@ -12,7 +12,6 @@ jobs:
         with:
           node-version: '16'
           registry-url: 'https://npm.pkg.github.com'
-          cache: 'yarn'
       - name: Build Package
         run: |
           yarn install

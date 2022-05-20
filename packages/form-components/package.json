@@ -13,11 +13,11 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
-    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "clean": "rimraf dist && rimraf node_modules && rimraf .turbo && rimraf tsconfig.tsbuildinfo",
     "copy-files": "copyfiles -u 1 \"src/**/*.scss\" dist/ && copyfiles -u 1 \"src/**/*.svg\" dist/ && copyfiles package.json dist/",
     "prepack": "yarn build",
     "svgson": "svgson src/component/SvgMap/svgs --output src/component/SvgMap/maps/svgs",
-    "build": "yarn clean && yarn svgson && tsc --build && yarn copy-files",
+    "build": "yarn svgson && tsc --build && yarn copy-files",
     "test": "jest --no-cache",
     "test-cov": "jest --no-cache --coverage",
     "lint": "eslint \"./src/**/*.{ts,tsx}\" --fix --max-warnings=0"
@@ -30,7 +30,7 @@
     "lodash": "4.17.21",
     "primeflex": "2.0.0",
     "primeicons": "5.0.0",
-    "primereact": "8.0.0",
+    "primereact": "8.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-img-mapper": "1.2.2",

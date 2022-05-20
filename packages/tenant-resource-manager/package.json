@@ -13,6 +13,7 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
+    "clean": "rimraf .turbo && rimraf node_modules",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",

@@ -13,16 +13,16 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
-    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "clean": "rimraf dist && rimraf node_modules && rimraf .turbo && rimraf tsconfig.tsbuildinfo",
     "prepack": "yarn build",
-    "build": "yarn clean && tsc --build && cp \"./package.json\" ./dist/",
+    "build": "tsc --build && copyfiles package.json dist/",
     "test": "jest --no-cache",
     "test-cov": "jest --no-cache --coverage",
     "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0 --fix"
   },
   "dependencies": {
-    "@eresearchqut/form-definition": "^0.31.0",
-    "@jsonforms/core": "^3.0.0-alpha.3",
+    "@eresearchqut/form-definition": "*",
+    "@jsonforms/core": "^3.0.0-beta.2",
     "lodash": "^4.14.171"
   },
   "devDependencies": {

@@ -7,8 +7,13 @@ Repository of future state modules. This repository will be renamed at some poin
 ## Build instructions
 
 ```
-yarn prepare
-yarn build
+yarn install - Initialise the workspace
+yarn build - Build all packages
+yarn lint - Lint all packages
+yarn test - Test all packages
+yarn graph - Graph the project dependencies
+yarn clean - Clean up all node_modules and dist folders
+yarn storybook - Start the storybook
 ```
 
 ## Modules

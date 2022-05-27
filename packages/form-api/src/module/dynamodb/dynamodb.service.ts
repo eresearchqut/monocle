@@ -319,7 +319,7 @@ export class DynamodbService {
     return unmarshall(item.Attributes) as T;
   }
 
-  async bulkDeleteItems<T extends ItemEntity>(input: BulkDeleteItemsArgs): Promise<{ PK: string; SK?: string }[]> {
+  async bulkDeleteItems(input: BulkDeleteItemsArgs): Promise<{ PK: string; SK?: string }[]> {
     assert(input.items.length <= 25, "Cannot delete > 25 items");
 
     let remainingItems: BatchWriteItemCommandOutput["UnprocessedItems"] = {

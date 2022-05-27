@@ -14,6 +14,7 @@ import {
   QueryResourceParams,
 } from "./resource.dto";
 import { ResourceService } from "./resource.service";
+import { match, P } from "ts-pattern";
 
 // TODO: Consider stripping non-Data keys from responses for security reasons
 
@@ -93,12 +94,25 @@ export class ResourceController {
 
   @Get(":resource/:id/:relationship/:targetResource")
   public async queryRelated(@Param() params: QueryRelatedResourceParams) {
-    const results = this.resourceService.queryRelatedResources({
-      resource: params.resource,
-      id: params.id,
-      targetResource: params.targetResource,
-      relationship: params.relationship,
-    });
+    const results = match(params)
+      .with({ targetResource: undefined }, (p) =>
+        this.resourceService.queryRelatedResources({
+          direction: "sourceToTarget",
+          resource: p.resource,
+          id: p.id,
+          relationship: p.relationship,
+        })
+      )
+      .with({ targetResource: P.string }, (p) =>
+        this.resourceService.queryRelatedResources({
+          direction: "targetToSource",
+          resource: p.resource,
+          id: p.id,
+          targetResource: p.targetResource,
+          relationship: p.relationship,
+        })
+      )
+      .exhaustive();
 
     // TODO: streaming & pagination options
     const resources = [];

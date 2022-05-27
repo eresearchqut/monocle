@@ -68,7 +68,8 @@ export class QueryRelatedResourceParams extends ResourceParams {
   id!: string;
 
   @IsString()
-  targetResource!: string;
+  @IsOptional()
+  targetResource?: string;
 
   @IsString()
   relationship!: string;

@@ -11,6 +11,7 @@ import { from as ixSyncFrom } from "ix/iterable";
 import { from as ixAsyncFrom } from "ix/asynciterable";
 import { bufferCountOrTime } from "ix/asynciterable/operators/buffercountortime";
 import { buffer } from "ix/iterable/operators/buffer";
+import { match } from "ts-pattern";
 
 const TRANSACTION_MAX_PUT_ITEMS = 24;
 const BULK_MAX_DELETE_ITEMS = 25;
@@ -44,13 +45,12 @@ interface QueryResourceInput {
   version?: string;
 }
 
-interface QueryRelatedResourceInput {
+type QueryRelatedResourceInput = {
   relationship: string;
   resource: string;
   id: string;
-  targetResource: string;
   version?: string;
-}
+} & ({ direction: "sourceToTarget" } | { direction: "targetToSource"; targetResource: string });
 
 @Injectable()
 export class ResourceService {
@@ -62,14 +62,17 @@ export class ResourceService {
     private dynamodbService: DynamodbService
   ) {}
 
-  public async getResource(input: GetResourceInput): Promise<ItemEntity | null> {
+  public async getResource(input: GetResourceInput): Promise<VersionedItemEntity | null> {
     const {
       buildGetAttributes,
       Data: { Schemas },
     } = await this.metadataService.getMetadata(input.resource);
     const key = buildGetAttributes(input.id);
 
-    const item = await this.dynamodbService.getItem({ table: this.configService.get("RESOURCE_TABLE"), ...key });
+    const item = await this.dynamodbService.getItem<VersionedItemEntity>({
+      table: this.configService.get("RESOURCE_TABLE"),
+      ...key,
+    });
 
     if (this.configService.get("VALIDATE_RESOURCE_ON_READ")) {
       const { validate } = await this.formService.getForm(Schemas.FormVersion);
@@ -195,14 +198,6 @@ export class ResourceService {
 
     const item = await this.dynamodbService.deleteItem<VersionedItemEntity>({ table, ...key });
 
-    const toDelete = [];
-    for await (const deletedItem of this.dynamodbService.queryItems({
-      table,
-      ...buildDeletionQuery(Resource, input.id, item.Version),
-    })) {
-      toDelete.push(deletedItem);
-    }
-
     await this.deleteRelated(
       table,
       this.dynamodbService.queryItems({
@@ -227,18 +222,38 @@ export class ResourceService {
   }
 
   public async *queryRelatedResources(input: QueryRelatedResourceInput) {
+    // TODO: refactor to use private method?
+    const resource = match(input)
+      .with({ direction: "sourceToTarget" }, (i) => i.resource)
+      .with({ direction: "targetToSource" }, (i) => i.targetResource)
+      .exhaustive();
     const {
       Data: {
         Schemas: { RelationshipsVersion },
       },
-    } = await this.metadataService.getMetadata(input.targetResource);
-    const { buildTargetToSourceQuery } = await this.relationshipsService.getRelationships(RelationshipsVersion);
+    } = await this.metadataService.getMetadata(resource);
+
+    const { buildSourceToTargetQuery, buildTargetToSourceQuery } = await this.relationshipsService.getRelationships(
+      RelationshipsVersion
+    );
+
+    const query = await match(input)
+      .with({ direction: "sourceToTarget" }, async () => {
+        // TODO: get version from input
+        const sourceItem = await this.getResource({ resource: input.resource, id: input.id });
+        if (sourceItem === null) {
+          throw new Error("Failed retrieving source item");
+        }
+        return buildSourceToTargetQuery(input.resource, input.id, sourceItem.Version, input.relationship);
+      })
+      .with({ direction: "targetToSource" }, async () => buildTargetToSourceQuery(input.relationship, input.id))
+      .exhaustive();
 
     // TODO: run authorization policy check
 
     const items = this.dynamodbService.queryItems({
       table: this.configService.get("RESOURCE_TABLE"),
-      ...buildTargetToSourceQuery(input.relationship, input.id),
+      ...query,
     });
 
     // Deduplicate related items from partially-deleted relationships from previous resource version

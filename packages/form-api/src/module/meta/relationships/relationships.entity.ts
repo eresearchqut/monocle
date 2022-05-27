@@ -58,6 +58,7 @@ const getKeys = (data: Form, key: string): Set<string> => {
   );
 };
 
+// TODO: move some public methods to inner Relationship class
 export class MetadataRelationships extends ItemEntity<DataType, "Relationships"> implements MetadataRelationshipsType {
   @Equals("Relationships")
   ItemType: "Relationships" = "Relationships";

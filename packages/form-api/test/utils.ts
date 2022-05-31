@@ -16,6 +16,7 @@ import {
   ListStreamsCommand,
 } from "@aws-sdk/client-dynamodb-streams";
 import { DynamoDBRecord } from "aws-lambda";
+import { v4 as uuid } from "uuid";
 
 // const localClientConfig = {
 //   region: "local",
@@ -49,7 +50,7 @@ const getTableInput = (name: string) => {
 };
 export const generateResourceName = () => `TestResource_${Date.now()}`;
 export const initApp = async (modules: any[]): Promise<INestApplication> => {
-  const tableName = `E2E_Metadata_${Date.now()}`; // TODO: pass table name in context. Tables need org uuid, environment, audit, search etc. in suffix
+  const tableName = `E2E_Resource_${Date.now()}_${uuid()}`; // TODO: pass table name in context. Tables need org uuid, environment, audit, search etc. in suffix
 
   const dynamodbClient = new DynamoDBClient(localClientConfig);
 
@@ -104,6 +105,8 @@ export const teardownApp = async (app: INestApplication) => {
       TableName: tableName,
     })
   );
+
+  await app.close();
 };
 
 export const simulateStream = async (

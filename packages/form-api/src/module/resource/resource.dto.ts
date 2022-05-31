@@ -1,4 +1,4 @@
-import { IsNumber, IsObject, IsOptional, IsSemVer, IsString, Matches, Min } from "class-validator";
+import { IsNumber, IsObject, IsOptional, IsSemVer, IsString, Min } from "class-validator";
 import { ResourceParams } from "../../dto/resource.dto";
 
 abstract class DataResourceParams {

@@ -1,18 +1,21 @@
 import { IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsSemVer, IsUUID, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 import { OptionalSemverQuery, ResourceParams } from "src/dto/resource.dto";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class GetMetadataParams extends ResourceParams {}
 
 export class GetMetadataQuery extends OptionalSemverQuery {}
 
 class GetMetadataResponseSchemas {
+  @ApiProperty({ format: "uuid" })
   @IsUUID()
   formVersion!: string;
 
+  @ApiProperty({ format: "uuid" })
   @IsUUID()
   authorizationVersion!: string;
-
+  @ApiProperty({ format: "uuid" })
   @IsUUID()
   relationshipsVersion!: string;
 }
@@ -42,12 +45,15 @@ export class PutMetadataQuery {
 }
 
 class PostMetadataBodyGroup {
+  @ApiProperty({ format: "uuid" })
   @IsUUID()
   formVersion!: string;
 
+  @ApiProperty({ format: "uuid" })
   @IsUUID()
   authorizationVersion!: string;
 
+  @ApiProperty({ format: "uuid" })
   @IsUUID()
   relationshipsVersion!: string;
 }

@@ -2,11 +2,12 @@ import { Injectable } from "@nestjs/common";
 import { AppConfig } from "../../app.config";
 import { ConfigService } from "@nestjs/config";
 import { MetadataService } from "../meta/metadata/metadata.service";
-import { DynamodbService } from "../dynamodb/dynamodb.service";
+import { DynamodbService, PutItemFailReason } from "../dynamodb/dynamodb.service";
 import { ItemEntity, VersionedItemEntity } from "../dynamodb/dynamodb.entity";
 import { FormService } from "../meta/form/form.service";
 import { RelationshipsService } from "../meta/relationships/relationships.service";
-import { ValidationException } from "./resource.exception";
+import { ConstraintsService } from "../meta/constraints/constraints.service";
+import { ConstraintException, PutException, ValidationException } from "./resource.exception";
 import { from as ixSyncFrom } from "ix/iterable";
 import { from as ixAsyncFrom } from "ix/asynciterable";
 import { bufferCountOrTime } from "ix/asynciterable/operators/buffercountortime";
@@ -59,6 +60,7 @@ export class ResourceService {
     private metadataService: MetadataService,
     private formService: FormService,
     private relationshipsService: RelationshipsService,
+    private constraintsService: ConstraintsService,
     private dynamodbService: DynamodbService
   ) {}
 
@@ -107,9 +109,13 @@ export class ResourceService {
       },
     });
 
-    const { buildRelationshipsCompositeItems, buildDeletionQuery } = await this.relationshipsService.getRelationships(
-      Schemas.RelationshipsVersion
-    );
+    const [
+      { hasConstraints, buildConstraintsItems, buildConstraintsItemsDiff },
+      { buildRelationshipsItems, buildDeletionQuery },
+    ] = await Promise.all([
+      this.constraintsService.getConstraints(Schemas.ConstraintsVersion),
+      this.relationshipsService.getRelationships(Schemas.RelationshipsVersion),
+    ]);
 
     const data = {
       ...attrs,
@@ -119,32 +125,81 @@ export class ResourceService {
     const lastVersion = input.version ?? 0;
     const thisVersion = lastVersion + 1;
 
-    const transactionItems = buildRelationshipsCompositeItems(Resource, Version, attrs.Id, input.data, thisVersion);
+    const relationshipsItems = buildRelationshipsItems(Resource, Version, attrs.Id, input.data, thisVersion);
 
     // TODO: run authorization policy check
 
     const table = this.configService.get("RESOURCE_TABLE");
 
-    const putItem = await this.dynamodbService.putVersionedItem({
-      table,
-      item: data,
-      lastVersion,
-    });
-
-    if (!putItem.created) {
-      if (input.id) {
-        throw new Error(`Item with version ${input.version} already existed`);
-      } else {
-        throw new Error("Item didn't already exist");
+    let putArgs;
+    if (!hasConstraints()) {
+      putArgs = {
+        table,
+        item: data,
+        lastVersion,
+      };
+    } else if (!input.id) {
+      putArgs = {
+        table,
+        item: data,
+        lastVersion,
+        addedConstraints: buildConstraintsItems(Resource, attrs.Id, input.data, 1), // TODO: handle response for KeyError,
+      };
+    } else {
+      const previous = await this.getResource({
+        resource: Resource,
+        id: input.id,
+      });
+      if (previous === null) {
+        throw new Error("Cannot put an item that already exists");
       }
+      if (previous.Version !== lastVersion) {
+        throw new Error("Item has been updated");
+      }
+      putArgs = {
+        table,
+        item: data,
+        lastVersion,
+        ...buildConstraintsItemsDiff(Resource, attrs.Id, previous.Data, input.data, thisVersion),
+      };
     }
+
+    match(await this.dynamodbService.putVersionedItemAndConstraints(putArgs))
+      .with({ succeeded: true }, () => true)
+      .with(
+        { succeeded: false, reason: PutItemFailReason.PUT_FAILED_UNKNOWN },
+        { succeeded: false, reason: PutItemFailReason.TRANSACTION_CANCELLED_UNKNOWN },
+        { succeeded: false, reason: PutItemFailReason.TRANSACTION_FAILED_UNKNOWN },
+        (response) => {
+          console.error(response.error); // TODO: proper logging
+          throw new PutException("Failed to save resource");
+        }
+      )
+      .with({ succeeded: false, reason: PutItemFailReason.TRANSACTION_CONFLICT }, () => {
+        throw new PutException("Resource is being updated in another request");
+      })
+      .with({ succeeded: false, reason: PutItemFailReason.ITEM_ALREADY_EXISTS_AT_VERSION }, () => {
+        throw new PutException("Resource's saved version does not match");
+      })
+      .with(
+        {
+          succeeded: false,
+          reason: PutItemFailReason.CONSTRAINTS_ALREADY_EXIST,
+        },
+        (response) => {
+          throw new ConstraintException(response.existingConstraints);
+        }
+      )
+      .exhaustive();
 
     // Not using Promise.all because many concurrent transactions can cause conflicts when item is deleted
     // while transactions are still running, and to stop PUTing more items after a resource has been deleted
     // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transaction-apis.html#transaction-best-practices
-    // TODO: handle transaction exception then continue deleting
-    for (const transactionBatch of ixSyncFrom(transactionItems).pipe(buffer(TRANSACTION_MAX_PUT_ITEMS))) {
-      await this.dynamodbService.putItemsTransaction({
+
+    // TODO: handle transaction exception then stop creating, continue deleting
+    // TODO: optionally check that related item exists (requires ConditionCheck that halves the number of operations)
+    for (const transactionBatch of ixSyncFrom(relationshipsItems).pipe(buffer(TRANSACTION_MAX_PUT_ITEMS))) {
+      await this.dynamodbService.conditionallyPutItemsTransaction({
         table,
         key: {
           PK: attrs.PK,
@@ -190,13 +245,32 @@ export class ResourceService {
     } = await this.metadataService.getMetadata(input.resource);
     const key = buildGetAttributes(input.id);
 
-    const { buildDeletionQuery } = await this.relationshipsService.getRelationships(Schemas.RelationshipsVersion);
+    const [{ hasConstraints, buildConstraintsKeyAttributes }, { buildDeletionQuery }] = await Promise.all([
+      this.constraintsService.getConstraints(Schemas.ConstraintsVersion),
+      this.relationshipsService.getRelationships(Schemas.RelationshipsVersion),
+    ]);
 
     // TODO: run authorization policy check
 
     const table = this.configService.get("RESOURCE_TABLE");
 
-    const item = await this.dynamodbService.deleteItem<VersionedItemEntity>({ table, ...key });
+    let item;
+    if (!hasConstraints()) {
+      item = await this.dynamodbService.deleteItem<VersionedItemEntity>({ table, ...key });
+    } else {
+      item = await this.getResource({
+        resource: Resource,
+        id: input.id,
+      });
+      if (item === null) {
+        throw new Error("Item does not exist");
+      }
+      await this.dynamodbService.deleteVersionedItemAndConstraints({
+        table,
+        key,
+        constraints: buildConstraintsKeyAttributes(Resource, input.id, item.Data),
+      });
+    }
 
     await this.deleteRelated(
       table,

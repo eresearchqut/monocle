@@ -22,7 +22,7 @@ export class FormController {
     if (result.created) {
       return result;
     } else {
-      throw new HttpException("Fail to create form", HttpStatus.BAD_REQUEST);
+      throw new HttpException("Failed to create form", HttpStatus.BAD_REQUEST);
     }
   }
 }

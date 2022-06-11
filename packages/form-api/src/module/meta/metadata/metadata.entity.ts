@@ -17,6 +17,7 @@ interface DataType {
     FormVersion: string;
     AuthorizationVersion: string;
     RelationshipsVersion: string;
+    ConstraintsVersion: string;
   };
 }
 
@@ -31,6 +32,9 @@ class SchemaData {
 
   @IsUUID()
   RelationshipsVersion!: string;
+
+  @IsUUID()
+  ConstraintsVersion!: string;
 }
 
 export class MetadataData {

@@ -28,6 +28,7 @@ export class MetadataController {
         formVersion: metadata.Data.Schemas.FormVersion,
         authorizationVersion: metadata.Data.Schemas.AuthorizationVersion,
         relationshipsVersion: metadata.Data.Schemas.RelationshipsVersion,
+        constraintsVersion: metadata.Data.Schemas.ConstraintsVersion,
       },
     };
   }

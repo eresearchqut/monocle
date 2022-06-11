@@ -2,18 +2,24 @@ import { Injectable, Logger } from "@nestjs/common";
 import {
   BatchWriteItemCommand,
   BatchWriteItemCommandOutput,
+  ConditionalCheckFailedException,
   DeleteItemCommand,
   DynamoDBClient,
   GetItemCommand,
   paginateQuery,
+  Put,
   PutItemCommand,
+  ScanCommand,
+  TransactionCanceledException,
+  TransactionConflictException,
+  TransactionInProgressException,
   TransactWriteItemsCommand,
   TransactWriteItemsCommandOutput,
+  Update,
   UpdateItemCommand,
-  UpdateItemCommandOutput,
 } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
-import { ItemEntity, VersionedItemEntity } from "./dynamodb.entity";
+import { ItemEntity } from "./dynamodb.entity";
 import { DynamoDbClientProvider } from "./dynamodb.client";
 import { EXPONENTIAL_BACKOFF_RETRIES } from "./dynamodb.constants";
 import * as assert from "assert";
@@ -46,11 +52,12 @@ export type CreateItemArgs<T extends ItemEntity> = {
   item: T;
 };
 
-export type PutItemsTransactionArgs<T extends ItemEntity> = {
+export type ConditionallyPutItemsTransactionArgs = {
   table: string;
   key: { PK: string; SK: string };
   version: number;
-  putItems: ItemEntity[];
+  putItems?: ItemEntity[];
+  conditionalPutItems?: ItemEntity[];
   idempotencyToken?: string;
 };
 
@@ -61,10 +68,73 @@ export type PutSemanticallyVersionedTransactionArgs<T extends ItemEntity> = {
   item: T;
 };
 
+export enum PutItemFailReason { // TODO: Submit PR to ts-pattern updating docs: https://github.com/gvergnaud/ts-pattern/issues/58 or replace enum with strings: https://stackoverflow.com/questions/40275832/typescript-has-unions-so-are-enums-redundant/60041791#60041791
+  PUT_FAILED_UNKNOWN = "PUT_FAILED_UNKNOWN",
+  TRANSACTION_CANCELLED_UNKNOWN = "TRANSACTION_CANCELLED_UNKNOWN",
+  TRANSACTION_FAILED_UNKNOWN = "TRANSACTION_FAILED_UNKNOWN",
+  TRANSACTION_CONFLICT = "TRANSACTION_CONFLICT",
+  ITEM_ALREADY_EXISTS_AT_VERSION = "ITEM_ALREADY_EXISTS_AT_VERSION",
+  CONSTRAINTS_ALREADY_EXIST = "CONSTRAINTS_ALREADY_EXIST",
+}
+
+type PutItemSuccess = { succeeded: true };
+type PutItemExists = {
+  succeeded: false;
+  reason: PutItemFailReason.ITEM_ALREADY_EXISTS_AT_VERSION;
+};
+
+type PutItemTransactionConflict = {
+  succeeded: false;
+  reason: PutItemFailReason.TRANSACTION_CONFLICT;
+};
+
+type PutItemTransactionCancelledUnknown = {
+  succeeded: false;
+  reason: PutItemFailReason.TRANSACTION_CANCELLED_UNKNOWN;
+  error: TransactionCanceledException;
+};
+
+type PutItemTransactionFailedUnknown = {
+  succeeded: false;
+  reason: PutItemFailReason.TRANSACTION_FAILED_UNKNOWN;
+  error: Error;
+};
+
+type PutItemConstraintsExist = {
+  succeeded: false;
+  reason: PutItemFailReason.CONSTRAINTS_ALREADY_EXIST;
+  existingConstraints: string[];
+};
+
+type PutItemFailedUnknown = {
+  succeeded: false;
+  reason: PutItemFailReason.PUT_FAILED_UNKNOWN;
+  error: Error;
+};
+
+type PutItemResponse =
+  | PutItemSuccess
+  | PutItemExists
+  | PutItemTransactionConflict
+  | PutItemTransactionCancelledUnknown
+  | PutItemTransactionFailedUnknown
+  | PutItemConstraintsExist
+  | PutItemFailedUnknown;
+
 export type PutVersionedArgs<T extends ItemEntity> = {
   table: string;
-  lastVersion: number;
   item: T;
+  lastVersion: number;
+  addedConstraints?: Map<string, ItemEntity>;
+  removedConstraints?: { PK: string; SK: string }[];
+  idempotencyToken?: string;
+};
+
+export type DeleteVersionedArgs = {
+  table: string;
+  key: { PK: string; SK: string };
+  constraints: { PK: string; SK: string }[];
+  idempotencyToken?: string;
 };
 
 export type DeleteItemArgs = {
@@ -164,7 +234,7 @@ export class DynamodbService {
     }
   }
 
-  async putItemsTransaction<T extends ItemEntity>(input: PutItemsTransactionArgs<T>) {
+  async conditionallyPutItemsTransaction(input: ConditionallyPutItemsTransactionArgs) {
     return this.client.send(
       new TransactWriteItemsCommand({
         TransactItems: [
@@ -181,9 +251,16 @@ export class DynamodbService {
               }),
             },
           },
-          ...input.putItems.map((item) => ({
+          ...(input.putItems ?? []).map((item) => ({
             Put: {
               TableName: input.table,
+              Item: marshall(item),
+            },
+          })),
+          ...(input.conditionalPutItems ?? []).map((item) => ({
+            Put: {
+              TableName: input.table,
+              ConditionExpression: "attribute_not_exists(#Id)",
               Item: marshall(item),
             },
           })),
@@ -247,12 +324,10 @@ export class DynamodbService {
     );
   }
 
-  async putVersionedItem<T extends ItemEntity>(
-    input: PutVersionedArgs<T>
-  ): Promise<{ created: boolean; item?: VersionedItemEntity<T["Data"], T["ItemType"]> }> {
+  async putVersionedItemAndConstraints<T extends ItemEntity>(input: PutVersionedArgs<T>): Promise<PutItemResponse> {
     const expressionAttributes = Object.entries(input.item).reduce(
       (acc, [key, value]) => {
-        if (key !== "PK" && key !== "SK" && key !== "Version" && key !== "Increment") {
+        if (!["PK", "SK", "Version", "Increment"].includes(key)) {
           const attributeNameKey = `#${key}`;
           const attributeValueKey = `:${key}`;
           acc.UpdateExpression.push(`${attributeNameKey} = ${attributeValueKey}`);
@@ -268,38 +343,142 @@ export class DynamodbService {
       }
     );
 
-    const item: UpdateItemCommandOutput | false = await this.client
-      .send(
-        new UpdateItemCommand({
-          TableName: input.table,
-          Key: marshall({
-            PK: input.item.PK,
-            SK: input.item.SK,
-          }),
-          ConditionExpression: "attribute_not_exists(#Version) or #Version = :Version",
-          UpdateExpression: `ADD #Version :Increment SET ${expressionAttributes.UpdateExpression.join(", ")}`,
-          ExpressionAttributeNames: {
-            "#Version": "Version",
-            ...expressionAttributes.ExpressionAttributeNames,
-          },
-          ExpressionAttributeValues: marshall({
-            ":Version": input.lastVersion,
-            ":Increment": 1,
-            ...expressionAttributes.ExpressionAttributeValues,
-          }),
-          ReturnValues: "ALL_OLD",
-        })
-      )
-      .catch((err) => (err.code === "ConditionalCheckFailed" ? false : Promise.reject(err)));
+    const updateItemInput: Update = {
+      TableName: input.table,
+      Key: marshall({
+        PK: input.item.PK,
+        SK: input.item.SK,
+      }),
+      ConditionExpression: "attribute_not_exists(#Version) or #Version = :Version",
+      UpdateExpression: `ADD #Version :Increment SET ${expressionAttributes.UpdateExpression.join(", ")}`,
+      ExpressionAttributeNames: {
+        "#Version": "Version",
+        ...expressionAttributes.ExpressionAttributeNames,
+      },
+      ExpressionAttributeValues: marshall({
+        ":Version": input.lastVersion,
+        ":Increment": 1,
+        ...expressionAttributes.ExpressionAttributeValues,
+      }),
+    };
 
-    if (item === false) {
-      return { created: false };
+    if (
+      (input.addedConstraints && input.addedConstraints.size > 0) ||
+      (input.removedConstraints && input.removedConstraints.length > 0)
+    ) {
+      const addedConstraints: [string, Put][] = Array.from((input.addedConstraints ?? new Map()).entries()).map(
+        ([name, item]) => [
+          name,
+          {
+            TableName: input.table,
+            Item: marshall(item),
+            ConditionExpression: "attribute_not_exists(#Id)",
+            ExpressionAttributeNames: {
+              "#Id": "Id",
+            },
+          },
+        ]
+      );
+      const transactionItems = [
+        {
+          Update: {
+            ...updateItemInput,
+          },
+        },
+        ...addedConstraints.map((constraint) => ({
+          Put: constraint[1],
+        })),
+        ...(input.removedConstraints ?? []).map((constraint) => ({
+          Delete: {
+            TableName: input.table,
+            Key: marshall(constraint),
+          },
+        })),
+      ];
+
+      return await this.client
+        .send(
+          new TransactWriteItemsCommand({
+            TransactItems: transactionItems,
+            ClientRequestToken: input.idempotencyToken,
+          })
+        )
+        .then(() => ({ succeeded: true } as PutItemSuccess))
+        .catch((error) => {
+          if (error instanceof TransactionCanceledException) {
+            if (
+              error.CancellationReasons === undefined ||
+              error.CancellationReasons.length !== transactionItems.length
+            ) {
+              return {
+                succeeded: false,
+                reason: PutItemFailReason.TRANSACTION_CANCELLED_UNKNOWN,
+                error,
+              };
+            } else if (error.CancellationReasons[0].Code === "ConditionalCheckFailed") {
+              return { succeeded: false, reason: PutItemFailReason.ITEM_ALREADY_EXISTS_AT_VERSION };
+            }
+            const failedAdded = [];
+            for (const [index, reason] of error.CancellationReasons.slice(1).entries()) {
+              if (![undefined, "None", "ConditionalCheckFailed"].includes(reason.Code)) {
+                return { succeeded: false, reason: PutItemFailReason.TRANSACTION_CANCELLED_UNKNOWN, error };
+              } else {
+                const addedConstraint = addedConstraints[index];
+                if (addedConstraint !== undefined) {
+                  failedAdded.push(addedConstraint[0]);
+                } else {
+                  return {
+                    succeeded: false,
+                    reason: PutItemFailReason.TRANSACTION_CANCELLED_UNKNOWN,
+                    error,
+                  };
+                }
+              }
+            }
+            return {
+              succeeded: false,
+              reason: PutItemFailReason.CONSTRAINTS_ALREADY_EXIST,
+              existingConstraints: failedAdded,
+            };
+          } else if (error instanceof TransactionConflictException || error instanceof TransactionInProgressException) {
+            return { succeeded: false, reason: PutItemFailReason.TRANSACTION_CONFLICT };
+          }
+          return { succeeded: false, reason: PutItemFailReason.TRANSACTION_FAILED_UNKNOWN, error };
+        });
     } else {
-      return {
-        created: true,
-        item: item.Attributes ? (unmarshall(item.Attributes) as VersionedItemEntity) : undefined,
-      };
+      return await this.client
+        .send(new UpdateItemCommand(updateItemInput))
+        .then(() => ({ succeeded: true } as PutItemSuccess))
+        .catch((error) => {
+          if (error instanceof ConditionalCheckFailedException) {
+            return { succeeded: false, reason: PutItemFailReason.ITEM_ALREADY_EXISTS_AT_VERSION };
+          } else {
+            return { succeeded: false, reason: PutItemFailReason.PUT_FAILED_UNKNOWN, error };
+          }
+        });
     }
+  }
+
+  async deleteVersionedItemAndConstraints(input: DeleteVersionedArgs) {
+    await this.client.send(
+      new TransactWriteItemsCommand({
+        TransactItems: [
+          {
+            Delete: {
+              TableName: input.table,
+              Key: marshall(input.key),
+            },
+          },
+          ...input.constraints.map((constraint) => ({
+            Delete: {
+              TableName: input.table,
+              Key: marshall(constraint),
+            },
+          })),
+        ],
+        ClientRequestToken: input.idempotencyToken,
+      })
+    );
   }
 
   async deleteItem<T extends ItemEntity>(input: DeleteItemArgs): Promise<T> {
@@ -349,6 +528,16 @@ export class DynamodbService {
     return (remainingItems?.[input.table] ?? []).map(
       (operation) => unmarshall(operation?.DeleteRequest?.Key ?? {}) as { PK: string; SK?: string }
     );
+  }
+
+  async scanTable(table: string): Promise<ItemEntity[]> {
+    return this.client
+      .send(
+        new ScanCommand({
+          TableName: table,
+        })
+      )
+      .then((response) => (response.Items ?? []).map((item) => unmarshall(item) as ItemEntity));
   }
 }
 

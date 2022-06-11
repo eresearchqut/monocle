@@ -13,7 +13,9 @@ describe("Metadata", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    app = await initApp([DynamodbModule, MetadataModule, FormModule, RelationshipsModule, AuthorizationModule]);
+    app = await initApp({
+      modules: [DynamodbModule, MetadataModule, FormModule, RelationshipsModule, AuthorizationModule],
+    });
   });
 
   afterAll(async () => teardownApp(app));
@@ -34,6 +36,7 @@ describe("Metadata", () => {
           formVersion: NIL_UUID,
           authorizationVersion: NIL_UUID,
           relationshipsVersion: NIL_UUID,
+          constraintsVersion: NIL_UUID,
         },
       });
 
@@ -132,6 +135,7 @@ describe("Metadata", () => {
           formVersion: formId,
           authorizationVersion: NIL_UUID,
           relationshipsVersion: NIL_UUID,
+          constraintsVersion: NIL_UUID,
         },
       })
       .expect(200)
@@ -148,6 +152,7 @@ describe("Metadata", () => {
           formVersion: formId,
           authorizationVersion: NIL_UUID,
           relationshipsVersion: NIL_UUID,
+          constraintsVersion: NIL_UUID,
         },
       });
   });

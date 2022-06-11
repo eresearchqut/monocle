@@ -34,6 +34,7 @@ export class GetResourceQuery {
 }
 
 export class PutResourceParams extends ResourceParams {
+  // TODO: Consider enforcing this to be a UUID
   @IsString()
   id!: string;
 }

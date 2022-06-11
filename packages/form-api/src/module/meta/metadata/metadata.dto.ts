@@ -15,9 +15,14 @@ class GetMetadataResponseSchemas {
   @ApiProperty({ format: "uuid" })
   @IsUUID()
   authorizationVersion!: string;
+
   @ApiProperty({ format: "uuid" })
   @IsUUID()
   relationshipsVersion!: string;
+
+  @ApiProperty({ format: "uuid" })
+  @IsUUID()
+  constraintsVersion!: string;
 }
 
 export class GetMetadataResponse {
@@ -56,6 +61,10 @@ class PostMetadataBodyGroup {
   @ApiProperty({ format: "uuid" })
   @IsUUID()
   relationshipsVersion!: string;
+
+  @ApiProperty({ format: "uuid" })
+  @IsUUID()
+  constraintsVersion!: string;
 }
 
 export class PutMetadataBody {

@@ -1,13 +1,11 @@
 import { Equals, IsString, Matches, ValidateNested } from "class-validator";
 import { ItemEntity } from "../../dynamodb/dynamodb.entity";
 import { Form } from "@eresearchqut/form-definition";
-import { buildResourceIdentifier } from "../utils";
+import { buildResourceIdentifier, getKeys, jsonPathData } from "../utils";
 import { Type } from "class-transformer";
 import { SYSTEM_USER } from "../constants";
 import { QueryItemArgs } from "../../dynamodb/dynamodb.service";
-import { JSONPath } from "jsonpath-plus";
 import { RelationshipsException } from "./relationships.exception";
-import { padNumber } from "./relationships.utils";
 import { RELATIONSHIP_GSI_INDEX } from "./relationships.constants";
 
 export class Relationship {
@@ -33,31 +31,6 @@ class MetadataRelationshipsData {
   Relationships!: Map<string, Relationship>;
 }
 
-const jsonPathData = (data: any, key: string) => JSONPath({ path: key, json: data, wrap: true, preventEval: true });
-const getKeys = (data: Form, key: string): Set<string> => {
-  const keys = jsonPathData(data, key);
-  if (keys === undefined || keys === null || !Array.isArray(keys)) {
-    throw new Error(`Failed retrieving relationship key ${key}`);
-  }
-  return new Set(
-    keys.map((i) => {
-      if (i === undefined || typeof i === "object") {
-        throw new Error(`Invalid relationship key value ${i} for key ${key}`);
-      }
-      if (typeof i === "number") {
-        if (i < 0) {
-          throw new Error(`Invalid relationship key value numeric ${i} for key ${key}`);
-        }
-        return padNumber(i);
-      }
-      if (typeof i === "boolean") {
-        return i.toString();
-      }
-      return i;
-    })
-  );
-};
-
 // TODO: move some public methods to inner Relationship class
 export class MetadataRelationships extends ItemEntity<DataType, "Relationships"> implements MetadataRelationshipsType {
   @Equals("Relationships")
@@ -67,7 +40,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
   @Type(() => MetadataRelationshipsData)
   Data!: MetadataRelationshipsData;
 
-  private buildRelationshipItemCompositeAttributes = (
+  private buildRelationshipItemAttributes = (
     sourceResource: string,
     sourceId: string,
     key: string,
@@ -80,19 +53,19 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
     [`GSI${RELATIONSHIP_GSI_INDEX}-SK`]: `relationship:${relationship[0]}:${sourceId}`,
   });
 
-  private buildRelationshipItemsCompositeAttributes = (
+  private buildRelationshipItemsAttributes = (
     sourceResource: string,
     sourceId: string,
     data: Form,
     relationship: [string, Relationship],
     version: number
   ): { PK: string; SK: string }[] =>
-    Array.from(getKeys(data, relationship[1].Key)).map((i) =>
-      this.buildRelationshipItemCompositeAttributes(sourceResource, sourceId, i, relationship, version)
+    Array.from(new Set(getKeys(data, relationship[1].Key))).map((i) =>
+      this.buildRelationshipItemAttributes(sourceResource, sourceId, i, relationship, version)
     );
 
   // TODO: replace flat with reduce
-  buildRelationshipsCompositeItems = (
+  buildRelationshipsItems = (
     sourceResourceName: string,
     sourceResourceVersion: string,
     sourceId: string,
@@ -101,11 +74,11 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
   ): ItemEntity[] =>
     Array.from(this.Data.Relationships.entries())
       .map((relationship: [string, Relationship]): ItemEntity[] =>
-        this.buildRelationshipItemsCompositeAttributes(sourceResourceName, sourceId, data, relationship, version).map(
+        this.buildRelationshipItemsAttributes(sourceResourceName, sourceId, data, relationship, version).map(
           (attributes) => ({
             ...attributes,
             Id: sourceId,
-            ItemType: "Relationship",
+            ItemType: "ResourceRelationship",
             CreatedAt: new Date().toISOString(),
             CreatedBy: SYSTEM_USER,
             ResourceName: sourceResourceName,
@@ -174,7 +147,7 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
     },
     expressionValues: {
       ":PK": buildResourceIdentifier(sourceResource, sourceIdentifier),
-      ":SKPrefix": `version#${sourceVersion}#`, // TODO: add test to confirm colon postfix
+      ":SKPrefix": `version#${sourceVersion}#`, // TODO: add test to confirm hash postfix
     },
   });
 }

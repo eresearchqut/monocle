@@ -34,7 +34,7 @@ describe("Resource forms", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    app = await initApp([ResourceModule]);
+    app = await initApp({ modules: [ResourceModule] });
   });
 
   afterAll(async () => teardownApp(app));
@@ -350,6 +350,7 @@ describe("Resource forms", () => {
           formVersion: formId,
           authorizationVersion: NIL_UUID,
           relationshipsVersion: NIL_UUID,
+          constraintsVersion: NIL_UUID,
         },
       })
       .expect(200);
@@ -442,6 +443,7 @@ describe("Resource forms", () => {
           formVersion: formId,
           authorizationVersion: NIL_UUID,
           relationshipsVersion: NIL_UUID,
+          constraintsVersion: NIL_UUID,
         },
       })
       .expect(200)

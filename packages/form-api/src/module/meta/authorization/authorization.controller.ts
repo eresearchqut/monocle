@@ -20,7 +20,7 @@ export class AuthorizationController {
     if (result.created) {
       return result;
     } else {
-      throw new HttpException("Fail to create authorization policy", HttpStatus.BAD_REQUEST);
+      throw new HttpException("Failed to create authorization", HttpStatus.BAD_REQUEST);
     }
   }
 }

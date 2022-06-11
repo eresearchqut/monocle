@@ -6,7 +6,7 @@ import { NIL as NIL_UUID, v4 as uuid } from "uuid";
 import { range } from "lodash";
 import { ResourceModule } from "../src/module/resource/resource.module";
 
-describe("Resource relationship relationships", () => {
+describe("Resource relationships", () => {
   let app: INestApplication;
   let initialSourceResource: string;
   let initialTargetResource: string;
@@ -126,6 +126,7 @@ describe("Resource relationship relationships", () => {
           formVersion: sourceFormId,
           authorizationVersion: NIL_UUID,
           relationshipsVersion: sourceRelationshipsId,
+          constraintsVersion: NIL_UUID,
         },
       })
       .expect(200)
@@ -139,6 +140,7 @@ describe("Resource relationship relationships", () => {
           formVersion: targetFormId,
           authorizationVersion: NIL_UUID,
           relationshipsVersion: NIL_UUID,
+          constraintsVersion: NIL_UUID,
         },
       })
       .expect(200)
@@ -203,7 +205,7 @@ describe("Resource relationship relationships", () => {
       });
 
   beforeAll(async () => {
-    app = await initApp([ResourceModule]);
+    app = await initApp({ modules: [ResourceModule] });
 
     // Create initial resources
     ({
@@ -244,6 +246,8 @@ describe("Resource relationship relationships", () => {
   });
 
   afterAll(async () => teardownApp(app));
+
+  // TODO: no relationships
 
   describe("Single relationship", () => {
     test("Initial resource", async () =>

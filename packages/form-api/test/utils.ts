@@ -49,7 +49,7 @@ const getTableInput = (name: string) => {
   };
 };
 export const generateResourceName = () => `TestResource_${Date.now()}`;
-export const initApp = async (modules: any[]): Promise<INestApplication> => {
+export const initApp = async ({ modules }: { modules: any[] }): Promise<INestApplication> => {
   const tableName = `E2E_Resource_${Date.now()}_${uuid()}`; // TODO: pass table name in context. Tables need org uuid, environment, audit, search etc. in suffix
 
   const dynamodbClient = new DynamoDBClient(localClientConfig);

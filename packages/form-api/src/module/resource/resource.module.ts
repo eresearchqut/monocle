@@ -5,10 +5,11 @@ import { MetadataModule } from "../meta/metadata/metadata.module";
 import { DynamodbModule } from "../dynamodb/dynamodb.module";
 import { FormModule } from "../meta/form/form.module";
 import { RelationshipsModule } from "../meta/relationships/relationships.module";
+import { ConstraintsModule } from "../meta/constraints/constraints.module";
 
 @Module({
   controllers: [ResourceController],
   providers: [ResourceService],
-  imports: [MetadataModule, FormModule, RelationshipsModule, DynamodbModule],
+  imports: [MetadataModule, FormModule, RelationshipsModule, ConstraintsModule, DynamodbModule],
 })
 export class ResourceModule {}

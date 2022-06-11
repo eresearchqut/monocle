@@ -28,7 +28,7 @@ export class RelationshipsController {
     if (result.created) {
       return result;
     } else {
-      throw new HttpException("Fail to create relationships", HttpStatus.BAD_REQUEST);
+      throw new HttpException("Failed to create relationships", HttpStatus.BAD_REQUEST);
     }
   }
 }

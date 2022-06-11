@@ -34,7 +34,12 @@ interface PutMetadataInput {
 type MetadataProperties = {
   resource: string;
   version: string;
-  schemas: { formVersion: string; authorizationVersion: string; relationshipsVersion: string };
+  schemas: {
+    formVersion: string;
+    authorizationVersion: string;
+    relationshipsVersion: string;
+    constraintsVersion: string;
+  };
 };
 
 type SchemaDiffResult =
@@ -88,6 +93,7 @@ export class MetadataService {
               FormVersion: NIL_UUID,
               AuthorizationVersion: NIL_UUID,
               RelationshipsVersion: NIL_UUID,
+              ConstraintsVersion: NIL_UUID,
             },
           },
         },
@@ -133,6 +139,7 @@ export class MetadataService {
               FormVersion: data.schemas.formVersion,
               AuthorizationVersion: data.schemas.authorizationVersion,
               RelationshipsVersion: data.schemas.relationshipsVersion,
+              ConstraintsVersion: data.schemas.constraintsVersion,
             },
           },
         },

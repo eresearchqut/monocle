@@ -34,7 +34,8 @@ describe("Resource forms", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    app = await initApp({ modules: [ResourceModule] });
+    const init = await initApp({ modules: [ResourceModule] });
+    app = init.app;
   });
 
   afterAll(async () => teardownApp(app));

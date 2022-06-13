@@ -17,6 +17,7 @@ import {
 } from "@aws-sdk/client-dynamodb-streams";
 import { DynamoDBRecord } from "aws-lambda";
 import { v4 as uuid } from "uuid";
+import { DynamodbService } from "../src/module/dynamodb/dynamodb.service";
 
 // const localClientConfig = {
 //   region: "local",
@@ -49,7 +50,13 @@ const getTableInput = (name: string) => {
   };
 };
 export const generateResourceName = () => `TestResource_${Date.now()}`;
-export const initApp = async ({ modules }: { modules: any[] }): Promise<INestApplication> => {
+export const initApp = async ({
+  modules,
+  waitForTick,
+}: {
+  modules: any[];
+  waitForTick?: () => Promise<void>;
+}): Promise<{ app: INestApplication; tick?: () => Promise<void> }> => {
   const tableName = `E2E_Resource_${Date.now()}_${uuid()}`; // TODO: pass table name in context. Tables need org uuid, environment, audit, search etc. in suffix
 
   const dynamodbClient = new DynamoDBClient(localClientConfig);
@@ -66,7 +73,7 @@ export const initApp = async ({ modules }: { modules: any[] }): Promise<INestApp
     }
   }
 
-  const moduleRef = await Test.createTestingModule({
+  let moduleBuilder = Test.createTestingModule({
     imports: [
       ...modules,
       ConfigModule.forRoot({
@@ -85,13 +92,22 @@ export const initApp = async ({ modules }: { modules: any[] }): Promise<INestApp
     ],
   })
     .overrideProvider(DynamoDbClientProvider)
-    .useClass(TestDynamodbClientProvider)
-    .compile();
+    .useClass(TestDynamodbClientProvider);
+
+  if (waitForTick) {
+    moduleBuilder = moduleBuilder.overrideProvider(DynamodbService).useClass(
+      tickingDynamodbServiceFactory({
+        waitForTick,
+      })
+    );
+  }
+
+  const moduleRef = await moduleBuilder.compile();
 
   const app = moduleRef.createNestApplication();
   buildApp(app);
   await app.init();
-  return app;
+  return { app };
 };
 
 export const teardownApp = async (app: INestApplication) => {
@@ -107,6 +123,203 @@ export const teardownApp = async (app: INestApplication) => {
   );
 
   await app.close();
+};
+
+const tickingDynamodbServiceFactory = ({
+  waitForTick,
+  tickEachAsyncIterableNext,
+}: {
+  waitForTick: () => Promise<void>;
+  tickEachAsyncIterableNext?: boolean;
+}) => {
+  return class TickingDynamodbService extends DynamodbService {
+    constructor(clientProvider: DynamoDbClientProvider) {
+      super(clientProvider);
+
+      const base = Object.getPrototypeOf(Object.getPrototypeOf(this));
+
+      for (const method of Object.getOwnPropertyNames(base).filter(
+        (name) => name !== "constructor"
+      ) as (keyof DynamodbService)[]) {
+        const original = base[method];
+
+        (this as Record<string, any>)[method] = (...args: any[]) => {
+          const result = original.apply(this, args);
+          if (result[Symbol.asyncIterator]) {
+            return {
+              [Symbol.asyncIterator]: () => {
+                const originalIterator = result[Symbol.asyncIterator]();
+                let ticked = false;
+                return {
+                  next: async () => {
+                    if (!ticked || tickEachAsyncIterableNext) {
+                      await waitForTick();
+                    }
+                    ticked = true;
+                    const { value, done } = await originalIterator.next();
+                    return { value, done };
+                  },
+                };
+              },
+            };
+          } else if (result instanceof Promise) {
+            return waitForTick().then(() => result);
+          } else {
+            throw new Error("Unsupported result type");
+          }
+        };
+      }
+    }
+  };
+};
+
+// https://stackoverflow.com/a/20871714/7435520
+const permutations = <T>(inputArr: T[]): T[][] => {
+  const result: T[][] = [];
+
+  const permute = (arr: T[], m: T[] = []) => {
+    if (arr.length === 0) {
+      result.push(m);
+    } else {
+      for (let i = 0; i < arr.length; i++) {
+        const curr = arr.slice();
+        const next = curr.splice(i, 1);
+        permute(curr.slice(), m.concat(next));
+      }
+    }
+  };
+
+  permute(inputArr);
+
+  return result;
+};
+
+type Tickable = { fn: () => Promise<any>; tick: () => Promise<void> };
+type TickableCreator = () => Tickable;
+
+class IsolationError extends Error {
+  constructor(
+    public ticks: { tickable: number; executed: boolean }[],
+    public result: any,
+    public allowedResults: any[]
+  ) {
+    super(`Ticks: [${ticks.map((t) => t.tickable)}] caused unexpected result: ${JSON.stringify(result)}`);
+  }
+}
+
+const flushTickable = async ({ fn, tick }: Tickable) => {
+  let result;
+  fn().then((value) => {
+    result = value;
+  });
+
+  while (result === undefined) {
+    await tick();
+  }
+
+  return result;
+};
+
+const isolationCombinations = async (
+  options: { comparisonFunction?: (result1: any, result2: any) => boolean; maxIterations?: number },
+  ...tickableCreators: TickableCreator[]
+): Promise<void> => {
+  // Calculate possible results of all *serially* executed permutations
+  const allowedResults: any[] = [];
+  for (const permutation of permutations(tickableCreators)) {
+    for (const tickableCreator of permutation.slice(0, -1)) {
+      await flushTickable(tickableCreator());
+    }
+    const lastTickableCreator = permutation[permutation.length - 1];
+    allowedResults.push(await flushTickable(lastTickableCreator()));
+  }
+
+  // Initialise stack with empty first combination
+  const stack: {
+    tickables?: { tickable: Tickable; result?: any }[];
+    ticks: { tickable: number; executed: boolean }[];
+    resultOrder: number[];
+  }[] = [{ tickables: [], ticks: [], resultOrder: [] }];
+
+  for (let i = 0; i < (options.maxIterations ?? Infinity); i++) {
+    // Pop combination from stack
+    const combination = stack.pop();
+    if (combination === undefined) {
+      break;
+    }
+
+    // Create tickables if combination is from scratch
+    if (combination.tickables === undefined) {
+      combination.tickables = tickableCreators.map((creator) => {
+        const tickable = creator();
+        const response = { tickable, result: undefined };
+        tickable.fn().then((result) => {
+          response.result = result;
+        });
+        return response;
+      });
+    }
+
+    // Run outstanding ticks
+    for (const tick of combination.ticks) {
+      if (tick.executed) {
+        continue;
+      }
+      const tickable = combination.tickables[tick.tickable];
+      await tickable.tickable.tick();
+      tick.executed = true;
+
+      // TODO: mechanism to deal with last tick
+
+      if (tickable.result !== undefined) {
+        combination.resultOrder.push(tick.tickable);
+      }
+    }
+
+    // If all finished
+    if (combination.tickables.every((tickable) => tickable.result !== undefined)) {
+      // Check last result is in allowedResults
+      const lastResult = combination.tickables[combination.resultOrder[combination.resultOrder.length - 1]].result;
+      const inAllowedResults = allowedResults.some((value) => {
+        if (options.comparisonFunction) {
+          return options.comparisonFunction(lastResult, value);
+        } else {
+          return lastResult == value;
+        }
+      });
+
+      if (!inAllowedResults) {
+        throw new IsolationError(combination.ticks, lastResult, allowedResults);
+      }
+
+      continue;
+    } // TODO: strongly consistent variation
+
+    // Find unfinished tickables
+    const [firstUnfinishedIndex, ...remainingUnfinishedIndexes] = combination.tickables.reduce(
+      (acc, tickable, index) => {
+        if (tickable.result === undefined) {
+          acc.push(index);
+        }
+        return acc;
+      },
+      [] as number[]
+    );
+
+    // Add new combination to stack that is the same as current combination, plus one tick
+    for (const tickableIndex of remainingUnfinishedIndexes) {
+      stack.push({
+        ticks: combination.ticks
+          .map((tick) => ({ tickable: tick.tickable, executed: false }))
+          .concat([{ tickable: tickableIndex, executed: false }]),
+        resultOrder: [],
+      });
+    }
+
+    // Add current combination to the stack, plus one tick
+    combination.ticks.push({ tickable: firstUnfinishedIndex, executed: false });
+    stack.push(combination);
+  }
 };
 
 export const simulateStream = async (

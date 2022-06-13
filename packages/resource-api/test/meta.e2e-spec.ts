@@ -13,9 +13,10 @@ describe("Metadata", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    app = await initApp({
+    const init = await initApp({
       modules: [DynamodbModule, MetadataModule, FormModule, RelationshipsModule, AuthorizationModule],
     });
+    app = init.app;
   });
 
   afterAll(async () => teardownApp(app));

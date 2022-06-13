@@ -1,6 +1,6 @@
 {
   "name": "@eresearchqut/tenant-resource-manager",
-  "version": "0.33.0",
+  "version": "0.34.0",
   "bin": {
     "tenant-resource-manager": "bin/tenant-resource-manager.js"
   },

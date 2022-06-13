@@ -1,0 +1,86 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: "Resource API Service Nested Application"
+
+Parameters:
+  Project:
+    Type: String
+    Description: "Project slug"
+    AllowedPattern: "[a-z0-9]{2,}"
+  CognitoUserPool:
+    Type: String
+    Description: "Cognito User Pool ARN"
+
+Resources:
+  ResourceAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Cors: "'*'"
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !Ref CognitoUserPool
+  ResourceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: './packages/resource-api/src'
+      Handler: 'lambda.handler'
+      Runtime: 'nodejs14.x'
+      Events:
+        Root:
+          Type: Api
+          Properties:
+            Path: '/'
+            Method: 'ANY'
+            RestApiId: !Ref ResourceAPI
+  ResourceTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${Project}_resources"
+      BillingMode: "PAY_PER_REQUEST"
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      StreamSpecification:
+        StreamEnabled: true
+        StreamViewType: "NEW_AND_OLD_IMAGES"
+      TimeToLiveSpecification:
+        AttributeName: "TTL"
+        Enabled: true
+      ContributorInsightsSpecification:
+        Enabled: true
+      KeySchema:
+        - AttributeName: "PK"
+          KeyType: "HASH"
+        - AttributeName: "SK"
+          KeyType: "RANGE"
+      AttributeDefinitions:
+        - AttributeName: "PK"
+          AttributeType: "S"
+        - AttributeName: "SK"
+          AttributeType: "S"
+        - AttributeName: "ResourceName"
+          AttributeType: "S"
+        - AttributeName: "GSI1-PK"
+          AttributeType: "S"
+        - AttributeName: "GSI1-SK"
+          AttributeType: "S"
+      GlobalSecondaryIndexes:
+        - IndexName: "GSI0"
+          KeySchema:
+            - AttributeName: "ResourceName"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "ALL"
+        - IndexName: "GSI1"
+          KeySchema:
+            - AttributeName: "GSI1-PK"
+              KeyType: "HASH"
+            - AttributeName: "GSI1-SK"
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: "ALL"
+
+Outputs:
+  RootTable:
+    Value: !GetAtt RootTable.Arn

@@ -46,6 +46,9 @@
       "path": "packages/form-designer"
     },
     {
+      "path": "packages/resource-api"
+    },
+    {
       "path": "packages/tenant-resource-manager"
     },
     {

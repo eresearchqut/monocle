@@ -1,0 +1,18 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "..",
+  "modulePaths": ["<rootDir>", "../", "../src"],
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "collectCoverageFrom": [
+    "**/*.ts"
+  ],
+  "preset": "@trendyol/jest-testcontainers",
+  "globals": {
+    "ts-jest": {
+      "isolatedModules": true
+    }
+  }
+}

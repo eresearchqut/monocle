@@ -24,7 +24,7 @@ Resources:
   ResourceFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: './packages/form-api/src'
+      CodeUri: './packages/resource-api/src'
       Handler: 'lambda.handler'
       Runtime: 'nodejs14.x'
       Events:

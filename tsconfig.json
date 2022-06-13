@@ -34,9 +34,6 @@
   "files": [],
   "references": [
     {
-      "path": "packages/form-api"
-    },
-    {
       "path": "packages/form-compiler"
     },
     {
@@ -47,6 +44,9 @@
     },
     {
       "path": "packages/form-designer"
+    },
+    {
+      "path": "packages/resource-api"
     },
     {
       "path": "packages/tenant-resource-manager"

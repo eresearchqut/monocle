@@ -1,6 +1,6 @@
 {
   "name": "@eresearchqut/form-compiler",
-  "version": "0.31.0",
+  "version": "0.32.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "lint": "eslint \"./src/**/*.{ts,tsx}\" --max-warnings=0 --fix"
   },
   "dependencies": {
-    "@eresearchqut/form-definition": "^0.31.0",
+    "@eresearchqut/form-definition": "^0.32.0",
     "@jsonforms/core": "^3.0.0-alpha.3",
     "lodash": "^4.14.171"
   },

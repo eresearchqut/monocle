@@ -219,7 +219,7 @@ export class ResourceService {
     );
 
     // TODO: optionally return old data
-    return data;
+    return { ...data, Version: thisVersion };
   }
 
   private deleteRelated = (table: string, items: AsyncGenerator<ItemEntity>) =>

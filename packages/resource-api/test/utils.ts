@@ -52,19 +52,26 @@ const getTableInput = (name: string) => {
 export const generateResourceName = () => `TestResource_${Date.now()}`;
 export const initApp = async ({
   modules,
-  waitForTick,
+  existingTableName,
+  tickDynamodb,
 }: {
   modules: any[];
-  waitForTick?: () => Promise<void>;
-}): Promise<{ app: INestApplication; tick?: () => Promise<void> }> => {
-  const tableName = `E2E_Resource_${Date.now()}_${uuid()}`; // TODO: pass table name in context. Tables need org uuid, environment, audit, search etc. in suffix
-
+  existingTableName?: string;
+  tickDynamodb?: boolean;
+}): Promise<{
+  app: INestApplication;
+  tableName: string;
+  tickFns: { tick: () => Promise<void>; waitForTick: () => Promise<void>; done: () => Promise<void> };
+}> => {
+  const tableName = existingTableName ?? `E2E_Resource_${Date.now()}_${uuid()}`;
   const dynamodbClient = new DynamoDBClient(localClientConfig);
 
-  await dynamodbClient.send(new CreateTableCommand(getTableInput(tableName))).catch((e) => {
-    console.error(e);
-    throw new Error("Failed to create table for tests. Is dynamodb-local running?");
-  });
+  if (existingTableName === undefined) {
+    await dynamodbClient.send(new CreateTableCommand(getTableInput(tableName))).catch((e) => {
+      console.error(e);
+      throw new Error("Failed to create table for tests. Is dynamodb-local running?");
+    });
+  }
 
   @Injectable()
   class TestDynamodbClientProvider {
@@ -94,7 +101,51 @@ export const initApp = async ({
     .overrideProvider(DynamoDbClientProvider)
     .useClass(TestDynamodbClientProvider);
 
-  if (waitForTick) {
+  let tick = () => Promise.resolve();
+  let waitForTick = () => Promise.resolve();
+  let done = () => Promise.resolve();
+  if (tickDynamodb) {
+    const waitLock = new AwaitLock();
+    const tickLock = new AwaitLock();
+
+    // Start with waitLock (require a tick before first return)
+    await waitLock.acquireAsync();
+
+    let finished = false;
+
+    tick = () => {
+      if (finished) {
+        return Promise.resolve();
+      }
+      return tickLock.acquireAsync().then(() => {
+        if (finished) {
+          tickLock.release();
+        }
+        waitLock.release();
+      });
+    };
+    waitForTick = () => {
+      if (finished) {
+        return Promise.resolve();
+      }
+      return waitLock.acquireAsync().then(() => {
+        if (finished) {
+          waitLock.release();
+        }
+        tickLock.release();
+      });
+    };
+    done = async () => {
+      finished = true;
+      if (!tickLock.tryAcquire()) {
+        tickLock.release();
+      }
+
+      if (!waitLock.tryAcquire()) {
+        waitLock.release();
+      }
+    };
+
     moduleBuilder = moduleBuilder.overrideProvider(DynamodbService).useClass(
       tickingDynamodbServiceFactory({
         waitForTick,
@@ -107,7 +158,7 @@ export const initApp = async ({
   const app = moduleRef.createNestApplication();
   buildApp(app);
   await app.init();
-  return { app };
+  return { app, tableName, tickFns: { tick, waitForTick, done } };
 };
 
 export const teardownApp = async (app: INestApplication) => {
@@ -195,7 +246,7 @@ const permutations = <T>(inputArr: T[]): T[][] => {
 };
 
 type Tickable = { fn: () => Promise<any>; tick: () => Promise<void> };
-type TickableCreator = () => Tickable;
+type TickableCreator = () => Promise<Tickable>;
 
 class IsolationError extends Error {
   constructor(
@@ -216,22 +267,25 @@ const flushTickable = async ({ fn, tick }: Tickable) => {
   while (result === undefined) {
     await tick();
   }
-
   return result;
 };
 
-const isolationCombinations = async (
+export const isolationCombinations = async (
   options: { comparisonFunction?: (result1: any, result2: any) => boolean; maxIterations?: number },
   ...tickableCreators: TickableCreator[]
 ): Promise<void> => {
+  if (tickableCreators.length === 0) {
+    return;
+  }
+
   // Calculate possible results of all *serially* executed permutations
   const allowedResults: any[] = [];
   for (const permutation of permutations(tickableCreators)) {
     for (const tickableCreator of permutation.slice(0, -1)) {
-      await flushTickable(tickableCreator());
+      await flushTickable(await tickableCreator());
     }
     const lastTickableCreator = permutation[permutation.length - 1];
-    allowedResults.push(await flushTickable(lastTickableCreator()));
+    allowedResults.push(await flushTickable(await lastTickableCreator()));
   }
 
   // Initialise stack with empty first combination
@@ -239,7 +293,7 @@ const isolationCombinations = async (
     tickables?: { tickable: Tickable; result?: any }[];
     ticks: { tickable: number; executed: boolean }[];
     resultOrder: number[];
-  }[] = [{ tickables: [], ticks: [], resultOrder: [] }];
+  }[] = [{ ticks: [], resultOrder: [] }];
 
   for (let i = 0; i < (options.maxIterations ?? Infinity); i++) {
     // Pop combination from stack
@@ -247,17 +301,26 @@ const isolationCombinations = async (
     if (combination === undefined) {
       break;
     }
+    if (i % 500 === 0) {
+      console.log("Stack iteration", {
+        i,
+        stack: stack.map((c) => c.ticks.map((t) => t.tickable).join(",")),
+        ticks: combination.ticks.map((t) => t.tickable).join(","),
+      });
+    }
 
     // Create tickables if combination is from scratch
     if (combination.tickables === undefined) {
-      combination.tickables = tickableCreators.map((creator) => {
-        const tickable = creator();
-        const response = { tickable, result: undefined };
-        tickable.fn().then((result) => {
-          response.result = result;
-        });
-        return response;
-      });
+      combination.tickables = await Promise.all(
+        tickableCreators.map(async (creator) => {
+          const tickable = await creator();
+          const response = { tickable, result: undefined };
+          tickable.fn().then((result) => {
+            response.result = result;
+          });
+          return response;
+        })
+      );
     }
 
     // Run outstanding ticks
@@ -365,3 +428,58 @@ export const simulateStream = async (
     }
   }
 };
+
+/**
+ * A mutex lock for coordination across async functions
+ */
+export default class AwaitLock {
+  private _acquired = false;
+  private _waitingResolvers: (() => void)[] = [];
+
+  /**
+   * Acquires the lock, waiting if necessary for it to become free if it is already locked. The
+   * returned promise is fulfilled once the lock is acquired.
+   *
+   * After acquiring the lock, you **must** call `release` when you are done with it.
+   */
+  acquireAsync(): Promise<void> {
+    if (!this._acquired) {
+      this._acquired = true;
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      this._waitingResolvers.push(resolve);
+    });
+  }
+
+  /**
+   * Acquires the lock if it is free and otherwise returns immediately without waiting. Returns
+   * `true` if the lock was free and is now acquired, and `false` otherwise,
+   */
+  tryAcquire(): boolean {
+    if (!this._acquired) {
+      this._acquired = true;
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Releases the lock and gives it to the next waiting acquirer, if there is one. Each acquirer
+   * must release the lock exactly once.
+   */
+  release(): void {
+    if (!this._acquired) {
+      throw new Error(`Cannot release an unacquired lock`);
+    }
+
+    if (this._waitingResolvers.length > 0) {
+      const resolve = this._waitingResolvers.shift()!;
+      resolve();
+    } else {
+      this._acquired = false;
+    }
+  }
+}

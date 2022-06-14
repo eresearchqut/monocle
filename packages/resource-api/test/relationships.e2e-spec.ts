@@ -205,7 +205,7 @@ describe("Resource relationships", () => {
       });
 
   beforeAll(async () => {
-    const init = await initApp({ modules: [ResourceModule], waitForTick: true });
+    const init = await initApp({ modules: [ResourceModule] });
     app = init.app;
 
     // Create initial resources

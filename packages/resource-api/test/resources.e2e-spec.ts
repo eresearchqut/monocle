@@ -1,5 +1,5 @@
 import { INestApplication } from "@nestjs/common";
-import { generateResourceName, initApp, teardownApp } from "./utils";
+import { generateResourceName, initApp, isolationCombinations, teardownApp } from "./utils";
 import { ResourceModule } from "../src/module/resource/resource.module";
 import * as request from "supertest";
 import {
@@ -32,17 +32,39 @@ import { range } from "lodash";
 
 describe("Resource forms", () => {
   let app: INestApplication;
+  let tableName: string;
 
   beforeAll(async () => {
     const init = await initApp({ modules: [ResourceModule] });
     app = init.app;
+    tableName = init.tableName;
   });
 
   afterAll(async () => teardownApp(app));
 
   const crud = async (name: string, putData: unknown, updateData: unknown) => {
     // Create resource
-    const resourceId = await request(app.getHttpServer())
+    const resourceId = await create(name, putData);
+
+    // Read resource
+    await request(app.getHttpServer())
+      .get(`/resource/${name}/${resourceId}`)
+      .expect(200)
+      .expect((r) => expect(r.body.Data).toEqual(putData))
+      .then((r) => r.body);
+
+    // Update resource
+    await update(app, name, resourceId, updateData);
+
+    // Delete resource
+    await request(app.getHttpServer()).delete(`/resource/${name}/${resourceId}`).expect(200);
+
+    // Read deleted resource
+    await request(app.getHttpServer()).get(`/resource/${name}/${resourceId}`).expect(404);
+  };
+
+  const create = async (name: string, putData: unknown): Promise<string> =>
+    request(app.getHttpServer())
       .post(`/resource/${name}`)
       .send({
         data: putData,
@@ -51,33 +73,29 @@ describe("Resource forms", () => {
       .expect((r) => expect(r.body.Data).toEqual(putData))
       .then((r) => r.body.Id);
 
-    // Read resource
-    await request(app.getHttpServer())
+  const update = async (app: INestApplication, name: string, resourceId: string, updateData: unknown) => {
+    // Read current version of resource
+    const currentVersion = await request(app.getHttpServer())
       .get(`/resource/${name}/${resourceId}`)
       .expect(200)
-      .expect((r) => expect(r.body.Data).toEqual(putData));
+      .then((r) => r.body.Version);
 
     // Update resource
     await request(app.getHttpServer())
       .put(`/resource/${name}/${resourceId}`)
       .send({
         data: updateData,
-        version: 1,
+        version: currentVersion,
       })
       .expect(200)
       .expect((r) => expect(r.body.Data).toEqual(updateData));
 
     // Read updated resource
-    await request(app.getHttpServer())
+    return await request(app.getHttpServer())
       .get(`/resource/${name}/${resourceId}`)
       .expect(200)
-      .expect((r) => expect(r.body.Data).toEqual(updateData));
-
-    // Delete resource
-    await request(app.getHttpServer()).delete(`/resource/${name}/${resourceId}`).expect(200);
-
-    // Read deleted resource
-    await request(app.getHttpServer()).get(`/resource/${name}/${resourceId}`).expect(404);
+      .expect((r) => expect(r.body.Data).toEqual(updateData))
+      .then((r) => r.body);
   };
 
   it("Can CRUD a default resource", async () => {
@@ -479,4 +497,41 @@ describe("Resource forms", () => {
         expect(new Set(r.body.map((resource: { Id: string }) => resource.Id))).toEqual(resourceIds);
       });
   });
+
+  it.only(
+    "Supports concurrent updates on a resource",
+    async () => {
+      const resourceName = generateResourceName();
+
+      // Create empty metadata
+      await request(app.getHttpServer()).post(`/meta/metadata/${resourceName}`).expect(201).expect({ created: true });
+
+      const resourceId = await create(resourceName, {});
+
+      const tickableCreator = async () => {
+        const {
+          app,
+          tickFns: { tick, waitForTick, done },
+        } = await initApp({ modules: [ResourceModule], existingTableName: tableName, tickDynamodb: true });
+
+        return {
+          fn: () =>
+            waitForTick()
+              .then(() => update(app, resourceName, resourceId, { key: uuid() }))
+              .then(async (result) => {
+                await done();
+                return result;
+              }),
+          tick,
+        };
+      };
+
+      await isolationCombinations(
+        { comparisonFunction: (result1, result2) => result1.Id === result2.Id },
+        tickableCreator,
+        tickableCreator
+      );
+    },
+    20 * 1000
+  );
 });

@@ -150,4 +150,6 @@ export class MetadataRelationships extends ItemEntity<DataType, "Relationships">
       ":SKPrefix": `version#${sourceVersion}#`, // TODO: add test to confirm hash postfix
     },
   });
+
+  hasRelationships = () => this.Data.Relationships.size > 0;
 }

@@ -112,7 +112,7 @@ export class ResourceService {
 
     const [
       { hasConstraints, buildConstraintsItems, buildConstraintsItemsDiff },
-      { buildRelationshipsItems, buildDeletionQuery },
+      { hasRelationships, buildRelationshipsItems, buildDeletionQuery },
     ] = await Promise.all([
       this.constraintsService.getConstraints(Schemas.ConstraintsVersion),
       this.relationshipsService.getRelationships(Schemas.RelationshipsVersion),
@@ -211,13 +211,15 @@ export class ResourceService {
       });
     }
 
-    await this.deleteRelated(
-      table,
-      this.dynamodbService.queryItems({
+    if (hasRelationships()) {
+      await this.deleteRelated(
         table,
-        ...buildDeletionQuery(Resource, attrs.Id, lastVersion),
-      })
-    );
+        this.dynamodbService.queryItems({
+          table,
+          ...buildDeletionQuery(Resource, attrs.Id, lastVersion),
+        })
+      );
+    }
 
     // TODO: optionally return old data
     return { ...data, Version: thisVersion };

@@ -18,6 +18,7 @@ import {
 import { DynamoDBRecord } from "aws-lambda";
 import { v4 as uuid } from "uuid";
 import { DynamodbService } from "../src/module/dynamodb/dynamodb.service";
+import { ResourceDynamodbService } from "../src/module/resource/dynamodb.service";
 
 // const localClientConfig = {
 //   region: "local",
@@ -146,7 +147,7 @@ export const initApp = async ({
       }
     };
 
-    moduleBuilder = moduleBuilder.overrideProvider(DynamodbService).useClass(
+    moduleBuilder = moduleBuilder.overrideProvider(ResourceDynamodbService).useClass(
       tickingDynamodbServiceFactory({
         waitForTick,
       })

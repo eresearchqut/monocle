@@ -13,6 +13,7 @@ import { from as ixAsyncFrom } from "ix/asynciterable";
 import { bufferCountOrTime } from "ix/asynciterable/operators/buffercountortime";
 import { buffer } from "ix/iterable/operators/buffer";
 import { match } from "ts-pattern";
+import { ResourceDynamodbService } from "./dynamodb.service";
 
 const TRANSACTION_MAX_PUT_ITEMS = 24;
 const BULK_MAX_DELETE_ITEMS = 25;
@@ -61,7 +62,7 @@ export class ResourceService {
     private formService: FormService,
     private relationshipsService: RelationshipsService,
     private constraintsService: ConstraintsService,
-    private dynamodbService: DynamodbService
+    private dynamodbService: ResourceDynamodbService
   ) {}
 
   public async getResource(input: GetResourceInput): Promise<VersionedItemEntity | null> {

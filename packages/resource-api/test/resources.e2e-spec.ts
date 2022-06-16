@@ -80,6 +80,8 @@ describe("Resource forms", () => {
       .expect(200)
       .then((r) => r.body.Version);
 
+    // return currentVersion;
+
     // Update resource
     await request(app.getHttpServer())
       .put(`/resource/${name}/${resourceId}`)
@@ -506,32 +508,35 @@ describe("Resource forms", () => {
       // Create empty metadata
       await request(app.getHttpServer()).post(`/meta/metadata/${resourceName}`).expect(201).expect({ created: true });
 
-      const resourceId = await create(resourceName, {});
+      const tickableCreator = async (updateValue: string) => {
+        const resourceId = await create(resourceName, {});
 
-      const tickableCreator = async () => {
         const {
           app,
-          tickFns: { tick, waitForTick, done },
-        } = await initApp({ modules: [ResourceModule], existingTableName: tableName, tickDynamodb: true });
+          tickFns: { tick, waitForTick },
+        } = await initApp({
+          modules: [ResourceModule],
+          existingTableName: tableName,
+          tickDynamodb: true,
+        });
 
         return {
           fn: () =>
-            waitForTick()
-              .then(() => update(app, resourceName, resourceId, { key: uuid() }))
-              .then(async (result) => {
-                await done();
-                return result;
-              }),
+            waitForTick({ method: "start" }).then(() =>
+              update(app, resourceName, resourceId, { key: updateValue }).then(async (result) => {
+                await waitForTick({ method: "end", result });
+              })
+            ),
           tick,
         };
       };
 
       await isolationCombinations(
-        { comparisonFunction: (result1, result2) => result1.Id === result2.Id },
-        tickableCreator,
-        tickableCreator
+        { comparisonFunction: (result1, result2) => true === true },
+        () => tickableCreator("abc"),
+        () => tickableCreator("def")
       );
     },
-    20 * 1000
+    200 * 1000
   );
 });

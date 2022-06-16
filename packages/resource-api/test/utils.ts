@@ -29,6 +29,8 @@ import { ResourceDynamodbService } from "../src/module/resource/dynamodb.service
 //   endpoint: `http://localhost:8000`,
 // };
 
+const WAITING_FOR_RESULT = Symbol("WAITING_FOR_RESULT");
+
 const localClientConfig = {
   region: "local",
   credentials: {
@@ -62,7 +64,7 @@ export const initApp = async ({
 }): Promise<{
   app: INestApplication;
   tableName: string;
-  tickFns: { tick: () => Promise<void>; waitForTick: () => Promise<void>; done: () => Promise<void> };
+  tickFns: { tick: () => Promise<any>; waitForTick: (input: { method: string; result?: any }) => Promise<void> };
 }> => {
   const tableName = existingTableName ?? `E2E_Resource_${Date.now()}_${uuid()}`;
   const dynamodbClient = new DynamoDBClient(localClientConfig);
@@ -102,9 +104,8 @@ export const initApp = async ({
     .overrideProvider(DynamoDbClientProvider)
     .useClass(TestDynamodbClientProvider);
 
-  let tick = () => Promise.resolve();
-  let waitForTick = () => Promise.resolve();
-  let done = () => Promise.resolve();
+  let tick: () => Promise<any> = () => Promise.resolve(WAITING_FOR_RESULT); // TODO: return result wrapped in object?
+  let waitForTick: (input: { method: string; result?: any }) => Promise<void> = () => Promise.resolve();
   if (tickDynamodb) {
     const waitLock = new AwaitLock();
     const tickLock = new AwaitLock();
@@ -112,39 +113,34 @@ export const initApp = async ({
     // Start with waitLock (require a tick before first return)
     await waitLock.acquireAsync();
 
-    let finished = false;
+    let result: any = WAITING_FOR_RESULT;
+
+    let waited = 0;
+    let ticked = 0;
 
     tick = () => {
-      if (finished) {
-        return Promise.resolve();
+      if (result !== WAITING_FOR_RESULT) {
+        return Promise.resolve(result);
       }
       return tickLock.acquireAsync().then(() => {
-        if (finished) {
-          tickLock.release();
-        }
+        ticked++;
         waitLock.release();
+
+        return Promise.resolve(result);
       });
     };
-    waitForTick = () => {
-      if (finished) {
-        return Promise.resolve();
-      }
-      return waitLock.acquireAsync().then(() => {
-        if (finished) {
-          waitLock.release();
-        }
-        tickLock.release();
-      });
-    };
-    done = async () => {
-      finished = true;
-      if (!tickLock.tryAcquire()) {
-        tickLock.release();
+    waitForTick = (input: { method: string; result?: any }) => {
+      if (result !== WAITING_FOR_RESULT) {
+        return Promise.reject("Waiting when there's a result");
       }
 
-      if (!waitLock.tryAcquire()) {
-        waitLock.release();
-      }
+      return waitLock.acquireAsync().then(() => {
+        waited++;
+        if (input.result !== undefined) {
+          result = input.result;
+        }
+        tickLock.release();
+      });
     };
 
     moduleBuilder = moduleBuilder.overrideProvider(ResourceDynamodbService).useClass(
@@ -159,7 +155,7 @@ export const initApp = async ({
   const app = moduleRef.createNestApplication();
   buildApp(app);
   await app.init();
-  return { app, tableName, tickFns: { tick, waitForTick, done } };
+  return { app, tableName, tickFns: { tick, waitForTick } };
 };
 
 export const teardownApp = async (app: INestApplication) => {
@@ -181,7 +177,7 @@ const tickingDynamodbServiceFactory = ({
   waitForTick,
   tickEachAsyncIterableNext,
 }: {
-  waitForTick: () => Promise<void>;
+  waitForTick: (input: { method: string; result?: any }) => Promise<any>;
   tickEachAsyncIterableNext?: boolean;
 }) => {
   return class TickingDynamodbService extends DynamodbService {
@@ -195,7 +191,8 @@ const tickingDynamodbServiceFactory = ({
       ) as (keyof DynamodbService)[]) {
         const original = base[method];
 
-        (this as Record<string, any>)[method] = (...args: any[]) => {
+        (this as Record<string, any>)[method] = async (...args: any[]) => {
+          await waitForTick({ method });
           const result = original.apply(this, args);
           if (result[Symbol.asyncIterator]) {
             return {
@@ -205,7 +202,7 @@ const tickingDynamodbServiceFactory = ({
                 return {
                   next: async () => {
                     if (!ticked || tickEachAsyncIterableNext) {
-                      await waitForTick();
+                      await waitForTick({ method });
                     }
                     ticked = true;
                     const { value, done } = await originalIterator.next();
@@ -215,7 +212,7 @@ const tickingDynamodbServiceFactory = ({
               },
             };
           } else if (result instanceof Promise) {
-            return waitForTick().then(() => result);
+            return result;
           } else {
             throw new Error("Unsupported result type");
           }
@@ -246,7 +243,7 @@ const permutations = <T>(inputArr: T[]): T[][] => {
   return result;
 };
 
-type Tickable = { fn: () => Promise<any>; tick: () => Promise<void> };
+type Tickable = { fn: () => Promise<any>; tick: () => Promise<any> };
 type TickableCreator = () => Promise<Tickable>;
 
 class IsolationError extends Error {
@@ -260,13 +257,11 @@ class IsolationError extends Error {
 }
 
 const flushTickable = async ({ fn, tick }: Tickable) => {
-  let result;
-  fn().then((value) => {
-    result = value;
-  });
+  fn();
 
-  while (result === undefined) {
-    await tick();
+  let result = WAITING_FOR_RESULT;
+  while (result === WAITING_FOR_RESULT) {
+    result = await tick();
   }
   return result;
 };
@@ -296,6 +291,7 @@ export const isolationCombinations = async (
     resultOrder: number[];
   }[] = [{ ticks: [], resultOrder: [] }];
 
+  let completed = 0;
   for (let i = 0; i < (options.maxIterations ?? Infinity); i++) {
     // Pop combination from stack
     const combination = stack.pop();
@@ -315,10 +311,8 @@ export const isolationCombinations = async (
       combination.tickables = await Promise.all(
         tickableCreators.map(async (creator) => {
           const tickable = await creator();
-          const response = { tickable, result: undefined };
-          tickable.fn().then((result) => {
-            response.result = result;
-          });
+          const response = { tickable, result: WAITING_FOR_RESULT };
+          tickable.fn();
           return response;
         })
       );
@@ -330,18 +324,21 @@ export const isolationCombinations = async (
         continue;
       }
       const tickable = combination.tickables[tick.tickable];
-      await tickable.tickable.tick();
+      const tickResult = await tickable.tickable.tick();
       tick.executed = true;
 
-      // TODO: mechanism to deal with last tick
-
-      if (tickable.result !== undefined) {
+      if (tickResult !== WAITING_FOR_RESULT) {
+        tickable.result = tickResult;
         combination.resultOrder.push(tick.tickable);
       }
     }
 
     // If all finished
-    if (combination.tickables.every((tickable) => tickable.result !== undefined)) {
+    if (combination.tickables.every((tickable) => tickable.result !== WAITING_FOR_RESULT)) {
+      console.log("Completed", {
+        ticks: combination.ticks.length,
+        completed: ++completed,
+      });
       // Check last result is in allowedResults
       const lastResult = combination.tickables[combination.resultOrder[combination.resultOrder.length - 1]].result;
       const inAllowedResults = allowedResults.some((value) => {
@@ -362,7 +359,7 @@ export const isolationCombinations = async (
     // Find unfinished tickables
     const [firstUnfinishedIndex, ...remainingUnfinishedIndexes] = combination.tickables.reduce(
       (acc, tickable, index) => {
-        if (tickable.result === undefined) {
+        if (tickable.result === WAITING_FOR_RESULT) {
           acc.push(index);
         }
         return acc;
